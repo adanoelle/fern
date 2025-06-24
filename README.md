@@ -1,2 +1,3 @@
 # fern
+
 My NixOS configuration
