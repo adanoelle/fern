@@ -1,42 +1,21 @@
-
 {
-  description = "Fern NixOS configuration";
-
   inputs = {
-    nixpkgs.url        = "github:nixos/nixpkgs/nixos-unstable";
-    home-manager.url   = "github:nix-community/home-manager";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
-
+    nixpkgs.url        = "github:NixOS/nixpkgs/nixos-23.11";
     flake-parts.url    = "github:hercules-ci/flake-parts";
+    flake-utils.url    = "github:numtide/flake-utils";
+    rust-overlay.url   = "github:oxalica/rust-overlay";
+    home-manager.url   = "github:nix-community/home-manager/release-23.11";
   };
 
-  outputs = inputs@{ self, nixpkgs, flake-parts, home-manager, ... }:
-    flake-parts.lib.mkFlake { inherit self inputs; } {
-      systems = [ "x86_64-linux" ];
-
-      # 1️⃣ System modules
-      nixosModules.workspace = import ./nix/modules/workspace.nix;
-
-      # 2️⃣ Per-system config
-      perSystem = { pkgs, ... }: { };
-
-      # 3️⃣ Hosts
-      nixosConfigurations.fern = nixpkgs.lib.nixosSystem {
-        system   = "x86_64-linux";
-        modules  = [
-          ./nix/hosts/fern   # your existing host module
-          self.nixosModules.workspace
-        ];
-      };
-
-      # 4️⃣ Home-Manager for your user
-      homeConfigurations.ada = home-manager.lib.homeManagerConfiguration {
-        pkgs   = nixpkgs.legacyPackages.x86_64-linux;
-        modules = [
-          ./home/ada/workspace.nix
-        ];
-        username = "ada";
-        homeDirectory = "/home/ada";
-      };
+  outputs = inputs@{ flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      imports = [
+        ./flake.parts/00-core.nix
+        ./flake.parts/10-nixos-mods.nix
+        ./flake.parts/11-home-mods.nix
+        ./flake.parts/20-overlays.nix
+        ./flake.parts/30-templates.nix
+      ];
     };
 }
+
