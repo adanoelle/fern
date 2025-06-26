@@ -8,7 +8,6 @@
       inherit system;
       overlays = [
         inputs.rust-overlay.overlays.default
-        self.overlays.default
       ];
     };
   };

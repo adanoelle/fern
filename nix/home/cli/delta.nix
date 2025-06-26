@@ -7,8 +7,6 @@
 
 let
   # ── 1.  Catppuccin Mocha accent colours ────────────────────────────────────
-  # Palette reference: https://lospec.com/palette-list/catppuccin-mocha
-  #                    (same hex codes as the upstream spec) :contentReference[oaicite:0]{index=0}
   rosewater = "#f5e0dc";
   flamingo  = "#f2cdcd";
   pink      = "#f5c2e7";
@@ -28,7 +26,7 @@ in
 {
   # Extend the existing programs.git block instead of replacing it
   programs.git.delta = {
-    enable = true;          # tells HM to wire up Delta as Git’s pager/diff
+    enable = true;             # tells HM to wire up Delta as Git’s pager/diff
 
     options = {                # becomes the `[delta]` section in ~/.gitconfig
       navigate         = true; # n / N jump between hunks

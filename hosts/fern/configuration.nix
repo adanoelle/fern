@@ -21,8 +21,9 @@
   # --- User imports
   home-manager.users.ada = {
     imports = [
-      inputs.fern.homeModules.cli    # cli: git, bat, etc.
-      inputs.fern.homeModules.shells # shells: nushell, starship, zoxide
+      inputs.fern.homeModules.cli       # cli: git, bat, etc.
+      inputs.fern.homeModules.shells    # shells: nushell, starship, zoxide
+      inputs.fern.homeModules.workspace # manages xdg worspace directories
     ];
   };
 

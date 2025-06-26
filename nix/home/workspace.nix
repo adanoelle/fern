@@ -1,4 +1,5 @@
-# nix/modules/workspace.nix
+# nix/home/workspace.nix
+# 
 # Keeps $HOME intact but prevents xdg-user-dirs from recreating
 # Downloads/, Pictures/, etc. and points the ones you still want
 # into ~/ada/…

@@ -12,9 +12,7 @@
       imports = [
         ./flake.parts/00-core.nix
         ./flake.parts/10-nixos-mods.nix
-        ./flake.parts/11-home-mods.nix
-        ./flake.parts/20-overlays.nix
-        ./flake.parts/30-templates.nix
+        ./flake.parts/20-home-mods.nix
       ];
     };
 }
