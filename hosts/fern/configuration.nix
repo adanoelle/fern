@@ -5,12 +5,12 @@
     ./hardware.nix
 
     # --- NixOS modules
-    inputs.fern.nixosModules.boot
-    inputs.fern.nixosModules.core
-    inputs.fern.nixosModules.users
-    inputs.fern.nixosModules.audio
-    inputs.fern.nixosModules.graphics
-    inputs.fern.nixosModules.rust-dev
+    self.nixosModules.boot
+    self.nixosModules.core
+    self.nixosModules.users
+    self.nixosModules.audio
+    self.nixosModules.graphics
+    self.nixosModules.rust-dev
 
     # --- Home-Manager as a NixOS module
     inputs.home-manager.nixosModules.home-manager
@@ -22,9 +22,9 @@
   # --- User imports
   home-manager.users.ada = {
     imports = [
-      inputs.fern.homeModules.cli       # cli: git, bat, etc.
-      inputs.fern.homeModules.shells    # shells: nushell, starship, zoxide
-      inputs.fern.homeModules.workspace # manages xdg worspace directories
+      self.homeModules.cli       # cli: git, bat, etc.
+      self.homeModules.shells    # shells: nushell, starship, zoxide
+      self.homeModules.workspace # manages xdg worspace directories
     ];
   };
 
