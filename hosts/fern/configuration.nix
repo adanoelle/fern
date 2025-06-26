@@ -26,7 +26,10 @@
       self.homeModules.shells    # shells: nushell, starship, zoxide
       self.homeModules.workspace # manages xdg worspace directories
     ];
+
+    home.stateVersion = "25.05";
   };
 
+  system.stateVersion = "25.05";
   networking.hostName = "fern";
 }
