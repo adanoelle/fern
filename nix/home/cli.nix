@@ -2,8 +2,8 @@
 {
   imports = [
     ./cli/bat.nix
-    ./cli/delta.nix
     ./cli/git.nix
+    ./cli/delta.nix
     ./cli/helix.nix
     ./cli/hyfetch.nix
   ];

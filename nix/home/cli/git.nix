@@ -2,7 +2,6 @@
 {
   home.packages = [
     pkgs.git
-    pkgs.delta
   ];
 
   programs.git = {
@@ -10,8 +9,6 @@
 
     userName  = "adanoelle";
     userEmail = "adanoelleyoung@gmail.com";
-
-    delta.enable = true;  # pretty pager
 
     extraConfig = {
       init.defaultBranch = "main";
