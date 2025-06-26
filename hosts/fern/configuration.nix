@@ -1,6 +1,8 @@
 { self, inputs, pkgs, ... }:
 
 {
+  nixpkgs.config.allowUnfree = true;
+
   imports = [
     ./hardware.nix
 
