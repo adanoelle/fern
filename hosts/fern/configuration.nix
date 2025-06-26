@@ -6,6 +6,7 @@
 
     # --- NixOS modules
     inputs.fern.nixosModules.boot
+    inputs.fern.nixosModules.core
     inputs.fern.nixosModules.users
     inputs.fern.nixosModules.audio
     inputs.fern.nixosModules.graphics
