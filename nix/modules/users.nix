@@ -5,7 +5,8 @@
     extraGroups   = [ "wheel" "networkmanager" ];
     shell         = pkgs.nushell;
   };
+
+  networking.networkmanager.enable = true;
   services.openssh.enable = true;
-  services.networkmanager.enable = true;
 }
 
