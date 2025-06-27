@@ -20,6 +20,7 @@
 
   # Extra args you want available to HM modules
   home-manager.extraSpecialArgs = { inherit inputs; };
+  home-manager.backupFileExtension = "backup";
 
   # --- User imports
   home-manager.users.ada = {
@@ -28,7 +29,7 @@
       self.homeModules.shells    # shells: nushell, starship, zoxide
       self.homeModules.workspace # manages xdg worspace directories
     ];
-
+    home.packages = [ pkgs.home-manager ];
     home.stateVersion = "25.05";
   };
 
