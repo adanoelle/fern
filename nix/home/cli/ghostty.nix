@@ -6,7 +6,6 @@ let
     # --- Appearance 
     theme       = catppuccin-frappe
     font-family = JetBrains Mono
-    font-size   = 10pt
 
     # --- Cursor / selection 
     cursor-color       = ffffff

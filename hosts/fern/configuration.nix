@@ -26,10 +26,14 @@
   home-manager.users.ada = {
     imports = [
       self.homeModules.cli       # cli: git, bat, etc.
+      self.homeModules.desktop   # hyprland
       self.homeModules.shells    # shells: nushell, starship, zoxide
       self.homeModules.workspace # manages xdg worspace directories
     ];
     home.packages = [ pkgs.home-manager ];
+
+    desktop.hyprland.enable = true;
+    
     home.stateVersion = "25.05";
   };
 
