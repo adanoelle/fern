@@ -3,6 +3,10 @@
   pkgs,
   ...
 }: {
+  home.packages = with pkgs; [
+    fastfetch
+  ];
+
   programs.hyfetch = {
     enable = true;
 

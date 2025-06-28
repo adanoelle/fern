@@ -24,7 +24,7 @@ let
     bindm = $mod, mouse:273, resizeWindow
 
     # Launch app launcher
-    bind = $mod, R, exec wofi --show drun
+    bind = $mod, R, exec, wofi --show drun
   '';
 
 in
