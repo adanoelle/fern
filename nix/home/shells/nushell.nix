@@ -1,87 +1,121 @@
-# nix/hm-modules/shells/nushell.nix
-#
-# Home-Manager module: enables Nushell, adds aliases, Starship prompt,
-# zoxide & git completions, and several QoL settings.
-
 { pkgs, lib, ... }:
 
+###############################################################################
+# Nushell – rock‑solid developer profile
+#
+# • Starship prompt
+# • zoxide directory jumper
+# • Git‑friendly aliases & delta pager
+# • Helix (hx) as editor, bat as pager
+# • Generated init files live in ~/.cache/*   (created at activation time)
+###############################################################################
+
 let
-  starshipInit = ''
-    # Initialise Starship prompt for Nushell
-    mkdir ~/.cache/starship || true
-    starship init nu | save --force ~/.cache/starship/init.nu
-    source ~/.cache/starship/init.nu
-  '';
+  # ---------- Packages we rely on -------------------------------------------
+  starship = pkgs.starship;
+  zoxide   = pkgs.zoxide;
+  delta    = pkgs.gitAndTools.delta;
 
-  myAliases = {
-    l  = "ls -lah";
-    g  = "git";
-    c  = "clear";
-    d  = "docker";
-    k  = "kubectl";
-    gg = "git graph --all --decorate --oneline --graph";
-  };
+  # ---------- Where we’ll store generated scripts ---------------------------
+  starshipInit = "$HOME/.cache/starship/init.nu";
+  zoxideInit   = "$HOME/.cache/zoxide.nu";
 
-  myEnv = {
-    EDITOR    = "hx";
-    LESSHISTFILE = "-";          # disable less history file
-    PAGER     = "bat --paging always";
-  };
-
-  # turn alias {key: value} into Nushell alias commands
+  # ---------- Helper to turn an attr‑set into Nushell alias lines ----------
   mkAliasBlock = aliases:
     lib.concatStringsSep "\n"
-      (lib.mapAttrsToList (name: cmd: "alias " + name + " = " + cmd) aliases);
+      (lib.mapAttrsToList (n: v: "alias ${n} = ${v}") aliases);
 
-  # turn env table into let-env lines
+  # ---------- Helper for env vars block ------------------------------------
   mkEnvBlock = env:
     lib.concatStringsSep "\n"
-      (lib.mapAttrsToList (k: v: "$env." + k + " = \"" + v + "\"") env);
-in
-{
-  programs.nushell = {
-    enable = true;
+      (lib.mapAttrsToList (k: v: "$env.${k} = \"${v}\"") env);
 
-    # Include Nushell completions/built-in plugins
-    extraConfig = lib.concatStringsSep "\n\n" [
-      starshipInit
-      (mkAliasBlock myAliases)
-      (mkEnvBlock myEnv)
-
-      ''
-      # ─── QoL settings ──────────────────────────────────────────
-      $env.config = {
-        show_banner: false
-        history: {
-          file: "~/.local/share/nushell/history.txt"
-          max_size: 50000
-        }
-        completions: {
-          algorithm: "fuzzy"
-          case_sensitive: false
-          quick: true
-        }
-        edit_mode: "emacs"
-      }
-      ''
-    ];
-
-    # Auto-load completions for cargo, git, etc.
-    envFile.text = ''
-      use ${pkgs.git}/share/git-core/completion/git-completion.bash *
-      use ${pkgs.cargo}/share/zsh/site-functions/_cargo *
-      use ${pkgs.zoxide}/share/zoxide/init.nu
-    '';
+  # ---------- Git / general dev aliases ------------------------------------
+  gitAliases = {
+    gst = "git status -sb";
+    gaa = "git add --all";
+    gcm = "git commit -m";
+    gco = "git checkout";
+    gp  = "git push";
+    gl  = "git pull";
+    gg  = "git log --graph --decorate --oneline --all";
+    gds = "git diff --staged";
+    gdc = "git diff --cached";
   };
 
-  # Ensure required packages are present
+  # ---------- Environment variables ----------------------------------------
+  myEnv = {
+    EDITOR    = "hx";
+    VISUAL    = "hx";
+    PAGER     = "delta";
+    GIT_PAGER = "delta";
+    LESSHISTFILE = "-";
+  };
+
+  # ---------- Extra Nushell config string ----------------------------------
+  extraCfg = lib.concatStringsSep "\n\n" [
+    "# ── Starship prompt ───────────────────────────────────────────────"
+    "source ~/.cache/starship/init.nu"
+
+    "# ── zoxide integration ───────────────────────────────────────────"
+    "source ~/.cache/zoxide.nu"
+
+    "# ── Aliases ──────────────────────────────────────────────────────"
+    (mkAliasBlock gitAliases)
+
+    "# ── Environment variables ───────────────────────────────────────"
+    (mkEnvBlock myEnv)
+
+    ''
+    # ── Core Nushell settings ─────────────────────────────────────────
+    $env.config = {
+      show_banner: false
+      completions: {
+        algorithm: "fuzzy"
+        case_sensitive: false
+        quick: true
+      }
+      edit_mode: "emacs"
+    }
+    ''
+  ];
+in
+{
+  ###########################################################################
+  ##  Programs                                                              ##
+  ###########################################################################
+  programs.nushell = {
+    enable       = true;
+    extraConfig  = extraCfg;
+  };
+
+  ###########################################################################
+  ##  Packages                                                              ##
+  ###########################################################################
   home.packages = with pkgs; [
     nushell
     starship
     zoxide
+    delta
     bat
     ripgrep
     fd
+    git
   ];
+
+  ###########################################################################
+  ##  Activation hooks – generate init scripts before Nushell runs         ##
+  ###########################################################################
+  home.activation.starshipInit =
+    lib.hm.dag.entryAfter [ "installPackages" ] ''
+      mkdir -p ~/.cache/starship
+      ${starship}/bin/starship init nu > ${starshipInit}
+    '';
+
+  home.activation.zoxideInit =
+    lib.hm.dag.entryAfter [ "starshipInit" ] ''
+      mkdir -p ~/.cache
+      ${zoxide}/bin/zoxide init nushell > ${zoxideInit}
+    '';
 }
 
