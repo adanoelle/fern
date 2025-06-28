@@ -21,6 +21,8 @@
       # TODO(Ada): work git config
       # includeIf."gitdir:~/src/work/*".path = "~/.gitconfig-work";
     };
+
+    delta.enable = true;
   };
 }
 
