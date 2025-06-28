@@ -12,6 +12,7 @@
 
     extraConfig = {
       init.defaultBranch = "main";
+      core.editor        = "hx";
       pull.rebase        = true;
       commit.gpgsign     = true;
       gpg.format         = "ssh";
