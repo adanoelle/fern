@@ -34,9 +34,9 @@
 
     desktop.hyprland.enable = true;
     
-    home.stateVersion = "25.05";
+    home.stateVersion = "25.11";
   };
 
-  system.stateVersion = "25.05";
+  system.stateVersion = "25.11";
   networking.hostName = "fern";
 }
