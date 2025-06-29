@@ -1,6 +1,7 @@
 { ... }:
 {
   imports = [
+    ./cli/audio-tools.nix
     ./cli/bat.nix
     ./cli/git.nix
     ./cli/ghostty.nix
