@@ -51,6 +51,7 @@
   # --- GUI / CLI utilities                                            
   environment.systemPackages = with pkgs; [
     # Patch‑bay & monitor
+    audacity
     qpwgraph
     helvum
     pavucontrol
