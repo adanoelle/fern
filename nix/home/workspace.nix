@@ -16,12 +16,16 @@
     userDirs.extraConfig = {
       # Anything you *don’t* want: aim back at $HOME (spec disables it)
       XDG_DESKTOP_DIR  = "$HOME";
-
-      # Anything you still want: move into your clean tree
       XDG_DOWNLOAD_DIR = "$HOME/ada/media/downloads";
       XDG_PICTURES_DIR = "$HOME/ada/media/pictures";
-      XDG_VIDEOS_DIR   = "$HOME/ada/media/videos";
-      # Add more if needed, e.g. MUSIC, PUBLICSHARE, DOCUMENTS…
+      # Point Videos to your OBS folder
+      XDG_VIDEOS_DIR   = "$HOME/ada/media/obs";
     };
   };
+
+  # Ensure directory exists
+  home.activation.createObsDir =
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      mkdir -p "$HOME/ada/media/obs"
+    '';
 }

@@ -13,6 +13,7 @@
     self.nixosModules.audio
     self.nixosModules.graphics
     self.nixosModules.rust-dev
+    self.nixosModules.secrets
 
     # --- Home-Manager as a NixOS module
     inputs.home-manager.nixosModules.home-manager

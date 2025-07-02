@@ -89,6 +89,8 @@ in
     extraConfig  = extraCfg;
   };
 
+  home.sessionVariables.SOPS_AGE_KEY_FILE = "$HOME/.config/sops/age/keys.txt";
+
   ###########################################################################
   ##  Packages                                                              ##
   ###########################################################################

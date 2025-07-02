@@ -4,13 +4,18 @@
     flake-parts.url   = "github:hercules-ci/flake-parts";
     flake-utils.url   = "github:numtide/flake-utils";
 
+    home-manager = {
+      url   = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     rust-overlay = {
       url   = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    home-manager = {
-      url   = "github:nix-community/home-manager";
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
