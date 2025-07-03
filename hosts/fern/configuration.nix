@@ -9,6 +9,7 @@
     # --- NixOS modules
     self.nixosModules.boot
     self.nixosModules.core
+    self.nixosModules.c-dev
     self.nixosModules.users
     self.nixosModules.audio
     self.nixosModules.graphics

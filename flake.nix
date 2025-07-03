@@ -9,6 +9,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    caelestia-shell = {
+      url   = "github:caelestia-dots/shell";
+      flake = false;
+    };
+
     rust-overlay = {
       url   = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
