@@ -21,7 +21,11 @@
   ];
 
   # Extra args you want available to HM modules
-  home-manager.extraSpecialArgs = { inherit inputs; };
+  home-manager.extraSpecialArgs = {
+    inherit inputs;
+    zig-overlay = inputs.zig-overlay;
+  };
+
   home-manager.backupFileExtension = "backup";
 
   # --- User imports
@@ -29,6 +33,7 @@
     imports = [
       self.homeModules.cli       # cli: git, bat, etc.
       self.homeModules.desktop   # hyprland
+      self.homeModules.devtools  # zig, cpp
       self.homeModules.shells    # shells: nushell, starship, zoxide
       self.homeModules.workspace # manages xdg worspace directories
     ];

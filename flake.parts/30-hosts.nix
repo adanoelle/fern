@@ -14,6 +14,7 @@ in
       specialArgs = {
         inherit inputs self;
         rust-overlay = inputs.rust-overlay;
+        zig-overlay  = inputs.zig-overlay;
       };
 
       modules = [
