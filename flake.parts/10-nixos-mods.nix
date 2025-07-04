@@ -1,5 +1,6 @@
 { self, ... }: {
   flake.nixosModules = {
+    ada-dev   = import ../nix/modules/devtools/ada-toolchain.nix;
     audio     = import ../nix/modules/audio.nix;
     boot      = import ../nix/modules/boot.nix;
     core      = import ../nix/modules/core.nix;
