@@ -3,6 +3,9 @@
 {
   nixpkgs.config.allowUnfree = true;
 
+  # Allow dynamic linking for Python
+  programs.nix-ld.enable = true;
+
   imports = [
     ./hardware.nix
 
