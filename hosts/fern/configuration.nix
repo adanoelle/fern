@@ -13,10 +13,13 @@
     self.nixosModules.boot
     self.nixosModules.core
     self.nixosModules.c-dev
+    self.nixosModules.aws
+    self.nixosModules.docker
     self.nixosModules.users
     self.nixosModules.audio
     self.nixosModules.graphics
     self.nixosModules.rust-dev
+    self.nixosModules.typescript
     self.nixosModules.secrets
 
     # --- Home-Manager as a NixOS module
