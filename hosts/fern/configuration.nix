@@ -18,9 +18,11 @@
     self.nixosModules.users
     self.nixosModules.audio
     self.nixosModules.graphics
+    self.nixosModules.localstack
     self.nixosModules.rust-dev
     self.nixosModules.typescript
     self.nixosModules.secrets
+    self.nixosModules.guard
 
     # --- Home-Manager as a NixOS module
     inputs.home-manager.nixosModules.home-manager

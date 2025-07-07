@@ -8,8 +8,10 @@
     c-dev     = import ../nix/modules/devtools/c-toolchain.nix;
     docker    = import ../nix/modules/devtools/docker.nix;
     graphics  = import ../nix/modules/graphics.nix;
+    localstack= import ../nix/modules/devtools/localstack.nix;
     rust-dev  = import ../nix/modules/devtools/rust.nix;
     secrets   = import ../nix/modules/secrets.nix;
+    guard     = import ../nix/modules/secrets-guard.nix;
     typescript= import ../nix/modules/devtools/node-ts.nix;
     users     = import ../nix/modules/users.nix;
   };
