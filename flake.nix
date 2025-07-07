@@ -14,6 +14,21 @@
       flake = false;
     };
 
+    quickshell = {
+      url = "git+https://git.outfoxxed.me/outfoxxed/quickshell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    caelestia-shell-src = {
+      url = "github:caelestia-dots/shell";
+      flake = false;
+    };
+
+    caelestia-cli-src = {
+      url    = "github:caelestia-dots/cli";
+      flake  = false;
+    };
+
     rust-overlay = {
       url   = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -37,6 +52,7 @@
         ./flake.parts/10-nixos-mods.nix
         ./flake.parts/20-home-mods.nix
         ./flake.parts/30-hosts.nix
+        ./flake.parts/40-overlay.nix
       ];
     };
 }

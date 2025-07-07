@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "caelestia-cli-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1751862939,
+        "narHash": "sha256-BlQQF73Qkk2uKfS0yYEQLWdnkf+uWzbvyqkvLqpyUCM=",
+        "owner": "caelestia-dots",
+        "repo": "cli",
+        "rev": "e2a34210e58cbd593be63fd4b3e5d2d6257f5c37",
+        "type": "github"
+      },
+      "original": {
+        "owner": "caelestia-dots",
+        "repo": "cli",
+        "type": "github"
+      }
+    },
     "caelestia-shell": {
       "flake": false,
       "locked": {
@@ -8,6 +24,22 @@
         "owner": "caelestia-dots",
         "repo": "shell",
         "rev": "8af10012b9527e3e4a894e4a3c0fd8ea9ac0e132",
+        "type": "github"
+      },
+      "original": {
+        "owner": "caelestia-dots",
+        "repo": "shell",
+        "type": "github"
+      }
+    },
+    "caelestia-shell-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1751875098,
+        "narHash": "sha256-yNEZ28XqBM4E5fbQigohkUCyRpAsSgjZgaXCKKQdUH8=",
+        "owner": "caelestia-dots",
+        "repo": "shell",
+        "rev": "8a6679eace029338747f0fe95ca683016fce783e",
         "type": "github"
       },
       "original": {
@@ -137,13 +169,36 @@
         "type": "github"
       }
     },
+    "quickshell": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1751880110,
+        "narHash": "sha256-5fQ2cetL3rTHqXe2VM3puawL/8u5j6ujBr6Gdt7Iues=",
+        "ref": "refs/heads/master",
+        "rev": "5d7e07508ae3e5487edb1ac5a152120434f091d5",
+        "revCount": 607,
+        "type": "git",
+        "url": "https://git.outfoxxed.me/outfoxxed/quickshell"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://git.outfoxxed.me/outfoxxed/quickshell"
+      }
+    },
     "root": {
       "inputs": {
+        "caelestia-cli-src": "caelestia-cli-src",
         "caelestia-shell": "caelestia-shell",
+        "caelestia-shell-src": "caelestia-shell-src",
         "flake-parts": "flake-parts",
         "flake-utils": "flake-utils",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs",
+        "quickshell": "quickshell",
         "rust-overlay": "rust-overlay",
         "sops-nix": "sops-nix",
         "zig-overlay": "zig-overlay"
