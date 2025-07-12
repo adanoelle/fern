@@ -1,47 +1,56 @@
-# nix/modules/desktop/greetd.nix
-{ config, pkgs, ... }:
+# nix/modules/desktop/greetd.nix  -- using regreet
+{ pkgs, config, ... }:
 
-let
-  greeter = pkgs.greetd.tuigreet;            # pick pkgs.gtkgreet for a GUI greeter
-in
 {
-  ##################  core packages  ##################
-  environment.systemPackages = [
-    greeter
-    pkgs.hyprland
-    pkgs.wl-clipboard
+  environment.systemPackages = with pkgs; [
+    cage
+    greetd.regreet                # the greeter
+    hyprland
+    wl-clipboard
   ];
 
-  ##################  seatd (DRM / input) #############
+  # --- seatd (DRM / input)
   services.seatd.enable = true;
+  programs.regreet.enable = true;   # pulls regreet + cage
 
-  ##################  greetd service ##################
   services.greetd = {
     enable = true;
 
-    # ‘greeter’ user is auto‑created; no need to define it.
     settings = {
-      # login prompt appears on tty1 by default
+      # regreet binary becomes the greeter
       default_session = {
-        command = "${greeter}/bin/tuigreet \\
-                     --time            \\
-                     --cmd Hyprland    \\
-                     --remember \\
-                     --remember-user-session";
-        user = "greeter";
+        command = "${pkgs.cage}/bin/cage -s ${pkgs.greetd.regreet}/bin/regreet";
+        user    = "greeter";    # regreet runs as its own user
       };
 
-      # (optional) offer additional sessions in the chooser
       sessions = [
-        { name = "Hyprland"; command = "Hyprland";              user = "ada"; }
-        { name = "sway";     command = "${pkgs.sway}/bin/sway"; user = "ada"; }
+        # ——— Main Caelestia desktop ——————————
+        {
+          name    = "Caelestia";
+          command = "Hyprland --config $HOME/.config/hypr/caelestia.conf";
+          user    = "ada";
+        }
+
+        # ——— Plain Hyprland fallback ——————————
+        {
+          name    = "Hyprland";
+          command = "Hyprland";
+          user    = "ada";
+        }
+
+        # ——— Second fallback: sway ————————————
+        {
+          name    = "Sway";
+          command = "${pkgs.sway}/bin/sway";
+          user    = "ada";
+        }
       ];
     };
   };
 
-  ##################  user account ####################
   users.users.ada = {
     isNormalUser = true;
-    extraGroups  = [ "video" "input" "seat" ];   # seat = talk to seatd
+    extraGroups  = [ "video" "input" "seat" ];  # access seatd, GPU
   };
 }
+
