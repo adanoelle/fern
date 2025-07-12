@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "caelestia-cli-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1751862939,
+        "narHash": "sha256-BlQQF73Qkk2uKfS0yYEQLWdnkf+uWzbvyqkvLqpyUCM=",
+        "owner": "caelestia-dots",
+        "repo": "cli",
+        "rev": "e2a34210e58cbd593be63fd4b3e5d2d6257f5c37",
+        "type": "github"
+      },
+      "original": {
+        "owner": "caelestia-dots",
+        "repo": "cli",
+        "type": "github"
+      }
+    },
     "caelestia-shell": {
       "flake": false,
       "locked": {
@@ -8,6 +24,22 @@
         "owner": "caelestia-dots",
         "repo": "shell",
         "rev": "8af10012b9527e3e4a894e4a3c0fd8ea9ac0e132",
+        "type": "github"
+      },
+      "original": {
+        "owner": "caelestia-dots",
+        "repo": "shell",
+        "type": "github"
+      }
+    },
+    "caelestia-shell-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1751875098,
+        "narHash": "sha256-yNEZ28XqBM4E5fbQigohkUCyRpAsSgjZgaXCKKQdUH8=",
+        "owner": "caelestia-dots",
+        "repo": "shell",
+        "rev": "8a6679eace029338747f0fe95ca683016fce783e",
         "type": "github"
       },
       "original": {
@@ -53,24 +85,6 @@
     "flake-utils": {
       "inputs": {
         "systems": "systems"
-      },
-      "locked": {
-        "lastModified": 1731533236,
-        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "type": "github"
-      }
-    },
-    "flake-utils_2": {
-      "inputs": {
-        "systems": "systems_2"
       },
       "locked": {
         "lastModified": 1705309234,
@@ -137,13 +151,35 @@
         "type": "github"
       }
     },
+    "quickshell": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1751880110,
+        "narHash": "sha256-5fQ2cetL3rTHqXe2VM3puawL/8u5j6ujBr6Gdt7Iues=",
+        "ref": "refs/heads/master",
+        "rev": "5d7e07508ae3e5487edb1ac5a152120434f091d5",
+        "revCount": 607,
+        "type": "git",
+        "url": "https://git.outfoxxed.me/outfoxxed/quickshell"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://git.outfoxxed.me/outfoxxed/quickshell"
+      }
+    },
     "root": {
       "inputs": {
+        "caelestia-cli-src": "caelestia-cli-src",
         "caelestia-shell": "caelestia-shell",
+        "caelestia-shell-src": "caelestia-shell-src",
         "flake-parts": "flake-parts",
-        "flake-utils": "flake-utils",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs",
+        "quickshell": "quickshell",
         "rust-overlay": "rust-overlay",
         "sops-nix": "sops-nix",
         "zig-overlay": "zig-overlay"
@@ -204,25 +240,10 @@
         "type": "github"
       }
     },
-    "systems_2": {
-      "locked": {
-        "lastModified": 1681028828,
-        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
-        "owner": "nix-systems",
-        "repo": "default",
-        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-systems",
-        "repo": "default",
-        "type": "github"
-      }
-    },
     "zig-overlay": {
       "inputs": {
         "flake-compat": "flake-compat",
-        "flake-utils": "flake-utils_2",
+        "flake-utils": "flake-utils",
         "nixpkgs": [
           "nixpkgs"
         ]

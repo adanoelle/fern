@@ -1,8 +1,6 @@
 { self, inputs, pkgs, ... }:
 
 {
-  nixpkgs.config.allowUnfree = true;
-
   # Allow dynamic linking for Python
   programs.nix-ld.enable = true;
 
@@ -18,6 +16,7 @@
     self.nixosModules.users
     self.nixosModules.audio
     self.nixosModules.graphics
+    self.nixosModules.greet
     self.nixosModules.localstack
     self.nixosModules.rust-dev
     self.nixosModules.typescript
@@ -28,18 +27,20 @@
     inputs.home-manager.nixosModules.home-manager
   ];
 
-  # Extra args you want available to HM modules
-  home-manager.extraSpecialArgs = {
-    inherit inputs;
-    zig-overlay = inputs.zig-overlay;
+  home-manager = {
+    # Allow our packages from Caelestia overlay
+    # This keeps home-manager from getting a fresh version of pkgs
+    useGlobalPkgs = true;
+    backupFileExtension = "backup";
   };
 
-  home-manager.backupFileExtension = "backup";
+  # Extra args you want available to HM modules
+  home-manager.extraSpecialArgs = { inherit inputs; };
 
   # --- User imports
   home-manager.users.ada = {
     imports = [
-      self.homeModules.cli       # cli: git, bat, etc.
+      self.homeModules.cli       # cli: git, bat, ghostty, etc.
       self.homeModules.desktop   # hyprland
       self.homeModules.devtools  # zig, cpp
       self.homeModules.shells    # shells: nushell, starship, zoxide
@@ -48,7 +49,7 @@
     home.packages = [ pkgs.home-manager ];
 
     desktop.hyprland.enable = true;
-    
+
     home.stateVersion = "25.11";
   };
 

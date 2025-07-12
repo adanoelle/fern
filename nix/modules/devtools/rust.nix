@@ -1,4 +1,4 @@
-{ config, lib, pkgs, rust-overlay, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   # Choose exact versions once; every rebuild is reproducible
@@ -14,8 +14,6 @@ let
   ];
 in
 {
-  nixpkgs.overlays = [ rust-overlay.overlays.default ];
-
   environment.systemPackages =
     [ stable clippy fmt pkgs.rust-analyzer pkgs.cargo-audit pkgs.cargo-deny ];
 

@@ -26,18 +26,5 @@
 
   # --- Hyprland + greetd
   programs.hyprland.enable = true;
-
-  services.greetd = {
-    enable = true;
-    settings = {
-      default_session = { command = "Hyprland"; user = "ada"; };
-
-      # Optional textual fallback
-      sessions = [
-        { command = "Hyprland"; user = "ada"; }
-        { command = "tty1";     user = "root"; }
-      ];
-    };
-  };
 }
 

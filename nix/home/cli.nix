@@ -9,5 +9,6 @@
     ./cli/delta.nix
     ./cli/helix.nix
     ./cli/hyfetch.nix
+    ./cli/nix-tree.nix
   ];
 }
