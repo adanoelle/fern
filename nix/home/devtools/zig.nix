@@ -1,9 +1,6 @@
-{ pkgs, zig-overlay, ... }:
+{ pkgs, ... }:
 
-let
-  zigPkgs = zig-overlay.packages.${pkgs.system};
-in
 {
-  home.packages = [ zigPkgs.master ];  # tracks latest official Zig
+  home.packages = [ pkgs.zig];  # tracks latest official Zig
 }
 
