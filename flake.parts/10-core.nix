@@ -6,7 +6,6 @@ let
   sharedOverlays = [
     inputs.rust-overlay.overlays.default
     inputs.zig-overlay.overlays.default
-    # self.overlays.caelestia            # published in 10‑caelestia.nix
   ];
 in
 {

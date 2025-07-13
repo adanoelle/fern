@@ -1,53 +1,5 @@
 {
   "nodes": {
-    "caelestia-cli-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1751862939,
-        "narHash": "sha256-BlQQF73Qkk2uKfS0yYEQLWdnkf+uWzbvyqkvLqpyUCM=",
-        "owner": "caelestia-dots",
-        "repo": "cli",
-        "rev": "e2a34210e58cbd593be63fd4b3e5d2d6257f5c37",
-        "type": "github"
-      },
-      "original": {
-        "owner": "caelestia-dots",
-        "repo": "cli",
-        "type": "github"
-      }
-    },
-    "caelestia-shell": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1751516811,
-        "narHash": "sha256-wyx+CjtyryzULsWAJ9GHczNHBBJPNOlGjuAbG92UvOQ=",
-        "owner": "caelestia-dots",
-        "repo": "shell",
-        "rev": "8af10012b9527e3e4a894e4a3c0fd8ea9ac0e132",
-        "type": "github"
-      },
-      "original": {
-        "owner": "caelestia-dots",
-        "repo": "shell",
-        "type": "github"
-      }
-    },
-    "caelestia-shell-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1751875098,
-        "narHash": "sha256-yNEZ28XqBM4E5fbQigohkUCyRpAsSgjZgaXCKKQdUH8=",
-        "owner": "caelestia-dots",
-        "repo": "shell",
-        "rev": "8a6679eace029338747f0fe95ca683016fce783e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "caelestia-dots",
-        "repo": "shell",
-        "type": "github"
-      }
-    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -173,9 +125,6 @@
     },
     "root": {
       "inputs": {
-        "caelestia-cli-src": "caelestia-cli-src",
-        "caelestia-shell": "caelestia-shell",
-        "caelestia-shell-src": "caelestia-shell-src",
         "flake-parts": "flake-parts",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs",

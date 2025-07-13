@@ -8,24 +8,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    caelestia-shell = {
-      url   = "github:caelestia-dots/shell";
-      flake = false;
-    };
-
     quickshell = {
       url = "git+https://git.outfoxxed.me/outfoxxed/quickshell";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    caelestia-shell-src = {
-      url = "github:caelestia-dots/shell";
-      flake = false;
-    };
-
-    caelestia-cli-src = {
-      url    = "github:caelestia-dots/cli";
-      flake  = false;
     };
 
     rust-overlay = {
@@ -47,7 +32,7 @@
   outputs = inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [
-        # ./flake.parts/00-caelestia.nix
+        ./flake.parts/00-overlay.nix
         ./flake.parts/10-core.nix
         ./flake.parts/20-nixos-mods.nix
         ./flake.parts/30-home-mods.nix

@@ -4,7 +4,6 @@
     audio             = import ../nix/modules/audio.nix;
     aws               = import ../nix/modules/cloud/aws-cli.nix;
     boot              = import ../nix/modules/boot.nix;
-    caelestia-session = import ../nix/modules/desktop/caelestia-session.nix;
     hyprland-sessions = import ../nix/modules/desktop/hyprland-sessions.nix;
     core              = import ../nix/modules/core.nix;
     c-dev             = import ../nix/modules/devtools/c-toolchain.nix;
