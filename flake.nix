@@ -8,10 +8,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    quickshell = {
-      url = "git+https://git.outfoxxed.me/outfoxxed/quickshell";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    fern-shell.url = "github:adanoelle/fern-shell";
 
     rust-overlay = {
       url   = "github:oxalica/rust-overlay";
