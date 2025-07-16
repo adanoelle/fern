@@ -16,9 +16,7 @@
     self.nixosModules.users
     self.nixosModules.audio
     self.nixosModules.graphics
-    self.nixosModules.hyprland-sessions
     self.nixosModules.greet
-    # self.nixosModules.caelestia-session
     self.nixosModules.localstack
     self.nixosModules.rust-dev
     self.nixosModules.typescript
@@ -54,6 +52,9 @@
 
     home.stateVersion = "25.11";
   };
+
+  services.fern-shell.enable = true;
+  services.fern-fonts.enable = true;
 
   system.stateVersion = "25.11";
   networking.hostName = "fern";
