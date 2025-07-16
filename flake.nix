@@ -8,7 +8,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    fern-shell.url = "github:adanoelle/fern-shell";
+    fern.url = "github:adanoelle/fern-shell";
 
     rust-overlay = {
       url   = "github:oxalica/rust-overlay";

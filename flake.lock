@@ -1,6 +1,6 @@
 {
   "nodes": {
-    "fern-shell": {
+    "fern": {
       "inputs": {
         "flake-parts": "flake-parts",
         "mkdocs-flake": "mkdocs-flake",
@@ -8,11 +8,11 @@
         "quickshell": "quickshell"
       },
       "locked": {
-        "lastModified": 1752502704,
-        "narHash": "sha256-3FHnFD2b0ohuLmNHJ7tTo7u1FTLOgCUrF86dxvE1ays=",
+        "lastModified": 1752674556,
+        "narHash": "sha256-SWBAfmvQBkSgsjs2quzZgJchejjce9kopL4fFsn7v8w=",
         "owner": "adanoelle",
         "repo": "fern-shell",
-        "rev": "13291665b1867cf984f143e6135cf62321649586",
+        "rev": "24de49786400df2018c7359b902d1d4eb1294014",
         "type": "github"
       },
       "original": {
@@ -58,7 +58,7 @@
     "flake-parts_2": {
       "inputs": {
         "nixpkgs-lib": [
-          "fern-shell",
+          "fern",
           "mkdocs-flake",
           "nixpkgs"
         ]
@@ -177,7 +177,7 @@
     "nix-github-actions": {
       "inputs": {
         "nixpkgs": [
-          "fern-shell",
+          "fern",
           "mkdocs-flake",
           "poetry2nix",
           "nixpkgs"
@@ -280,7 +280,7 @@
         "flake-utils": "flake-utils",
         "nix-github-actions": "nix-github-actions",
         "nixpkgs": [
-          "fern-shell",
+          "fern",
           "mkdocs-flake",
           "nixpkgs"
         ],
@@ -304,17 +304,17 @@
     "pyproject-build-systems": {
       "inputs": {
         "nixpkgs": [
-          "fern-shell",
+          "fern",
           "mkdocs-flake",
           "nixpkgs"
         ],
         "pyproject-nix": [
-          "fern-shell",
+          "fern",
           "mkdocs-flake",
           "pyproject-nix"
         ],
         "uv2nix": [
-          "fern-shell",
+          "fern",
           "mkdocs-flake",
           "uv2nix"
         ]
@@ -336,7 +336,7 @@
     "pyproject-nix": {
       "inputs": {
         "nixpkgs": [
-          "fern-shell",
+          "fern",
           "mkdocs-flake",
           "nixpkgs"
         ]
@@ -358,7 +358,7 @@
     "quickshell": {
       "inputs": {
         "nixpkgs": [
-          "fern-shell",
+          "fern",
           "nixpkgs"
         ]
       },
@@ -378,7 +378,7 @@
     },
     "root": {
       "inputs": {
-        "fern-shell": "fern-shell",
+        "fern": "fern",
         "flake-parts": "flake-parts_3",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs_3",
@@ -475,7 +475,7 @@
     "treefmt-nix": {
       "inputs": {
         "nixpkgs": [
-          "fern-shell",
+          "fern",
           "mkdocs-flake",
           "poetry2nix",
           "nixpkgs"
@@ -498,12 +498,12 @@
     "uv2nix": {
       "inputs": {
         "nixpkgs": [
-          "fern-shell",
+          "fern",
           "mkdocs-flake",
           "nixpkgs"
         ],
         "pyproject-nix": [
-          "fern-shell",
+          "fern",
           "mkdocs-flake",
           "pyproject-nix"
         ]

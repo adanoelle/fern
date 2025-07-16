@@ -12,6 +12,8 @@
             ../hosts/fern/hardware.nix
             ../hosts/fern/configuration.nix
             inputs.home-manager.nixosModules.default
+            inputs.fern.nixosModules.fern-shell
+            inputs.fern.nixosModules.fern-fonts
           ];
           specialArgs = { inherit self inputs; };
         });
