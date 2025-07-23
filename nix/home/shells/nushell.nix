@@ -11,26 +11,26 @@
 ###############################################################################
 
 let
-  # ---------- Packages we rely on -------------------------------------------
+  # --- Packages we rely on
   starship = pkgs.starship;
   zoxide   = pkgs.zoxide;
   delta    = pkgs.gitAndTools.delta;
 
-  # ---------- Where we’ll store generated scripts ---------------------------
+  # --- Where we’ll store generated scripts
   starshipInit = "$HOME/.cache/starship/init.nu";
   zoxideInit   = "$HOME/.cache/zoxide.nu";
 
-  # ---------- Helper to turn an attr‑set into Nushell alias lines ----------
+  # ---Helper to turn an attr‑set into Nushell alias lines
   mkAliasBlock = aliases:
     lib.concatStringsSep "\n"
       (lib.mapAttrsToList (n: v: "alias ${n} = ${v}") aliases);
 
-  # ---------- Helper for env vars block ------------------------------------
+  # --- Helper for env vars block
   mkEnvBlock = env:
     lib.concatStringsSep "\n"
       (lib.mapAttrsToList (k: v: "$env.${k} = \"${v}\"") env);
 
-  # ---------- Git / general dev aliases ------------------------------------
+  # --- Git / general dev aliases
   gitAliases = {
     gst = "git status -sb";
     gaa = "git add --all";
@@ -43,7 +43,7 @@ let
     gdc = "git diff --cached";
   };
 
-  # ---------- Environment variables ----------------------------------------
+  # --- Environment variables 
   myEnv = {
     EDITOR    = "hx";
     VISUAL    = "hx";
@@ -52,7 +52,7 @@ let
     LESSHISTFILE = "-";
   };
 
-  # ---------- Extra Nushell config string ----------------------------------
+  # --- Extra Nushell config string 
   extraCfg = lib.concatStringsSep "\n\n" [
     "# ── Starship prompt ───────────────────────────────────────────────"
     "source ~/.cache/starship/init.nu"
@@ -69,21 +69,21 @@ let
     ''
     # ── Core Nushell settings ─────────────────────────────────────────
     $env.config = {
-      show_banner: false
+      show_banner: true
       completions: {
-        algorithm: "fuzzy"
+        algorithm: "prefix"
         case_sensitive: false
         quick: true
+        external: {
+          enable: false
+        }
       }
-      edit_mode: "emacs"
     }
     ''
   ];
 in
 {
-  ###########################################################################
-  ##  Programs                                                              ##
-  ###########################################################################
+
   programs.nushell = {
     enable       = true;
     extraConfig  = extraCfg;
@@ -91,9 +91,6 @@ in
 
   home.sessionVariables.SOPS_AGE_KEY_FILE = "$HOME/.config/sops/age/keys.txt";
 
-  ###########################################################################
-  ##  Packages                                                              ##
-  ###########################################################################
   home.packages = with pkgs; [
     nushell
     starship
@@ -105,9 +102,7 @@ in
     git
   ];
 
-  ###########################################################################
-  ##  Activation hooks – generate init scripts before Nushell runs         ##
-  ###########################################################################
+  # --- Activation hooks – generate init scripts before Nushell runs
   home.activation.starshipInit =
     lib.hm.dag.entryAfter [ "installPackages" ] ''
       mkdir -p ~/.cache/starship
