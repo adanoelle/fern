@@ -64,7 +64,12 @@
       };
 
       # Optional style tweaks
-      style = { gapsIn = 6; gapsOut = 12; border = 2; };
+      style = {
+        gapsIn   = 6;
+        gapsOut  = 12;
+        border   = 2;
+        rounding = 5;
+      };
     };
 
     home.stateVersion = "25.11";

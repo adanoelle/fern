@@ -34,6 +34,7 @@ in
       gapsIn   = lib.mkOption { type = lib.types.int; default = 6; };
       gapsOut  = lib.mkOption { type = lib.types.int; default = 12; };
       border   = lib.mkOption { type = lib.types.int; default = 2; };
+      rounding = lib.mkOption { type = lib.types.int; default = 5; };
     };
   };
 
@@ -61,6 +62,10 @@ in
           "col.active_border"   = "rgba(${builtins.substring 1 6 palette.mauve}ff)";
           "col.inactive_border" = "rgba(${builtins.substring 1 6 palette.base}ff)";
           layout = "dwindle";
+        };
+
+        decoration = {
+          rounding = cfg.style.rounding;
         };
 
         # Keys
