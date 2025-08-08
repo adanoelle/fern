@@ -30,6 +30,8 @@
         esc = ["collapse_selection" "keep_primary_selection"];
       };
     };
+
+    # --- Language specific
     languages = {
       debugger = {
         command = "lldb-vscode";
@@ -41,9 +43,24 @@
         };
       };
       language = [
+        # --- Rust
         {
           name = "rust";
           auto-format = false;
+        }
+
+        # --- Markdown
+        {
+          name        = "markdown";
+          auto-format = true;           # formats on every save
+          formatter   = {
+            command = "prettier";
+            args = [
+              "--parser" "markdown"
+              "--prose-wrap" "always"
+              "--print-width" "80"
+            ];
+          };
         }
       ];
     };
