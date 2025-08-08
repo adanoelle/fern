@@ -48,7 +48,24 @@
     ];
     home.packages = [ pkgs.home-manager ];
 
-    desktop.hyprland.enable = true;
+    desktop.hyprland = {
+      enable = true;
+
+      # Add-ons
+      bar.enable  = true;   # Waybar
+      idle.enable = true;   # hypridle
+      lock.enable = true;   # hyprlock
+
+      # Wallpaper via hyprpaper
+      wallpaper = {
+        enable  = true;
+        path    = "/home/ada/wallpapers/shrine.png";    # or ${./wallpaper.png} if in repo
+        monitor = "HDMI-A-1";                           # run `hyprctl monitors` to confirm
+      };
+
+      # Optional style tweaks
+      style = { gapsIn = 6; gapsOut = 12; border = 2; };
+    };
 
     home.stateVersion = "25.11";
   };
