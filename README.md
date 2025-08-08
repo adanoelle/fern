@@ -1,6 +1,4 @@
-# Fern — NixOS + Home-Manager Flake
-
-## 🌱 Motivations
+# 🌱 Fern — NixOS + Home-Manager Flake
 
 Fern is my personal, reproducible NixOS desktop system, built to:
 
