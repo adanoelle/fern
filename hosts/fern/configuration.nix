@@ -50,17 +50,15 @@
 
     desktop.hyprland = {
       enable = true;
-
-      # Add-ons
       bar.enable  = true;   # Waybar
       idle.enable = true;   # hypridle
       lock.enable = true;   # hyprlock
 
-      # Wallpaper via hyprpaper
+      # Hyprpaper
       wallpaper = {
         enable  = true;
-        path    = "/home/ada/wallpapers/shrine.png";    # or ${./wallpaper.png} if in repo
-        monitor = "HDMI-A-1";                           # run `hyprctl monitors` to confirm
+        path    = "/home/ada/wallpapers/shrine.png";
+        monitor = "HDMI-A-1";
       };
 
       # Optional style tweaks
