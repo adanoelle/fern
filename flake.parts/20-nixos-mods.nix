@@ -7,6 +7,7 @@
     core              = import ../nix/modules/core.nix;
     c-dev             = import ../nix/modules/devtools/c-toolchain.nix;
     docker            = import ../nix/modules/devtools/docker.nix;
+    fonts             = import ../nix/modules/fonts.nix;
     graphics          = import ../nix/modules/graphics.nix;
     greet             = import ../nix/modules/desktop/greetd.nix;
     localstack        = import ../nix/modules/devtools/localstack.nix;

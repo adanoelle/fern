@@ -4,15 +4,11 @@
     enable  = true;
 
     # ── Core settings ──────────────────────────────────────────
+    #
     settings = {
-      theme        = "catppuccin-mocha";
-      "font-family"= "Iosevka Term";
-
-      # Cursor / selection colours (optional)
-      "cursor-color"         = "ffffff";
-      "cursor-style"         = "block";
-      "selection-foreground" = "1d2021";
-      "selection-background" = "d5c4a1";
+      font-family = "FiraCode Nerd Font";  # match the installed font
+      font-size   = 11;
+      # add other Ghostty settings here, e.g. theme, opacity, etc.
     };
   };
 
