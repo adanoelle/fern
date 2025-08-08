@@ -9,6 +9,7 @@
       font-family = "FiraCode Nerd Font";  # match the installed font
       font-size   = 11;
       # add other Ghostty settings here, e.g. theme, opacity, etc.
+      theme = "catppuccin-frappe";  
     };
   };
 

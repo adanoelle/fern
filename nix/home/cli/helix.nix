@@ -10,7 +10,7 @@
     enable = true;
     defaultEditor = true;
     settings = {
-      #theme = "catppuccin_macchiato";
+      theme = "catppuccin_frappe"; 
       editor = {
         true-color = true;
         line-number = "relative";
