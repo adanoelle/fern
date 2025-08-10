@@ -78,12 +78,6 @@
         };
       };
        
-      # theme = {
-      #   enable = true;
-      #   perWorkspace = { "1" = "/home/ada/wallpapers/shrine.png"; };
-      #   rotate = { enable = true; minutes = 30; directory = "/home/ada/wallpapers"; };
-      # };
-
       # Optional style tweaks
       style = {
         gapsIn   = 6;
