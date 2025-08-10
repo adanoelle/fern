@@ -25,8 +25,8 @@ in
 
     wallpaper = {
       enable  = lib.mkEnableOption "hyprpaper wallpaper";
-      path    = lib.mkOption { type = lib.types.str; default = "${config.home.homeDirectory}/Pictures/wallpaper.png"; };
-      monitor = lib.mkOption { type = lib.types.str; default = "eDP-1"; };
+      path    = lib.mkOption { type = lib.types.str; default = "${config.home.homeDirectory}/wallpapers/shrine.png"; };
+      monitor = lib.mkOption { type = lib.types.str; default = "HDMI-A-1"; };
     };
 
     style = {

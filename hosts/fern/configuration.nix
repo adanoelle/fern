@@ -54,7 +54,7 @@
       idle.enable = true;   # hypridle
       lock.enable = true;   # hyprlock
 
-      # Hyprpaper
+      # # Hyprpaper
       # wallpaper = {
       #   enable  = true;
       #   path    = "/home/ada/wallpapers/shrine.png";
