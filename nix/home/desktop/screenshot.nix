@@ -66,7 +66,6 @@ lib.mkIf cfg.enable {
     # Font to use for text annotations
     [font]
     family = "Roboto"
-    style = "Bold"
 
     # Custom colours for the colour palette
     [color-palette]
