@@ -2,59 +2,90 @@
 { lib, pkgs, config, ... }:
 let
   cfg = config.desktop.hyprland;
+  shotsDir = "${config.home.homeDirectory}/Pictures/Screenshots";
 
-  screenshotsDir = "${config.home.homeDirectory}/Pictures/Screenshots";
-
-  screenshotSh = pkgs.writeShellScriptBin "hyprshot" ''
+  hyprshot_region_annotate = pkgs.writeShellScriptBin "hyprshot-region-annotate" ''
     #!/usr/bin/env bash
     set -euo pipefail
+    mkdir -p "${shotsDir}"
+    file="${shotsDir}/screenshot-$(date +%F_%H-%M-%S).png"
+    "${pkgs.grim}/bin/grim" -g "$(${pkgs.slurp}/bin/slurp)" - \
+      | "${pkgs.satty}/bin/satty" -f - \
+          --output-filename "''${file}" \
+          --copy-command '${pkgs.wl-clipboard}/bin/wl-copy --type image/png' \
+          --early-exit
+  '';
 
-    mkdir -p "${screenshotsDir}"
-    timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
+  hyprshot_full_annotate = pkgs.writeShellScriptBin "hyprshot-full-annotate" ''
+    #!/usr/bin/env bash
+    set -euo pipefail
+    mkdir -p "${shotsDir}"
+    file="${shotsDir}/screenshot-$(date +%F_%H-%M-%S).png"
+    "${pkgs.grim}/bin/grim" - \
+      | "${pkgs.satty}/bin/satty" -f - \
+          --output-filename "''${file}" \
+          --copy-command '${pkgs.wl-clipboard}/bin/wl-copy --type image/png' \
+          --early-exit
+  '';
 
-    case "''${1:-}" in
-      full-to-file)
-        file="${screenshotsDir}/screenshot-''${timestamp}.png"
-        ${pkgs.grim}/bin/grim "''${file}"
-        ${pkgs.libnotify}/bin/notify-send "Screenshot" "Saved full screen to ''${file}"
-        ;;
-      region-to-clipboard)
-        ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" - \
-          | ${pkgs.wl-clipboard}/bin/wl-copy --type image/png
-        ${pkgs.libnotify}/bin/notify-send "Screenshot" "Region copied to clipboard"
-        ;;
-      region-annotate)
-        file="${screenshotsDir}/annotated-''${timestamp}.png"
-        ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" - \
-          | ${pkgs.satty}/bin/satty -f - --filename "''${file}" --output-filename "''${file}" \
-              --copy-command '${pkgs.wl-clipboard}/bin/wl-copy --type image/png'
-        ${pkgs.libnotify}/bin/notify-send "Screenshot" "Annotated screenshot saved to ''${file}"
-        ;;
-      *)
-        echo "Usage: hyprshot {full-to-file|region-to-clipboard|region-annotate}" >&2
-        exit 1
-        ;;
-    esac
+  hyprshot_region_clip = pkgs.writeShellScriptBin "hyprshot-region-clip" ''
+    #!/usr/bin/env bash
+    set -euo pipefail
+    "${pkgs.grim}/bin/grim" -g "$(${pkgs.slurp}/bin/slurp)" - \
+      | "${pkgs.wl-clipboard}/bin/wl-copy" --type image/png
+    ${pkgs.libnotify}/bin/notify-send "Screenshot" "Region copied to clipboard"
+  '';
+
+  hyprshot_full_file = pkgs.writeShellScriptBin "hyprshot-full-file" ''
+    #!/usr/bin/env bash
+    set -euo pipefail
+    mkdir -p "${shotsDir}"
+    file="${shotsDir}/screenshot-$(date +%F_%H-%M-%S).png"
+    "${pkgs.grim}/bin/grim" "''${file}"
+    ${pkgs.libnotify}/bin/notify-send "Screenshot" "Saved to ''${file}"
   '';
 in
 lib.mkIf cfg.enable {
   home.packages = with pkgs; [
-    grim
-    slurp
-    wl-clipboard
-    satty
-    libnotify      # notify-send
-    screenshotSh   # installs the 'hyprshot' helper
+    grim slurp satty wl-clipboard libnotify
+    hyprshot_region_annotate hyprshot_full_annotate
+    hyprshot_region_clip hyprshot_full_file
   ];
 
-  # Bindings (Super+S family)
+  home.file."Pictures/Screenshots/.keep".text = "";
+
+  xdg.configFile."satty/config.toml".text = ''
+    [general]
+    save-after-copy = true
+    early-exit = true
+    corner-roundness = 12
+    initial-tool = "brush"
+    primary-highlighter = "block"
+    copy-command = "/run/current-system/sw/bin/wl-copy --type image/png"
+
+    # Font to use for text annotations
+    [font]
+    family = "Roboto"
+    style = "Bold"
+
+    # Custom colours for the colour palette
+    [color-palette]
+    # These will be shown in the toolbar for quick selection
+    palette = [
+        "#00ffff",
+        "#a52a2a",
+        "#dc143c",
+        "#ff1493",
+        "#ffd700",
+        "#008000",
+    ]
+  '';
+
   wayland.windowManager.hyprland.settings.bind = lib.mkAfter [
-    # Super+S = save full screen to file
-    "${cfg.modKey}, S, exec, hyprshot full-to-file"
-    # Super+Shift+S = region to clipboard
-    "${cfg.modKey} SHIFT, S, exec, hyprshot region-to-clipboard"
-    # Super+Alt+S = annotate region, save + copy
-    "${cfg.modKey} ALT, S, exec, hyprshot region-annotate"
+    "${cfg.modKey}, S, exec, hyprshot-region-annotate"
+    "${cfg.modKey} SHIFT, S, exec, hyprshot-full-annotate"
+    "${cfg.modKey} ALT, S, exec, hyprshot-region-clip"
+    "${cfg.modKey} CTRL, S, exec, hyprshot-full-file"
   ];
 }
 
