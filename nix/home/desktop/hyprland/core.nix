@@ -24,9 +24,58 @@ in
     lock.enable = lib.mkEnableOption "hyprlock screen locker";
 
     wallpaper = {
-      enable  = lib.mkEnableOption "hyprpaper wallpaper";
-      path    = lib.mkOption { type = lib.types.str; default = "${config.home.homeDirectory}/wallpapers/shrine.png"; };
-      monitor = lib.mkOption { type = lib.types.str; default = "HDMI-A-1"; };
+      enable = lib.mkEnableOption "wallpaper management with swww";
+  
+      # Keep your existing path and monitor options for compatibility
+      path = lib.mkOption { 
+        type = lib.types.str; 
+        default = "${config.home.homeDirectory}/Pictures/wallpaper.png"; 
+      };
+      monitor = lib.mkOption { 
+        type = lib.types.str; 
+        default = "eDP-1"; 
+      };
+
+      # New enhanced options
+      monitors = lib.mkOption {
+        type = lib.types.attrsOf lib.types.str;
+        default = {};
+        example = {
+          "HDMI-A-1" = "/home/ada/wallpapers/shrine.png";
+          "DP-2" = "/home/ada/wallpapers/forest.jpg";
+        };
+        description = "Per-monitor wallpaper paths (optional, uses path/monitor if empty)";
+      };
+
+      workspaces = lib.mkOption {
+        type = lib.types.attrsOf lib.types.str;
+        default = {};
+        example = {
+          "1" = "/home/ada/wallpapers/shrine.png";
+          "2" = "/home/ada/wallpapers/mononoke_tree.png";
+        };
+        description = "Per-workspace wallpaper paths (optional)";
+      };
+
+      transition = {
+        type = lib.mkOption {
+          type = lib.types.enum [ "simple" "fade" "left" "right" "top" "bottom" "wipe" "wave" "grow" "center" "any" "outer" "random" ];
+          default = "fade";
+          description = "Transition animation type";
+        };
+
+        duration = lib.mkOption {
+          type = lib.types.float;
+          default = 1.0;
+          description = "Transition duration in seconds";
+        };
+
+        fps = lib.mkOption {
+          type = lib.types.int;
+          default = 60;
+          description = "Transition FPS";
+        };
+      };
     };
 
     style = {

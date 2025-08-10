@@ -54,18 +54,35 @@
       idle.enable = true;   # hypridle
       lock.enable = true;   # hyprlock
 
-      # # Hyprpaper
-      # wallpaper = {
-      #   enable  = true;
-      #   path    = "/home/ada/wallpapers/shrine.png";
-      #   monitor = "HDMI-A-1";
-      # };
-       
-      theme = {
+      wallpaper = {
         enable = true;
-        perWorkspace = { "1" = "/home/ada/wallpapers/shrine.png"; };
-        rotate = { enable = true; minutes = 30; directory = "/home/ada/wallpapers"; };
+        path = "/home/ada/wallpapers/shrine.png";  # fallback/default
+        monitor = "HDMI-A-1";                      # your current setup still works
+    
+        # Optional: per-monitor setup (replaces path/monitor)
+        monitors = {
+          "HDMI-A-1" = "/home/ada/wallpapers/shrine.png";
+        };
+    
+        # Optional: per-workspace wallpapers
+        workspaces = {
+          "1" = "/home/ada/wallpapers/shrine.png.png";
+          "2" = "/home/ada/wallpapers/mononoke_tree.png";
+        };
+    
+        # Optional: transition customization
+        transition = {
+          type = "fade";
+          duration = 1.2;
+          fps = 60;
+        };
       };
+       
+      # theme = {
+      #   enable = true;
+      #   perWorkspace = { "1" = "/home/ada/wallpapers/shrine.png"; };
+      #   rotate = { enable = true; minutes = 30; directory = "/home/ada/wallpapers"; };
+      # };
 
       # Optional style tweaks
       style = {
