@@ -55,10 +55,16 @@
       lock.enable = true;   # hyprlock
 
       # Hyprpaper
-      wallpaper = {
-        enable  = true;
-        path    = "/home/ada/wallpapers/shrine.png";
-        monitor = "HDMI-A-1";
+      # wallpaper = {
+      #   enable  = true;
+      #   path    = "/home/ada/wallpapers/shrine.png";
+      #   monitor = "HDMI-A-1";
+      # };
+       
+      theme = {
+        enable = true;
+        perWorkspace = { "1" = "/home/ada/wallpapers/shrine.png"; };
+        rotate = { enable = true; minutes = 30; directory = "/home/ada/wallpapers"; };
       };
 
       # Optional style tweaks
