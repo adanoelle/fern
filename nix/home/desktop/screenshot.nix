@@ -2,7 +2,7 @@
 { lib, pkgs, config, ... }:
 let
   cfg = config.desktop.hyprland;
-  shotsDir = "${config.home.homeDirectory}/Pictures/Screenshots";
+  shotsDir = "${config.home.homeDirectory}/media/screenshots";
 
   hyprshot_region_annotate = pkgs.writeShellScriptBin "hyprshot-region-annotate" ''
     #!/usr/bin/env bash
