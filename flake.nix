@@ -10,6 +10,11 @@
 
     fern.url = "github:adanoelle/fern-shell";
 
+    devenv = {
+      url = "github:cachix/devenv";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     rust-overlay = {
       url   = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
