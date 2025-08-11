@@ -66,8 +66,11 @@
     
         # Optional: per-workspace wallpapers
         workspaces = {
-          "1" = "/home/ada/wallpapers/shrine.png.png";
-          "2" = "/home/ada/wallpapers/mononoke_tree.png";
+          "1" = "/home/ada/wallpapers/totoro_house.png";
+          "2" = "/home/ada/wallpapers/howl_castle.png";
+          "3" = "/home/ada/wallpapers/kiki.png";
+          "4" = "/home/ada/wallpapers/nausicaa.png";
+          "5" = "/home/ada/wallpapers/wind_rises_plane.png";
         };
     
         # Optional: transition customization
