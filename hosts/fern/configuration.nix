@@ -93,8 +93,12 @@
     home.stateVersion = "25.11";
   };
 
+  nix.settings.trusted-users = [ "root" "ada" ];
+
   services.fern-shell.enable = true;
   services.fern-fonts.enable = true;
+
+  time.timeZone = "America/New_York";
 
   system.stateVersion = "25.11";
   networking.hostName = "fern";
