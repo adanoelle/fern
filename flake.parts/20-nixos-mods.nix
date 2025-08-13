@@ -11,6 +11,7 @@
     graphics          = import ../nix/modules/graphics.nix;
     greet             = import ../nix/modules/desktop/greetd.nix;
     localstack        = import ../nix/modules/devtools/localstack.nix;
+    lmstudio          = import ../nix/modules/desktop/lmstudio.nix;
     rust-dev          = import ../nix/modules/devtools/rust.nix;
     secrets           = import ../nix/modules/secrets.nix;
     guard             = import ../nix/modules/secrets-guard.nix;
