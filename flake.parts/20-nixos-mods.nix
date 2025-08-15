@@ -16,6 +16,7 @@
     rust-dev          = import ../nix/modules/devtools/rust.nix;
     secrets           = import ../nix/modules/secrets.nix;
     guard             = import ../nix/modules/secrets-guard.nix;
+    teams             = import ../nix/modules/desktop/teams.nix;
     typescript        = import ../nix/modules/devtools/node-ts.nix;
     users             = import ../nix/modules/users.nix;
   };

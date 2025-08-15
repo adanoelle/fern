@@ -21,6 +21,7 @@
     self.nixosModules.greet
     self.nixosModules.localstack
     self.nixosModules.rust-dev
+    self.nixosModules.teams
     self.nixosModules.typescript
     self.nixosModules.secrets
     self.nixosModules.guard
