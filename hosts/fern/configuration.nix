@@ -13,6 +13,7 @@
     self.nixosModules.c-dev
     self.nixosModules.aws
     self.nixosModules.cursor
+    self.nixosModules.claude
     self.nixosModules.docker
     self.nixosModules.lmstudio
     self.nixosModules.users

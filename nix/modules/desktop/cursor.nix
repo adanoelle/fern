@@ -1,9 +1,9 @@
-# nix/modules/desktop/cursor.nix
-{ pkgs, lib, ... }:
+# nix/modules/desktop/claude.nix
+{ pkgs, inputs, ... }:
 
 {
-  environment.systemPackages = with pkgs; [
-    code-cursor
+  environment.systemPackages = [
+    inputs.claude-desktop.packages.${pkgs.stdenv.hostPlatform.system}.claude-desktop-with-fhs
   ];
 }
 

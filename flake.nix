@@ -2,6 +2,7 @@
   inputs = {
     nixpkgs.url       = "github:NixOS/nixpkgs/nixos-unstable";
     flake-parts.url   = "github:hercules-ci/flake-parts";
+    flake-utils.url = "github:numtide/flake-utils";
 
     home-manager = {
       url   = "github:nix-community/home-manager";
@@ -13,6 +14,12 @@
     devenv = {
       url = "github:cachix/devenv";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    claude-desktop = {
+      url = "github:k3d3/claude-desktop-linux-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
     };
 
     rust-overlay = {

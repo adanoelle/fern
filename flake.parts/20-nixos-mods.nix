@@ -6,6 +6,7 @@
     boot              = import ../nix/modules/boot.nix;
     core              = import ../nix/modules/core.nix;
     c-dev             = import ../nix/modules/devtools/c-toolchain.nix;
+    claude            = import ../nix/modules/desktop/claude.nix;
     cursor            = import ../nix/modules/desktop/cursor.nix;
     docker            = import ../nix/modules/devtools/docker.nix;
     fonts             = import ../nix/modules/fonts.nix;
