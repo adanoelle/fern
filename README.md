@@ -1,26 +1,52 @@
-# 🌱 Fern — NixOS + Home-Manager Flake
+# 🌱 Fern — NixOS
 
-Fern is my personal, reproducible NixOS desktop system, built to:
+> **Purpose:** Complete NixOS system configuration for development workstation  
+> **Architecture:** Flake-based modular NixOS + Home Manager  
+> **Status:** Active Development
 
-- **Declaratively define everything** — from bootloader to Wayland compositor —
-  so a full rebuild or new machine setup is one command away.
-- **Use Flakes + Home-Manager** for clean separation of **system-level** and
-  **user-level** configuration.
-- **Modularize by feature** — making it easy to toggle components (e.g.,
-  desktop, devtools, shells) per host.
-- **Support a Hyprland-based desktop** with integrated Waybar, Hypridle,
-  Hyprlock, and Hyprpaper, all styled consistently via Catppuccin Frappé.
-- **Keep multi-host ready** — so the same repo can configure desktops, laptops,
-  and servers with shared modules.
+## Overview
 
----
+Fern is a comprehensive NixOS configuration designed for software development
+with an emphasis on modularity, reproducibility, and developer experience. Built
+with Flakes and Home Manager, it provides a complete system from bootloader to
+Wayland compositor, featuring advanced git tooling, multi-language support, and
+a carefully crafted Hyprland desktop environment.
 
-## 🗂 Repository Structure
+## Quick Start
+
+### First-Time Installation
+
+```bash
+# Clone the repository
+git clone git@github.com:adanoelle/fern.git ~/src/nix/fern
+cd ~/src/nix/fern
+
+# Build and switch to the configuration
+sudo nixos-rebuild switch --flake .#fern
+```
+
+### Daily Usage
+
+```bash
+# Rebuild after changes
+sudo nixos-rebuild switch --flake .#fern
+
+# Test changes without switching
+sudo nixos-rebuild test --flake .#fern
+
+# Update all dependencies
+nix flake update
+
+# Clean old generations
+nix-collect-garbage -d
+```
+
+## 🗂 Project Structure
 
 ```
 .
-├── flake.nix                 # Main flake definition
-├── flake.lock                # Lock file for pinned inputs
+├── flake.nix                  # Main flake definition
+├── flake.lock                 # Lock file for pinned inputs
 ├── flake.parts/               # Flake-parts modular definitions
 │   ├── 00-overlay.nix         # Custom overlays
 │   ├── 10-core.nix            # Shared flake outputs (systems, packages)
@@ -52,43 +78,47 @@ Fern is my personal, reproducible NixOS desktop system, built to:
 └── README.md                  # You are here
 ```
 
----
+## Key Features
 
-## 💻 Desktop Overview
+### 🎯 Core System
 
-The `nix/home/desktop/hyprland.nix` module defines a **toggleable** Hyprland
-setup:
+- **Zen Kernel** - Optimized for desktop performance
+- **Nvidia Graphics** - Full CUDA support with Hyprland
+- **PipeWire Audio** - Low-latency audio with quality tweaks
+- **SOPS Secrets** - Encrypted secret management
 
-- **Hyprland compositor** with declarative keybinds, mouse binds, and style
-  settings.
-- **Waybar** (`desktop.hyprland.bar.enable`) — with Catppuccin Frappé styling,
-  workspace module, CPU/mem/audio/clock.
-- **Hypridle** (`desktop.hyprland.idle.enable`) — idle → dim, lock, suspend.
-- **Hyprlock** (`desktop.hyprland.lock.enable`) — lock screen with blur + Frappé
-  palette.
-- **Hyprpaper** (`desktop.hyprland.wallpaper.enable`) — static wallpaper per
-  monitor.
-- **Style variables** (`desktop.hyprland.style`) — gaps, border size, colours —
-  applied consistently.
+### 💻 Development Environment
 
-**Monitor-specific wallpaper**: Set `desktop.hyprland.wallpaper.monitor` to the
-name from `hyprctl monitors` (`HDMI-A-1` in my case).
+- **Languages:** Rust, Zig, Python, TypeScript, C/C++, Ada, C#
+- **Tools:** Docker, LocalStack, AWS CLI, Azure CLI
+- **Editor:** Helix (primary), VS Code, Cursor available
+- **Shell:** Nushell with Starship prompt
 
----
+### 🚀 Git Configuration
 
-## ⚙ How to Use
+- **Advanced Worktrees** - Parallel development workflows
+- **Multi-Identity** - Automatic identity switching by directory
+- **Claude Integration** - AI-assisted coding with safety features
+- **Rich Aliases** - Extensive git shortcuts and workflows
 
-### Build / Rebuild
+### 🖼️ Desktop Environment
 
-```bash
-# Switch system + user config
-sudo nixos-rebuild switch --flake .#fern
-home-manager switch --flake .#ada
-```
+- **Hyprland** - Wayland compositor with animations
+- **Per-Workspace Wallpapers** - Different backgrounds per workspace
+- **Waybar** - Customized status bar with Catppuccin Frappé theme
+- **Ghostty** - GPU-accelerated terminal
+- **Hypridle/Hyprlock** - Idle management and lock screen
 
-### Toggle desktop features
+## Configuration
 
-In `hosts/fern/configuration.nix`, inside `home-manager.users.ada`:
+### Basic Customization
+
+Edit `hosts/fern/configuration.nix` to enable/disable modules and configure the
+system.
+
+### Desktop Configuration
+
+Configure Hyprland and related features in `hosts/fern/configuration.nix`:
 
 ```nix
 desktop.hyprland = {
@@ -105,49 +135,97 @@ desktop.hyprland = {
 };
 ```
 
+## Common Workflows
+
+### Making Changes
+
+```bash
+# 1. Edit configuration files
+hx hosts/fern/configuration.nix
+
+# 2. Test your changes
+sudo nixos-rebuild test --flake .#fern
+
+# 3. If successful, apply
+sudo nixos-rebuild switch --flake .#fern
+
+# 4. If issues, rollback
+sudo nixos-rebuild switch --rollback
+```
+
+### Updating System
+
+```bash
+# Update all flake inputs
+nix flake update
+
+# Update specific input
+nix flake lock --update-input nixpkgs
+
+# Rebuild with updates
+sudo nixos-rebuild switch --flake .#fern
+```
+
+## Documentation
+
+### 📚 Comprehensive Guides
+
+- **[Architecture Overview](docs/ARCHITECTURE.md)** - System design and
+  structure
+- **[Quick Wins](docs/QUICK_WINS.md)** - Immediate improvements you can make
+- **[Improvement Plan](docs/IMPROVEMENT_PLAN.md)** - Roadmap for enhancements
+- **[Git Suite Guide](docs/guides/git-suite.md)** - Advanced git features
+
+### 📁 Module Documentation
+
+- **[System Modules](nix/modules/)** - NixOS system configuration
+- **[Home Modules](nix/home/)** - User environment configuration
+- **[Host Configuration](hosts/)** - Machine-specific settings
+- **[Flake Structure](flake.parts/)** - Flake organization
+
+## Troubleshooting
+
+### Build Fails
+
+```bash
+# Check flake
+nix flake check
+
+# See detailed errors
+sudo nixos-rebuild test --flake .#fern --show-trace
+```
+
+### Out of Disk Space
+
+```bash
+# Clean old generations
+nix-collect-garbage -d
+sudo nix-collect-garbage -d
+```
+
+### Configuration Broken
+
+```bash
+# Rollback to previous generation
+sudo nixos-rebuild switch --rollback
+```
+
+## Contributing
+
+1. Check [existing issues](https://github.com/adanoelle/fern/issues)
+2. Follow the module patterns in existing code
+3. Test changes with `nixos-rebuild test`
+4. Format code with `nixpkgs-fmt`
+5. Document new features
+
+## See Also
+
+- **[NixOS Manual](https://nixos.org/manual/nixos/stable/)** - Official
+  documentation
+- **[Home Manager Manual](https://nix-community.github.io/home-manager/)** -
+  User configuration
+- **[GitHub Repository](https://github.com/adanoelle/fern)** - Source and issues
+
 ---
 
-## 🔑 Secrets
-
-Secrets are stored in `secrets/main.yaml` and managed via
-[sops-nix](https://github.com/Mic92/sops-nix). Keys are generated per-machine
-and stored under `/var/lib/sops-nix/key.txt`.
-
----
-
-## 🛠 Development Tooling
-
-- **Language toolchains** via HM modules: Rust (`nix/home/devtools/rust.nix`),
-  TypeScript, Zig, etc.
-- **CLI utilities** grouped by topic under `nix/home/cli/`.
-- **Shells**: Nushell as primary, Starship prompt, Zoxide for jump navigation.
-
----
-
-## 📦 Why Flake-Parts?
-
-The flake is composed using [flake-parts](https://flake.parts/) for:
-
-- Structured imports of NixOS + HM modules.
-- Clear separation between _definitions_ (`nix/modules`, `nix/home`) and
-  _enabling/toggling_ (`hosts/<name>/configuration.nix`).
-- Easy to extend to more hosts — just add another entry to
-  `flake.parts/40-hosts.nix`.
-
----
-
-## 🛣 Roadmap / Future Ideas
-
-- **Dynamic wallpapers** per workspace (via `swww`).
-- **Different lock screen background** from desktop wallpaper.
-- **Multi-monitor wallpaper config** in `desktop.hyprland.wallpaper` as a list.
-- **Idle/lock integration** with media pause/resume hooks.
-- More CI/CD: `nix flake check`, formatting (`nixfmt`), dead code detection
-  (`deadnix`).
-
----
-
-## 📜 License
-
-This repository is personal configuration — feel free to browse and adapt ideas,
-but use at your own risk.
+_Built with ❄️ Nix | Managed with 🏡 Home Manager | Powered by 🌊 Wayland_
