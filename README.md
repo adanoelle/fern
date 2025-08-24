@@ -94,6 +94,13 @@ nix-collect-garbage -d
 - **Editor:** Helix (primary), VS Code, Cursor available
 - **Shell:** Nushell with Starship prompt
 
+### 🤖 AI-Assisted Development
+
+- **Claude Integration** - Comprehensive CLAUDE.md documentation system
+- **Safety Features** - Worktree isolation and automatic snapshots
+- **Development Guide** -
+  [CLAUDE-DEVELOPER-GUIDE.md](docs/guides/CLAUDE-DEVELOPER-GUIDE.md)
+
 ### 🚀 Git Configuration
 
 - **Advanced Worktrees** - Parallel development workflows

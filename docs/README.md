@@ -20,6 +20,10 @@ understanding and working with this configuration.
 
 Located in the [`guides/`](./guides/) directory:
 
+- **[CLAUDE-DEVELOPER-GUIDE.md](./guides/CLAUDE-DEVELOPER-GUIDE.md)** -
+  Comprehensive guide for AI-assisted development with Claude
+- **[claude-workflow.md](./guides/claude-workflow.md)** - Practical Claude Code
+  workflow guide
 - **[git-suite.md](./guides/git-suite.md)** - Complete guide to the advanced git
   configuration
 - **[development.md](./guides/development.md)** - Development workflow and best
