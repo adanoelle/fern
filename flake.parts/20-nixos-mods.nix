@@ -3,6 +3,7 @@
     ada-dev           = import ../nix/modules/devtools/ada-toolchain.nix;
     audio             = import ../nix/modules/audio.nix;
     aws               = import ../nix/modules/cloud/aws-cli.nix;
+    azure-cli         = import ../nix/modules/azure-cli.nix;
     boot              = import ../nix/modules/boot.nix;
     core              = import ../nix/modules/core.nix;
     c-dev             = import ../nix/modules/devtools/c-toolchain.nix;
@@ -20,6 +21,8 @@
     teams             = import ../nix/modules/desktop/teams.nix;
     typescript        = import ../nix/modules/devtools/node-ts.nix;
     users             = import ../nix/modules/users.nix;
+    vscode            = import ../nix/modules/desktop/vscode.nix;
+    sqlserver         = import ../nix/modules/desktop/sqlserver.nix;
   };
 }
 

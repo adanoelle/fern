@@ -12,6 +12,7 @@
     self.nixosModules.core
     self.nixosModules.c-dev
     self.nixosModules.aws
+    self.nixosModules.azure-cli
     self.nixosModules.cursor
     self.nixosModules.claude
     self.nixosModules.docker
@@ -26,6 +27,8 @@
     self.nixosModules.typescript
     self.nixosModules.secrets
     self.nixosModules.guard
+    self.nixosModules.vscode
+    self.nixosModules.sqlserver
 
     # --- Home-Manager as a NixOS module
     inputs.home-manager.nixosModules.home-manager
@@ -45,6 +48,7 @@
   home-manager.users.ada = {
     imports = [
       self.homeModules.cli       # cli: git, bat, ghostty, etc.
+      self.homeModules.git       # git: worktrees, tools, claude integration
       self.homeModules.desktop   # hyprland
       self.homeModules.devtools  # zig, cpp
       self.homeModules.shells    # shells: nushell, starship, zoxide
