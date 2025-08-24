@@ -1,6 +1,7 @@
 # 🏠 Home Modules - User Environment Configuration
 
-> **Purpose:** User-level Home Manager modules for personal environment configuration  
+> **Purpose:** User-level Home Manager modules for personal environment
+> configuration  
 > **Type:** User Configuration  
 > **Status:** Stable
 
@@ -127,7 +128,7 @@ in
 {
   options.programs.moduleName = {
     enable = lib.mkEnableOption "module description";
-    
+
     # Additional options
     setting = lib.mkOption {
       type = lib.types.str;
@@ -139,7 +140,7 @@ in
   config = lib.mkIf cfg.enable {
     # Module implementation
     home.packages = with pkgs; [ package ];
-    
+
     # Configuration files
     home.file.".config/app/config".text = ''
       setting = ${cfg.setting}
@@ -291,10 +292,13 @@ source ~/.bashrc  # or appropriate shell
 ## See Also
 
 - **[System Modules](../modules/)** - System-level configuration
-- **[Git Suite Guide](../../docs/guides/git-suite.md)** - Detailed git documentation
+- **[Git Suite Guide](../../docs/guides/git-suite.md)** - Detailed git
+  documentation
 - **[Architecture](../../docs/ARCHITECTURE.md)** - System design overview
-- **[Home Manager Manual](https://nix-community.github.io/home-manager/)** - Official documentation
+- **[Home Manager Manual](https://nix-community.github.io/home-manager/)** -
+  Official documentation
 
 ---
 
-_Home modules shape your personal environment - configure them to match your workflow._
+_Home modules shape your personal environment - configure them to match your
+workflow._
