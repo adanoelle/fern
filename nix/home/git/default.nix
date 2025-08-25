@@ -5,9 +5,6 @@ with lib;
 
 let
   cfg = config.programs.gitSuite;
-  
-  # Tutorial script
-  gitTutorial = pkgs.writeShellScriptBin "git-tutorial" (builtins.readFile ./scripts/git-tutorial.sh);
 in
 {
   imports = [
@@ -89,9 +86,6 @@ in
     programs.gitIdentities.workspaceDirs = cfg.workspaceDirs;
     programs.gitHelix.editor = cfg.editor;
     programs.gitHelp.claudeEnabled = cfg.enableClaudeCode;
-
-    # Add tutorial if enabled
-    home.packages = mkIf cfg.enableTutorial [ gitTutorial ];
 
     # Add convenient aliases for help
     home.shellAliases = mkIf cfg.enableHelp {
