@@ -12,7 +12,7 @@ in
 
     package = mkOption {
       type = types.package;
-      default = pkgs.gitFull;
+      default = pkgs.git;
       description = "Git package to use";
     };
 
@@ -75,8 +75,8 @@ in
   };
 
   config = mkIf cfg.enable {
-    home.packages = [ cfg.package ];
-
+    # Don't add to home.packages - programs.git handles it
+    
     programs.git = {
       enable = true;
       package = cfg.package;
