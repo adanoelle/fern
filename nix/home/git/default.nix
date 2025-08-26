@@ -1,4 +1,4 @@
-# git/default.nix - Main orchestrator with help system
+# git/default.nix - Main git suite orchestrator (no scripts)
 { config, lib, pkgs, ... }:
 
 with lib;
@@ -9,23 +9,27 @@ in
 {
   imports = [
     ./core.nix
-    ./identities.nix
-    ./worktree.nix
-    ./github.nix
-    ./helix.nix
-    ./claude-code.nix
     ./aliases.nix
+    ./identities.nix
+    ./github.nix
     ./tools.nix
-    ./help.nix  # Add the help system
+    ./safety.nix
+    ./help.nix
   ];
 
   options.programs.gitSuite = {
-    enable = mkEnableOption "Modular Git suite for Home Manager";
+    enable = mkEnableOption "Complete Git suite configuration";
 
-    primaryIdentity = mkOption {
+    userName = mkOption {
       type = types.str;
-      default = "personal";
-      description = "Primary Git identity to use by default";
+      default = "adanoelle";
+      description = "Default git user name";
+    };
+
+    userEmail = mkOption {
+      type = types.str;
+      default = "adanoelleyoung@gmail.com";
+      description = "Default git user email";
     };
 
     editor = mkOption {
@@ -34,100 +38,48 @@ in
       description = "Default editor for Git operations";
     };
 
-    workspaceDirs = mkOption {
-      type = types.attrsOf types.str;
-      default = {
-        personal = "~/personal";
-        work = "~/src/work";
-      };
-      description = "Directory mappings for different Git identities";
-    };
-
-    enableClaudeCode = mkOption {
-      type = types.bool;
-      default = false;
-      description = "Enable Claude Code integration with safety features";
-    };
-
-    enableAdvancedTools = mkOption {
+    enableGithub = mkOption {
       type = types.bool;
       default = true;
-      description = "Enable advanced Git tools (lazygit, tig, etc.)";
+      description = "Enable GitHub CLI integration";
+    };
+
+    enableTools = mkOption {
+      type = types.bool;
+      default = true;
+      description = "Enable additional git tools";
+    };
+
+    enableSafety = mkOption {
+      type = types.bool;
+      default = true;
+      description = "Enable safety features";
     };
 
     enableHelp = mkOption {
       type = types.bool;
       default = true;
-      description = "Enable comprehensive help system";
-    };
-
-    enableTutorial = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Enable interactive tutorial system";
+      description = "Enable help system";
     };
   };
 
   config = mkIf cfg.enable {
-    # Ensure all submodules are enabled
-    programs.gitCore.enable = true;
-    programs.gitIdentities.enable = true;
-    programs.gitWorktree.enable = true;
-    programs.gitGithub.enable = true;
-    programs.gitHelix.enable = true;
-    programs.gitAliases.enable = true;
-    programs.gitTools.enable = mkDefault cfg.enableAdvancedTools;
-    programs.gitClaudeCode.enable = mkDefault cfg.enableClaudeCode;
-    programs.gitHelp.enable = mkDefault cfg.enableHelp;
-
-    # Pass configuration to submodules
-    programs.gitCore.editor = cfg.editor;
-    programs.gitIdentities.primary = cfg.primaryIdentity;
-    programs.gitIdentities.workspaceDirs = cfg.workspaceDirs;
-    programs.gitHelix.editor = cfg.editor;
-    programs.gitHelp.claudeEnabled = cfg.enableClaudeCode;
-
-    # Add convenient aliases for help
-    home.shellAliases = mkIf cfg.enableHelp {
-      "?" = "git-help menu";
-      "g?" = "git-help";
-      "git?" = "git-help";
-      
-      # Quick access to sections
-      "?wt" = "git-help worktree";
-      "?id" = "git-help identity";
-      "?hx" = "git-help helix";
-      "?gh" = "git-help github";
-    } // mkIf cfg.enableTutorial {
-      "git-learn" = "git-tutorial";
-      "learn-git" = "git-tutorial";
+    # Enable all submodules
+    programs.gitCore = {
+      enable = true;
+      userName = cfg.userName;
+      userEmail = cfg.userEmail;
+      editor = cfg.editor;
     };
-
-    # Add first-run message
-    home.activation.gitSuiteWelcome = lib.hm.dag.entryAfter ["writeBoundary"] ''
-      if [ ! -f "$HOME/.config/git/.suite-welcomed" ]; then
-        echo ""
-        echo "════════════════════════════════════════════════════════"
-        echo "       🎉 Git Suite Successfully Configured! 🎉"
-        echo "════════════════════════════════════════════════════════"
-        echo ""
-        echo "Quick Start Commands:"
-        echo "  • git-help      - Show all available commands"
-        echo "  • git-help menu - Interactive help browser"
-        echo "  • git-tutorial  - Interactive learning experience"
-        echo "  • git?          - Quick help menu"
-        echo ""
-        echo "Key Features:"
-        echo "  • Worktrees:  wt new <name>"
-        echo "  • Identities: gid list"
-        echo "  • Helix:      hxm (open modified files)"
-        echo "  • GitHub:     gh pr create"
-        echo ""
-        echo "Run 'git-tutorial' to learn the workflow!"
-        echo "════════════════════════════════════════════════════════"
-        echo ""
-        touch "$HOME/.config/git/.suite-welcomed"
-      fi
-    '';
+    
+    programs.gitAliases.enable = true;
+    programs.gitIdentities.enable = true;
+    programs.gitGithub.enable = cfg.enableGithub;
+    programs.gitTools.enable = cfg.enableTools;
+    programs.gitSafety.enable = cfg.enableSafety;
+    programs.gitHelp.enable = cfg.enableHelp;
+    
+    # Pass editor preference to GitHub
+    programs.gitGithub.editor = mkDefault cfg.editor;
   };
 }

@@ -98,6 +98,35 @@
       };
     };
 
+    # Enable git suite with all features
+    programs.gitSuite = {
+      enable = true;
+      userName = "adanoelle";
+      userEmail = "adanoelleyoung@gmail.com";
+      editor = "hx";
+      enableGithub = true;
+      enableTools = true;
+      enableSafety = true;
+      enableHelp = true;
+    };
+
+    # Configure git identities
+    programs.gitIdentities.identities = {
+      personal = {
+        name = "adanoelle";
+        email = "adanoelleyoung@gmail.com";
+        directory = "/home/ada/personal/";
+        signingKey = "/home/ada/.ssh/github";
+      };
+      work = {
+        name = "youngt0dd";
+        email = "todd.young@pinnaclereliability.com";
+        directory = "/home/ada/work/";
+        signingKey = "/home/ada/.ssh/github-work";
+        sshCommand = "ssh -i /home/ada/.ssh/github-work -o IdentitiesOnly=yes";
+      };
+    };
+
     home.stateVersion = "25.11";
   };
 

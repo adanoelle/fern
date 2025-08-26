@@ -1,4 +1,4 @@
-# git/core.nix - Core Git configuration for Home Manager
+# git/core.nix - Core Git configuration (script-free)
 { config, lib, pkgs, ... }:
 
 with lib;
@@ -12,8 +12,20 @@ in
 
     package = mkOption {
       type = types.package;
-      default = pkgs.gitFull;
+      default = pkgs.git;
       description = "Git package to use";
+    };
+
+    userName = mkOption {
+      type = types.str;
+      default = "adanoelle";
+      description = "Default git user name";
+    };
+
+    userEmail = mkOption {
+      type = types.str;
+      default = "adanoelleyoung@gmail.com";
+      description = "Default git user email";
     };
 
     editor = mkOption {
@@ -36,8 +48,8 @@ in
 
     signingKey = mkOption {
       type = types.str;
-      default = "~/.ssh/github";
-      description = "SSH key to use for signing";
+      default = "";
+      description = "SSH key to use for signing (defaults to \${HOME}/.ssh/github if not set)";
     };
 
     delta = {
@@ -63,12 +75,14 @@ in
   };
 
   config = mkIf cfg.enable {
-    home.packages = [ cfg.package ];
-
+    # Don't add to home.packages - programs.git handles it
+    
     programs.git = {
       enable = true;
-      
       package = cfg.package;
+      
+      userName = cfg.userName;
+      userEmail = cfg.userEmail;
       
       delta = mkIf cfg.delta.enable {
         enable = true;
@@ -85,19 +99,22 @@ in
           autocrlf = "input";
           whitespace = "trailing-space,space-before-tab";
           
-          # Performance optimizations
+          # Performance optimizations (no fsmonitor - Linux incompatible)
           preloadIndex = true;
           multiPackIndex = true;
           commitGraph = true;
           untrackedCache = true;
-          fsmonitor = true;
+          # fsmonitor = false; # Explicitly disabled for Linux
         };
         
         # SSH signing configuration
         commit.gpgsign = cfg.signCommits;
         gpg.format = mkIf cfg.signCommits "ssh";
-        user.signingkey = mkIf cfg.signCommits cfg.signingKey;
-        gpg.ssh.allowedSignersFile = mkIf cfg.signCommits "~/.config/git/allowed_signers";
+        user.signingkey = mkIf cfg.signCommits (
+          if cfg.signingKey != "" then cfg.signingKey
+          else "${config.home.homeDirectory}/.ssh/github"
+        );
+        gpg.ssh.allowedSignersFile = mkIf cfg.signCommits "${config.home.homeDirectory}/.config/git/allowed_signers";
         
         # Essential settings
         pull.rebase = true;
@@ -116,7 +133,6 @@ in
         
         merge = {
           conflictStyle = "diff3";
-          tool = "${cfg.editor}diff";
           stat = true;
         };
         
@@ -163,12 +179,12 @@ in
           status = "auto";
         };
         
+        # Performance
+        pack.threads = 0; # Use all CPU cores
+        gc.auto = 256; # Auto gc threshold
+        
         # Worktree settings
         worktree.guessRemote = true;
-        
-        # GitHub CLI credential helper
-        credential."https://github.com".helper = 
-          "!${pkgs.gh}/bin/gh auth git-credential";
         
         # URL rewrites for SSH
         url."ssh://git@github.com/".insteadOf = "https://github.com/";
@@ -193,17 +209,6 @@ in
         "*.sublime-*"
         ".helix/"
         
-        # Language/Framework specific
-        "node_modules/"
-        "*.pyc"
-        "__pycache__/"
-        "target/"
-        "dist/"
-        "build/"
-        "*.egg-info/"
-        "vendor/"
-        ".bundle/"
-        
         # Environment
         ".env"
         ".env.*"
@@ -223,11 +228,6 @@ in
         # Nix
         "result"
         "result-*"
-        
-        # AI/Claude
-        ".claude/"
-        ".claude-code/"
-        ".ai/"
       ];
     };
   };

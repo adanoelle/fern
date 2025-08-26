@@ -5,7 +5,6 @@
     ./cli/bat.nix
     ./cli/broot.nix
     ./cli/crypt.nix
-    # ./cli/git.nix
     ./cli/ghostty.nix
     ./cli/glow.nix
     ./cli/delta.nix
