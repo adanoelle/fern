@@ -51,7 +51,7 @@ in
       co = "checkout";
       cob = "checkout -b";
       com = "checkout main";
-      save = "!git add -A && git commit -m 'WIP'";
+      wip = "!git add -A && git commit -m 'WIP'";
       
       # --- Diff 
       d = "diff";
@@ -133,7 +133,7 @@ in
       wtl = "git wtl";
       
       # Note: gsave removed due to Nushell command parsing issues
-      # Use 'git save' alias instead
+      # Use 'git wip' alias instead
     };
   };
 }
