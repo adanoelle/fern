@@ -115,13 +115,13 @@
       personal = {
         name = "adanoelle";
         email = "adanoelleyoung@gmail.com";
-        directory = "~/personal/";
+        directory = "/home/ada/personal/";
         signingKey = "/home/ada/.ssh/github";
       };
       work = {
         name = "youngt0dd";
         email = "todd.young@pinnaclereliability.com";
-        directory = "~/work/";
+        directory = "/home/ada/work/";
         signingKey = "/home/ada/.ssh/github-work";
         sshCommand = "ssh -i /home/ada/.ssh/github-work -o IdentitiesOnly=yes";
       };
