@@ -53,6 +53,10 @@ in
       # Cleanup
       cleanup = "!git branch --merged | grep -v '\\*\\|main\\|master' | xargs -n 1 -r git branch -d";
       prune-branches = "!git remote prune origin && git branch -vv | grep ': gone]' | awk '{print $1}' | xargs -n 1 -r git branch -d";
+      
+      # Status checks (moved from shell aliases due to Nushell issues)
+      check = "!git status && git diff --stat";
+      safe-status = "status --porcelain";
     };
 
     # Git hooks for safety
@@ -124,15 +128,7 @@ in
       # Note: rebase, merge.conflictStyle and rerere settings are in core.nix
     };
 
-    # Shell aliases for safety - using ; for Nushell compatibility
-    home.shellAliases = {
-      # Safe alternatives
-      "git-clean" = "echo 'Use: git clean -fd (dry run with -n first)'";
-      "git-reset-hard" = "echo 'Warning: Use git reset --hard with caution'";
-      
-      # Quick safety checks - use ; instead of && for Nushell
-      "git-check" = "git status; git diff --stat";
-      "git-safe" = "git status --porcelain";
-    };
+    # Note: Complex shell aliases removed due to Nushell compatibility issues
+    # Use the git aliases instead: git check, git safe-status
   };
 }
