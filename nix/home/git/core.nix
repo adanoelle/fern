@@ -114,7 +114,7 @@ in
           if cfg.signingKey != "" then cfg.signingKey
           else "${config.home.homeDirectory}/.ssh/github"
         );
-        gpg.ssh.allowedSignersFile = mkIf cfg.signCommits "~/.config/git/allowed_signers";
+        gpg.ssh.allowedSignersFile = mkIf cfg.signCommits "${config.home.homeDirectory}/.config/git/allowed_signers";
         
         # Essential settings
         pull.rebase = true;

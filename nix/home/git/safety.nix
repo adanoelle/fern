@@ -113,7 +113,7 @@ in
 
     # Configure git to use our hooks
     programs.git.extraConfig = {
-      core.hooksPath = "~/.config/git/hooks";
+      core.hooksPath = "${config.home.homeDirectory}/.config/git/hooks";
       
       # Additional safety settings (push.default is in core.nix)
       # push.followTags is already in core.nix
