@@ -131,8 +131,8 @@ in
       wtn = "git wt-new";
       wtl = "git wtl";
       
-      # Quick save
-      gsave = "git add -A && git commit -m 'WIP'";
+      # Quick save - use ; for Nushell compatibility
+      gsave = "git add -A; git commit -m 'WIP'";
     };
   };
 }

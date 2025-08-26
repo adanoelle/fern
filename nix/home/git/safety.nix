@@ -124,14 +124,14 @@ in
       # Note: rebase, merge.conflictStyle and rerere settings are in core.nix
     };
 
-    # Shell aliases for safety
+    # Shell aliases for safety - using ; for Nushell compatibility
     home.shellAliases = {
       # Safe alternatives
       "git-clean" = "echo 'Use: git clean -fd (dry run with -n first)'";
       "git-reset-hard" = "echo 'Warning: Use git reset --hard with caution'";
       
-      # Quick safety checks
-      "git-check" = "git status && git diff --stat";
+      # Quick safety checks - use ; instead of && for Nushell
+      "git-check" = "git status; git diff --stat";
       "git-safe" = "git status --porcelain";
     };
   };
