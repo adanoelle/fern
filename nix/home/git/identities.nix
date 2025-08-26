@@ -73,21 +73,7 @@ in
           };
         };
       });
-      default = {
-        personal = {
-          name = "adanoelle";
-          email = "adanoelleyoung@gmail.com";
-          directory = "~/personal/";
-          signingKey = "~/.ssh/github";
-        };
-        work = {
-          name = "youngt0dd";
-          email = "todd.young@pinnaclereliability.com";
-          directory = "~/work/";
-          signingKey = "~/.ssh/github-work";
-          sshCommand = "ssh -i ~/.ssh/github-work -o IdentitiesOnly=yes";
-        };
-      };
+      default = {};
       description = "Git identities configuration";
     };
   };
@@ -108,13 +94,14 @@ in
     );
     
     # Create allowed_signers file for SSH signature verification
+    # Note: This would need the actual public key content, not the path
+    # For now, create an empty file - users can populate it manually
     home.file.".config/git/allowed_signers" = {
-      text = concatStringsSep "\n" (
-        mapAttrsToList (name: identity:
-          optionalString (identity.signingKey != null)
-            "${identity.email} ${builtins.readFile identity.signingKey}"
-        ) cfg.identities
-      );
+      text = ''
+        # Git allowed signers file
+        # Format: email ssh-rsa AAAAB3NzaC1yc2EA...
+        # Add your SSH public keys here for signature verification
+      '';
     };
     
     # Add helpful aliases for identity management

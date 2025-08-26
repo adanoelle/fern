@@ -110,6 +110,23 @@
       enableHelp = true;
     };
 
+    # Configure git identities
+    programs.gitIdentities.identities = {
+      personal = {
+        name = "adanoelle";
+        email = "adanoelleyoung@gmail.com";
+        directory = "~/personal/";
+        signingKey = "/home/ada/.ssh/github";
+      };
+      work = {
+        name = "youngt0dd";
+        email = "todd.young@pinnaclereliability.com";
+        directory = "~/work/";
+        signingKey = "/home/ada/.ssh/github-work";
+        sshCommand = "ssh -i /home/ada/.ssh/github-work -o IdentitiesOnly=yes";
+      };
+    };
+
     home.stateVersion = "25.11";
   };
 

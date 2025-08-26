@@ -115,20 +115,13 @@ in
     programs.git.extraConfig = {
       core.hooksPath = "~/.config/git/hooks";
       
-      # Additional safety settings
-      push.default = "simple";
-      push.followTags = true;
-      
-      # Safer rebasing
-      rebase.autoStash = true;
-      rebase.autoSquash = true;
+      # Additional safety settings (push.default is in core.nix)
+      # push.followTags is already in core.nix
       
       # Safer merging
       merge.ff = "only";  # Fast-forward only by default
       
-      # Better conflict resolution
-      merge.conflictStyle = "diff3";
-      rerere.enabled = true;
+      # Note: rebase, merge.conflictStyle and rerere settings are in core.nix
     };
 
     # Shell aliases for safety

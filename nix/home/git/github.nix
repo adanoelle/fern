@@ -65,16 +65,7 @@ in
     };
 
     # Git configuration for GitHub
-    programs.git.extraConfig = {
-      # GitHub CLI as credential helper
-      credential."https://github.com" = {
-        helper = "!${cfg.package}/bin/gh auth git-credential";
-      };
-      
-      credential."https://gist.github.com" = {
-        helper = "!${cfg.package}/bin/gh auth git-credential";
-      };
-    };
+    # Note: The gh module already sets up credential helpers, so we don't need to duplicate
 
     # Git aliases for GitHub integration (no scripts!)
     programs.git.aliases = {

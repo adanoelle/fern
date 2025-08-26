@@ -31,9 +31,9 @@ in
       help-commands = "help -a";
       help-guides = "help -g";
       
-      # Quick reference
-      aliases = "!git config --get-regexp '^alias\\.' | sed 's/alias\\.//g' | sort";
-      la = "!git aliases";  # List aliases shortcut
+      # Quick reference (renamed to avoid conflict)
+      list-aliases = "!git config --get-regexp '^alias\\.' | sed 's/alias\\.//g' | sort";
+      la = "!git list-aliases";  # List aliases shortcut
     };
 
     # Create quick reference file
@@ -92,9 +92,9 @@ in
       
       HELP
       ----
-      git aliases - List all git aliases
-      git h       - Git help
-      tldr git    - Show examples (if tldr installed)
+      git list-aliases - List all git aliases
+      git h            - Git help
+      tldr git         - Show examples (if tldr installed)
       
       For more: cat ~/.config/git/quick-ref.txt
     '';
@@ -104,7 +104,7 @@ in
       {
         # Quick help
         "g-help" = "cat ~/.config/git/quick-ref.txt";
-        "g-aliases" = "git aliases";
+        "g-aliases" = "git list-aliases";
         "g-ref" = "echo 'Common: g (status), ga (add), gc (commit), gp (push), gl (log)'";
       }
       

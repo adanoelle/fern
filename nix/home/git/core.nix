@@ -48,8 +48,8 @@ in
 
     signingKey = mkOption {
       type = types.str;
-      default = "~/.ssh/github";
-      description = "SSH key to use for signing";
+      default = "";
+      description = "SSH key to use for signing (defaults to \${HOME}/.ssh/github if not set)";
     };
 
     delta = {
@@ -110,7 +110,10 @@ in
         # SSH signing configuration
         commit.gpgsign = cfg.signCommits;
         gpg.format = mkIf cfg.signCommits "ssh";
-        user.signingkey = mkIf cfg.signCommits cfg.signingKey;
+        user.signingkey = mkIf cfg.signCommits (
+          if cfg.signingKey != "" then cfg.signingKey
+          else "${config.home.homeDirectory}/.ssh/github"
+        );
         gpg.ssh.allowedSignersFile = mkIf cfg.signCommits "~/.config/git/allowed_signers";
         
         # Essential settings
