@@ -1,4 +1,4 @@
-# git/core.nix - Core Git configuration for Home Manager
+# git/core.nix - Core Git configuration (script-free)
 { config, lib, pkgs, ... }:
 
 with lib;
@@ -14,6 +14,18 @@ in
       type = types.package;
       default = pkgs.gitFull;
       description = "Git package to use";
+    };
+
+    userName = mkOption {
+      type = types.str;
+      default = "adanoelle";
+      description = "Default git user name";
+    };
+
+    userEmail = mkOption {
+      type = types.str;
+      default = "adanoelleyoung@gmail.com";
+      description = "Default git user email";
     };
 
     editor = mkOption {
@@ -67,8 +79,10 @@ in
 
     programs.git = {
       enable = true;
-      
       package = cfg.package;
+      
+      userName = cfg.userName;
+      userEmail = cfg.userEmail;
       
       delta = mkIf cfg.delta.enable {
         enable = true;
@@ -85,12 +99,12 @@ in
           autocrlf = "input";
           whitespace = "trailing-space,space-before-tab";
           
-          # Performance optimizations
+          # Performance optimizations (no fsmonitor - Linux incompatible)
           preloadIndex = true;
           multiPackIndex = true;
           commitGraph = true;
           untrackedCache = true;
-          fsmonitor = true;
+          # fsmonitor = false; # Explicitly disabled for Linux
         };
         
         # SSH signing configuration
@@ -116,7 +130,6 @@ in
         
         merge = {
           conflictStyle = "diff3";
-          tool = "${cfg.editor}diff";
           stat = true;
         };
         
@@ -163,12 +176,12 @@ in
           status = "auto";
         };
         
+        # Performance
+        pack.threads = 0; # Use all CPU cores
+        gc.auto = 256; # Auto gc threshold
+        
         # Worktree settings
         worktree.guessRemote = true;
-        
-        # GitHub CLI credential helper
-        credential."https://github.com".helper = 
-          "!${pkgs.gh}/bin/gh auth git-credential";
         
         # URL rewrites for SSH
         url."ssh://git@github.com/".insteadOf = "https://github.com/";
@@ -193,17 +206,6 @@ in
         "*.sublime-*"
         ".helix/"
         
-        # Language/Framework specific
-        "node_modules/"
-        "*.pyc"
-        "__pycache__/"
-        "target/"
-        "dist/"
-        "build/"
-        "*.egg-info/"
-        "vendor/"
-        ".bundle/"
-        
         # Environment
         ".env"
         ".env.*"
@@ -223,11 +225,6 @@ in
         # Nix
         "result"
         "result-*"
-        
-        # AI/Claude
-        ".claude/"
-        ".claude-code/"
-        ".ai/"
       ];
     };
   };

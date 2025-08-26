@@ -98,6 +98,18 @@
       };
     };
 
+    # Enable git suite with all features
+    programs.gitSuite = {
+      enable = true;
+      userName = "adanoelle";
+      userEmail = "adanoelleyoung@gmail.com";
+      editor = "hx";
+      enableGithub = true;
+      enableTools = true;
+      enableSafety = true;
+      enableHelp = true;
+    };
+
     home.stateVersion = "25.11";
   };
 
