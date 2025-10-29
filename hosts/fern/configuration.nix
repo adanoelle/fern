@@ -4,6 +4,11 @@
   # Allow dynamic linking for Python
   programs.nix-ld.enable = true;
 
+  # --- Windows VM with GPU Passthrough & Looking Glass
+  virtualisation.vfio.enable = true;
+  virtualisation.windows-vm.enable = true;
+  programs.looking-glass.enable = true;
+
   imports = [
     ./hardware.nix
 
@@ -17,7 +22,10 @@
     self.nixosModules.claude
     self.nixosModules.docker
     self.nixosModules.lmstudio
+    self.nixosModules.looking-glass
     self.nixosModules.users
+    self.nixosModules.vfio
+    self.nixosModules.windows-vm
     self.nixosModules.audio
     self.nixosModules.graphics
     self.nixosModules.greet

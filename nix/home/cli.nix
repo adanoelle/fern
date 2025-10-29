@@ -11,6 +11,7 @@
     ./cli/helix.nix
     ./cli/hyfetch.nix
     ./cli/nix-tree.nix
+    ./cli/pandoc.nix
     ./cli/prettier.nix
     ./cli/tree.nix
   ];
