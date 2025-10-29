@@ -44,9 +44,20 @@ in
       description = "Load kvmfr kernel module for Looking Glass";
       wantedBy = [ "multi-user.target" ];
       after = [ "systemd-modules-load.service" ];
+      script = ''
+        # Check if module is available before trying to load it
+        if ${pkgs.kmod}/bin/modinfo kvmfr &>/dev/null; then
+          ${pkgs.kmod}/bin/modprobe kvmfr || {
+            echo "Warning: kvmfr module found but failed to load. May need reboot."
+            exit 0
+          }
+        else
+          echo "kvmfr module not available yet. Will be available after reboot."
+          exit 0
+        fi
+      '';
       serviceConfig = {
         Type = "oneshot";
-        ExecStart = "${pkgs.kmod}/bin/modprobe kvmfr";
         RemainAfterExit = true;
       };
     };
