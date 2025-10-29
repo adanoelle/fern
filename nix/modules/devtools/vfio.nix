@@ -27,18 +27,12 @@ in
       "iommu=pt"  # Passthrough mode for better performance
     ];
 
-    boot.kernelModules = [
-      "vfio_pci"
-      "vfio"
-      "vfio_iommu_type1"
-    ];
-
     # --- Bind GPU to VFIO driver early in boot process
     boot.extraModprobeConfig = ''
       options vfio-pci ids=${lib.concatStringsSep "," cfg.gpuPciIds}
     '';
 
-    # --- Load VFIO modules before GPU drivers
+    # --- Load VFIO modules in initrd before GPU drivers to ensure early binding
     boot.initrd.kernelModules = [
       "vfio_pci"
       "vfio"

@@ -35,11 +35,21 @@ in
       kvmfr
     ];
 
-    boot.kernelModules = [ "kvmfr" ];
-
     boot.extraModprobeConfig = ''
       options kvmfr static_size_mb=${toString cfg.sharedMemorySize}
     '';
+
+    # --- Load kvmfr module after boot via systemd to avoid early boot hang
+    systemd.services.load-kvmfr = {
+      description = "Load kvmfr kernel module for Looking Glass";
+      wantedBy = [ "multi-user.target" ];
+      after = [ "systemd-modules-load.service" ];
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = "${pkgs.kmod}/bin/modprobe kvmfr";
+        RemainAfterExit = true;
+      };
+    };
 
     # --- Set up shared memory device with proper permissions
     systemd.tmpfiles.rules = [
