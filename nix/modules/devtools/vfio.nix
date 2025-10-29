@@ -25,15 +25,19 @@ in
     boot.kernelParams = [
       "${cfg.iommuType}_iommu=on"
       "iommu=pt"  # Passthrough mode for better performance
+      # Bind GPU to VFIO driver via kernel parameter (more reliable than modprobe config)
+      "vfio-pci.ids=${lib.concatStringsSep "," cfg.gpuPciIds}"
     ];
-
-    # --- Bind GPU to VFIO driver early in boot process
-    boot.extraModprobeConfig = ''
-      options vfio-pci ids=${lib.concatStringsSep "," cfg.gpuPciIds}
-    '';
 
     # --- Load VFIO modules in initrd before GPU drivers to ensure early binding
     boot.initrd.kernelModules = [
+      "vfio_pci"
+      "vfio"
+      "vfio_iommu_type1"
+    ];
+
+    # --- Also make sure vfio modules are available in initrd
+    boot.initrd.availableKernelModules = [
       "vfio_pci"
       "vfio"
       "vfio_iommu_type1"
