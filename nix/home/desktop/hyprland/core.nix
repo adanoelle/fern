@@ -23,6 +23,19 @@ in
     idle.enable = lib.mkEnableOption "hypridle idle timer";
     lock.enable = lib.mkEnableOption "hyprlock screen locker";
 
+    # Fern shell options (alternative to Waybar)
+    fern = {
+      enable = lib.mkEnableOption "Fern shell (QuickShell-based bar)";
+
+      obs = {
+        enable = lib.mkEnableOption "Fern OBS bridge daemon";
+      };
+
+      themeWatcher = {
+        enable = lib.mkEnableOption "Fern theme file watcher";
+      };
+    };
+
     wallpaper = {
       enable = lib.mkEnableOption "wallpaper management with swww";
   

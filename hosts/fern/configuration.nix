@@ -58,9 +58,16 @@
 
     desktop.hyprland = {
       enable = true;
-      bar.enable  = true;   # Waybar
+      bar.enable  = false;  # Waybar (disabled - using Fern)
       idle.enable = true;   # hypridle
       lock.enable = true;   # hyprlock
+
+      # Fern shell (QuickShell-based bar)
+      fern = {
+        enable = true;
+        obs.enable = false;           # OBS integration (optional)
+        themeWatcher.enable = false;  # Live theme reload (optional)
+      };
 
       wallpaper = {
         enable = true;

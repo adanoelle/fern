@@ -87,11 +87,11 @@
         "quickshell": "quickshell"
       },
       "locked": {
-        "lastModified": 1752674556,
-        "narHash": "sha256-SWBAfmvQBkSgsjs2quzZgJchejjce9kopL4fFsn7v8w=",
+        "lastModified": 1766459200,
+        "narHash": "sha256-Y4C5gc7cOT1NP6KAqLZlkYd5u19zJw6F9duJ8LrXTTU=",
         "owner": "adanoelle",
         "repo": "fern-shell",
-        "rev": "24de49786400df2018c7359b902d1d4eb1294014",
+        "rev": "f8163e64b5cd174a9af6a3eaf4dbadfe2692edbe",
         "type": "github"
       },
       "original": {
