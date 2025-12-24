@@ -139,7 +139,7 @@
 
   nix.settings.trusted-users = [ "root" "ada" ];
 
-  services.fern-shell.enable = true;
+  # Fern fonts (system-wide) - shell services are managed by Home-Manager
   services.fern-fonts.enable = true;
 
   time.timeZone = "America/New_York";
