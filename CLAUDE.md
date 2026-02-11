@@ -11,23 +11,35 @@ Hyprland, advanced git workflows, and multiple language toolchains.
 ### Essential Operations
 
 ```bash
-# Rebuild system
-sudo nixos-rebuild switch --flake .#fern
+# All common operations are available via just (inside devShell)
+just              # list all recipes
+just switch       # rebuild and switch
+just test         # test without switching
+just test-trace   # test with --show-trace
+just dry          # dry-build only
+just rollback     # rollback to previous generation
+just update       # update flake inputs
+just fmt          # format Nix files
+just check        # nix flake check
+just lint         # format then check
+just gc           # garbage-collect old generations
+```
 
-# Test changes without switching
-sudo nixos-rebuild test --flake .#fern
+### Documentation
 
-# Validate configuration
-nix flake check
+```bash
+# Serve with live reload + open browser
+just book-serve
 
-# Format Nix code
-nixpkgs-fmt .
+# Build to book/build/
+just book-build
 
-# Update dependencies
-nix flake update
+# Pure Nix build
+just book-nix
 
-# Rollback if something breaks
-sudo nixos-rebuild --rollback switch
+# Dev shell with repo tools (just, mdbook, nixpkgs-fmt)
+direnv allow       # one-time; auto-activates via .envrc
+# or: nix develop
 ```
 
 ### Development Workflow
@@ -109,13 +121,17 @@ sudo nixos-rebuild test --flake .#fern --show-trace
 fern/
 ├── CLAUDE.md           # This file
 ├── README.md           # Main documentation
+├── justfile           # Command recipes (primary interface)
 ├── flake.nix          # Flake definition
 ├── flake.lock         # Pinned dependencies
 ├── flake.parts/       # Modular flake organization
-│   ├── 10-overlays.nix
+│   ├── 00-overlay.nix
+│   ├── 10-core.nix
 │   ├── 20-nixos-mods.nix
 │   ├── 30-home-mods.nix
-│   └── 99-outputs.nix
+│   ├── 40-hosts.nix
+│   ├── 50-dev.nix
+│   └── 60-docs.nix
 ├── hosts/             # Machine configurations
 │   └── fern/          # Primary workstation
 ├── nix/               # All modules
@@ -129,6 +145,7 @@ fern/
 │       ├── core.nix
 │       ├── boot.nix
 │       └── ...
+├── book/              # mdBook documentation
 ├── docs/              # Documentation
 └── secrets/           # SOPS-encrypted secrets
 ```

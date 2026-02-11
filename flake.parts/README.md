@@ -20,10 +20,13 @@ configuration, making the flake maintainable and scalable.
   outputs = inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [
-        ./flake.parts/10-overlays.nix
+        ./flake.parts/00-overlay.nix
+        ./flake.parts/10-core.nix
         ./flake.parts/20-nixos-mods.nix
         ./flake.parts/30-home-mods.nix
-        ./flake.parts/99-outputs.nix
+        ./flake.parts/40-hosts.nix
+        ./flake.parts/50-dev.nix
+        ./flake.parts/60-docs.nix
       ];
     };
 }
@@ -33,21 +36,24 @@ configuration, making the flake maintainable and scalable.
 
 | File                | Purpose                            | Load Order |
 | ------------------- | ---------------------------------- | ---------- |
-| `10-overlays.nix`   | Package overlays and modifications | First      |
-| `20-nixos-mods.nix` | NixOS system modules registry      | Second     |
-| `30-home-mods.nix`  | Home Manager modules registry      | Third      |
-| `99-outputs.nix`    | Final flake outputs                | Last       |
+| `00-overlay.nix`    | Package overlays and modifications | First      |
+| `10-core.nix`       | Shared flake outputs (systems)     | Second     |
+| `20-nixos-mods.nix` | NixOS system modules registry      | Third      |
+| `30-home-mods.nix`  | Home Manager modules registry      | Fourth     |
+| `40-hosts.nix`      | Per-host NixOS configurations      | Fifth      |
+| `50-dev.nix`        | Development shell                  | Sixth      |
+| `60-docs.nix`       | Documentation outputs              | Seventh    |
 
 ## File Numbering Convention
 
 Files are numbered to control load order:
 
-- **00-19:** Early initialization, overlays
+- **00-09:** Early initialization, overlays
+- **10-19:** Core flake outputs
 - **20-39:** Module definitions
-- **40-59:** (Reserved for future use)
-- **60-79:** (Reserved for future use)
-- **80-98:** (Reserved for future use)
-- **99:** Final outputs and system configurations
+- **40-49:** Host configurations
+- **50-59:** Development tooling
+- **60-69:** Documentation
 
 ## Component Details
 
