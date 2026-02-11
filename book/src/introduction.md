@@ -1,40 +1,51 @@
 # Introduction
 
-Fern is a NixOS configuration for a development workstation built around Hyprland, Helix, and Nushell. It uses Nix flakes with flake-parts for modular organization, Home Manager for user-level configuration, and SOPS-nix for secret management.
+Fern is a NixOS configuration for a development workstation. It manages the full
+stack from bootloader to shell prompt using Nix flakes, Home Manager, and a
+modular architecture that supports multiple machines with different hardware.
 
-This book documents the system's architecture, development workflows, and tooling. Chapters marked as drafts in the sidebar are planned but not yet written.
+## Key technologies
 
-## What's here now
+- **Hyprland** -- Wayland compositor with per-workspace wallpapers and a custom
+  QuickShell bar
+- **Helix** -- Modal text editor with per-language LSP integration
+- **Nushell** -- Structured-data shell with Starship prompt and Zoxide
+  navigation
+- **Nix flakes** -- Reproducible system builds with pinned inputs via
+  `flake.lock`
+- **Home Manager** -- User-space configuration (dotfiles, services, packages) as
+  NixOS modules
+- **SOPS-nix** -- Age-encrypted secrets decrypted at activation time
+- **flake-parts** -- Modular flake organization across numbered files
 
-- **Gamedev** — Full documentation of the C++/SDL2 game development stack, debug overlays, profiling tools, and GPU debugging workflows available through this configuration.
-
-## Building the book
+## Quick start
 
 ```bash
-# Live preview with hot reload
-nix run .#book-serve
+# Enter the dev shell (provides just, mdbook, nixpkgs-fmt)
+nix develop            # or: direnv allow
 
-# Build to book/build/
-nix run .#book-build
+# Test a rebuild without switching
+just test
 
-# Pure Nix build (for CI)
-nix build .#book
+# Rebuild and switch
+just switch
 
-# Drop into a shell with mdbook available
-nix develop .#docs
+# Serve this documentation with live reload
+just book-serve
+
+# Format Nix files
+just fmt
 ```
 
-## Project layout
+## How to read this book
 
-```
-fern/
-├── flake.nix              # Flake definition
-├── flake.parts/           # Modular flake organization
-├── hosts/fern/            # Machine-specific configuration
-├── nix/home/              # Home Manager modules
-├── nix/modules/           # NixOS system modules
-├── book/                  # This documentation (mdBook)
-│   ├── book.toml
-│   └── src/
-└── secrets/               # SOPS-encrypted secrets
-```
+If you are new to NixOS, start with the [Concepts](concepts/nixos-and-flakes.md)
+chapter. It explains flakes, the module system, and Home Manager without
+assuming prior knowledge.
+
+If you already know NixOS and want to understand how this repository is
+organized, go to [Architecture](architecture/repository-layout.md).
+
+Everything else is reference material organized by topic: desktop environment,
+development tools, language toolchains, system services, security, and
+operations.

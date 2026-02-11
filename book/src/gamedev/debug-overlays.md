@@ -1,10 +1,14 @@
 # Debug Overlays
 
-Debug overlays render diagnostic information directly into the game world — hitboxes, colliders, velocities, entity labels, and more. This chapter covers three complementary techniques available with the Fern gamedev stack.
+Debug overlays render diagnostic information directly into the game world —
+hitboxes, colliders, velocities, entity labels, and more. This chapter covers
+three complementary techniques available with the Fern gamedev stack.
 
 ## ImGui ImDrawList — World-Space Debug Geometry
 
-ImGui's `ImDrawList` API can draw arbitrary 2D primitives (lines, circles, rects, text) into the game viewport. The trick is to create a fullscreen transparent ImGui window and draw in world coordinates.
+ImGui's `ImDrawList` API can draw arbitrary 2D primitives (lines, circles,
+rects, text) into the game viewport. The trick is to create a fullscreen
+transparent ImGui window and draw in world coordinates.
 
 ### Setup
 
@@ -23,7 +27,8 @@ ImDrawList* dl = ImGui::GetWindowDrawList();
 
 ### Drawing in World Space
 
-Convert world coordinates to screen coordinates using your camera transform, then draw:
+Convert world coordinates to screen coordinates using your camera transform,
+then draw:
 
 ```cpp
 // Example: draw a rectangle around a collider
@@ -42,20 +47,21 @@ dl->AddText(screen_min - ImVec2(0, 16), IM_COL32(255, 255, 255, 200), "Player");
 
 ### Useful Primitives
 
-| Method | Use Case |
-|---|---|
-| `AddRect` / `AddRectFilled` | AABBs, hitboxes, trigger zones |
-| `AddCircle` / `AddCircleFilled` | Radii, sensor ranges |
-| `AddLine` | Velocity vectors, raycasts, normals |
-| `AddText` | Entity labels, state names, values |
-| `AddPolyline` | Arbitrary collision shapes |
-| `AddQuadFilled` | Oriented bounding boxes |
+| Method                          | Use Case                            |
+| ------------------------------- | ----------------------------------- |
+| `AddRect` / `AddRectFilled`     | AABBs, hitboxes, trigger zones      |
+| `AddCircle` / `AddCircleFilled` | Radii, sensor ranges                |
+| `AddLine`                       | Velocity vectors, raycasts, normals |
+| `AddText`                       | Entity labels, state names, values  |
+| `AddPolyline`                   | Arbitrary collision shapes          |
+| `AddQuadFilled`                 | Oriented bounding boxes             |
 
 Remember to call `ImGui::End()` after drawing.
 
 ## Box2D v3 Debug Draw
 
-Box2D v3 provides a `b2DebugDraw` struct with callback function pointers. You implement each callback to draw with your renderer (here, ImDrawList).
+Box2D v3 provides a `b2DebugDraw` struct with callback function pointers. You
+implement each callback to draw with your renderer (here, ImDrawList).
 
 ### Setting Up the Callbacks
 
@@ -111,7 +117,8 @@ void my_draw_solid_polygon(
 
 ### Rendering
 
-Call `b2World_Draw(world_id, &debug_draw)` each frame when debug rendering is active. Toggle individual flags at runtime via your ImGui debug panel.
+Call `b2World_Draw(world_id, &debug_draw)` each frame when debug rendering is
+active. Toggle individual flags at runtime via your ImGui debug panel.
 
 ## EnTT Entity Inspection
 
@@ -134,7 +141,9 @@ entt::meta<Health>()
 
 ### imgui_entt_entity_editor
 
-[imgui_entt_entity_editor](https://github.com/Green-Sky/imgui_entt_entity_editor) is a single-header library for inspecting and editing EnTT entities in an ImGui window. Vendor it into your project:
+[imgui_entt_entity_editor](https://github.com/Green-Sky/imgui_entt_entity_editor)
+is a single-header library for inspecting and editing EnTT entities in an ImGui
+window. Vendor it into your project:
 
 ```cpp
 #include "imgui_entt_entity_editor.hpp"

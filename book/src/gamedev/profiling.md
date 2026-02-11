@@ -1,10 +1,12 @@
 # Profiling Tools
 
-This chapter covers the CPU and memory profiling tools available in the Fern gamedev stack. For GPU-specific tooling, see [GPU Debugging](gpu-debugging.md).
+This chapter covers the CPU and memory profiling tools available in the Fern
+gamedev stack. For GPU-specific tooling, see [GPU Debugging](gpu-debugging.md).
 
 ## Tracy
 
-Tracy is a frame profiler designed for games and real-time applications. It instruments your code with C++ macros and streams data to a separate viewer.
+Tracy is a frame profiler designed for games and real-time applications. It
+instruments your code with C++ macros and streams data to a separate viewer.
 
 ### Instrumentation
 
@@ -27,17 +29,17 @@ void game_loop() {
 
 ### Feature Overview
 
-| Feature | Macro / API | What It Shows |
-|---|---|---|
-| **CPU zones** | `ZoneScoped`, `ZoneScopedN("name")` | Hierarchical function timing on timeline |
-| **GPU zones** | `TracyGpuZone("name")` | GPU command timing (OpenGL / Vulkan) |
-| **Frame marks** | `FrameMark` | Frame boundaries and frame time graph |
-| **Memory tracking** | `TracyAlloc(ptr, size)` / `TracyFree(ptr)` | Allocation timeline, leak detection |
-| **Lock contention** | `TracyLockable(std::mutex, name)` | Mutex wait time, contention hotspots |
-| **Lua profiling** | `tracy.ZoneBeginN("name")` / `tracy.ZoneEnd()` | Lua script zones on same timeline |
-| **Plots** | `TracyPlot("name", value)` | Custom value graphs (entity count, memory, etc.) |
-| **Messages** | `TracyMessage(text, len)` | Text annotations on the timeline |
-| **Frame screenshots** | `TracyEmitFrameImage(ptr, w, h, offset, flip)` | Thumbnail per frame in the viewer |
+| Feature               | Macro / API                                    | What It Shows                                    |
+| --------------------- | ---------------------------------------------- | ------------------------------------------------ |
+| **CPU zones**         | `ZoneScoped`, `ZoneScopedN("name")`            | Hierarchical function timing on timeline         |
+| **GPU zones**         | `TracyGpuZone("name")`                         | GPU command timing (OpenGL / Vulkan)             |
+| **Frame marks**       | `FrameMark`                                    | Frame boundaries and frame time graph            |
+| **Memory tracking**   | `TracyAlloc(ptr, size)` / `TracyFree(ptr)`     | Allocation timeline, leak detection              |
+| **Lock contention**   | `TracyLockable(std::mutex, name)`              | Mutex wait time, contention hotspots             |
+| **Lua profiling**     | `tracy.ZoneBeginN("name")` / `tracy.ZoneEnd()` | Lua script zones on same timeline                |
+| **Plots**             | `TracyPlot("name", value)`                     | Custom value graphs (entity count, memory, etc.) |
+| **Messages**          | `TracyMessage(text, len)`                      | Text annotations on the timeline                 |
+| **Frame screenshots** | `TracyEmitFrameImage(ptr, w, h, offset, flip)` | Thumbnail per frame in the viewer                |
 
 ### Connecting
 
@@ -54,11 +56,13 @@ find_package(Tracy REQUIRED)
 target_link_libraries(my_game PRIVATE Tracy::TracyClient)
 ```
 
-Add `-DTRACY_ENABLE` to your debug build's compile definitions. When `TRACY_ENABLE` is not defined, all macros compile to nothing.
+Add `-DTRACY_ENABLE` to your debug build's compile definitions. When
+`TRACY_ENABLE` is not defined, all macros compile to nothing.
 
 ## heaptrack
 
-heaptrack profiles heap allocations over time — where they happen, how large they are, and when they leak.
+heaptrack profiles heap allocations over time — where they happen, how large
+they are, and when they leak.
 
 ### Basic Usage
 
@@ -75,20 +79,25 @@ heaptrack_gui heaptrack.my_game.*.zst
 
 ### What to Look For
 
-- **Allocation hotspots** — functions that allocate most frequently (per-frame `new`/`malloc` in hot paths)
-- **Temporary allocations** — short-lived allocations that could use stack or pool allocation instead
-- **Leak candidates** — allocations that grow monotonically without corresponding frees
+- **Allocation hotspots** — functions that allocate most frequently (per-frame
+  `new`/`malloc` in hot paths)
+- **Temporary allocations** — short-lived allocations that could use stack or
+  pool allocation instead
+- **Leak candidates** — allocations that grow monotonically without
+  corresponding frees
 - **Peak memory** — the high-water mark and what caused it
 
 ### Tips
 
 - Run for a representative session (load a level, play for a bit, exit)
 - Compare before/after: heaptrack's diff mode can compare two profiles
-- Focus on per-frame allocations first — these have the most impact on frame time consistency
+- Focus on per-frame allocations first — these have the most impact on frame
+  time consistency
 
 ## perf + flamegraph
 
-`perf` is a kernel-level sampling profiler. Combined with `flamegraph`, it produces visual call-stack breakdowns.
+`perf` is a kernel-level sampling profiler. Combined with `flamegraph`, it
+produces visual call-stack breakdowns.
 
 ### Basic Pipeline
 
@@ -123,7 +132,8 @@ Red = regression, blue = improvement.
 
 ### NixOS Note: `perf_event_paranoid`
 
-By default, `perf` may require elevated permissions. If you get permission errors:
+By default, `perf` may require elevated permissions. If you get permission
+errors:
 
 ```bash
 # Check current setting
@@ -141,7 +151,8 @@ boot.kernel.sysctl."kernel.perf_event_paranoid" = 1;
 
 ## Valgrind
 
-Valgrind's memcheck tool detects memory errors at runtime: leaks, use-after-free, uninitialized reads, and buffer overflows.
+Valgrind's memcheck tool detects memory errors at runtime: leaks,
+use-after-free, uninitialized reads, and buffer overflows.
 
 ### Basic Usage
 
@@ -164,11 +175,13 @@ cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
 -O2 -g
 ```
 
-Avoid `-O3` with Valgrind — aggressive inlining makes stack traces harder to read.
+Avoid `-O3` with Valgrind — aggressive inlining makes stack traces harder to
+read.
 
 ### Suppression Files
 
-SDL, GPU drivers, and system libraries often produce false positives. Create a suppression file:
+SDL, GPU drivers, and system libraries often produce false positives. Create a
+suppression file:
 
 ```
 # sdl.supp
@@ -188,15 +201,17 @@ valgrind --suppressions=sdl.supp --leak-check=full ./my_game
 
 ### What to Look For
 
-| Error | Meaning | Severity |
-|---|---|---|
-| **Invalid read/write** | Use-after-free or buffer overflow | Critical |
-| **Conditional jump on uninitialised value** | Reading uninitialized memory | High |
-| **Definitely lost** | Memory leak (no pointer to block exists) | High |
-| **Indirectly lost** | Leaked via a definitely-lost block | Medium |
-| **Possibly lost** | Ambiguous — interior pointer exists | Investigate |
-| **Still reachable** | Not freed at exit but pointer exists | Usually fine |
+| Error                                       | Meaning                                  | Severity     |
+| ------------------------------------------- | ---------------------------------------- | ------------ |
+| **Invalid read/write**                      | Use-after-free or buffer overflow        | Critical     |
+| **Conditional jump on uninitialised value** | Reading uninitialized memory             | High         |
+| **Definitely lost**                         | Memory leak (no pointer to block exists) | High         |
+| **Indirectly lost**                         | Leaked via a definitely-lost block       | Medium       |
+| **Possibly lost**                           | Ambiguous — interior pointer exists      | Investigate  |
+| **Still reachable**                         | Not freed at exit but pointer exists     | Usually fine |
 
 ### Performance Impact
 
-Valgrind runs your program in a virtual CPU — expect 10-50x slowdown. For game testing, reduce resolution and disable heavy rendering to keep things interactive enough.
+Valgrind runs your program in a virtual CPU — expect 10-50x slowdown. For game
+testing, reduce resolution and disable heavy rendering to keep things
+interactive enough.
