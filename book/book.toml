@@ -1,0 +1,18 @@
+[book]
+title = "Fern NixOS Configuration"
+authors = ["Ada"]
+description = "Documentation for the Fern NixOS development workstation"
+language = "en"
+src = "src"
+
+[build]
+build-dir = "build"
+
+[output.html]
+default-theme = "coal"
+preferred-dark-theme = "coal"
+git-repository-url = "https://github.com/adanoelle/fern"
+edit-url-template = "https://github.com/adanoelle/fern/edit/main/book/src/{path}"
+
+[output.html.search]
+enable = true
