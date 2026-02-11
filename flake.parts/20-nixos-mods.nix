@@ -16,14 +16,17 @@
     graphics-asahi    = import ../nix/modules/graphics-asahi.nix;
     greet             = import ../nix/modules/desktop/greetd.nix;
     localstack        = import ../nix/modules/devtools/localstack.nix;
-    lmstudio          = import ../nix/modules/desktop/lmstudio.nix; 
+    lmstudio          = import ../nix/modules/desktop/lmstudio.nix;
+    looking-glass     = import ../nix/modules/devtools/looking-glass.nix;
     rust-dev          = import ../nix/modules/devtools/rust.nix;
     secrets           = import ../nix/modules/secrets.nix;
     guard             = import ../nix/modules/secrets-guard.nix;
     teams             = import ../nix/modules/desktop/teams.nix;
     typescript        = import ../nix/modules/devtools/node-ts.nix;
     users             = import ../nix/modules/users.nix;
+    vfio              = import ../nix/modules/devtools/vfio.nix;
     vscode            = import ../nix/modules/desktop/vscode.nix;
+    windows-vm        = import ../nix/modules/devtools/windows-vm.nix;
     sqlserver         = import ../nix/modules/desktop/sqlserver.nix;
   };
 }
