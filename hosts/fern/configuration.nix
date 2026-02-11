@@ -19,6 +19,7 @@
     self.nixosModules.lmstudio
     self.nixosModules.users
     self.nixosModules.audio
+    self.nixosModules.gaming
     self.nixosModules.graphics
     self.nixosModules.greet
     self.nixosModules.localstack
@@ -47,38 +48,38 @@
   # --- User imports
   home-manager.users.ada = {
     imports = [
-      self.homeModules.cli       # cli: git, bat, ghostty, etc.
-      self.homeModules.git       # git: worktrees, tools, claude integration
-      self.homeModules.desktop   # hyprland
-      self.homeModules.devtools  # zig, cpp
-      self.homeModules.shells    # shells: nushell, starship, zoxide
+      self.homeModules.cli # cli: git, bat, ghostty, etc.
+      self.homeModules.git # git: worktrees, tools, claude integration
+      self.homeModules.desktop # hyprland
+      self.homeModules.devtools # zig, cpp
+      self.homeModules.shells # shells: nushell, starship, zoxide
       self.homeModules.workspace # manages xdg worspace directories
     ];
     home.packages = [ pkgs.home-manager ];
 
     desktop.hyprland = {
       enable = true;
-      bar.enable  = false;  # Waybar (disabled - using Fern)
-      idle.enable = true;   # hypridle
-      lock.enable = true;   # hyprlock
+      bar.enable = false; # Waybar (disabled - using Fern)
+      idle.enable = true; # hypridle
+      lock.enable = true; # hyprlock
 
       # Fern shell (QuickShell-based bar)
       fern = {
         enable = true;
-        obs.enable = false;           # OBS integration (optional)
-        themeWatcher.enable = false;  # Live theme reload (optional)
+        obs.enable = false; # OBS integration (optional)
+        themeWatcher.enable = false; # Live theme reload (optional)
       };
 
       wallpaper = {
         enable = true;
-        path = "/home/ada/wallpapers/shrine.png";  # fallback/default
-        monitor = "HDMI-A-1";                      # your current setup still works
-    
+        path = "/home/ada/wallpapers/shrine.png"; # fallback/default
+        monitor = "HDMI-A-1"; # your current setup still works
+
         # Optional: per-monitor setup (replaces path/monitor)
         monitors = {
           "HDMI-A-1" = "/home/ada/wallpapers/shrine.png";
         };
-    
+
         # Optional: per-workspace wallpapers
         workspaces = {
           "1" = "/home/ada/wallpapers/totoro_house.png";
@@ -87,7 +88,7 @@
           "4" = "/home/ada/wallpapers/nausicaa.png";
           "5" = "/home/ada/wallpapers/wind_rises_plane.png";
         };
-    
+
         # Optional: transition customization
         transition = {
           type = "fade";
@@ -95,12 +96,12 @@
           fps = 60;
         };
       };
-       
+
       # Optional style tweaks
       style = {
-        gapsIn   = 6;
-        gapsOut  = 12;
-        border   = 2;
+        gapsIn = 6;
+        gapsOut = 12;
+        border = 2;
         rounding = 5;
       };
     };

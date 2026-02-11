@@ -7,6 +7,7 @@
     ./devtools/csharp.nix
     ./devtools/python.nix
     ./devtools/typescript.nix
+    ./devtools/gamedev.nix
     ./devtools/zig.nix
   ];
 }
