@@ -1,11 +1,11 @@
 {
   inputs = {
-    nixpkgs.url       = "github:NixOS/nixpkgs/nixos-unstable";
-    flake-parts.url   = "github:hercules-ci/flake-parts";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    flake-parts.url = "github:hercules-ci/flake-parts";
     flake-utils.url = "github:numtide/flake-utils";
 
     home-manager = {
-      url   = "github:nix-community/home-manager";
+      url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -23,7 +23,7 @@
     };
 
     rust-overlay = {
-      url   = "github:oxalica/rust-overlay";
+      url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -51,6 +51,8 @@
         ./flake.parts/20-nixos-mods.nix
         ./flake.parts/30-home-mods.nix
         ./flake.parts/40-hosts.nix
+        ./flake.parts/50-dev.nix
+        ./flake.parts/60-docs.nix
       ];
     };
 }
