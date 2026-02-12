@@ -6,7 +6,8 @@
 </table>
 
 Modular NixOS system configuration built with Flakes, Home Manager, and
-flake-parts. Targets a Hyprland development workstation.
+flake-parts. Targets a Hyprland development workstation. You can find 
+detailed documentation in my [book](https://adanoelle.github.io/fern/).
 
 ## Clone and Bootstrap
 
