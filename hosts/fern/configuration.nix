@@ -21,6 +21,7 @@
     self.nixosModules.audio
     self.nixosModules.gaming
     self.nixosModules.graphics
+    self.nixosModules.monitoring
     self.nixosModules.greet
     self.nixosModules.localstack
     self.nixosModules.rust-dev

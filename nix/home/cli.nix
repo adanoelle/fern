@@ -4,6 +4,7 @@
     ./cli/audio-tools.nix
     ./cli/bat.nix
     ./cli/broot.nix
+    ./cli/claude-code.nix
     ./cli/crypt.nix
     ./cli/ghostty.nix
     ./cli/glow.nix

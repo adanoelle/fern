@@ -14,6 +14,7 @@
     fonts = import ../nix/modules/fonts.nix;
     gaming = import ../nix/modules/gaming.nix;
     graphics = import ../nix/modules/graphics.nix;
+    monitoring = import ../nix/modules/monitoring.nix;
     graphics-asahi = import ../nix/modules/graphics-asahi.nix;
     greet = import ../nix/modules/desktop/greetd.nix;
     localstack = import ../nix/modules/devtools/localstack.nix;

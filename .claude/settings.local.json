@@ -4,7 +4,9 @@
       "WebSearch",
       "Bash(git -C /home/ada/src/nix/fern log --oneline -10)",
       "Bash(git -C /home/ada/src/nix/fern diff -- .gitignore hosts/fern/configuration.nix nix/home/desktop.nix nix/home/desktop/chromium.nix nix/home/desktop/nyxt.nix nix/home/devtools.nix nix/home/devtools/gamedev.nix flake.parts/20-nixos-mods.nix)",
-      "Bash(git -C /home/ada/src/nix/fern status:*)"
+      "Bash(git -C /home/ada/src/nix/fern status:*)",
+      "Bash(ls:*)",
+      "WebFetch(domain:rust-lang.github.io)"
     ]
   }
 }
