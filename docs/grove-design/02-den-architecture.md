@@ -129,8 +129,9 @@ grove/
 │   │   ├── default.nix         # hyprland/niri, audio, fonts, greetd
 │   │   ├── nvidia.nix          # provides.nvidia GPU config
 │   │   ├── asahi.nix           # provides.asahi GPU config
-│   │   ├── igpu.nix            # provides.igpu (Intel/AMD integrated)
-│   │   └── frond.nix           # frond shell integration (quickshell + niri + control plane)
+│   │   └── igpu.nix            # provides.igpu (Intel/AMD integrated)
+│   │   # NOTE: no frond.nix here — frond exports its own den aspects
+│   │   # from the frond repo. Hosts include inputs.frond.den.aspects.frond
 │   │
 │   ├── # ── Laptop aspects ──
 │   ├── laptop.nix              # TLP, power mgmt, wifi, bluetooth, lid switch
@@ -207,16 +208,16 @@ grove/
 ### modules/hosts/fern.nix — Per-Host Aspect
 
 ```nix
-{ den, ... }: {
+{ den, inputs, ... }: {
   den.aspects.fern = {
     includes = [
       den.aspects.desktop
-      den.aspects.desktop.provides.igpu    # MS-A2 has AMD integrated
-      den.aspects.frond                     # quickshell + niri
-      den.aspects.devtools                  # all toolchains (or pick individually below)
-      # den.aspects.devtools.provides.rust  # alternative: just Rust
+      den.aspects.desktop.provides.igpu       # MS-A2 has AMD integrated
+      inputs.frond.den.aspects.frond           # from frond repo (see 03-frond-shell-integration.md)
+      den.aspects.devtools                     # all toolchains (or pick individually below)
+      # den.aspects.devtools.provides.rust     # alternative: just Rust
       den.aspects.docker
-      den.aspects.server                    # gitea, personal site on this machine too
+      den.aspects.server                       # gitea, personal site on this machine too
     ];
     nixos = { ... }: {
       # fern-specific NixOS config (if any beyond what aspects provide)
@@ -228,14 +229,14 @@ grove/
 ### modules/hosts/moss.nix — Per-Host Aspect
 
 ```nix
-{ den, ... }: {
+{ den, inputs, ... }: {
   den.aspects.moss = {
     includes = [
       den.aspects.desktop
       den.aspects.desktop.provides.asahi
-      den.aspects.frond
+      inputs.frond.den.aspects.frond           # from frond repo
       den.aspects.laptop
-      den.aspects.devtools                  # all toolchains
+      den.aspects.devtools                     # all toolchains
       den.aspects.docker
     ];
   };

@@ -164,13 +164,13 @@ home-manager.users.ada = {
 
 ```nix
 # modules/hosts/fern.nix
-{ den, ... }: {
+{ den, inputs, ... }: {
   den.aspects.fern = {
     includes = [
       den.aspects.desktop
-      den.aspects.desktop.provides.igpu   # AMD integrated on MS-A2
-      den.aspects.frond
-      den.aspects.devtools                  # all toolchains
+      den.aspects.desktop.provides.igpu        # AMD integrated on MS-A2
+      inputs.frond.den.aspects.frond            # from frond repo
+      den.aspects.devtools                      # all toolchains
       # or selectively:
       # den.aspects.devtools.provides.rust
       # den.aspects.devtools.provides.node-ts
@@ -202,14 +202,14 @@ Same as fern (identical imports and git config).
 
 ```nix
 # modules/hosts/moss.nix
-{ den, ... }: {
+{ den, inputs, ... }: {
   den.aspects.moss = {
     includes = [
       den.aspects.desktop
       den.aspects.desktop.provides.asahi
-      den.aspects.frond
+      inputs.frond.den.aspects.frond            # from frond repo
       den.aspects.laptop
-      den.aspects.devtools                  # all toolchains
+      den.aspects.devtools                      # all toolchains
       den.aspects.docker
     ];
   };

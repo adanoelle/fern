@@ -67,7 +67,11 @@ Before starting grove:
 6. **Create desktop aspects**
    - `modules/desktop/default.nix` — audio, fonts, greetd, compositor base
    - `modules/desktop/igpu.nix` — AMD integrated graphics for MS-A2
-   - `modules/desktop/frond.nix` — frond integration aspect
+   - No `frond.nix` in grove — frond exports its own den aspects; hosts
+     include `inputs.frond.den.aspects.frond` directly
+   - **Verify cross-flake aspect access** — test that
+     `inputs.frond.den.aspects.frond` works; see
+     `03-frond-shell-integration.md` for alternatives if it doesn't
 
 7. **Create dev toolchain aspects (start with what's needed)**
    - `modules/devtools/default.nix` — aggregator aspect
