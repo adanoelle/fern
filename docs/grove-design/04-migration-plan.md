@@ -70,8 +70,14 @@ Before starting grove:
    - `modules/desktop/frond.nix` — frond integration aspect
 
 7. **Create dev toolchain aspects (start with what's needed)**
-   - `modules/devtools/rust.nix` — from `nix/modules/devtools/rust.nix`
-   - `modules/devtools/node-ts.nix` — from `nix/modules/devtools/node-ts.nix`
+   - `modules/devtools/default.nix` — aggregator aspect
+     (`den.aspects.devtools`) with `includes` of all `provides.*`
+   - `modules/devtools/rust.nix` — `den.aspects.devtools.provides.rust`,
+     from `nix/modules/devtools/rust.nix`
+   - `modules/devtools/node-ts.nix` — `den.aspects.devtools.provides.node-ts`,
+     from `nix/modules/devtools/node-ts.nix`
+   - Hosts include `den.aspects.devtools` for all toolchains, or
+     `den.aspects.devtools.provides.rust` for just one
 
 8. **Test**
    ```bash

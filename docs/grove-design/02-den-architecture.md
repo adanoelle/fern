@@ -149,11 +149,12 @@ grove/
 │   │
 │   ├── # ── Dev toolchain aspects ──
 │   ├── devtools/
-│   │   ├── rust.nix            # Rust toolchain (via rust-overlay)
-│   │   ├── node-ts.nix         # Node.js + TypeScript
-│   │   ├── python.nix          # Python toolchain
-│   │   ├── c.nix               # C/C++ toolchain
-│   │   └── ada-lang.nix        # Ada toolchain
+│   │   ├── default.nix         # den.aspects.devtools aggregator (includes all provides)
+│   │   ├── rust.nix            # den.aspects.devtools.provides.rust
+│   │   ├── node-ts.nix         # den.aspects.devtools.provides.node-ts
+│   │   ├── python.nix          # den.aspects.devtools.provides.python
+│   │   ├── c.nix               # den.aspects.devtools.provides.c
+│   │   └── ada-lang.nix        # den.aspects.devtools.provides.ada-lang
 │   │
 │   ├── # ── Per-host aspects (just includes lists) ──
 │   ├── hosts/
@@ -212,9 +213,8 @@ grove/
       den.aspects.desktop
       den.aspects.desktop.provides.igpu    # MS-A2 has AMD integrated
       den.aspects.frond                     # quickshell + niri
-      den.aspects.devtools-rust
-      den.aspects.devtools-node-ts
-      den.aspects.devtools-python
+      den.aspects.devtools                  # all toolchains (or pick individually below)
+      # den.aspects.devtools.provides.rust  # alternative: just Rust
       den.aspects.docker
       den.aspects.server                    # gitea, personal site on this machine too
     ];
@@ -235,13 +235,70 @@ grove/
       den.aspects.desktop.provides.asahi
       den.aspects.frond
       den.aspects.laptop
-      den.aspects.devtools-rust
-      den.aspects.devtools-node-ts
+      den.aspects.devtools                  # all toolchains
       den.aspects.docker
     ];
   };
 }
 ```
+
+## Aggregator Aspects (provides as sub-features)
+
+Some aspects serve as aggregators — they group related sub-features via
+`provides`. This replaces the old fern pattern of aggregator modules that
+import sub-files.
+
+### Example: devtools
+
+```nix
+# modules/devtools/default.nix — the aggregator
+{ den, ... }: {
+  den.aspects.devtools = {
+    # Including devtools gives you ALL toolchains
+    includes = [
+      den.aspects.devtools.provides.rust
+      den.aspects.devtools.provides.node-ts
+      den.aspects.devtools.provides.python
+      den.aspects.devtools.provides.c
+    ];
+  };
+}
+
+# modules/devtools/rust.nix — a single toolchain
+{ den, ... }: {
+  den.aspects.devtools.provides.rust = {
+    nixos = { pkgs, ... }: {
+      # system-level Rust packages
+    };
+    homeManager = { pkgs, ... }: {
+      # user-level Rust tools (cargo, rustfmt, clippy, etc.)
+    };
+  };
+}
+```
+
+Hosts can include the whole bundle or pick selectively:
+
+```nix
+# Dev workstation — everything
+den.aspects.fern.includes = [ den.aspects.devtools ];
+
+# Server — just Rust (for building frond control plane, etc.)
+den.aspects.oak.includes = [ den.aspects.devtools.provides.rust ];
+```
+
+This same pattern applies to other aggregator-style aspects:
+
+- **`desktop`** uses `provides` for GPU variants: `.provides.nvidia`,
+  `.provides.asahi`, `.provides.igpu`
+- **`server`** could use `provides` for individual services: `.provides.gitea`,
+  `.provides.caddy`
+- **`storage`** could use `provides` for storage backends: `.provides.zfs`,
+  `.provides.samba`
+
+The key benefit over fern's aggregator pattern: **selective inclusion without
+enable flags**. In fern, `devtools.nix` imports everything and you use boolean
+options to toggle pieces. In grove, inclusion _is_ enablement.
 
 ## How Composition Works (No mkIf)
 

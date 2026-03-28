@@ -170,10 +170,12 @@ home-manager.users.ada = {
       den.aspects.desktop
       den.aspects.desktop.provides.igpu   # AMD integrated on MS-A2
       den.aspects.frond
-      den.aspects.devtools-rust
-      den.aspects.devtools-node-ts
-      den.aspects.devtools-python
-      den.aspects.devtools-c
+      den.aspects.devtools                  # all toolchains
+      # or selectively:
+      # den.aspects.devtools.provides.rust
+      # den.aspects.devtools.provides.node-ts
+      # den.aspects.devtools.provides.python
+      # den.aspects.devtools.provides.c
       den.aspects.docker
       den.aspects.server                   # if running gitea etc. on fern
       # den.aspects.cloud-aws             # add when needed
@@ -207,8 +209,7 @@ Same as fern (identical imports and git config).
       den.aspects.desktop.provides.asahi
       den.aspects.frond
       den.aspects.laptop
-      den.aspects.devtools-rust
-      den.aspects.devtools-node-ts
+      den.aspects.devtools                  # all toolchains
       den.aspects.docker
     ];
   };
