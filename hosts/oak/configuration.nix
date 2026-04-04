@@ -13,7 +13,7 @@
     self.nixosModules.c-dev
     self.nixosModules.aws
     self.nixosModules.azure-cli
-    self.nixosModules.cursor
+    # self.nixosModules.cursor  # TODO: update claude-desktop flake input (hash mismatch)
     # self.nixosModules.claude  # TODO: update claude-desktop flake input (hash mismatch)
     self.nixosModules.docker
     self.nixosModules.lmstudio
