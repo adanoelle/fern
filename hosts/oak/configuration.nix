@@ -58,6 +58,7 @@
   environment.systemPackages = with pkgs; [
     mesa-demos # glxinfo, glxgears
     vulkan-tools # vulkaninfo, vkcube
+    firefox
   ];
 
   home-manager = {
