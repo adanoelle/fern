@@ -8,7 +8,7 @@
     ./hardware.nix
 
     # --- NixOS modules
-    self.nixosModules.boot
+    # self.nixosModules.boot  # oak uses systemd-boot (firmware resets EFI boot order)
     self.nixosModules.core
     self.nixosModules.c-dev
     self.nixosModules.aws
@@ -33,6 +33,11 @@
     # --- Home-Manager as a NixOS module
     inputs.home-manager.nixosModules.home-manager
   ];
+
+  # --- Boot (systemd-boot — Minisforum firmware resets EFI boot order)
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+  boot.kernelPackages = pkgs.linuxPackages_zen;
 
   # --- AMD GPU (uses Mesa/AMDGPU, no proprietary driver needed)
   hardware.graphics.enable = true;
