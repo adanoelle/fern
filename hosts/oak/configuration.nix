@@ -48,11 +48,11 @@
   services.xserver.displayManager.lightdm.enable = false;
 
   # --- Disable regreet (GTK greeter renders with corruption on Granite Ridge iGPU);
-  #     auto-login into Hyprland via greetd instead.
+  #     use tuigreet as a lightweight TTY-based greeter instead.
   programs.regreet.enable = lib.mkForce false;
   services.greetd.settings.default_session = {
-    command = "${pkgs.hyprland}/bin/Hyprland";
-    user = "ada";
+    command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd Hyprland";
+    user = "greeter";
   };
 
   environment.systemPackages = with pkgs; [
