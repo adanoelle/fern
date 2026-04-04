@@ -1,0 +1,37 @@
+{ den, ... }:
+{
+  den.aspects.delta.homeManager = { ... }:
+    let
+      rosewater = "#f5e0dc"; flamingo = "#f2cdcd"; pink = "#f5c2e7";
+      mauve = "#cba6f7"; red = "#f38ba8"; maroon = "#eba0ac";
+      peach = "#fab387"; yellow = "#f9e2af"; green = "#a6e3a1";
+      teal = "#94e2d5"; sky = "#89dceb"; sapphire = "#74c7ec";
+      blue = "#89b4fa"; lavender = "#b4befe";
+    in
+    {
+      programs.git.delta = {
+        enable = true;
+        options = {
+          navigate = true;
+          line-numbers = true;
+          side-by-side = true;
+          max-line-length = 0;
+          features = "ada-theme";
+        };
+      };
+
+      programs.git.extraConfig."delta \"ada-theme\"" = {
+        dark = true;
+        minus-style = "bold ${red}";
+        plus-style = "bold ${green}";
+        hunk-header-style = "syntax ${mauve}";
+        file-style = "bold ${blue}";
+        commit-style = "bold ${mauve}";
+        line-numbers-minus-style = "dim ${maroon}";
+        line-numbers-plus-style = "dim ${teal}";
+        line-numbers-zero-style = "dim ${sky}";
+        line-numbers-left-style = "dim ${yellow}";
+        line-numbers-right-style = "dim ${yellow}";
+      };
+    };
+}

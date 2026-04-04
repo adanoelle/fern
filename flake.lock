@@ -75,6 +75,21 @@
         "type": "github"
       }
     },
+    "den": {
+      "locked": {
+        "lastModified": 1775237241,
+        "narHash": "sha256-2FpIpdiD1kgErn1GhsOcyVTE0HToPvjuxYtyo3De4oQ=",
+        "owner": "vic",
+        "repo": "den",
+        "rev": "6d6ff64642ee4f891b5635ce0b34a8e5cf52bdb2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "vic",
+        "repo": "den",
+        "type": "github"
+      }
+    },
     "devenv": {
       "inputs": {
         "cachix": "cachix",
@@ -369,6 +384,21 @@
         "type": "github"
       }
     },
+    "import-tree": {
+      "locked": {
+        "lastModified": 1773693634,
+        "narHash": "sha256-BtZ2dtkBdSUnFPPFc+n0kcMbgaTxzFNPv2iaO326Ffg=",
+        "owner": "vic",
+        "repo": "import-tree",
+        "rev": "c41e7d58045f9057880b0d85e1152d6a4430dbf1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "vic",
+        "repo": "import-tree",
+        "type": "github"
+      }
+    },
     "mkdocs-flake": {
       "inputs": {
         "flake-parts": "flake-parts_3",
@@ -656,11 +686,13 @@
       "inputs": {
         "claude-code": "claude-code",
         "claude-desktop": "claude-desktop",
+        "den": "den",
         "devenv": "devenv",
         "fern": "fern",
         "flake-parts": "flake-parts_4",
         "flake-utils": "flake-utils_2",
         "home-manager": "home-manager",
+        "import-tree": "import-tree",
         "nixos-apple-silicon": "nixos-apple-silicon",
         "nixpkgs": "nixpkgs_3",
         "rust-overlay": "rust-overlay",
