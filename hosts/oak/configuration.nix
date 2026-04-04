@@ -25,7 +25,7 @@
     self.nixosModules.rust-dev
     self.nixosModules.teams
     self.nixosModules.typescript
-    self.nixosModules.secrets
+    # self.nixosModules.secrets  # TODO: add oak's host key to .sops.yaml first
     self.nixosModules.guard
     self.nixosModules.vscode
     self.nixosModules.sqlserver
