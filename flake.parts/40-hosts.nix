@@ -2,7 +2,7 @@
 { withSystem, inputs, self, ... }:
 
 {
-  # --- Fern host (x86_64 + Nvidia)
+  # --- Fern host (Minisforum MS-A2, Ryzen 9 9955HX, AMD iGPU)
   flake.nixosConfigurations.fern =
     withSystem "x86_64-linux"
       ({ pkgs, system, ... }:
@@ -18,15 +18,15 @@
           specialArgs = { inherit self inputs; };
         });
 
-  # --- Oak host (Minisforum MS-A2, AMD)
-  flake.nixosConfigurations.oak =
+  # --- Fern-legacy host (decommissioned, x86_64 + Nvidia)
+  flake.nixosConfigurations.fern-legacy =
     withSystem "x86_64-linux"
       ({ pkgs, system, ... }:
         inputs.nixpkgs.lib.nixosSystem {
           inherit pkgs system;
           modules = [
-            ../hosts/oak/hardware.nix
-            ../hosts/oak/configuration.nix
+            ../hosts/fern-legacy/hardware.nix
+            ../hosts/fern-legacy/configuration.nix
             inputs.home-manager.nixosModules.default
             inputs.fern.nixosModules.fern-shell
             inputs.fern.nixosModules.fern-fonts
