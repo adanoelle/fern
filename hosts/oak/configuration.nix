@@ -41,7 +41,6 @@
   # --- Disable LightDM (pulled in by the installer default);
   #     use greetd from the greet module instead.
   services.xserver.enable = lib.mkForce false;
-  services.displayManager.lightdm.enable = lib.mkForce false;
 
   # --- Disable regreet (GTK greeter renders with corruption on Granite Ridge iGPU);
   #     auto-login into Hyprland via greetd instead.
