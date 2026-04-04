@@ -1,4 +1,4 @@
-{ self, inputs, pkgs, ... }:
+{ self, inputs, pkgs, lib, ... }:
 
 {
   # Allow dynamic linking for Python
@@ -37,6 +37,14 @@
   # --- AMD GPU (uses Mesa/AMDGPU, no proprietary driver needed)
   hardware.graphics.enable = true;
   programs.hyprland.enable = true;
+
+  # --- Disable regreet (GTK greeter fails on Granite Ridge iGPU);
+  #     auto-login into Hyprland via greetd instead.
+  programs.regreet.enable = lib.mkForce false;
+  services.greetd.settings.default_session = {
+    command = "${pkgs.hyprland}/bin/Hyprland";
+    user = "ada";
+  };
 
   environment.systemPackages = with pkgs; [
     mesa-demos # glxinfo, glxgears
