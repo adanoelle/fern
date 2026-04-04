@@ -14,7 +14,7 @@
     self.nixosModules.aws
     self.nixosModules.azure-cli
     self.nixosModules.cursor
-    self.nixosModules.claude
+    # self.nixosModules.claude  # TODO: update claude-desktop flake input (hash mismatch)
     self.nixosModules.docker
     self.nixosModules.lmstudio
     self.nixosModules.users
