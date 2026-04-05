@@ -17,11 +17,9 @@ fern/
 │   ├── user-ada.nix       # User ada aspect (bundles, Hyprland, git)
 │   ├── core.nix           # Nix settings, garbage collection
 │   ├── boot.nix           # GRUB + Zen kernel (legacy, fern pre-migration)
-│   ├── boot-asahi.nix     # systemd-boot for Apple Silicon
 │   ├── users.nix          # User account, NetworkManager, SSH
 │   ├── audio.nix          # PipeWire, low-latency, Audient iD24
 │   ├── graphics.nix       # NVIDIA modesetting, VRR, Wayland
-│   ├── graphics-asahi.nix # Asahi GPU driver
 │   ├── fonts.nix          # Nerd Fonts, fontconfig
 │   ├── gaming.nix         # Steam, Gamescope, GameMode
 │   ├── secrets.nix        # SOPS-nix, age keys
@@ -71,6 +69,9 @@ fern/
 │   │   ├── node-ts.nix
 │   │   ├── docker.nix
 │   │   └── ...
+│   ├── asahi/             # Apple Silicon (Asahi) aspects
+│   │   ├── boot.nix       # systemd-boot for Apple Silicon
+│   │   └── graphics.nix   # Asahi GPU driver
 │   └── cloud/             # Cloud platform aspects
 │       ├── aws-cli.nix
 │       └── azure-cli.nix

@@ -1,4 +1,4 @@
-# modules/boot-asahi.nix — Apple Silicon bootloader
+# modules/asahi/boot.nix — Apple Silicon bootloader
 { den, ... }:
 {
   den.aspects.boot-asahi.nixos = {

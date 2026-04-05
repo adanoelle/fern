@@ -89,7 +89,7 @@ The same palette is used in Ghostty (`catppuccin-frappe`), Helix
 | File                                       | Purpose                                |
 | ------------------------------------------ | -------------------------------------- |
 | `modules/desktop/_hyprland/wallpaper.nix`  | swww wallpaper management module       |
-| `modules/desktop/_hyprland/core.nix`       | Style options (gaps, border, rounding) |
+| `modules/desktop/hyprland.nix`             | Style options (gaps, border, rounding) |
 | `modules/desktop/_hyprland/bar.nix`        | Waybar Catppuccin theme                |
 | `modules/desktop/_hyprland/idlelock.nix`   | Lock screen Catppuccin colors          |
 | `modules/cli/ghostty.nix`                  | Terminal Catppuccin theme              |

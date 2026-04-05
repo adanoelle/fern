@@ -7,9 +7,9 @@ The Hyprland configuration is a den aspect (`den.aspects.hyprland`) defined in
 `modules/desktop/hyprland.nix`, with sub-modules split into
 `modules/desktop/_hyprland/`. The underscore prefix convention (`_hyprland/`)
 indicates a private sub-module directory belonging to the `hyprland.nix` aspect.
-The core sub-module (`core.nix`) defines the window manager behavior,
-keybindings, animations, and style. Other sub-modules handle the bar, wallpaper,
-idle/lock, and the Fern shell.
+The main aspect file defines the window manager behavior, keybindings,
+animations, and style. Sub-modules handle the bar, wallpaper, idle/lock, and the
+Fern shell.
 
 ## Core settings
 
@@ -95,8 +95,7 @@ monitor string). Per-host monitor setup is configured in the user aspect
 
 | File                                       | Purpose                                         |
 | ------------------------------------------ | ----------------------------------------------- |
-| `modules/desktop/hyprland.nix`             | Main den aspect for Hyprland                    |
-| `modules/desktop/_hyprland/core.nix`       | Core compositor config, keybindings, animations |
+| `modules/desktop/hyprland.nix`             | Main den aspect: compositor config, keybindings, animations |
 | `modules/desktop/_hyprland/bar.nix`        | Waybar configuration (disabled by default)      |
 | `modules/desktop/_hyprland/fern.nix`       | Fern Shell integration                          |
 | `modules/desktop/_hyprland/wallpaper.nix`  | swww wallpaper management                       |

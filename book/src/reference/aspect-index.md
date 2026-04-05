@@ -36,14 +36,13 @@ Aspects providing NixOS system-level configuration.
 | `aws-cli` | `modules/cloud/aws-cli.nix` | AWS CLI, vault, SAM, Terraform, security tools | fern |
 | `azure-cli` | `modules/cloud/azure-cli.nix` | Azure CLI with extensions, azcopy | fern |
 | `boot` | `modules/boot.nix` | GRUB + Zen kernel (x86_64 legacy) | -- |
-| `boot-asahi` | `modules/boot-asahi.nix` | systemd-boot (Apple Silicon) | moss |
+| `boot-asahi` | `modules/asahi/boot.nix` | systemd-boot (Apple Silicon) | moss |
 | `c-cpp` | `modules/devtools/c-cpp.nix` | GCC, Clang, CMake, hardening flags | fern |
 | `core` | `modules/core.nix` | Nix settings, flakes, garbage collection, overlays | fern, moss |
 | `docker` | `modules/devtools/docker.nix` | Docker Engine, BuildKit, Compose, utilities | fern, moss |
 | `fonts` | `modules/fonts.nix` | Nerd Fonts, fontconfig | fern |
 | `gaming` | `modules/gaming.nix` | Steam, Gamescope, GameMode, controllers | -- |
-| `graphics` | `modules/graphics.nix` | NVIDIA modesetting, VRR, Wayland vars | -- |
-| `graphics-asahi` | `modules/graphics-asahi.nix` | Asahi experimental GPU driver | moss |
+| `graphics-asahi` | `modules/asahi/graphics.nix` | Asahi experimental GPU driver | moss |
 | `greetd` | `modules/desktop/greetd.nix` | greetd, regreet, seatd, XDG portals, Polkit | fern, moss |
 | `lmstudio` | `modules/desktop/lmstudio.nix` | LM Studio AppImage wrapper | fern |
 | `localstack` | `modules/devtools/localstack.nix` | LocalStack container, awslocal wrapper | fern |
