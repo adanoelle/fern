@@ -5,7 +5,7 @@
 
 ## Rust
 
-Set by `nix/modules/devtools/rust.nix`:
+Set by `modules/devtools/rust.nix`:
 
 | Variable        | Value                                                                  | Purpose                                   |
 | --------------- | ---------------------------------------------------------------------- | ----------------------------------------- |
@@ -14,7 +14,7 @@ Set by `nix/modules/devtools/rust.nix`:
 
 ## C / C++
 
-Set by `nix/modules/devtools/c-toolchain.nix`:
+Set by `modules/devtools/c-cpp.nix`:
 
 | Variable   | Value                                          | Purpose                      |
 | ---------- | ---------------------------------------------- | ---------------------------- |
@@ -23,7 +23,7 @@ Set by `nix/modules/devtools/c-toolchain.nix`:
 
 ## .NET
 
-Set by `nix/modules/devtools/csharp-toolchain.nix`:
+Set by `modules/devtools/csharp.nix`:
 
 | Variable      | Value                        | Purpose                     |
 | ------------- | ---------------------------- | --------------------------- |
@@ -31,7 +31,7 @@ Set by `nix/modules/devtools/csharp-toolchain.nix`:
 
 ## Ada
 
-Set by `nix/modules/devtools/ada-toolchain.nix`:
+Set by `modules/devtools/ada.nix`:
 
 | Variable           | Value                            | Purpose                 |
 | ------------------ | -------------------------------- | ----------------------- |
@@ -39,7 +39,7 @@ Set by `nix/modules/devtools/ada-toolchain.nix`:
 
 ## Game development
 
-Set by `nix/home/devtools/gamedev.nix`:
+Set by `modules/devtools/gamedev.nix`:
 
 | Variable            | Value                             | Purpose                 |
 | ------------------- | --------------------------------- | ----------------------- |
@@ -48,7 +48,7 @@ Set by `nix/home/devtools/gamedev.nix`:
 
 ## NVIDIA / Graphics
 
-Set by `nix/modules/graphics.nix`:
+Set by `modules/graphics.nix`:
 
 | Variable                    | Value    | Purpose                              |
 | --------------------------- | -------- | ------------------------------------ |
@@ -59,13 +59,13 @@ Set by `nix/modules/graphics.nix`:
 
 ## Wayland / Desktop
 
-Set by `nix/home/desktop/chromium.nix`:
+Set by `modules/desktop/chromium.nix`:
 
 | Variable         | Value | Purpose                              |
 | ---------------- | ----- | ------------------------------------ |
 | `NIXOS_OZONE_WL` | `1`   | Signal Wayland mode to Electron apps |
 
-Set by `nix/home/desktop/nyxt.nix` (wrapper):
+Set by `modules/desktop/nyxt.nix` (wrapper):
 
 | Variable                          | Value | Purpose                     |
 | --------------------------------- | ----- | --------------------------- |
@@ -75,13 +75,13 @@ Set by `nix/home/desktop/nyxt.nix` (wrapper):
 
 ## AWS / Cloud
 
-Set by `nix/modules/cloud/aws-cli.nix`:
+Set by `modules/cloud/aws-cli.nix`:
 
 | Variable              | Value | Purpose                          |
 | --------------------- | ----- | -------------------------------- |
 | `AWS_SDK_LOAD_CONFIG` | `1`   | Load config from `~/.aws/config` |
 
-Set by `nix/modules/devtools/localstack.nix`:
+Set by `modules/devtools/localstack.nix`:
 
 | Variable                | Value                   | Purpose                     |
 | ----------------------- | ----------------------- | --------------------------- |
@@ -93,7 +93,7 @@ Set by `nix/modules/devtools/localstack.nix`:
 
 ## Azure
 
-Set by `nix/modules/azure-cli.nix`:
+Set by `modules/cloud/azure-cli.nix`:
 
 | Variable         | Value                   | Purpose                                 |
 | ---------------- | ----------------------- | --------------------------------------- |
@@ -101,7 +101,7 @@ Set by `nix/modules/azure-cli.nix`:
 
 ## Shell
 
-Set by `nix/home/shells/nushell.nix`:
+Set by `modules/shells/nushell.nix`:
 
 | Variable    | Value   | Purpose               |
 | ----------- | ------- | --------------------- |

@@ -9,6 +9,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    den.url = "github:vic/den";
+
+    import-tree.url = "github:vic/import-tree";
+
     fern.url = "github:adanoelle/fern-shell";
 
     devenv = {
@@ -48,17 +52,7 @@
     };
   };
 
-  outputs = inputs@{ flake-parts, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = [
-        ./flake.parts/00-overlay.nix
-        ./flake.parts/10-core.nix
-        ./flake.parts/20-nixos-mods.nix
-        ./flake.parts/30-home-mods.nix
-        ./flake.parts/40-hosts.nix
-        ./flake.parts/50-dev.nix
-        ./flake.parts/60-docs.nix
-      ];
-    };
+  outputs = inputs@{ flake-parts, import-tree, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; }
+      (import-tree ./modules);
 }
-

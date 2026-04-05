@@ -6,12 +6,13 @@
 ## Overview
 
 The TypeScript/Node setup covers both server-side Node.js development and
-front-end tooling. The system module provides the runtimes, and the home module
-adds linting, formatting, and editor integration.
+front-end tooling. It is provided as a single unified aspect
+(`modules/devtools/node-ts.nix`) covering runtimes, linting, formatting, and
+editor integration.
 
-## System module
+## Runtimes and package managers
 
-The system module (`nix/modules/devtools/node-ts.nix`) installs:
+The aspect (`modules/devtools/node-ts.nix`) installs:
 
 | Package     | Purpose                                  |
 | ----------- | ---------------------------------------- |
@@ -30,9 +31,9 @@ running dynamically-linked ELF binaries on NixOS. This is needed because Node.js
 native modules (built by npm/pnpm) expect a standard FHS layout that NixOS does
 not provide.
 
-## Home module
+## Development tooling
 
-The home module (`nix/home/devtools/typescript.nix`) adds:
+The aspect also includes:
 
 | Package                      | Purpose                      |
 | ---------------------------- | ---------------------------- |
@@ -63,7 +64,6 @@ management.
 
 ## Key files
 
-| File                               | Purpose                           |
-| ---------------------------------- | --------------------------------- |
-| `nix/modules/devtools/node-ts.nix` | Node.js, pnpm, Deno, nix-ld       |
-| `nix/home/devtools/typescript.nix` | LSP, linting, formatting, testing |
+| File                           | Purpose                                          |
+| ------------------------------ | ------------------------------------------------ |
+| `modules/devtools/node-ts.nix` | Node.js, pnpm, Deno, nix-ld, LSP, linting, testing |

@@ -5,18 +5,14 @@
 ## Overview
 
 Zig is provided through the `zig-overlay` flake input, which is applied as an
-overlay in `flake.parts/10-core.nix`. This makes `pkgs.zig` available
-system-wide with the latest official release.
+overlay in `modules/core.nix`. This makes `pkgs.zig` available system-wide with
+the latest official release.
 
-## System module
+## Aspect
 
-Zig is installed via the overlay applied in `10-core.nix` rather than through a
-dedicated system module. The overlay makes `pkgs.zig` available with the latest
-version from the zig-overlay.
+Zig is installed via the overlay applied in `modules/core.nix` and exposed
+through the aspect (`modules/devtools/zig.nix`):
 
-## Home module
-
-The home module (`nix/home/devtools/zig.nix`) installs the Zig package:
 
 ```nix
 { pkgs, ... }:
@@ -30,8 +26,8 @@ tooling is needed.
 
 ## Key files
 
-| File                        | Purpose                     |
-| --------------------------- | --------------------------- |
-| `nix/home/devtools/zig.nix` | Zig package installation    |
-| `flake.nix`                 | `zig-overlay` input         |
-| `flake.parts/10-core.nix`   | Zig overlay applied to pkgs |
+| File                       | Purpose                     |
+| -------------------------- | --------------------------- |
+| `modules/devtools/zig.nix` | Zig package installation    |
+| `flake.nix`                | `zig-overlay` input         |
+| `modules/core.nix`         | Zig overlay applied to pkgs |

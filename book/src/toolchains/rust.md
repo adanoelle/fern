@@ -10,9 +10,9 @@ provides `pkgs.rust-bin` for selecting specific toolchain versions. The
 configuration uses the latest stable release with rustfmt, clippy, and
 rust-analyzer.
 
-## System module
+## Aspect
 
-The system module (`nix/modules/devtools/rust.nix`) installs:
+The Rust aspect (`modules/devtools/rust.nix`) installs:
 
 | Package                          | Purpose                                 |
 | -------------------------------- | --------------------------------------- |
@@ -35,17 +35,17 @@ RUST_SRC_PATH="<nix-store>/lib/rustlib/src/rust/library"
 - **`-C target-cpu=native`** -- Use host CPU features
 - **`RUST_SRC_PATH`** -- Points rust-analyzer to standard library sources
 
-## Home module
+## Helix integration
 
 Rust LSP integration with Helix is provided through rust-analyzer (installed by
-the system module). Helix detects rust-analyzer automatically. Auto-format is
+the aspect). Helix detects rust-analyzer automatically. Auto-format is
 disabled in Helix for Rust files -- use `cargo fmt` manually.
 
 ## Key files
 
-| File                            | Purpose                                      |
-| ------------------------------- | -------------------------------------------- |
-| `nix/modules/devtools/rust.nix` | Rust toolchain, env vars, hardening          |
-| `nix/home/cli/helix.nix`        | Helix Rust language config (auto-format off) |
-| `flake.nix`                     | `rust-overlay` input                         |
-| `flake.parts/10-core.nix`       | Rust overlay applied to pkgs                 |
+| File                        | Purpose                                      |
+| --------------------------- | -------------------------------------------- |
+| `modules/devtools/rust.nix` | Rust toolchain, env vars, hardening          |
+| `modules/cli/helix.nix`    | Helix Rust language config (auto-format off) |
+| `flake.nix`                 | `rust-overlay` input                         |
+| `modules/core.nix`          | Rust overlay applied to pkgs                 |

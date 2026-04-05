@@ -3,11 +3,11 @@
 > Steam with Gamescope micro-compositor, GameMode CPU/GPU optimization, and
 > controller support for Xbox, PlayStation, and Nintendo controllers.
 
-The gaming configuration spans a system module (`nix/modules/gaming.nix`) for
-Steam, Gamescope, and hardware support, and a home module
-(`nix/home/desktop/gaming.nix`) for user-facing gaming utilities.
+The gaming configuration spans a system aspect (`den.aspects.gaming` in
+`modules/gaming.nix`) for Steam, Gamescope, and hardware support, and a home
+aspect (`modules/desktop/gaming-hm.nix`) for user-facing gaming utilities.
 
-## System module
+## System aspect
 
 ### Steam
 
@@ -57,9 +57,9 @@ Kernel modules loaded for controller input:
 The `joycond` service is enabled for Nintendo controller pairing and management.
 `steam-hardware` udev rules are enabled for broad controller compatibility.
 
-## Home module
+## Home aspect
 
-The home module (`nix/home/desktop/gaming.nix`) adds user-facing tools:
+The home aspect (`modules/desktop/gaming-hm.nix`) adds user-facing tools:
 
 | Package        | Purpose                         |
 | -------------- | ------------------------------- |
@@ -72,5 +72,5 @@ The home module (`nix/home/desktop/gaming.nix`) adds user-facing tools:
 
 | File                          | Purpose                                  |
 | ----------------------------- | ---------------------------------------- |
-| `nix/modules/gaming.nix`      | Steam, Gamescope, GameMode, controllers  |
-| `nix/home/desktop/gaming.nix` | MangoHud, Lutris, ProtonUp, Protontricks |
+| `modules/gaming.nix`              | Steam, Gamescope, GameMode, controllers (`den.aspects.gaming`)  |
+| `modules/desktop/gaming-hm.nix`  | MangoHud, Lutris, ProtonUp, Protontricks (home aspect)          |

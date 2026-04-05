@@ -5,14 +5,14 @@
 
 ## Overview
 
-The C/C++ toolchain is split across a system module (compilers, build tools,
-hardening flags) and a home module (debugging, profiling, LSP, static analysis).
-Together they provide a complete development environment for C and C++ projects.
+The C/C++ toolchain is provided as a single unified aspect
+(`modules/devtools/c-cpp.nix`) covering compilers, build tools, hardening flags,
+debugging, profiling, LSP, and static analysis. Together these provide a complete
+development environment for C and C++ projects.
 
-## System module
+## Compilers and build tools
 
-The system module (`nix/modules/devtools/c-toolchain.nix`) installs compilers
-and build tools:
+The aspect (`modules/devtools/c-cpp.nix`) installs compilers and build tools:
 
 | Package       | Purpose                          |
 | ------------- | -------------------------------- |
@@ -37,10 +37,9 @@ CXXFLAGS="-fstack-protector-strong -Wl,-z,relro,-z,now"
 - **`-fstack-protector-strong`** -- Detects stack buffer overflows
 - **`-Wl,-z,relro,-z,now`** -- Full RELRO (read-only GOT)
 
-## Home module
+## Debugging, profiling, and editor integration
 
-The home module (`nix/home/devtools/cpp.nix`) adds debugging, profiling, and
-editor integration:
+The aspect also includes debugging, profiling, and editor integration:
 
 **Debugging & profiling:**
 
@@ -83,7 +82,6 @@ shells to activate automatically when entering a directory.
 
 ## Key files
 
-| File                                   | Purpose                                 |
-| -------------------------------------- | --------------------------------------- |
-| `nix/modules/devtools/c-toolchain.nix` | Compilers, build tools, hardening flags |
-| `nix/home/devtools/cpp.nix`            | Debuggers, profilers, clangd LSP        |
+| File                         | Purpose                                                  |
+| ---------------------------- | -------------------------------------------------------- |
+| `modules/devtools/c-cpp.nix` | Compilers, build tools, hardening flags, debuggers, LSP  |

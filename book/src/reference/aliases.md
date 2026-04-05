@@ -26,7 +26,7 @@ Defined in the `justfile` at the repository root:
 
 ## Git aliases (git config)
 
-Defined in `nix/home/git/aliases.nix`. Use as `git <alias>`.
+Defined in `modules/git/aliases.nix`. Use as `git <alias>`.
 
 ### Status & info
 

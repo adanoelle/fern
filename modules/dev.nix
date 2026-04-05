@@ -1,0 +1,13 @@
+# modules/dev.nix — development shell
+{ ... }:
+{
+  perSystem = { pkgs, ... }: {
+    devShells.default = pkgs.mkShell {
+      packages = with pkgs; [
+        just
+        mdbook
+        nixpkgs-fmt
+      ];
+    };
+  };
+}

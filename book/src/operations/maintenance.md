@@ -5,7 +5,7 @@
 
 ## Automatic garbage collection
 
-The core module (`nix/modules/core.nix`) configures automatic weekly garbage
+The `core` aspect (`modules/core.nix`) configures automatic weekly garbage
 collection:
 
 ```nix

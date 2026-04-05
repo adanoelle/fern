@@ -26,18 +26,19 @@ Common causes:
 
 **Symptom:** `error: attribute 'moduleName' missing` or `undefined variable`.
 
-**Fix:** Check that the module is:
+**Fix:** Check that the aspect is:
 
-1. Registered in `flake.parts/20-nixos-mods.nix` (system modules)
-2. Imported in the host's `configuration.nix`
-3. Spelled correctly (names are case-sensitive)
+1. Present as a `.nix` file in the `modules/` tree (import-tree discovers it
+   automatically)
+2. Included by a host aspect, user aspect, or bundle
+3. Spelled correctly (aspect names are case-sensitive)
 
 ```bash
-# List available NixOS modules
-nix eval .#nixosModules --apply builtins.attrNames
+# Check flake outputs
+nix flake show
 
-# List available home modules
-nix eval .#homeModules --apply builtins.attrNames
+# Evaluate a specific host configuration
+nix eval .#nixosConfigurations.fern.config.system.build.toplevel --show-trace
 ```
 
 ### Package not found
@@ -49,8 +50,10 @@ nix eval .#homeModules --apply builtins.attrNames
 
 - The package name is correct (search at
   [search.nixos.org](https://search.nixos.org))
-- The overlays are applied (Rust and Zig need overlays from `10-core.nix`)
-- Unfree packages are allowed (`config.allowUnfree = true` in `10-core.nix`)
+- The overlays are applied (Rust, Zig, and Claude Code overlays are in
+  `modules/core.nix`)
+- Unfree packages are allowed (`config.allowUnfree = true` in
+  `modules/overlays.nix`)
 
 ### Type mismatch
 

@@ -73,7 +73,7 @@ void capture_frame() {
 ## MangoHud
 
 MangoHud is an FPS/frametime overlay for Vulkan and OpenGL applications. It's
-installed system-wide via the gaming module (`nix/modules/gaming.nix`) as part
+installed system-wide via the gaming aspect (`modules/gaming.nix`) as part
 of Steam's extra packages, but works with any game.
 
 ### Usage

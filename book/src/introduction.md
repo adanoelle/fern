@@ -1,8 +1,9 @@
 # Introduction
 
 Fern is a NixOS configuration for a development workstation. It manages the full
-stack from bootloader to shell prompt using Nix flakes, Home Manager, and a
-modular architecture that supports multiple machines with different hardware.
+stack from bootloader to shell prompt using Nix flakes, Home Manager, and the
+[vic/den](https://github.com/vic/den) aspect framework with automatic module
+discovery.
 
 ## Key technologies
 
@@ -15,8 +16,10 @@ modular architecture that supports multiple machines with different hardware.
   `flake.lock`
 - **Home Manager** -- User-space configuration (dotfiles, services, packages) as
   NixOS modules
+- **den** -- Aspect framework providing topology, includes, and dual-side
+  modules
+- **import-tree** -- Automatic recursive discovery of all modules in the tree
 - **SOPS-nix** -- Age-encrypted secrets decrypted at activation time
-- **flake-parts** -- Modular flake organization across numbered files
 
 ## Quick start
 
@@ -40,12 +43,18 @@ just fmt
 ## How to read this book
 
 If you are new to NixOS, start with the [Concepts](concepts/nixos-and-flakes.md)
-chapter. It explains flakes, the module system, and Home Manager without
-assuming prior knowledge.
+chapter. It explains flakes, the module system, Home Manager, and the
+[aspects, bundles, and topology](concepts/aspects-bundles-topology.md)
+vocabulary used throughout this book.
 
 If you already know NixOS and want to understand how this repository is
-organized, go to [Architecture](architecture/repository-layout.md).
+organized, go to [Architecture](architecture/repository-layout.md). The
+architecture section explains the flake entry point, den bootstrap, topology,
+aspect patterns, and bundle composition.
+
+If you are migrating from the old garden.* / flake-parts architecture, the
+[Migration](migration/why-den.md) section explains what changed and why.
 
 Everything else is reference material organized by topic: desktop environment,
-development tools, language toolchains, system services, security, and
-operations.
+git suite, shells, language toolchains, game development, system services,
+security, and operations.

@@ -20,8 +20,7 @@ correct ownership and permissions.
 
 ## Configuration
 
-The secrets module (`nix/modules/secrets.nix`) imports sops-nix and configures
-it:
+The `secrets` aspect (`modules/secrets.nix`) imports sops-nix and configures it:
 
 ```nix
 imports = [ inputs.sops-nix.nixosModules.sops ];
@@ -78,6 +77,6 @@ can edit secrets with elevated privileges.
 
 | File                        | Purpose                                    |
 | --------------------------- | ------------------------------------------ |
-| `nix/modules/secrets.nix`   | SOPS-nix configuration, secret definitions |
+| `modules/secrets.nix`       | SOPS-nix configuration, secret definitions |
 | `secrets/main.yaml`         | Encrypted secrets file                     |
 | `/var/lib/sops-nix/key.txt` | Age private key (not in Git)               |

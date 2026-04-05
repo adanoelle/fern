@@ -1,6 +1,6 @@
 # Stack Overview
 
-The gamedev module (`nix/home/devtools/gamedev.nix`) provides a complete C++
+The gamedev aspect (`modules/devtools/gamedev.nix`) provides a complete C++
 game development environment. All packages are installed via `home.packages` and
 available globally — no per-project shell needed for the core toolchain.
 
@@ -50,7 +50,7 @@ chapters for usage details.
 
 ## Related: Gaming Module
 
-The system-level gaming module (`nix/modules/gaming.nix`) provides:
+The system-level gaming module (`modules/gaming.nix`) provides:
 
 - **MangoHud** — FPS/frametime overlay (bundled with Steam)
 - **GameScope** — Valve's micro-compositor for Wayland gaming

@@ -3,12 +3,13 @@
 > AWS and Azure CLI tools with credential management, infrastructure-as-code
 > tooling, and security scanners.
 
-Cloud platform tooling is split across two system modules: `cloud/aws-cli.nix`
-for AWS and `azure-cli.nix` for Azure.
+Cloud platform tooling is split across two aspects: `den.aspects.aws-cli`
+(`modules/cloud/aws-cli.nix`) for AWS and `den.aspects.azure-cli`
+(`modules/cloud/azure-cli.nix`) for Azure.
 
 ## AWS
 
-The AWS module (`nix/modules/cloud/aws-cli.nix`) installs a comprehensive AWS
+The AWS aspect (`modules/cloud/aws-cli.nix`) installs a comprehensive AWS
 toolkit:
 
 | Package                      | Purpose                                          |
@@ -35,7 +36,7 @@ The `awsdev` alias launches a shell with dev credentials via aws-vault:
 
 ## Azure
 
-The Azure module (`nix/modules/azure-cli.nix`) installs:
+The Azure aspect (`modules/cloud/azure-cli.nix`) installs:
 
 | Package                | Purpose                                 |
 | ---------------------- | --------------------------------------- |
@@ -65,6 +66,6 @@ Python internally.
 
 | File                                  | Purpose                                        |
 | ------------------------------------- | ---------------------------------------------- |
-| `nix/modules/cloud/aws-cli.nix`       | AWS CLI, vault, SAM, Terraform, security tools |
-| `nix/modules/azure-cli.nix`           | Azure CLI with extensions, azcopy              |
-| `nix/modules/devtools/localstack.nix` | Local AWS emulation (see [Docker](docker.md))  |
+| `modules/cloud/aws-cli.nix`       | AWS CLI, vault, SAM, Terraform, security tools (`den.aspects.aws-cli`)   |
+| `modules/cloud/azure-cli.nix`     | Azure CLI with extensions, azcopy (`den.aspects.azure-cli`)              |
+| `modules/devtools/localstack.nix` | Local AWS emulation (`den.aspects.localstack`; see [Docker](docker.md))  |

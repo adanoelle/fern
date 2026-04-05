@@ -14,48 +14,38 @@ and per-user package installation.
 
 ## System modules vs home modules
 
-| Concern                 | NixOS module                      | Home Manager module         |
-| ----------------------- | --------------------------------- | --------------------------- |
-| PipeWire audio service  | `nix/modules/audio.nix`           | --                          |
-| NVIDIA driver           | `nix/modules/graphics.nix`        | --                          |
-| Ghostty terminal config | --                                | `nix/home/cli/ghostty.nix`  |
-| Helix editor settings   | --                                | `nix/home/cli/helix.nix`    |
-| Git configuration       | --                                | `nix/home/git/`             |
-| Docker engine           | `nix/modules/devtools/docker.nix` | --                          |
-| Docker user tools       | --                                | (included in system module) |
+| Concern                 | NixOS side                     | Home Manager side              |
+| ----------------------- | ------------------------------ | ------------------------------ |
+| PipeWire audio service  | `modules/audio.nix`            | --                             |
+| GPU driver              | `modules/graphics.nix`         | --                             |
+| Ghostty terminal config | --                             | `modules/cli/ghostty.nix`      |
+| Helix editor settings   | --                             | `modules/cli/helix.nix`        |
+| Git configuration       | --                             | `modules/git/`                 |
+| Docker engine           | `modules/devtools/docker.nix`  | --                             |
 
 The rule of thumb: if it needs root or affects the system globally, it belongs
 in a NixOS module. If it is per-user configuration, it belongs in Home Manager.
 
 ## Integration as a NixOS module
 
-Home Manager can run standalone, but this configuration integrates it directly
-as a NixOS module. In `hosts/fern/configuration.nix`:
+Home Manager can run standalone, but this configuration integrates it as a NixOS
+module via den's bootstrap (`modules/dendritic.nix`):
 
 ```nix
-imports = [
-  inputs.home-manager.nixosModules.home-manager
-];
+den = {
+  ctx.hm-host.nixos.home-manager = {
+    useGlobalPkgs = true;        # Use the system's nixpkgs, not a separate one
+    useUserPackages = true;
+    backupFileExtension = "backup";
+    extraSpecialArgs = { inherit inputs; };
+  };
 
-home-manager = {
-  useGlobalPkgs = true;        # Use the system's nixpkgs, not a separate one
-  backupFileExtension = "backup";
-};
-
-home-manager.users.ada = {
-  imports = [
-    self.homeModules.cli
-    self.homeModules.git
-    self.homeModules.desktop
-    self.homeModules.devtools
-    self.homeModules.shells
-    self.homeModules.workspace
-  ];
-  home.stateVersion = "25.11";
+  schema.user.classes = [ "homeManager" ];
 };
 ```
 
-This means `nixos-rebuild switch` builds both the system and the user
+Every user declared in the topology automatically gets a Home Manager
+configuration. `nixos-rebuild switch` builds both the system and the user
 environment in one step. There is no separate `home-manager switch` command
 needed.
 

@@ -6,12 +6,13 @@
 ## Overview
 
 The Python setup uses `uv` (a fast Rust-based package installer and venv
-manager) instead of pip. The system module provides the interpreter, and the
-home module adds development tooling and editor integration.
+manager) instead of pip. It is provided as a single unified aspect
+(`modules/devtools/python.nix`) covering the interpreter, development tooling,
+and editor integration.
 
-## System module
+## Interpreter and package management
 
-The system module (`nix/modules/devtools/python-toolchain.nix`) installs:
+The aspect (`modules/devtools/python.nix`) installs:
 
 | Package     | Purpose                                 |
 | ----------- | --------------------------------------- |
@@ -21,9 +22,9 @@ The system module (`nix/modules/devtools/python-toolchain.nix`) installs:
 `nix-ld` is enabled at the host level (`programs.nix-ld.enable = true`) to
 support Python packages with native extensions.
 
-## Home module
+## Development tooling
 
-The home module (`nix/home/devtools/python.nix`) adds:
+The aspect also includes:
 
 | Package   | Purpose                                      |
 | --------- | -------------------------------------------- |
@@ -48,7 +49,6 @@ Pyright provides type checking, completions, and diagnostics for Python files.
 
 ## Key files
 
-| File                                        | Purpose                       |
-| ------------------------------------------- | ----------------------------- |
-| `nix/modules/devtools/python-toolchain.nix` | Python 3.12, uv               |
-| `nix/home/devtools/python.nix`              | Ruff, black, pyright, Jupyter |
+| File                          | Purpose                                      |
+| ----------------------------- | -------------------------------------------- |
+| `modules/devtools/python.nix` | Python 3.12, uv, ruff, black, pyright, Jupyter |

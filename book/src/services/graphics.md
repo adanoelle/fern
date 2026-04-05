@@ -1,40 +1,29 @@
-# Graphics & NVIDIA
+# Graphics & GPU
 
-> NVIDIA GPU with modesetting for Wayland, VRR/GSync support, and a separate
-> Asahi driver path for Apple Silicon.
+> GPU configuration with Mesa/AMDGPU for fern (inline in the host aspect) and a
+> separate Asahi driver aspect for Apple Silicon on moss.
 
-The graphics configuration has two variants: `graphics.nix` for NVIDIA GPUs
-(fern) and `graphics-asahi.nix` for Apple Silicon (moss). Both enable the
-Hyprland compositor.
+## AMD configuration (fern)
 
-## NVIDIA configuration (fern)
+Fern's GPU setup is defined inline in the host aspect (`modules/host-fern.nix`)
+rather than a separate graphics aspect. Mesa's AMDGPU driver requires no
+proprietary packages — a single line enables it:
 
-The NVIDIA module (`nix/modules/graphics.nix`) configures:
-
-| Setting            | Value                              |
-| ------------------ | ---------------------------------- |
-| Video driver       | `nvidia`                           |
-| Modesetting        | Enabled (required for Wayland/GBM) |
-| Power management   | Disabled                           |
-| Open kernel module | Disabled (proprietary driver)      |
-| Driver package     | Production release                 |
-
-### Environment variables
-
-```bash
-__GL_GSYNC_ALLOWED=1          # Enable GSync/VRR
-__GL_VRR_ALLOWED=1            # Enable variable refresh rate
-WLR_NO_HARDWARE_CURSORS=1     # Software cursors (NVIDIA Wayland workaround)
-__GLX_VENDOR_LIBRARY_NAME=nvidia  # Ensure NVIDIA GLX is used
+```nix
+hardware.graphics.enable = true;
 ```
 
-### Wayland compatibility
+This gives fern:
 
-Modesetting must be enabled for NVIDIA's Wayland/GBM backend to function. The
-`WLR_NO_HARDWARE_CURSORS=1` variable works around a cursor rendering bug with
-NVIDIA under wlroots-based compositors like Hyprland.
+| Setting      | Value             |
+| ------------ | ----------------- |
+| Video driver | Mesa (AMDGPU)     |
+| Vulkan       | RADV via Mesa     |
+| OpenGL       | Mesa's RadeonSI   |
 
 ### GPU tools
+
+Fern installs diagnostic tools alongside the driver:
 
 | Package        | Purpose                                     |
 | -------------- | ------------------------------------------- |
@@ -43,8 +32,8 @@ NVIDIA under wlroots-based compositors like Hyprland.
 
 ## Asahi configuration (moss)
 
-The Asahi module (`nix/modules/graphics-asahi.nix`) uses the experimental GPU
-driver:
+The `den.aspects.graphics-asahi` aspect (`modules/asahi/graphics.nix`) uses the
+experimental GPU driver:
 
 ```nix
 hardware.asahi = {
@@ -58,15 +47,15 @@ the Apple GPU. The same GPU tools (`mesa-demos`, `vulkan-tools`) are installed.
 
 ## Hyprland
 
-Both modules enable `programs.hyprland.enable = true`, which installs the
-Hyprland compositor and sets up the Wayland session. The actual Hyprland
-configuration (keybindings, layout, animations) is handled by the Home Manager
-module in `nix/home/desktop/hyprland/`.
+Both hosts enable `programs.hyprland.enable = true`, which installs the Hyprland
+compositor and sets up the Wayland session. The actual Hyprland configuration
+(keybindings, layout, animations) is handled by the Home Manager aspect in
+`modules/desktop/hyprland.nix`.
 
 ## Key files
 
-| File                                 | Purpose                           |
-| ------------------------------------ | --------------------------------- |
-| `nix/modules/graphics.nix`           | NVIDIA driver, env vars, Hyprland |
-| `nix/modules/graphics-asahi.nix`     | Asahi GPU driver, Hyprland        |
-| `nix/home/desktop/hyprland/core.nix` | Hyprland user configuration       |
+| File                               | Purpose                                           |
+| ---------------------------------- | ------------------------------------------------- |
+| `modules/host-fern.nix`           | AMD GPU setup (inline), Hyprland enable            |
+| `modules/asahi/graphics.nix`      | Asahi GPU driver, Hyprland (`den.aspects.graphics-asahi`) |
+| `modules/desktop/hyprland.nix`    | Hyprland user configuration (home aspect)          |

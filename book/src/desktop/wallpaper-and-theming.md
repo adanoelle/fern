@@ -3,7 +3,7 @@
 > Wallpapers are managed by swww with per-workspace images, fade transitions,
 > and Hyprland keybindings for cycling.
 
-The wallpaper module (`nix/home/desktop/hyprland/wallpaper.nix`) provides a
+The wallpaper module (`modules/desktop/_hyprland/wallpaper.nix`) provides a
 declarative way to assign wallpapers per monitor and per workspace, with smooth
 transitions handled by swww.
 
@@ -86,11 +86,11 @@ The same palette is used in Ghostty (`catppuccin-frappe`), Helix
 
 ## Key files
 
-| File                                      | Purpose                                |
-| ----------------------------------------- | -------------------------------------- |
-| `nix/home/desktop/hyprland/wallpaper.nix` | swww wallpaper management module       |
-| `nix/home/desktop/hyprland/core.nix`      | Style options (gaps, border, rounding) |
-| `nix/home/desktop/hyprland/bar.nix`       | Waybar Catppuccin theme                |
-| `nix/home/desktop/hyprland/idlelock.nix`  | Lock screen Catppuccin colors          |
-| `nix/home/cli/ghostty.nix`                | Terminal Catppuccin theme              |
-| `nix/home/cli/helix.nix`                  | Editor Catppuccin theme                |
+| File                                       | Purpose                                |
+| ------------------------------------------ | -------------------------------------- |
+| `modules/desktop/_hyprland/wallpaper.nix`  | swww wallpaper management module       |
+| `modules/desktop/hyprland.nix`             | Style options (gaps, border, rounding) |
+| `modules/desktop/_hyprland/bar.nix`        | Waybar Catppuccin theme                |
+| `modules/desktop/_hyprland/idlelock.nix`   | Lock screen Catppuccin colors          |
+| `modules/cli/ghostty.nix`                  | Terminal Catppuccin theme              |
+| `modules/cli/helix.nix`                    | Editor Catppuccin theme                |
