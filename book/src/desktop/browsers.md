@@ -65,7 +65,7 @@ on both NVIDIA and Asahi.
 
 ## Key files
 
-| File                            | Purpose                                          |
-| ------------------------------- | ------------------------------------------------ |
-| `nix/home/desktop/nyxt.nix`     | Nyxt browser with NVIDIA wrapper and Lisp config |
-| `nix/home/desktop/chromium.nix` | Ungoogled Chromium with Wayland/privacy flags    |
+| File                          | Purpose                                          |
+| ----------------------------- | ------------------------------------------------ |
+| `modules/desktop/nyxt.nix`     | Nyxt browser with NVIDIA wrapper and Lisp config |
+| `modules/desktop/chromium.nix` | Ungoogled Chromium with Wayland/privacy flags    |

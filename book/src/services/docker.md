@@ -3,8 +3,8 @@
 > Docker Engine with BuildKit, Compose v2, and a suite of container utilities
 > for building, scanning, and debugging images.
 
-Docker is configured in `nix/modules/devtools/docker.nix` as a system module
-because the Docker daemon requires root access.
+Docker is configured as the `den.aspects.docker` aspect in
+`modules/devtools/docker.nix` because the Docker daemon requires root access.
 
 ## Docker Engine
 
@@ -37,8 +37,9 @@ builds, and Dockerfile frontend features. The `ada` user is added to the
 
 ## LocalStack
 
-LocalStack (`nix/modules/devtools/localstack.nix`) provides a local AWS cloud
-stack running in Docker. It is configured as an OCI container:
+LocalStack (`den.aspects.localstack` in `modules/devtools/localstack.nix`)
+provides a local AWS cloud stack running in Docker. It is configured as an OCI
+container:
 
 ```nix
 virtualisation.oci-containers.containers.localstack = {
@@ -72,5 +73,5 @@ AWS_DEFAULT_REGION=us-east-1
 
 | File                                  | Purpose                        |
 | ------------------------------------- | ------------------------------ |
-| `nix/modules/devtools/docker.nix`     | Docker Engine, BuildKit, tools |
-| `nix/modules/devtools/localstack.nix` | LocalStack container, awslocal |
+| `modules/devtools/docker.nix`     | Docker Engine, BuildKit, tools (`den.aspects.docker`)     |
+| `modules/devtools/localstack.nix` | LocalStack container, awslocal (`den.aspects.localstack`) |

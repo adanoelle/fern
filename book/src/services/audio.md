@@ -3,8 +3,8 @@
 > PipeWire handles all audio with low-latency settings, ALSA/PulseAudio/JACK
 > compatibility, and priority routing for the Audient iD24 interface.
 
-The audio subsystem is configured in a single NixOS module
-(`nix/modules/audio.nix`) that sets up PipeWire as the audio server with
+The audio subsystem is configured as the `den.aspects.audio` aspect
+(`modules/audio.nix`) that sets up PipeWire as the audio server with
 compatibility layers for applications expecting ALSA, PulseAudio, or JACK.
 
 ## PipeWire configuration
@@ -75,5 +75,5 @@ over built-in audio.
 
 | File                           | Purpose                                         |
 | ------------------------------ | ----------------------------------------------- |
-| `nix/modules/audio.nix`        | PipeWire, low-latency, udev, WirePlumber, tools |
-| `nix/home/cli/audio-tools.nix` | lsp-plugins (home module)                       |
+| `modules/audio.nix`        | PipeWire, low-latency, udev, WirePlumber, tools (`den.aspects.audio`) |
+| `modules/cli/audio-tools.nix` | lsp-plugins (home aspect)                                             |

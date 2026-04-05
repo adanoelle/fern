@@ -6,12 +6,12 @@
 ## Overview
 
 The C#/.NET toolchain supports modern .NET 8 development and legacy Mono
-projects. The system module provides the SDK, and the home module adds editor
-integration.
+projects. It is provided as a single unified aspect
+(`modules/devtools/csharp.nix`) covering the SDK and editor integration.
 
-## System module
+## SDK and runtimes
 
-The system module (`nix/modules/devtools/csharp-toolchain.nix`) installs:
+The aspect (`modules/devtools/csharp.nix`) installs:
 
 | Package                             | Purpose                                   |
 | ----------------------------------- | ----------------------------------------- |
@@ -28,9 +28,9 @@ DOTNET_ROOT="<nix-store>/dotnet-sdk-8.0"
 `DOTNET_ROOT` is required by many .NET tools (omnisharp, dotnet-ef, etc.) to
 locate the SDK installation.
 
-## Home module
+## Editor integration
 
-The home module (`nix/home/devtools/csharp.nix`) adds:
+The aspect also includes:
 
 | Package            | Purpose                           |
 | ------------------ | --------------------------------- |
@@ -51,7 +51,6 @@ for C# files.
 
 ## Key files
 
-| File                                        | Purpose                     |
-| ------------------------------------------- | --------------------------- |
-| `nix/modules/devtools/csharp-toolchain.nix` | .NET SDK, Mono, MSBuild     |
-| `nix/home/devtools/csharp.nix`              | OmniSharp LSP, nuget-to-nix |
+| File                          | Purpose                                        |
+| ----------------------------- | ---------------------------------------------- |
+| `modules/devtools/csharp.nix` | .NET SDK, Mono, MSBuild, OmniSharp, nuget-to-nix |

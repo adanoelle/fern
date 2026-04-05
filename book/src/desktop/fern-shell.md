@@ -4,9 +4,9 @@
 > the primary panel. It runs as a hardened systemd user service.
 
 Fern Shell is an external project (`adanoelle/fern-shell`) consumed as a flake
-input. The Home Manager module in `nix/home/desktop/hyprland/fern.nix`
-integrates it into the desktop environment as a systemd user service with
-optional OBS integration and theme watching.
+input. The sub-module in `modules/desktop/_hyprland/fern.nix` integrates it into
+the desktop environment as a systemd user service with optional OBS integration
+and theme watching.
 
 ## What it provides
 
@@ -68,8 +68,7 @@ running two bars.
 
 ## Key files
 
-| File                                 | Purpose                                             |
-| ------------------------------------ | --------------------------------------------------- |
-| `nix/home/desktop/hyprland/fern.nix` | Home Manager module for Fern Shell                  |
-| `flake.nix`                          | `fern` input pointing to adanoelle/fern-shell       |
-| `flake.parts/40-hosts.nix`           | Imports `fern-shell` and `fern-fonts` NixOS modules |
+| File                                  | Purpose                                       |
+| ------------------------------------- | --------------------------------------------- |
+| `modules/desktop/_hyprland/fern.nix`  | Sub-module for Fern Shell integration          |
+| `flake.nix`                           | `fern` input pointing to adanoelle/fern-shell  |

@@ -4,7 +4,7 @@
 > lock screen with Catppuccin styling.
 
 The idle and lock configuration lives in
-`nix/home/desktop/hyprland/idlelock.nix` and is enabled via
+`modules/desktop/_hyprland/idlelock.nix` and is enabled via
 `desktop.hyprland.idle.enable` and `desktop.hyprland.lock.enable`.
 
 ## Idle timeouts
@@ -49,6 +49,6 @@ screen but would not lock).
 
 ## Key files
 
-| File                                     | Purpose                           |
-| ---------------------------------------- | --------------------------------- |
-| `nix/home/desktop/hyprland/idlelock.nix` | hypridle + hyprlock configuration |
+| File                                      | Purpose                           |
+| ----------------------------------------- | --------------------------------- |
+| `modules/desktop/_hyprland/idlelock.nix`  | hypridle + hyprlock configuration |

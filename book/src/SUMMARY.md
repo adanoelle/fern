@@ -9,15 +9,27 @@
 - [NixOS & Flakes](concepts/nixos-and-flakes.md)
 - [Module System](concepts/module-system.md)
 - [Home Manager](concepts/home-manager.md)
+- [Aspects, Bundles & Topology](concepts/aspects-bundles-topology.md)
 
 ---
 
 # Architecture
 
 - [Repository Layout](architecture/repository-layout.md)
-- [Flake Inputs & Parts](architecture/flake-inputs-and-parts.md)
-- [Multi-Host Design](architecture/multi-host.md)
-- [Module Patterns](architecture/module-patterns.md)
+- [The Flake Entry Point](architecture/flake-entry-point.md)
+- [Dendritic Bootstrap](architecture/dendritic-bootstrap.md)
+- [Topology & Hosts](architecture/topology-and-hosts.md)
+- [Aspect Patterns](architecture/aspect-patterns.md)
+- [Bundle Composition](architecture/bundle-composition.md)
+- [Defaults & Batteries](architecture/defaults-and-batteries.md)
+
+---
+
+# Migration
+
+- [Why Den](migration/why-den.md)
+- [What Changed](migration/what-changed.md)
+- [Before & After](migration/before-and-after.md)
 
 ---
 
@@ -31,12 +43,23 @@
 
 ---
 
-# Development Workflow
+# Git Suite
 
-- [Git Suite](development/git-suite.md)
-- [Helix Editor](development/helix.md)
-- [Nushell & Terminal](development/nushell-and-terminal.md)
-- [Claude Code Integration](development/claude-code.md)
+- [Design & Orchestrator](git/design-and-orchestrator.md)
+- [Core & Aliases](git/core-and-aliases.md)
+- [Identity Management](git/identity-management.md)
+- [Worktrees](git/worktrees.md)
+- [Safety & Secrets](git/safety-and-secrets.md)
+- [Claude Code Integration](git/claude-code-integration.md)
+- [GitHub & Tools](git/github-and-tools.md)
+
+---
+
+# Shells & Terminal
+
+- [Nushell](shells/nushell.md)
+- [Starship & Zoxide](shells/starship-and-zoxide.md)
+- [Ghostty](shells/ghostty.md)
 
 ---
 
@@ -65,7 +88,7 @@
 # System Services
 
 - [Audio & PipeWire](services/audio.md)
-- [Graphics & NVIDIA](services/graphics.md)
+- [Graphics & GPU](services/graphics.md)
 - [Gaming (Steam & Gamescope)](services/gaming.md)
 - [Docker & Containers](services/docker.md)
 - [Cloud Platforms](services/cloud.md)
@@ -83,13 +106,14 @@
 
 - [Rebuilding & Testing](operations/rebuilding.md)
 - [Garbage Collection & Maintenance](operations/maintenance.md)
-- [Adding a New Module](operations/adding-a-module.md)
+- [Adding an Aspect](operations/adding-an-aspect.md)
+- [Adding a Host](operations/adding-a-host.md)
 - [Troubleshooting](operations/troubleshooting.md)
 
 ---
 
 # Reference
 
-- [Module Index](reference/module-index.md)
+- [Aspect Index](reference/aspect-index.md)
 - [Shell Aliases & Commands](reference/aliases.md)
 - [Environment Variables](reference/environment-variables.md)

@@ -3,8 +3,8 @@
 > git-secrets and trufflehog prevent accidental commits of credentials, API
 > keys, and other sensitive data.
 
-The guard module (`nix/modules/secrets-guard.nix`) installs two tools that scan
-Git repositories for accidentally committed secrets.
+The `secrets-guard` aspect (`modules/secrets-guard.nix`) installs two tools that
+scan Git repositories for accidentally committed secrets.
 
 ## git-secrets
 
@@ -57,4 +57,4 @@ trufflehog git https://github.com/user/repo
 
 | File                            | Purpose                                     |
 | ------------------------------- | ------------------------------------------- |
-| `nix/modules/secrets-guard.nix` | git-secrets, trufflehog, template directory |
+| `modules/secrets-guard.nix` | git-secrets, trufflehog, template directory |

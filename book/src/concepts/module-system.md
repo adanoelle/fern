@@ -70,27 +70,42 @@ both add systemd services, and they coexist.
 
 ## Example from this repo
 
-The audio module (`nix/modules/audio.nix`) is a simple config-only module -- it
-does not declare its own options, just provides configuration directly:
+The audio aspect (`modules/audio.nix`) is a simple config-only module -- it does
+not declare its own options, just provides configuration directly:
 
 ```nix
-{ pkgs, lib, ... }:
+# modules/audio.nix
+{ den, ... }:
 {
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    pulse.enable = true;
-    jack.enable = true;
+  den.aspects.audio.nixos = { pkgs, ... }: {
+    services.pipewire = {
+      enable = true;
+      alsa.enable = true;
+      pulse.enable = true;
+      jack.enable = true;
+    };
+
+    security.rtkit.enable = true;
+
+    environment.systemPackages = with pkgs; [
+      pavucontrol qpwgraph helvum
+    ];
   };
-
-  security.rtkit.enable = true;
-
-  environment.systemPackages = with pkgs; [
-    pavucontrol qpwgraph helvum
-  ];
 }
 ```
 
 It sets PipeWire options (defined by NixOS itself), enables rtkit for real-time
-scheduling, and adds audio utilities. When this module is imported in a host
-configuration, its settings merge with everything else.
+scheduling, and adds audio utilities. When a host aspect includes this aspect,
+its settings merge with everything else.
+
+## Den builds on the module system
+
+This configuration uses [den](https://github.com/vic/den), an aspect framework
+that wraps the NixOS module system. Aspects are modules with additional
+structure: automatic discovery, dual-side support (NixOS + Home Manager in one
+file), and composition via includes. See
+[Aspects, Bundles & Topology](aspects-bundles-topology.md) for details.
+
+Everything on this page still applies -- den aspects are NixOS modules
+underneath. `mkIf`, `mkDefault`, `mkForce`, and the merge system all work the
+same way inside an aspect.

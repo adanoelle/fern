@@ -6,12 +6,12 @@
 ## Overview
 
 Ada development uses the GNAT toolchain from GCC with Alire for dependency
-management. The setup spans a system module for the compiler and a home module
-for editor integration.
+management. The setup is provided as a single unified aspect
+(`modules/devtools/ada.nix`) covering the compiler and editor integration.
 
-## System module
+## Compiler and build tools
 
-The system module (`nix/modules/devtools/ada-toolchain.nix`) installs:
+The aspect (`modules/devtools/ada.nix`) installs:
 
 | Package    | Purpose                    |
 | ---------- | -------------------------- |
@@ -27,9 +27,9 @@ ADA_PROJECT_PATH="$HOME/.config/ada_project_path"
 
 This sets the default search path for GPR project files.
 
-## Home module
+## Editor integration
 
-The home module (`nix/home/devtools/ada.nix`) adds:
+The aspect also includes:
 
 | Package | Purpose                      |
 | ------- | ---------------------------- |
@@ -47,7 +47,6 @@ ada_ls provides completions, diagnostics, and navigation for Ada source files.
 
 ## Key files
 
-| File                                     | Purpose               |
-| ---------------------------------------- | --------------------- |
-| `nix/modules/devtools/ada-toolchain.nix` | GNAT, GPRBuild, Alire |
-| `nix/home/devtools/ada.nix`              | Alire, ada_ls LSP     |
+| File                       | Purpose                          |
+| -------------------------- | -------------------------------- |
+| `modules/devtools/ada.nix` | GNAT, GPRBuild, Alire, ada_ls LSP |
