@@ -1,3 +1,4 @@
+# modules/cli/bundle.nix — CLI tools bundle
 { den, ... }:
 {
   den.aspects.cli = {
@@ -15,6 +16,17 @@
       den.aspects.prettier
       den.aspects.tree
       den.aspects.audio-tools
+
+      # Garden terminal stack
+      den.aspects.kitty
+      den.aspects.kakoune
+      den.aspects.yazi
+      den.aspects.lazygit
+      den.aspects.btop
+      den.aspects.fzf
+      den.aspects.fd
+      den.aspects.ripgrep
+      den.aspects.jq
     ];
   };
 }

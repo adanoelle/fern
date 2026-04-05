@@ -2,10 +2,11 @@
 { den, ... }:
 {
   den.aspects.zoxide.homeManager = { pkgs, ... }:
-  {
-    programs.zoxide = {
-      enable     = true;
-      enableNushellIntegration = true;
+    {
+      programs.zoxide = {
+        enable = true;
+        enableNushellIntegration = true;
+        enableFishIntegration = true;
+      };
     };
-  };
 }
