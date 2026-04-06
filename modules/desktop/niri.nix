@@ -47,11 +47,11 @@
         programs.niri.settings = {
           # ── Named workspaces (channels) ──────────────────────
           workspaces = {
-            studio = { };
-            research = { };
-            writing = { };
-            music = { };
-            system = { };
+            "1-studio" = { name = "studio"; };
+            "2-research" = { name = "research"; };
+            "3-writing" = { name = "writing"; };
+            "4-music" = { name = "music"; };
+            "5-system" = { name = "system"; };
           };
 
           # ── Startup programs ─────────────────────────────────
@@ -65,6 +65,7 @@
           layout = {
             gaps = 2;
             center-focused-column = "on-overflow";
+            default-column-width.proportion = 0.5;
 
             border = {
               enable = true;
@@ -76,8 +77,8 @@
             focus-ring.enable = false;
 
             preset-column-widths = [
-              { proportion = 0.4; }
-              { proportion = 0.6; }
+              { proportion = 0.5; }
+              { proportion = 0.75; }
               { proportion = 1.0; }
             ];
           };
@@ -160,6 +161,7 @@
 
               # Spawn & close
               "${mod}+N".action.spawn = [ "kitty" ];
+              "${mod}+B".action.spawn = [ "firefox" ];
               "${mod}+Shift+Q".action.close-window = [];
 
               # Fullscreen & overview
@@ -201,38 +203,6 @@
             {
               matches = [{ at-startup = true; app-id = "^kitty$"; title = "btop"; }];
               open-on-workspace = "system";
-            }
-
-            # Column width presets per app
-            {
-              matches = [{ app-id = "^kitty$"; }];
-              default-column-width.proportion = 0.4;
-            }
-            {
-              matches = [{ app-id = "^nyxt$"; }];
-              default-column-width.proportion = 0.7;
-            }
-            {
-              matches = [{ app-id = "^obsidian$"; }];
-              default-column-width.proportion = 0.6;
-            }
-            {
-              matches = [{ title = "btop"; }];
-              default-column-width.proportion = 0.5;
-            }
-            {
-              matches = [{ app-id = "^superproductivity$"; }];
-              default-column-width.proportion = 0.6;
-            }
-
-            # Creative apps: full width
-            {
-              matches = [
-                { app-id = "^org\\.aseprite"; }
-                { app-id = "^clip-studio-paint$"; }
-                { app-id = "^godot$"; }
-              ];
-              default-column-width.proportion = 1.0;
             }
 
             # Floating rules (scratchpads)

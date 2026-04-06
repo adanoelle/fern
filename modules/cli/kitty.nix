@@ -26,7 +26,7 @@
 
         font = {
           name = "IBM Plex Mono";
-          size = 13;
+          size = 11;
         };
 
         settings = {
