@@ -7,6 +7,7 @@
 
     programs.starship = {
       enable = true;
+      enableFishIntegration = false;
       settings = {
         add_newline = true;
         line_break.disabled = false;

@@ -3,6 +3,7 @@
 {
   den.aspects.desktop-apps = {
     includes = [
+      den.aspects.niri
       den.aspects.hyprland
       den.aspects.chromium
       den.aspects.obs
