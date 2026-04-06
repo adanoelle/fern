@@ -7,6 +7,7 @@
       den.aspects.starship
       den.aspects.zoxide
       den.aspects.devenv
+      den.aspects.fish
     ];
   };
 }
