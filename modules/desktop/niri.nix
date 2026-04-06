@@ -8,8 +8,6 @@
   den.aspects.niri = {
     nixos = { pkgs, ... }: {
       programs.niri.enable = true;
-      # Use nixpkgs niri (avoids niri-flake fetchGit evaluation issue with Smithay)
-      programs.niri.package = pkgs.niri;
 
       # XWayland support via xwayland-satellite
       environment.systemPackages = with pkgs; [
@@ -66,7 +64,7 @@
           # ── Layout ───────────────────────────────────────────
           layout = {
             gaps = 2;
-            center-focused-column = "best-effort";
+            center-focused-column = "on-overflow";
 
             border = {
               enable = true;
@@ -86,25 +84,23 @@
 
           # ── Animations ───────────────────────────────────────
           animations = {
-            workspace-switch = {
-              spring = {
-                damping-ratio = 1.0;
-                stiffness = 800;
-                epsilon = 0.0001;
-              };
+            workspace-switch.kind.spring = {
+              damping-ratio = 1.0;
+              stiffness = 800;
+              epsilon = 0.0001;
             };
 
-            horizontal-view-movement = {
-              spring = {
-                damping-ratio = 1.0;
-                stiffness = 1000;
-                epsilon = 0.0001;
-              };
+            horizontal-view-movement.kind.spring = {
+              damping-ratio = 1.0;
+              stiffness = 1000;
+              epsilon = 0.0001;
             };
 
             window-open = {
-              duration-ms = 150;
-              curve = "ease-out-expo";
+              kind.easing = {
+                duration-ms = 150;
+                curve = "ease-out-expo";
+              };
               custom-shader = ''
                 vec4 open_color(vec3 coords_geo, vec3 size_geo) {
                     vec3 coords_tex = niri_geo_to_tex * coords_geo;
@@ -115,12 +111,12 @@
               '';
             };
 
-            window-close = {
+            window-close.kind.easing = {
               duration-ms = 100;
-              curve = "ease-in-cubic";
+              curve = "ease-out-cubic";
             };
 
-            config-notification-open-close = {
+            config-notification-open-close.kind.easing = {
               duration-ms = 150;
               curve = "ease-out-cubic";
             };
@@ -147,59 +143,59 @@
               "${mod}+Shift+5".action.move-window-to-workspace = "system";
 
               # Column navigation (Super+H/L)
-              "${mod}+H".action = "focus-column-left";
-              "${mod}+L".action = "focus-column-right";
+              "${mod}+H".action.focus-column-left = [];
+              "${mod}+L".action.focus-column-right = [];
 
               # Window navigation (Super+J/K)
-              "${mod}+J".action = "focus-window-down";
-              "${mod}+K".action = "focus-window-up";
+              "${mod}+J".action.focus-window-down = [];
+              "${mod}+K".action.focus-window-up = [];
 
               # Move column (Super+Shift+H/L)
-              "${mod}+Shift+H".action = "move-column-left";
-              "${mod}+Shift+L".action = "move-column-right";
+              "${mod}+Shift+H".action.move-column-left = [];
+              "${mod}+Shift+L".action.move-column-right = [];
 
               # Move window (Super+Shift+J/K)
-              "${mod}+Shift+J".action = "move-window-down";
-              "${mod}+Shift+K".action = "move-window-up";
+              "${mod}+Shift+J".action.move-window-down = [];
+              "${mod}+Shift+K".action.move-window-up = [];
 
               # Spawn & close
               "${mod}+N".action.spawn = [ "kitty" ];
-              "${mod}+Shift+Q".action = "close-window";
+              "${mod}+Shift+Q".action.close-window = [];
 
               # Fullscreen & overview
-              "${mod}+F".action = "maximize-column";
-              "${mod}+A".action = "toggle-overview";
+              "${mod}+F".action.maximize-column = [];
+              "${mod}+A".action.toggle-overview = [];
 
               # Column width cycling
-              "${mod}+R".action = "switch-preset-column-width";
-              "${mod}+Minus".action = "set-column-width -10%";
-              "${mod}+Equal".action = "set-column-width +10%";
+              "${mod}+R".action.switch-preset-column-width = [];
+              "${mod}+Minus".action.set-column-width = "-10%";
+              "${mod}+Equal".action.set-column-width = "+10%";
 
               # Floating
-              "${mod}+V".action = "toggle-window-floating";
+              "${mod}+V".action.toggle-window-floating = [];
 
               # Screenshot
-              "Print".action = "screenshot";
-              "${mod}+Print".action = "screenshot-window";
+              "Print".action.screenshot = [];
+              "${mod}+Print".action.screenshot-window = [];
 
               # Session
-              "${mod}+Shift+E".action = "quit";
-              "${mod}+Shift+Slash".action = "show-hotkey-overlay";
+              "${mod}+Shift+E".action.quit = [];
+              "${mod}+Shift+Slash".action.show-hotkey-overlay = [];
 
               # Workspace navigation (prev/next)
-              "${mod}+Tab".action = "focus-workspace-down";
-              "${mod}+Shift+Tab".action = "focus-workspace-up";
+              "${mod}+Tab".action.focus-workspace-down = [];
+              "${mod}+Shift+Tab".action.focus-workspace-up = [];
 
               # Consume/expel (tabbed columns)
-              "${mod}+BracketLeft".action = "consume-or-expel-window-left";
-              "${mod}+BracketRight".action = "consume-or-expel-window-right";
+              "${mod}+BracketLeft".action.consume-or-expel-window-left = [];
+              "${mod}+BracketRight".action.consume-or-expel-window-right = [];
             };
 
           # ── Window rules ─────────────────────────────────────
           window-rules = [
-            # Startup: kitty → research, btop → system
+            # Startup: kitty → research (btop rule below overrides for btop)
             {
-              matches = [{ at-startup = true; app-id = "^kitty$"; title = "^(?!btop)"; }];
+              matches = [{ at-startup = true; app-id = "^kitty$"; }];
               open-on-workspace = "research";
             }
             {
@@ -260,19 +256,19 @@
                 { title = "andes"; }
                 { title = "summit"; }
               ];
-              border.active-color = mokume.urgent;
+              border.active.color = mokume.urgent;
             }
 
             # Host tier borders — GPU (accent gold)
             {
               matches = [{ title = "dgx-"; }];
-              border.active-color = mokume.accent;
+              border.active.color = mokume.accent;
             }
 
             # Host tier borders — Homelab (ok green)
             {
               matches = [{ title = "homelab"; }];
-              border.active-color = mokume.ok;
+              border.active.color = mokume.ok;
             }
           ];
 

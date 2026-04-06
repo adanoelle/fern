@@ -30,6 +30,9 @@
         inputs.niri.nixosModules.niri
       ];
 
+      # Use nixpkgs niri (avoids niri-flake fetchGit evaluation issue with Smithay)
+      programs.niri.package = pkgs.niri;
+
       programs.nix-ld.enable = true;
 
       # Boot (systemd-boot — Minisforum firmware resets EFI boot order)

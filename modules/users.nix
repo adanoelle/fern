@@ -5,8 +5,10 @@
     users.users.ada = {
       isNormalUser = true;
       extraGroups = [ "wheel" "networkmanager" ];
-      shell = pkgs.nushell;
+      shell = pkgs.fish;
     };
+
+    programs.fish.enable = true;
 
     networking.networkmanager.enable = true;
     services.openssh.enable = true;

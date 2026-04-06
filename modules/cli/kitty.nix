@@ -63,6 +63,9 @@
           # Typography
           modify_font = "cell_height 120%";
 
+          # Shell — fish for garden stack
+          shell = "${pkgs.fish}/bin/fish";
+
           # Behavior
           confirm_os_window_close = 0;
           copy_on_select = "clipboard";
