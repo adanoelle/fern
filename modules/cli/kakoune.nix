@@ -63,8 +63,15 @@
 
       # Kakoune config
       xdg.configFile."kak/kakrc".text = ''
-        # Load garden colorscheme
-        colorscheme garden
+        # Load garden colorscheme (generated override takes priority)
+        evaluate-commands %sh{
+          f="/tmp/garden-themes/kak/colors/garden.kak"
+          if [ -f "$f" ]; then
+            printf 'source "%s"\n' "$f"
+          else
+            printf 'colorscheme garden\n'
+          fi
+        }
 
         # Line numbers
         add-highlighter global/ number-lines -relative -hlcursor

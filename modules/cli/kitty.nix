@@ -66,6 +66,9 @@
           # Shell — fish for garden stack
           shell = "${pkgs.fish}/bin/fish";
 
+          # Remote control — allows `kitty @ set-colors` from inside this instance
+          allow_remote_control = "yes";
+
           # Behavior
           confirm_os_window_close = 0;
           copy_on_select = "clipboard";
