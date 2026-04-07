@@ -617,8 +617,8 @@ Skip:
 ### Related Documentation
 
 - [Claude Workflow Guide](./claude-workflow.md) - Using Claude effectively
-- [Architecture](../ARCHITECTURE.md) - System design
-- [Improvement Plan](../IMPROVEMENT_PLAN.md) - Future development
+- [The Book — Architecture](../../book/src/architecture/) - System design
+- [The Book — Git Suite](../../book/src/git/) - Git module design and integration
 
 ### External Resources
 

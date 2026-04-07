@@ -1,4 +1,9 @@
-# 🤖 Claude Code Workflow Guide
+# Claude Code Workflow Guide
+
+> **See also:** The book's
+> [Claude Code Integration](../../book/src/git/claude-code-integration.md)
+> chapter covers the Nix module design and safety architecture in depth.
+> This guide is a practical quick-reference.
 
 This guide explains how to effectively use Claude Code with the Fern NixOS
 configuration, leveraging the CLAUDE.md files and integration features.

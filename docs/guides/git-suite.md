@@ -1,5 +1,9 @@
 # Git Suite User Guide
 
+> **See also:** The [book's Git section](../../book/src/git/) covers design
+> rationale, the orchestrator module, identity management internals, and
+> Claude Code integration in depth. This guide is a quick-reference companion.
+
 This guide covers the comprehensive git configuration available in your Fern
 NixOS setup.
 
