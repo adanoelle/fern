@@ -147,6 +147,10 @@
               "${mod}+H".action.focus-column-left = [];
               "${mod}+L".action.focus-column-right = [];
 
+              # Column scroll (Super + mouse wheel)
+              "${mod}+WheelScrollDown" = { action.focus-column-right = []; cooldown-ms = 25; };
+              "${mod}+WheelScrollUp" = { action.focus-column-left = []; cooldown-ms = 25; };
+
               # Window navigation (Super+J/K)
               "${mod}+J".action.focus-window-down = [];
               "${mod}+K".action.focus-window-up = [];
