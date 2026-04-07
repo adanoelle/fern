@@ -1,56 +1,9 @@
 # modules/cli/kakoune.nix — Kakoune editor (garden stack)
-{ den, ... }:
+{ den, inputs, ... }:
 {
   den.aspects.kakoune.homeManager = { pkgs, ... }:
     let
-      # Mokume palette (hardcoded — will be generated from palettes.json later)
-      gardenKakTheme = ''
-        # garden.kak — mokume palette
-
-        # UI
-        face global Default            rgb:8b9bb0,rgb:2c3444
-        face global StatusLine         rgb:6b7a8d,rgb:252d3b
-        face global StatusLineMode     rgb:d4c5a9,rgb:252d3b
-        face global StatusLineInfo     rgb:505e70,rgb:252d3b
-        face global StatusLineValue    rgb:c9b88c,rgb:252d3b
-        face global StatusCursor       rgb:252d3b,rgb:d4c5a9
-        face global Prompt             rgb:c9b88c,rgb:252d3b
-        face global MenuForeground     rgb:d4c5a9,rgb:3d4759
-        face global MenuBackground     rgb:8b9bb0,rgb:343d4f
-        face global Information        rgb:8b9bb0,rgb:343d4f
-        face global Error              rgb:c4796b,rgb:2c3444
-
-        # Selections
-        face global PrimarySelection   default,rgb:3d4759+g
-        face global SecondarySelection default,rgb:343d4f+g
-        face global PrimaryCursor      rgb:252d3b,rgb:d4c5a9
-        face global SecondaryCursor    rgb:252d3b,rgb:8b9bb0
-
-        # Line numbers
-        face global LineNumbers        rgb:505e70
-        face global LineNumberCursor   rgb:6b7a8d
-        face global LineNumbersWrapped rgb:3a4456
-
-        # Matching & whitespace
-        face global MatchingChar       rgb:c9b88c+b
-        face global Whitespace         rgb:3a4456
-        face global BufferPadding      rgb:3a4456
-
-        # Syntax — structure quiet, content prominent
-        face global value              rgb:c9b88c
-        face global type               rgb:8b9bb0
-        face global variable           rgb:d4c5a9
-        face global module             rgb:8b9bb0
-        face global function           rgb:d4c5a9
-        face global string             rgb:7c9a7c
-        face global keyword            rgb:6b7a8d
-        face global operator           rgb:6b7a8d
-        face global attribute          rgb:c9b88c
-        face global comment            rgb:505e70+i
-        face global documentation      rgb:6b7a8d
-        face global meta               rgb:c9b88c
-        face global builtin            rgb:8b9bb0+b
-      '';
+      gardenThemes = inputs.garden-shell.packages.${pkgs.system}.garden-themes-output;
     in
     {
       home.packages = with pkgs; [
@@ -58,20 +11,13 @@
         kakoune-lsp
       ];
 
-      # Garden colorscheme
-      xdg.configFile."kak/colors/garden.kak".text = gardenKakTheme;
+      # Garden colorscheme (generated from palettes.json)
+      xdg.configFile."kak/colors/garden.kak".source =
+        "${gardenThemes}/kak/colors/garden.kak";
 
       # Kakoune config
       xdg.configFile."kak/kakrc".text = ''
-        # Load garden colorscheme (generated override takes priority)
-        evaluate-commands %sh{
-          f="/tmp/garden-themes/kak/colors/garden.kak"
-          if [ -f "$f" ]; then
-            printf 'source "%s"\n' "$f"
-          else
-            printf 'colorscheme garden\n'
-          fi
-        }
+        colorscheme garden
 
         # Line numbers
         add-highlighter global/ number-lines -relative -hlcursor

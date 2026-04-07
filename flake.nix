@@ -13,7 +13,11 @@
 
     import-tree.url = "github:vic/import-tree";
 
-    fern.url = "github:adanoelle/fern-shell";
+    garden-shell = {
+      url = "github:adanoelle/garden-shell/feat/palette";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.den.follows = "den";
+    };
 
     devenv = {
       url = "github:cachix/devenv";

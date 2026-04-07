@@ -1,5 +1,5 @@
 # modules/user-ada.nix — user ada aspect
-{ den, ... }:
+{ den, garden, ... }:
 {
   den.aspects.ada = {
     includes = [
@@ -9,6 +9,7 @@
       den.aspects.devtools
       den.aspects.shells
       den.aspects.workspace
+      garden.palette
     ];
 
     homeManager = { pkgs, ... }: {
@@ -21,7 +22,7 @@
         lock.enable = true;
 
         fern = {
-          enable = true;
+          enable = false;
           obs.enable = false;
           themeWatcher.enable = false;
         };

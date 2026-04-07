@@ -1,20 +1,11 @@
 # modules/shells/fish.nix — Fish shell (garden stack)
-{ den, ... }:
+{ den, inputs, ... }:
 {
   den.aspects.fish.homeManager = { pkgs, lib, ... }:
     let
-      # Mokume palette (hardcoded — will be generated from palettes.json later)
-      mokume = {
-        base = "#2c3444";
-        base-hl = "#3d4759";
-        text-4 = "#505e70";
-        text-3 = "#6b7a8d";
-        text-2 = "#8b9bb0";
-        text-1 = "#d4c5a9";
-        accent = "#c9b88c";
-        urgent = "#c4796b";
-        ok = "#7c9a7c";
-      };
+      palette = inputs.garden-shell.lib.palette.colors;
+      # Strip leading # for fish's bare-hex format
+      bare = color: builtins.substring 1 6 color;
     in
     {
       programs.fish = {
@@ -41,11 +32,11 @@
             end
 
             # Left side: path + git
-            set_color ${builtins.substring 1 6 mokume.text-3}
+            set_color ${bare palette.text-3}
             echo -n $cwd
             if test -n "$git_branch"
               echo -n " "
-              set_color ${builtins.substring 1 6 mokume.text-4}
+              set_color ${bare palette.text-4}
               echo -n "$git_branch$git_dirty"
             end
 
@@ -53,13 +44,13 @@
 
             # ✧ prompt character with color states
             if test $last_status -ne 0
-              set_color ${builtins.substring 1 6 mokume.urgent}
+              set_color ${bare palette.urgent}
             else if test -n "$IN_NIX_SHELL"
-              set_color ${builtins.substring 1 6 mokume.accent}
+              set_color ${bare palette.accent}
             else if test -n "$VIRTUAL_ENV"
-              set_color ${builtins.substring 1 6 mokume.ok}
+              set_color ${bare palette.ok}
             else
-              set_color ${builtins.substring 1 6 mokume.text-1}
+              set_color ${bare palette.text-1}
             end
             echo -n "✧ "
             set_color normal
@@ -70,7 +61,7 @@
             set -l parts
 
             if test -n "$SSH_CONNECTION"
-              set -a parts (set_color ${builtins.substring 1 6 mokume.urgent})(hostname -s)(set_color normal)
+              set -a parts (set_color ${bare palette.urgent})(hostname -s)(set_color normal)
             end
 
             if test -n "$GARDEN_CHANNEL"
@@ -78,7 +69,7 @@
               if test -n "$GARDEN_PAGE"
                 set channel_str "$GARDEN_CHANNEL:$GARDEN_PAGE"
               end
-              set -a parts (set_color ${builtins.substring 1 6 mokume.text-4})$channel_str(set_color normal)
+              set -a parts (set_color ${bare palette.text-4})$channel_str(set_color normal)
             end
 
             echo -n (string join " " $parts)
@@ -117,28 +108,28 @@
             end
           end
 
-          # Fish color theme (mokume)
-          set -g fish_color_cwd          ${builtins.substring 1 6 mokume.text-3}
-          set -g fish_color_cwd_root     ${builtins.substring 1 6 mokume.urgent}
-          set -g fish_color_command      ${builtins.substring 1 6 mokume.text-2}
-          set -g fish_color_param        ${builtins.substring 1 6 mokume.text-3}
-          set -g fish_color_quote        ${builtins.substring 1 6 mokume.accent}
-          set -g fish_color_string       ${builtins.substring 1 6 mokume.ok}
-          set -g fish_color_comment      ${builtins.substring 1 6 mokume.text-4}
-          set -g fish_color_operator     ${builtins.substring 1 6 mokume.text-3}
-          set -g fish_color_redirection  ${builtins.substring 1 6 mokume.text-3}
-          set -g fish_color_end          ${builtins.substring 1 6 mokume.text-3}
-          set -g fish_color_escape       ${builtins.substring 1 6 mokume.accent}
-          set -g fish_color_error        ${builtins.substring 1 6 mokume.urgent}
-          set -g fish_color_autosuggestion ${builtins.substring 1 6 mokume.text-4}
-          set -g fish_color_selection    ${builtins.substring 1 6 mokume.base-hl}
-          set -g fish_color_search_match ${builtins.substring 1 6 mokume.base-hl}
-          set -g fish_color_cancel       ${builtins.substring 1 6 mokume.urgent}
+          # Fish color theme (garden palette)
+          set -g fish_color_cwd          ${bare palette.text-3}
+          set -g fish_color_cwd_root     ${bare palette.urgent}
+          set -g fish_color_command      ${bare palette.text-2}
+          set -g fish_color_param        ${bare palette.text-3}
+          set -g fish_color_quote        ${bare palette.accent}
+          set -g fish_color_string       ${bare palette.ok}
+          set -g fish_color_comment      ${bare palette.text-4}
+          set -g fish_color_operator     ${bare palette.text-3}
+          set -g fish_color_redirection  ${bare palette.text-3}
+          set -g fish_color_end          ${bare palette.text-3}
+          set -g fish_color_escape       ${bare palette.accent}
+          set -g fish_color_error        ${bare palette.urgent}
+          set -g fish_color_autosuggestion ${bare palette.text-4}
+          set -g fish_color_selection    ${bare palette.base-hl}
+          set -g fish_color_search_match ${bare palette.base-hl}
+          set -g fish_color_cancel       ${bare palette.urgent}
 
-          set -g fish_pager_color_prefix      ${builtins.substring 1 6 mokume.text-1}
-          set -g fish_pager_color_completion  ${builtins.substring 1 6 mokume.text-2}
-          set -g fish_pager_color_description ${builtins.substring 1 6 mokume.text-3}
-          set -g fish_pager_color_selected_background ${builtins.substring 1 6 mokume.base-hl}
+          set -g fish_pager_color_prefix      ${bare palette.text-1}
+          set -g fish_pager_color_completion  ${bare palette.text-2}
+          set -g fish_pager_color_description ${bare palette.text-3}
+          set -g fish_pager_color_selected_background ${bare palette.base-hl}
 
           # Vi mode
           fish_vi_key_bindings
