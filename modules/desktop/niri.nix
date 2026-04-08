@@ -168,12 +168,15 @@ in
             "Print".action.screenshot = [ ];
             "${mod}+Print".action.screenshot-window = [ ];
 
+            # Garden shell overlays
+            "${mod}+Slash".action.spawn = [ "sh" "-c" "qs ipc call garden toggleLauncher" ];
+            "${mod}+Tab".action.spawn = [ "sh" "-c" "qs ipc call garden toggleSwitcher" ];
+
             # Session
             "${mod}+Shift+E".action.quit = [ ];
             "${mod}+Shift+Slash".action.show-hotkey-overlay = [ ];
 
             # Workspace navigation (prev/next)
-            "${mod}+Tab".action.focus-workspace-down = [ ];
             "${mod}+Shift+Tab".action.focus-workspace-up = [ ];
 
             # Consume/expel (tabbed columns)
