@@ -108,28 +108,8 @@
             end
           end
 
-          # Fish color theme (garden palette)
-          set -g fish_color_cwd          ${bare palette.text-3}
-          set -g fish_color_cwd_root     ${bare palette.urgent}
-          set -g fish_color_command      ${bare palette.text-2}
-          set -g fish_color_param        ${bare palette.text-3}
-          set -g fish_color_quote        ${bare palette.accent}
-          set -g fish_color_string       ${bare palette.ok}
-          set -g fish_color_comment      ${bare palette.text-4}
-          set -g fish_color_operator     ${bare palette.text-3}
-          set -g fish_color_redirection  ${bare palette.text-3}
-          set -g fish_color_end          ${bare palette.text-3}
-          set -g fish_color_escape       ${bare palette.accent}
-          set -g fish_color_error        ${bare palette.urgent}
-          set -g fish_color_autosuggestion ${bare palette.text-4}
-          set -g fish_color_selection    ${bare palette.base-hl}
-          set -g fish_color_search_match ${bare palette.base-hl}
-          set -g fish_color_cancel       ${bare palette.urgent}
-
-          set -g fish_pager_color_prefix      ${bare palette.text-1}
-          set -g fish_pager_color_completion  ${bare palette.text-2}
-          set -g fish_pager_color_description ${bare palette.text-3}
-          set -g fish_pager_color_selected_background ${bare palette.base-hl}
+          # Fish colors managed by garden.terminal aspect (universal vars
+          # set by garden-themes apply, sourced from mutable theme file).
 
           # Vi mode
           fish_vi_key_bindings

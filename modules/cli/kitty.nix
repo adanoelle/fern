@@ -1,11 +1,7 @@
 # modules/cli/kitty.nix — Kitty terminal emulator (garden stack)
 { den, inputs, ... }:
 {
-  den.aspects.kitty.homeManager = { pkgs, lib, ... }:
-    let
-      gardenThemes = inputs.garden-shell.packages.${pkgs.system}.garden-themes-output;
-    in
-    {
+  den.aspects.kitty.homeManager = { pkgs, lib, ... }: {
       programs.kitty = {
         enable = true;
 
@@ -38,9 +34,7 @@
           enable_audio_bell = "no";
         };
 
-        extraConfig = ''
-          include ${gardenThemes}/kitty/garden-theme.conf
-        '';
+        # Colors managed by garden.terminal aspect (mutable globinclude).
       };
 
       # Both Kitty and Ghostty need their terminfo; combine both paths

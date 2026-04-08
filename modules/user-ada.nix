@@ -9,7 +9,7 @@
       den.aspects.devtools
       den.aspects.shells
       den.aspects.workspace
-      garden.palette
+      garden.terminal
     ];
 
     homeManager = { pkgs, ... }: {

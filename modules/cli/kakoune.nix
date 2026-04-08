@@ -1,9 +1,9 @@
 # modules/cli/kakoune.nix — Kakoune editor (garden stack)
 { den, inputs, ... }:
 {
-  den.aspects.kakoune.homeManager = { pkgs, ... }:
+  den.aspects.kakoune.homeManager = { config, pkgs, ... }:
     let
-      gardenThemes = inputs.garden-shell.packages.${pkgs.system}.garden-themes-output;
+      themesDir = "${config.xdg.configHome}/garden/themes";
     in
     {
       home.packages = with pkgs; [
@@ -11,13 +11,9 @@
         kakoune-lsp
       ];
 
-      # Garden colorscheme (generated from palettes.json)
-      xdg.configFile."kak/colors/garden.kak".source =
-        "${gardenThemes}/kak/colors/garden.kak";
-
-      # Kakoune config
+      # Kakoune config — garden colors sourced from mutable themes dir
       xdg.configFile."kak/kakrc".text = ''
-        colorscheme garden
+        try %{ source ${themesDir}/kak/garden.kak }
 
         # Line numbers
         add-highlighter global/ number-lines -relative -hlcursor
