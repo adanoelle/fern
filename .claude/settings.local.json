@@ -4,7 +4,13 @@
       "Bash(nix eval:*)",
       "Bash(nix flake:*)",
       "Bash(tail:*)",
-      "Bash(git add modules/desktop/niri.nix && nix eval '.#nixosConfigurations.fern.config.programs.niri.package.name' 2>&1)"
+      "Bash(git add modules/desktop/niri.nix && nix eval '.#nixosConfigurations.fern.config.programs.niri.package.name' 2>&1)",
+      "Bash(find:*)",
+      "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(wc:*)",
+      "Bash(git:*)",
+      "Bash(true:*)"
     ]
   }
 }

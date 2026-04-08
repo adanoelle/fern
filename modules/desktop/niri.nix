@@ -169,8 +169,8 @@ in
             "${mod}+Print".action.screenshot-window = [ ];
 
             # Garden shell overlays
-            "${mod}+Slash".action.spawn = [ "sh" "-c" "qs ipc call garden toggleLauncher" ];
-            "${mod}+Tab".action.spawn = [ "sh" "-c" "qs ipc call garden toggleSwitcher" ];
+            "${mod}+Slash".action.spawn = [ "sh" "-c" "qs -c garden ipc call garden toggleLauncher" ];
+            "${mod}+Tab".action.spawn = [ "sh" "-c" "qs -c garden ipc call garden toggleSwitcher" ];
 
             # Session
             "${mod}+Shift+E".action.quit = [ ];
