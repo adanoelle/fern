@@ -5,7 +5,7 @@
     programs.btop = {
       enable = true;
       settings = {
-        color_theme = "Default";
+        color_theme = "garden";
         theme_background = false;
         vim_keys = true;
         rounded_corners = false;

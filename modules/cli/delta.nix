@@ -1,37 +1,37 @@
-{ den, ... }:
+# modules/cli/delta.nix — delta (git diff viewer) garden theme
+#
+# Maps garden palette colors to delta's theme settings. Uses the
+# bat-generated garden tmTheme for syntax highlighting.
+{ den, inputs, ... }:
+let
+  palette = inputs.garden-shell.lib.palette.colors;
+in
 {
-  den.aspects.delta.homeManager = { ... }:
-    let
-      rosewater = "#f5e0dc"; flamingo = "#f2cdcd"; pink = "#f5c2e7";
-      mauve = "#cba6f7"; red = "#f38ba8"; maroon = "#eba0ac";
-      peach = "#fab387"; yellow = "#f9e2af"; green = "#a6e3a1";
-      teal = "#94e2d5"; sky = "#89dceb"; sapphire = "#74c7ec";
-      blue = "#89b4fa"; lavender = "#b4befe";
-    in
-    {
-      programs.git.delta = {
-        enable = true;
-        options = {
-          navigate = true;
-          line-numbers = true;
-          side-by-side = true;
-          max-line-length = 0;
-          features = "ada-theme";
-        };
-      };
-
-      programs.git.extraConfig."delta \"ada-theme\"" = {
-        dark = true;
-        minus-style = "bold ${red}";
-        plus-style = "bold ${green}";
-        hunk-header-style = "syntax ${mauve}";
-        file-style = "bold ${blue}";
-        commit-style = "bold ${mauve}";
-        line-numbers-minus-style = "dim ${maroon}";
-        line-numbers-plus-style = "dim ${teal}";
-        line-numbers-zero-style = "dim ${sky}";
-        line-numbers-left-style = "dim ${yellow}";
-        line-numbers-right-style = "dim ${yellow}";
+  den.aspects.delta.homeManager = { lib, ... }: {
+    programs.git.delta = {
+      enable = true;
+      options = {
+        navigate = true;
+        line-numbers = true;
+        side-by-side = true;
+        max-line-length = 0;
+        syntax-theme = lib.mkForce "garden";
+        features = "ada-theme";
       };
     };
+
+    programs.git.extraConfig."delta \"ada-theme\"" = {
+      dark = true;
+      minus-style = "bold ${palette.urgent}";
+      plus-style = "bold ${palette.ok}";
+      hunk-header-style = "syntax ${palette.text-3}";
+      file-style = "bold ${palette.text-1}";
+      commit-style = "bold ${palette.accent}";
+      line-numbers-minus-style = "dim ${palette.urgent}";
+      line-numbers-plus-style = "dim ${palette.ok}";
+      line-numbers-zero-style = "dim ${palette.text-4}";
+      line-numbers-left-style = "dim ${palette.text-3}";
+      line-numbers-right-style = "dim ${palette.text-3}";
+    };
+  };
 }
