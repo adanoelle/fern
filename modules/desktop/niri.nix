@@ -27,7 +27,7 @@ in
       };
     };
 
-    homeManager = { pkgs, lib, ... }: {
+    homeManager = { pkgs, lib, config, ... }: {
       programs.niri.settings = {
         # ── Named workspaces (channels) ──────────────────────
         workspaces = {

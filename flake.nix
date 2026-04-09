@@ -14,7 +14,7 @@
     import-tree.url = "github:vic/import-tree";
 
     garden-shell = {
-      url = "github:adanoelle/garden-shell/feat/palette";
+      url = "github:adanoelle/garden-shell";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.den.follows = "den";
     };
