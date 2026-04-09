@@ -171,6 +171,7 @@ in
             # Garden shell overlays
             "${mod}+Slash".action.spawn = [ "sh" "-c" "qs -c garden ipc call garden toggleLauncher" ];
             "${mod}+Tab".action.spawn = [ "sh" "-c" "qs -c garden ipc call garden toggleSwitcher" ];
+            "${mod}+Comma".action.spawn = [ "sh" "-c" "qs -c garden ipc call garden toggleSettings" ];
 
             # Session
             "${mod}+Shift+E".action.quit = [ ];

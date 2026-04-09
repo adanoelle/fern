@@ -10,7 +10,8 @@
       "WebFetch(domain:raw.githubusercontent.com)",
       "Bash(wc:*)",
       "Bash(git:*)",
-      "Bash(true:*)"
+      "Bash(true:*)",
+      "Bash(nixpkgs-fmt:*)"
     ]
   }
 }
