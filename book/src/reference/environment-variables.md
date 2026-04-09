@@ -91,14 +91,6 @@ Set by `modules/devtools/localstack.nix`:
 | `AWS_DEFAULT_REGION`    | `us-east-1`             | LocalStack default region   |
 | `LOCALSTACK_HOST`       | `localhost`             | LocalStack hostname         |
 
-## Azure
-
-Set by `modules/cloud/azure-cli.nix`:
-
-| Variable         | Value                   | Purpose                                 |
-| ---------------- | ----------------------- | --------------------------------------- |
-| `PYTHONWARNINGS` | `ignore::FutureWarning` | Suppress Azure CLI deprecation warnings |
-
 ## Shell
 
 Set by `modules/shells/nushell.nix`:

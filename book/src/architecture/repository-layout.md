@@ -73,8 +73,7 @@ fern/
 │   │   ├── boot.nix       # systemd-boot for Apple Silicon
 │   │   └── graphics.nix   # Asahi GPU driver
 │   └── cloud/             # Cloud platform aspects
-│       ├── aws-cli.nix
-│       └── azure-cli.nix
+│       └── aws-cli.nix
 ├── hosts/                 # Hardware configurations (auto-generated)
 │   ├── fern/
 │   │   └── hardware.nix

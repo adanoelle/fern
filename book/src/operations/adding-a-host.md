@@ -104,15 +104,14 @@ sudo nixos-rebuild switch --flake .#newhost
 
 The two existing hosts show the pattern:
 
-**Fern** (full workstation -- 18 aspect includes):
+**Fern** (full workstation -- 15 aspect includes):
 ```nix
 den.aspects.fern.includes = [
   den.aspects.core  den.aspects.audio  den.aspects.monitoring
   den.aspects.users  den.aspects.secrets-guard  den.aspects.greetd
   den.aspects.fonts  den.aspects.docker  den.aspects.c-cpp
   den.aspects.localstack  den.aspects.rust  den.aspects.node-ts
-  den.aspects.aws-cli  den.aspects.azure-cli  den.aspects.lmstudio
-  den.aspects.teams  den.aspects.vscode  den.aspects.sqlserver
+  den.aspects.aws-cli  den.aspects.lmstudio  den.aspects.teams
 ];
 ```
 

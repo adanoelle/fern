@@ -1,11 +1,10 @@
 # Cloud Platforms
 
-> AWS and Azure CLI tools with credential management, infrastructure-as-code
-> tooling, and security scanners.
+> AWS CLI tools with credential management, infrastructure-as-code tooling,
+> and security scanners.
 
-Cloud platform tooling is split across two aspects: `den.aspects.aws-cli`
-(`modules/cloud/aws-cli.nix`) for AWS and `den.aspects.azure-cli`
-(`modules/cloud/azure-cli.nix`) for Azure.
+Cloud platform tooling lives in the `den.aspects.aws-cli` aspect
+(`modules/cloud/aws-cli.nix`).
 
 ## AWS
 
@@ -34,38 +33,9 @@ AWS_SDK_LOAD_CONFIG=1
 The `awsdev` alias launches a shell with dev credentials via aws-vault:
 `aws-vault exec dev -- zsh`.
 
-## Azure
-
-The Azure aspect (`modules/cloud/azure-cli.nix`) installs:
-
-| Package                | Purpose                                 |
-| ---------------------- | --------------------------------------- |
-| `azure-cli`            | Azure CLI with extensions               |
-| `azure-storage-azcopy` | High-performance Azure storage transfer |
-
-### Extensions
-
-The Azure CLI is installed with these extensions:
-
-- `account` -- Subscription management
-- `aks-preview` -- AKS preview features
-- `cosmosdb-preview` -- Cosmos DB preview features
-- `datafactory` -- Data Factory management
-- `storage-preview` -- Storage preview features
-
-### Environment
-
-```bash
-PYTHONWARNINGS=ignore::FutureWarning
-```
-
-This suppresses Python deprecation warnings from the Azure CLI, which uses
-Python internally.
-
 ## Key files
 
 | File                                  | Purpose                                        |
 | ------------------------------------- | ---------------------------------------------- |
 | `modules/cloud/aws-cli.nix`       | AWS CLI, vault, SAM, Terraform, security tools (`den.aspects.aws-cli`)   |
-| `modules/cloud/azure-cli.nix`     | Azure CLI with extensions, azcopy (`den.aspects.azure-cli`)              |
 | `modules/devtools/localstack.nix` | Local AWS emulation (`den.aspects.localstack`; see [Docker](docker.md))  |

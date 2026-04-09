@@ -33,7 +33,7 @@ this to:
 | GPU | AMD (Mesa/AMDGPU) | Apple Silicon (Asahi) |
 | Boot | systemd-boot + Zen kernel | systemd-boot |
 | Gaming | Steam, Gamescope, GameMode | Not included |
-| Cloud tools | AWS, Azure, LocalStack | Not included |
+| Cloud tools | AWS, LocalStack | Not included |
 | Dev toolchains | Rust, C/C++, TypeScript | Not included |
 | Desktop | Hyprland + Fern Shell | Hyprland + Fern Shell |
 | Shells | Nushell, Starship, Zoxide | Nushell, Starship, Zoxide |
@@ -65,11 +65,8 @@ which other aspects it includes.
       den.aspects.rust
       den.aspects.node-ts
       den.aspects.aws-cli
-      den.aspects.azure-cli
       den.aspects.lmstudio
       den.aspects.teams
-      den.aspects.vscode
-      den.aspects.sqlserver
     ];
 
     nixos = { pkgs, lib, ... }: {
@@ -144,8 +141,7 @@ Both hosts include `core`, `audio`, `users`, `docker`, `greetd`, and
 - **GPU**: fern enables Mesa/AMDGPU inline; moss uses the `graphics-asahi`
   aspect
 - **Dev tools**: only fern includes `rust`, `c-cpp`, `node-ts`, cloud CLIs
-- **Desktop apps**: only fern includes `lmstudio`, `teams`, `vscode`,
-  `sqlserver`
+- **Desktop apps**: only fern includes `lmstudio`, `teams`
 
 User-level configuration (cli, git, shells, desktop) is handled by the user
 aspect (`modules/user-ada.nix`), which applies to `ada` on both machines via the

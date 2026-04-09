@@ -17,11 +17,8 @@
       den.aspects.rust
       den.aspects.node-ts
       den.aspects.aws-cli
-      den.aspects.azure-cli
       den.aspects.lmstudio
       den.aspects.teams
-      den.aspects.vscode
-      den.aspects.sqlserver
     ];
 
     nixos = { pkgs, lib, ... }: {

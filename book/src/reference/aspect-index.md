@@ -34,7 +34,6 @@ Aspects providing NixOS system-level configuration.
 |--------|------|-------------|-------------|
 | `audio` | `modules/audio.nix` | PipeWire, low-latency, Audient iD24, tools | fern, moss |
 | `aws-cli` | `modules/cloud/aws-cli.nix` | AWS CLI, vault, SAM, Terraform, security tools | fern |
-| `azure-cli` | `modules/cloud/azure-cli.nix` | Azure CLI with extensions, azcopy | fern |
 | `boot` | `modules/boot.nix` | GRUB + Zen kernel (x86_64 legacy) | -- |
 | `boot-asahi` | `modules/asahi/boot.nix` | systemd-boot (Apple Silicon) | moss |
 | `c-cpp` | `modules/devtools/c-cpp.nix` | GCC, Clang, CMake, hardening flags | fern |
@@ -51,10 +50,8 @@ Aspects providing NixOS system-level configuration.
 | `rust` | `modules/devtools/rust.nix` | Stable Rust, rust-analyzer, cargo tools, hardening | fern |
 | `secrets` | `modules/secrets.nix` | SOPS-nix, age key, SSH key decryption | moss |
 | `secrets-guard` | `modules/secrets-guard.nix` | git-secrets, trufflehog | fern, moss |
-| `sqlserver` | `modules/desktop/sqlserver.nix` | SQL Studio | fern |
 | `teams` | `modules/desktop/teams.nix` | Microsoft Teams | fern |
 | `users` | `modules/users.nix` | User account, NetworkManager, SSH | fern, moss |
-| `vscode` | `modules/desktop/vscode.nix` | VS Code | fern |
 
 ## User aspects (homeManager)
 
