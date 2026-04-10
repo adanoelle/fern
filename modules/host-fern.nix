@@ -37,6 +37,32 @@
       boot.loader.efi.canTouchEfiVariables = true;
       boot.kernelPackages = pkgs.linuxPackages_zen;
 
+      # AMD IOMMU passthrough — prevents DMA interference with USB audio
+      boot.kernelParams = [ "iommu=pt" ];
+
+      # USB audio device rules (fern-specific hardware)
+      # NOTE: Topping DAC ID (152a:8750) is unverified — check with lsusb when connected
+      services.udev.extraRules = ''
+        # Audient iD24 — symlink + disable USB autosuspend
+        SUBSYSTEM=="usb", ATTRS{idVendor}=="2708", ATTRS{idProduct}=="4002", \
+          SYMLINK+="audio/audient_id24"
+        ACTION=="add", SUBSYSTEM=="usb", ATTRS{idVendor}=="2708", ATTRS{idProduct}=="4002", \
+          ATTR{power/autosuspend}="-1"
+
+        # Topping DAC — disable USB autosuspend
+        SUBSYSTEM=="usb", ATTRS{idVendor}=="152a", ATTRS{idProduct}=="8750", \
+          SYMLINK+="audio/topping_dac"
+        ACTION=="add", SUBSYSTEM=="usb", ATTRS{idVendor}=="152a", ATTRS{idProduct}=="8750", \
+          ATTR{power/autosuspend}="-1"
+      '';
+
+      # USB audio interrupt priority tuning (requires den.aspects.audio for musnix import)
+      musnix.rtirq = {
+        enable = true;
+        nameList = "usb snd";
+        prioHigh = 90;
+      };
+
       # AMD GPU (uses Mesa/AMDGPU, no proprietary driver needed)
       hardware.graphics.enable = true;
 

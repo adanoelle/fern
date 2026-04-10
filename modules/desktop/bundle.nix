@@ -9,6 +9,7 @@
       den.aspects.obs
       den.aspects.screenshot
       den.aspects.gaming-hm
+      den.aspects.daw
     ];
   };
 }
