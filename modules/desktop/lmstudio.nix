@@ -1,6 +1,7 @@
 { den, ... }:
 {
-  den.aspects.lmstudio.nixos = { lib, pkgs, ... }:
+  den.aspects.lmstudio.nixos =
+    { lib, pkgs, ... }:
     let
       version = "0.3.23-3";
       src = pkgs.fetchurl {
@@ -42,7 +43,10 @@
     in
     {
       environment.systemPackages = [ lmstudio ];
-      hardware.graphics = { enable = true; enable32Bit = true; };
+      hardware.graphics = {
+        enable = true;
+        enable32Bit = true;
+      };
       networking.firewall.allowedTCPPorts = [ 1234 ];
     };
 }

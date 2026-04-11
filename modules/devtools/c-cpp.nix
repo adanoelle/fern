@@ -1,7 +1,8 @@
 { den, ... }:
 {
   den.aspects.c-cpp = {
-    nixos = { lib, pkgs, ... }:
+    nixos =
+      { lib, pkgs, ... }:
       let
         safeFlags = [
           "-fstack-protector-strong"
@@ -15,7 +16,8 @@
           clang
           clang-tools
           lld
-          cmake ninja
+          cmake
+          ninja
           pkg-config
         ];
 
@@ -25,38 +27,58 @@
         };
       };
 
-    homeManager = { pkgs, ... }: {
-      home.packages = with pkgs; [
-        gdb lldb valgrind rr
-        bear ccache cmake-format pkg-config
-        clang-tools cppcheck include-what-you-use
-        cmake ninja meson doxygen graphviz
-        ripgrep fd
-      ];
+    homeManager =
+      { pkgs, ... }:
+      {
+        home.packages = with pkgs; [
+          gdb
+          lldb
+          valgrind
+          rr
+          bear
+          ccache
+          cmake-format
+          pkg-config
+          clang-tools
+          cppcheck
+          include-what-you-use
+          cmake
+          ninja
+          meson
+          doxygen
+          graphviz
+          ripgrep
+          fd
+        ];
 
-      programs.helix = {
-        enable = true;
-        languages = {
-          language-server.clangd = {
-            command = "clangd";
-            args = [ "--background-index" "--clang-tidy" ];
+        programs.helix = {
+          enable = true;
+          languages = {
+            language-server.clangd = {
+              command = "clangd";
+              args = [
+                "--background-index"
+                "--clang-tidy"
+              ];
+            };
+            language = [
+              {
+                name = "cpp";
+                language-servers = [ "clangd" ];
+                roots = [ "compile_commands.json" ];
+                formatter = {
+                  command = "clang-format";
+                };
+              }
+            ];
           };
-          language = [
-            {
-              name = "cpp";
-              language-servers = [ "clangd" ];
-              roots = [ "compile_commands.json" ];
-              formatter = { command = "clang-format"; };
-            }
-          ];
+        };
+
+        programs.direnv = {
+          enable = true;
+          nix-direnv.enable = true;
+          config.global.hide_env_diff = true;
         };
       };
-
-      programs.direnv = {
-        enable = true;
-        nix-direnv.enable = true;
-        config.global.hide_env_diff = true;
-      };
-    };
   };
 }

@@ -1,6 +1,12 @@
 { den, ... }:
 {
-  den.aspects.screenshot.homeManager = { lib, pkgs, config, ... }:
+  den.aspects.screenshot.homeManager =
+    {
+      lib,
+      pkgs,
+      config,
+      ...
+    }:
     let
       cfg = config.desktop.hyprland;
       shotsDir = "${config.home.homeDirectory}/media/screenshots";
@@ -48,9 +54,15 @@
     in
     lib.mkIf cfg.enable {
       home.packages = with pkgs; [
-        grim slurp satty wl-clipboard libnotify
-        hyprshot_region_annotate hyprshot_full_annotate
-        hyprshot_region_clip hyprshot_full_file
+        grim
+        slurp
+        satty
+        wl-clipboard
+        libnotify
+        hyprshot_region_annotate
+        hyprshot_full_annotate
+        hyprshot_region_clip
+        hyprshot_full_file
       ];
 
       home.file."Pictures/Screenshots/.keep".text = "";

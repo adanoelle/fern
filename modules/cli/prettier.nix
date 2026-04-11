@@ -1,6 +1,7 @@
 { den, ... }:
 {
-  den.aspects.prettier.homeManager = { pkgs, ... }:
+  den.aspects.prettier.homeManager =
+    { pkgs, ... }:
     let
       prettierConfig = ''
         {

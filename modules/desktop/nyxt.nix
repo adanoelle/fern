@@ -1,6 +1,7 @@
 { den, ... }:
 {
-  den.aspects.nyxt.homeManager = { pkgs, ... }:
+  den.aspects.nyxt.homeManager =
+    { pkgs, ... }:
     let
       nyxt-wrapped = pkgs.symlinkJoin {
         name = "nyxt-wrapped";

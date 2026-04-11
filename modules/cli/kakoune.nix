@@ -1,7 +1,8 @@
 # modules/cli/kakoune.nix — Kakoune editor (garden stack)
 { den, inputs, ... }:
 {
-  den.aspects.kakoune.homeManager = { config, pkgs, ... }:
+  den.aspects.kakoune.homeManager =
+    { config, pkgs, ... }:
     let
       themesDir = "${config.xdg.configHome}/garden/themes";
     in

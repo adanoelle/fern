@@ -1,7 +1,14 @@
 # modules/desktop/hyprland.nix — Hyprland Wayland compositor
 { den, ... }:
 {
-  den.aspects.hyprland.homeManager = { pkgs, lib, config, inputs, ... }:
+  den.aspects.hyprland.homeManager =
+    {
+      pkgs,
+      lib,
+      config,
+      inputs,
+      ...
+    }:
     let
       palette = {
         base = "#303446";
@@ -16,7 +23,9 @@
       };
 
       cfg = config.desktop.hyprland;
-      mkBind = type: combo: action: "${type} = ${cfg.modKey}, ${combo}, ${action}";
+      mkBind =
+        type: combo: action:
+        "${type} = ${cfg.modKey}, ${combo}, ${action}";
     in
     {
       imports = [
@@ -29,10 +38,22 @@
       ## ───────────────────── Options ─────────────────────
       options.desktop.hyprland = {
         enable = lib.mkEnableOption "Hyprland Wayland compositor";
-        modKey = lib.mkOption { type = lib.types.str; default = "SUPER"; };
-        terminal = lib.mkOption { type = lib.types.str; default = "ghostty"; };
-        appRunner = lib.mkOption { type = lib.types.str; default = "wofi --show drun"; };
-        reloadCmd = lib.mkOption { type = lib.types.str; default = "hyprctl reload"; };
+        modKey = lib.mkOption {
+          type = lib.types.str;
+          default = "SUPER";
+        };
+        terminal = lib.mkOption {
+          type = lib.types.str;
+          default = "ghostty";
+        };
+        appRunner = lib.mkOption {
+          type = lib.types.str;
+          default = "wofi --show drun";
+        };
+        reloadCmd = lib.mkOption {
+          type = lib.types.str;
+          default = "hyprctl reload";
+        };
 
         bar.enable = lib.mkEnableOption "Waybar status bar";
         idle.enable = lib.mkEnableOption "hypridle idle timer";
@@ -87,7 +108,21 @@
 
           transition = {
             type = lib.mkOption {
-              type = lib.types.enum [ "simple" "fade" "left" "right" "top" "bottom" "wipe" "wave" "grow" "center" "any" "outer" "random" ];
+              type = lib.types.enum [
+                "simple"
+                "fade"
+                "left"
+                "right"
+                "top"
+                "bottom"
+                "wipe"
+                "wave"
+                "grow"
+                "center"
+                "any"
+                "outer"
+                "random"
+              ];
               default = "fade";
               description = "Transition animation type";
             };
@@ -107,10 +142,22 @@
         };
 
         style = {
-          gapsIn = lib.mkOption { type = lib.types.int; default = 6; };
-          gapsOut = lib.mkOption { type = lib.types.int; default = 12; };
-          border = lib.mkOption { type = lib.types.int; default = 2; };
-          rounding = lib.mkOption { type = lib.types.int; default = 5; };
+          gapsIn = lib.mkOption {
+            type = lib.types.int;
+            default = 6;
+          };
+          gapsOut = lib.mkOption {
+            type = lib.types.int;
+            default = 12;
+          };
+          border = lib.mkOption {
+            type = lib.types.int;
+            default = 2;
+          };
+          rounding = lib.mkOption {
+            type = lib.types.int;
+            default = 5;
+          };
         };
 
         # Fancy wallpaper-driven theme (swww + pywal)
@@ -118,16 +165,28 @@
           enable = lib.mkEnableOption "Wallpaper-driven theme with swww + pywal";
           rotate = {
             enable = lib.mkEnableOption "Periodic wallpaper rotation";
-            minutes = lib.mkOption { type = lib.types.ints.positive; default = 30; };
-            directory = lib.mkOption { type = lib.types.str; default = "${config.home.homeDirectory}/wallpapers"; };
+            minutes = lib.mkOption {
+              type = lib.types.ints.positive;
+              default = 30;
+            };
+            directory = lib.mkOption {
+              type = lib.types.str;
+              default = "${config.home.homeDirectory}/wallpapers";
+            };
           };
           perWorkspace = lib.mkOption {
             type = lib.types.attrsOf lib.types.str; # "1" = "/path/to/img.png"
             default = { };
           };
           transition = {
-            duration = lib.mkOption { type = lib.types.number; default = 0.6; };
-            type = lib.mkOption { type = lib.types.str; default = "any"; };
+            duration = lib.mkOption {
+              type = lib.types.number;
+              default = 0.6;
+            };
+            type = lib.mkOption {
+              type = lib.types.str;
+              default = "any";
+            };
           };
         };
       };
@@ -135,10 +194,18 @@
       ## ───────────────────── Config ─────────────────────
       config = lib.mkIf cfg.enable {
         # Runtime tools common to desktop
-        home.packages = with pkgs; [ wl-clipboard wofi ghostty firefox ];
+        home.packages = with pkgs; [
+          wl-clipboard
+          wofi
+          ghostty
+          firefox
+        ];
 
         # XDG portal helpers (system has portals too; harmless to enable here)
-        xdg.portal = { enable = true; extraPortals = [ pkgs.xdg-desktop-portal-wlr ]; };
+        xdg.portal = {
+          enable = true;
+          extraPortals = [ pkgs.xdg-desktop-portal-wlr ];
+        };
 
         wayland.windowManager.hyprland = {
           enable = true;
@@ -159,7 +226,12 @@
 
             decoration = {
               rounding = cfg.style.rounding;
-              blur = { enabled = true; size = 8; passes = 3; new_optimizations = true; };
+              blur = {
+                enabled = true;
+                size = 8;
+                passes = 3;
+                new_optimizations = true;
+              };
             };
 
             animations = {

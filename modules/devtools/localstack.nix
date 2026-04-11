@@ -1,6 +1,7 @@
 { den, ... }:
 {
-  den.aspects.localstack.nixos = { lib, pkgs, ... }:
+  den.aspects.localstack.nixos =
+    { lib, pkgs, ... }:
     let
       dataDir = "/var/localstack";
       edgePort = "4566";
@@ -20,9 +21,19 @@
         environment = {
           EDGE_PORT = edgePort;
           SERVICES = lib.concatStringsSep "," [
-            "cloudformation" "sts" "iam" "s3" "sqs"
-            "sns" "dynamodb" "lambda" "apigateway"
-            "logs" "events" "ssm" "cloudwatch"
+            "cloudformation"
+            "sts"
+            "iam"
+            "s3"
+            "sqs"
+            "sns"
+            "dynamodb"
+            "lambda"
+            "apigateway"
+            "logs"
+            "events"
+            "ssm"
+            "cloudwatch"
           ];
           DISABLE_EVENTS = "1";
         };

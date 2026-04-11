@@ -1,4 +1,10 @@
-{ lib, pkgs, config, inputs, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  inputs,
+  ...
+}:
 
 let
   cfg = config.desktop.hyprland;
@@ -56,7 +62,10 @@ lib.mkIf (cfg.enable && cfg.fern.enable) {
       PrivateTmp = true;
       ProtectSystem = "strict";
       ProtectHome = "read-only";
-      ReadWritePaths = [ "%h/.local/state/fern" "%h/.config/fern" ];
+      ReadWritePaths = [
+        "%h/.local/state/fern"
+        "%h/.config/fern"
+      ];
       NoNewPrivileges = true;
       CapabilityBoundingSet = "";
       RestrictNamespaces = true;
@@ -73,7 +82,10 @@ lib.mkIf (cfg.enable && cfg.fern.enable) {
   systemd.user.services.fern-obs = lib.mkIf cfg.fern.obs.enable {
     Unit = {
       Description = "Fern OBS Bridge";
-      After = [ "graphical-session.target" "fern-shell.service" ];
+      After = [
+        "graphical-session.target"
+        "fern-shell.service"
+      ];
       BindsTo = [ "fern-shell.service" ];
     };
     Service = {
@@ -105,7 +117,10 @@ lib.mkIf (cfg.enable && cfg.fern.enable) {
   systemd.user.services.fern-theme-watcher = lib.mkIf cfg.fern.themeWatcher.enable {
     Unit = {
       Description = "Fern Theme Watcher";
-      After = [ "graphical-session.target" "fern-shell.service" ];
+      After = [
+        "graphical-session.target"
+        "fern-shell.service"
+      ];
       PartOf = [ "fern-shell.service" ];
     };
     Service = {

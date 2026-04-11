@@ -1,6 +1,8 @@
 { den, ... }:
 {
-  den.aspects.crypt.homeManager = { pkgs, ... }: {
-    home.packages = [ pkgs.age ];
-  };
+  den.aspects.crypt.homeManager =
+    { pkgs, ... }:
+    {
+      home.packages = [ pkgs.age ];
+    };
 }

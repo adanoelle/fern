@@ -1,4 +1,9 @@
-{ lib, pkgs, config, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 let
   cfg = config.desktop.hyprland;
 in
@@ -12,15 +17,27 @@ lib.mkIf (cfg.enable && cfg.bar.enable) {
       height = 45;
       spacing = 6;
 
-      modules-left   = [ "hyprland/workspaces" "hyprland/window" ];
+      modules-left = [
+        "hyprland/workspaces"
+        "hyprland/window"
+      ];
       modules-center = [ "clock" ];
-      modules-right  = [ "network" "pulseaudio" "battery" "cpu" "memory" ];
+      modules-right = [
+        "network"
+        "pulseaudio"
+        "battery"
+        "cpu"
+        "memory"
+      ];
 
       "hyprland/workspaces" = {
         disable-scroll = true;
         all-outputs = true;
         format = "{name}";
-        format-icons = { active = ""; default = ""; };
+        format-icons = {
+          active = "";
+          default = "";
+        };
       };
 
       "hyprland/window" = {
@@ -44,7 +61,13 @@ lib.mkIf (cfg.enable && cfg.bar.enable) {
       pulseaudio = {
         format = "{volume}% {icon}";
         format-muted = "";
-        format-icons = { default = [ "" "" "" ]; };
+        format-icons = {
+          default = [
+            ""
+            ""
+            ""
+          ];
+        };
         tooltip-format = "{desc} at {volume}%";
       };
 
@@ -52,12 +75,25 @@ lib.mkIf (cfg.enable && cfg.bar.enable) {
         format = "{capacity}% {icon}";
         format-charging = "{capacity}% ";
         format-plugged = "{capacity}% ";
-        format-icons = [ "" "" "" "" "" ];
-        states = { critical = 15; warning = 30; };
+        format-icons = [
+          ""
+          ""
+          ""
+          ""
+          ""
+        ];
+        states = {
+          critical = 15;
+          warning = 30;
+        };
       };
 
-      cpu = { format = " {usage}%"; };
-      memory = { format = " {used:0.1f}G"; };
+      cpu = {
+        format = " {usage}%";
+      };
+      memory = {
+        format = " {used:0.1f}G";
+      };
     };
 
     style = ''
@@ -123,7 +159,10 @@ lib.mkIf (cfg.enable && cfg.bar.enable) {
       After = [ "graphical-session.target" ];
       PartOf = [ "hyprland-session.target" ];
     };
-    Service = { ExecStart = "${pkgs.waybar}/bin/waybar"; Restart = "on-failure"; };
+    Service = {
+      ExecStart = "${pkgs.waybar}/bin/waybar";
+      Restart = "on-failure";
+    };
     Install.WantedBy = [ "hyprland-session.target" ];
   };
 }

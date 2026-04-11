@@ -12,69 +12,71 @@
       garden.terminal
     ];
 
-    homeManager = { pkgs, ... }: {
-      home.packages = [ pkgs.home-manager ];
+    homeManager =
+      { pkgs, ... }:
+      {
+        home.packages = [ pkgs.home-manager ];
 
-      desktop.hyprland = {
-        enable = true;
-        bar.enable = false;
-        idle.enable = true;
-        lock.enable = true;
-
-        fern = {
-          enable = false;
-          obs.enable = false;
-          themeWatcher.enable = false;
-        };
-
-        wallpaper = {
+        desktop.hyprland = {
           enable = true;
-          path = "/home/ada/wallpapers/shrine.png";
+          bar.enable = false;
+          idle.enable = true;
+          lock.enable = true;
 
-          transition = {
-            type = "fade";
-            duration = 1.2;
-            fps = 60;
+          fern = {
+            enable = false;
+            obs.enable = false;
+            themeWatcher.enable = false;
+          };
+
+          wallpaper = {
+            enable = true;
+            path = "/home/ada/wallpapers/shrine.png";
+
+            transition = {
+              type = "fade";
+              duration = 1.2;
+              fps = 60;
+            };
+          };
+
+          style = {
+            gapsIn = 6;
+            gapsOut = 12;
+            border = 2;
+            rounding = 5;
           };
         };
 
-        style = {
-          gapsIn = 6;
-          gapsOut = 12;
-          border = 2;
-          rounding = 5;
+        programs.gitSuite = {
+          enable = true;
+          userName = "adanoelle";
+          userEmail = "adanoelleyoung@gmail.com";
+          editor = "hx";
+          enableGithub = true;
+          enableTools = true;
+          enableSafety = true;
+          enableHelp = true;
         };
-      };
 
-      programs.gitSuite = {
-        enable = true;
-        userName = "adanoelle";
-        userEmail = "adanoelleyoung@gmail.com";
-        editor = "hx";
-        enableGithub = true;
-        enableTools = true;
-        enableSafety = true;
-        enableHelp = true;
-      };
-
-      programs.gitIdentities.identities = {
-        personal = {
-          name = "adanoelle";
-          email = "adanoelleyoung@gmail.com";
-          directory = "/home/ada/personal/";
-          signingKey = "/home/ada/.ssh/github";
+        programs.gitIdentities.identities = {
+          personal = {
+            name = "adanoelle";
+            email = "adanoelleyoung@gmail.com";
+            directory = "/home/ada/personal/";
+            signingKey = "/home/ada/.ssh/github";
+          };
         };
-      };
 
-      programs.ssh = {
-        enable = true;
-        addKeysToAgent = "yes";
-        matchBlocks."github.com" = {
-          identityFile = "~/.ssh/github";
+        programs.ssh = {
+          enable = true;
+          addKeysToAgent = "yes";
+          matchBlocks."github.com" = {
+            identityFile = "~/.ssh/github";
+          };
         };
-      };
 
-      services.ssh-agent.enable = true;
-    };
+        services.ssh-agent.enable = true;
+      };
   };
 }

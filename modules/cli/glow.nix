@@ -1,6 +1,8 @@
 { den, ... }:
 {
-  den.aspects.glow.homeManager = { pkgs, ... }: {
-    home.packages = with pkgs; [ glow ];
-  };
+  den.aspects.glow.homeManager =
+    { pkgs, ... }:
+    {
+      home.packages = with pkgs; [ glow ];
+    };
 }

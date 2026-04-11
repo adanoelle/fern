@@ -1,7 +1,9 @@
 # modules/cli/kitty.nix — Kitty terminal emulator (garden stack)
 { den, inputs, ... }:
 {
-  den.aspects.kitty.homeManager = { pkgs, lib, ... }: {
+  den.aspects.kitty.homeManager =
+    { pkgs, lib, ... }:
+    {
       programs.kitty = {
         enable = true;
 
@@ -38,7 +40,6 @@
       };
 
       # Both Kitty and Ghostty need their terminfo; combine both paths
-      home.sessionVariables.TERMINFO_DIRS = lib.mkForce
-        "${pkgs.kitty}/share/terminfo:${pkgs.ghostty}/share/terminfo";
+      home.sessionVariables.TERMINFO_DIRS = lib.mkForce "${pkgs.kitty}/share/terminfo:${pkgs.ghostty}/share/terminfo";
     };
 }

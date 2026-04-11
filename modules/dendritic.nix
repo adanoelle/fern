@@ -1,5 +1,10 @@
 # modules/dendritic.nix — den bootstrap
-{ den, inputs, lib, ... }:
+{
+  den,
+  inputs,
+  lib,
+  ...
+}:
 {
   imports = [
     (inputs.den.flakeModule or inputs.den.flakeModules.den)

@@ -1,6 +1,7 @@
 { den, ... }:
 {
-  den.aspects.display-manager.nixos = { pkgs, ... }:
+  den.aspects.display-manager.nixos =
+    { pkgs, ... }:
     let
       caelestiaCfg = "/etc/nixos/caelestia-hyprland.conf";
       fernCfg = "/etc/nixos/fern-hyprland.conf";

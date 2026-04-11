@@ -1,5 +1,10 @@
 # hyprland/wallpaper.nix - Advanced version with workspace support
-{ lib, pkgs, config, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 
 let
   cfg = config.desktop.hyprland;
@@ -56,14 +61,18 @@ in
           echo "swww daemon is ready"
 
           # Set wallpapers based on configuration
-          ${if cfg.wallpaper.monitors != {} then
-            # Use per-monitor configuration
-            lib.concatStringsSep "\n" (lib.mapAttrsToList (monitor: path:
-              "echo \"Setting wallpaper for ${monitor}: ${path}\"\n" + (swwwCmd path monitor)
-            ) cfg.wallpaper.monitors)
-          else
-            # Use legacy single wallpaper configuration
-            "echo \"Setting wallpaper for ${cfg.wallpaper.monitor}: ${cfg.wallpaper.path}\"\n" + (swwwCmd cfg.wallpaper.path cfg.wallpaper.monitor)
+          ${
+            if cfg.wallpaper.monitors != { } then
+              # Use per-monitor configuration
+              lib.concatStringsSep "\n" (
+                lib.mapAttrsToList (
+                  monitor: path: "echo \"Setting wallpaper for ${monitor}: ${path}\"\n" + (swwwCmd path monitor)
+                ) cfg.wallpaper.monitors
+              )
+            else
+              # Use legacy single wallpaper configuration
+              "echo \"Setting wallpaper for ${cfg.wallpaper.monitor}: ${cfg.wallpaper.path}\"\n"
+              + (swwwCmd cfg.wallpaper.path cfg.wallpaper.monitor)
           }
 
           echo "Wallpapers set successfully"
@@ -76,7 +85,7 @@ in
     };
 
     # Workspace wallpaper listener (only if workspace wallpapers are configured)
-    systemd.user.services.swww-workspace-listener = lib.mkIf (cfg.wallpaper.workspaces != {}) {
+    systemd.user.services.swww-workspace-listener = lib.mkIf (cfg.wallpaper.workspaces != { }) {
       Unit = {
         Description = "Hyprland workspace wallpaper switcher";
         After = [ "hyprland-session.target" ];
@@ -93,15 +102,19 @@ in
             local wallpaper_path=""
 
             case "$workspace_id" in
-            ${lib.concatStringsSep "\n" (lib.mapAttrsToList (ws: path: ''
-              ${ws})
-                wallpaper_path="${path}"
-                ;;'') cfg.wallpaper.workspaces)}
+            ${lib.concatStringsSep "\n" (
+              lib.mapAttrsToList (ws: path: ''
+                ${ws})
+                  wallpaper_path="${path}"
+                  ;;'') cfg.wallpaper.workspaces
+            )}
               *)
-                wallpaper_path="${if cfg.wallpaper.monitors != {} then
-                  (builtins.head (builtins.attrValues cfg.wallpaper.monitors))
-                else
-                  cfg.wallpaper.path}"
+                wallpaper_path="${
+                  if cfg.wallpaper.monitors != { } then
+                    (builtins.head (builtins.attrValues cfg.wallpaper.monitors))
+                  else
+                    cfg.wallpaper.path
+                }"
                 ;;
             esac
 
@@ -134,17 +147,23 @@ in
       # Cycle workspace wallpaper (if workspace wallpapers are configured)
       "${cfg.modKey}, W, exec, ${pkgs.writeShellScript "cycle-wallpaper" ''
         current_workspace=$(${pkgs.hyprland}/bin/hyprctl activewindow -j 2>/dev/null | ${pkgs.jq}/bin/jq -r '.workspace.id // "1"' 2>/dev/null || echo "1")
-        wallpaper_path="${if cfg.wallpaper.workspaces != {} then ''
-          case "$current_workspace" in
-          ${lib.concatStringsSep "\n" (lib.mapAttrsToList (ws: path: ''
-            ${ws}) echo "${path}" ;;'') cfg.wallpaper.workspaces)}
-            *) echo "${if cfg.wallpaper.monitors != {} then
-              (builtins.head (builtins.attrValues cfg.wallpaper.monitors))
-            else
-              cfg.wallpaper.path}" ;;
-          esac
-        '' else
-          cfg.wallpaper.path
+        wallpaper_path="${
+          if cfg.wallpaper.workspaces != { } then
+            ''
+              case "$current_workspace" in
+              ${lib.concatStringsSep "\n" (
+                lib.mapAttrsToList (ws: path: ''${ws}) echo "${path}" ;;'') cfg.wallpaper.workspaces
+              )}
+                *) echo "${
+                  if cfg.wallpaper.monitors != { } then
+                    (builtins.head (builtins.attrValues cfg.wallpaper.monitors))
+                  else
+                    cfg.wallpaper.path
+                }" ;;
+              esac
+            ''
+          else
+            cfg.wallpaper.path
         }"
         ${swwwCmd "$wallpaper_path" ""}
       ''}"

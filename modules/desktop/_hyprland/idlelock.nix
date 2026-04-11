@@ -1,5 +1,11 @@
-{ lib, pkgs, config, ... }:
-let cfg = config.desktop.hyprland;
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
+let
+  cfg = config.desktop.hyprland;
 in
 lib.mkIf cfg.enable {
   # hypridle
@@ -9,8 +15,15 @@ lib.mkIf cfg.enable {
     listener { timeout = 1200 on-timeout = systemctl suspend }
   '';
   systemd.user.services.hypridle = lib.mkIf cfg.idle.enable {
-    Unit = { Description = "Hyprland idle"; After = [ "graphical-session.target" ]; PartOf = [ "hyprland-session.target" ]; };
-    Service = { ExecStart = "${pkgs.hypridle}/bin/hypridle"; Restart = "on-failure"; };
+    Unit = {
+      Description = "Hyprland idle";
+      After = [ "graphical-session.target" ];
+      PartOf = [ "hyprland-session.target" ];
+    };
+    Service = {
+      ExecStart = "${pkgs.hypridle}/bin/hypridle";
+      Restart = "on-failure";
+    };
     Install.WantedBy = [ "hyprland-session.target" ];
   };
 

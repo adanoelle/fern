@@ -1,6 +1,8 @@
 { den, ... }:
 {
-  den.aspects.zig.homeManager = { pkgs, ... }: {
-    home.packages = [ pkgs.zig ];
-  };
+  den.aspects.zig.homeManager =
+    { pkgs, ... }:
+    {
+      home.packages = [ pkgs.zig ];
+    };
 }
