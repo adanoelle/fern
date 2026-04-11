@@ -12,12 +12,9 @@
       inputs.zig-overlay.overlays.default
       inputs.claude-code.overlays.default
     ];
-    nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
-    nix.gc = {
-      automatic = true;
-      dates = "weekly";
-      options = "--delete-older-than 10d";
-    };
+    nix.settings.experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
   };
 }

@@ -13,16 +13,20 @@ Hyprland, advanced git workflows, and multiple language toolchains.
 ```bash
 # All common operations are available via just (inside devShell)
 just              # list all recipes
-just switch       # rebuild and switch
-just test         # test without switching
+just switch       # rebuild and switch (via nh)
+just test         # test without switching (via nh)
 just test-trace   # test with --show-trace
 just dry          # dry-build only
 just rollback     # rollback to previous generation
 just update       # update flake inputs
-just fmt          # format Nix files
+just fmt          # format Nix files (nixfmt)
 just check        # nix flake check
-just lint         # format then check
-just gc           # garbage-collect old generations
+just lint         # fmt + check + statix + deadnix
+just gc           # smart garbage-collect (nh clean)
+just statix       # run statix linter
+just deadnix      # check for dead Nix code
+just flake-health # check flake.lock health
+just diff-gen     # diff last two system generations
 ```
 
 ### Documentation
@@ -37,7 +41,7 @@ just book-build
 # Pure Nix build
 just book-nix
 
-# Dev shell with repo tools (just, mdbook, nixpkgs-fmt)
+# Dev shell with repo tools (just, mdbook, nixfmt, statix, deadnix, …)
 direnv allow       # one-time; auto-activates via .envrc
 # or: nix develop
 ```
@@ -60,7 +64,7 @@ gc -m "feat: Add new feature"
 journalctl -b -u service-name
 
 # Check rebuild output
-sudo nixos-rebuild test --flake .#fern --show-trace
+just test-trace
 ```
 
 ## Code Conventions
@@ -102,7 +106,7 @@ sudo nixos-rebuild test --flake .#fern --show-trace
 2. **NEVER** work directly in the main branch - use worktrees
 3. **ALWAYS** run `nix flake check` before rebuilding
 4. **ALWAYS** test with `nixos-rebuild test` before switching
-5. **ALWAYS** format code with `nixpkgs-fmt` before committing
+5. **ALWAYS** format code with `nixfmt` before committing
 6. **ALWAYS** check for uncommitted changes before major operations
 7. **NEVER** use `sudo` with git commands
 8. **ALWAYS** create snapshots before AI-assisted sessions
@@ -110,8 +114,8 @@ sudo nixos-rebuild test --flake .#fern --show-trace
 ### Pre-Rebuild Checklist
 
 - [ ] Run `nix flake check`
-- [ ] Format with `nixpkgs-fmt .`
-- [ ] Test with `sudo nixos-rebuild test --flake .#fern`
+- [ ] Format with `nixfmt .`
+- [ ] Test with `just test`
 - [ ] Check logs if test fails: `journalctl -xe`
 - [ ] Commit working configuration before switching
 
@@ -202,7 +206,7 @@ fern/
 
 ```bash
 # Get detailed error
-sudo nixos-rebuild test --flake .#fern --show-trace
+just test-trace
 
 # Check specific module evaluation
 nix eval .#nixosConfigurations.fern.config.programs.git
@@ -239,7 +243,7 @@ nix eval .#nixosConfigurations.fern --show-trace
 
 ```bash
 # Dry run
-sudo nixos-rebuild dry-build --flake .#fern
+just dry
 
 # Build VM for testing
 nixos-rebuild build-vm --flake .#fern
@@ -257,13 +261,16 @@ journalctl -u service-name -f
 nix flake check
 
 # Format check
-nixpkgs-fmt --check .
+nixfmt --check .
 
-# Linting (if statix installed)
+# Linting
 statix check
 
-# Dead code detection (if deadnix installed)
+# Dead code detection
 deadnix .
+
+# Flake lock health
+flake-checker
 ```
 
 ## Git Workflow Integration

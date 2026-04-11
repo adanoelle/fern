@@ -75,17 +75,17 @@ check_nix_syntax() {
 
 check_formatting() {
     print_header "Code Formatting"
-    
-    if command_exists nixpkgs-fmt; then
-        if nixpkgs-fmt --check . >/dev/null 2>&1; then
+
+    if command_exists nixfmt; then
+        if nixfmt --check . >/dev/null 2>&1; then
             print_success "Code is properly formatted"
         else
-            print_warning "Code needs formatting. Run: nixpkgs-fmt ."
+            print_warning "Code needs formatting. Run: nixfmt ."
             echo "  Files needing format:"
-            nixpkgs-fmt --check . 2>&1 | grep "^[^W]" | sed 's/^/    /'
+            nixfmt --check . 2>&1 | head -20 | sed 's/^/    /'
         fi
     else
-        print_warning "nixpkgs-fmt not found, skipping format check"
+        print_warning "nixfmt not found, skipping format check"
     fi
 }
 
@@ -115,6 +115,21 @@ check_linting() {
         fi
     else
         print_warning "deadnix not found, skipping dead code check"
+    fi
+}
+
+check_flake_health() {
+    print_header "Flake Health"
+
+    if command_exists flake-checker; then
+        if flake-checker --no-telemetry >/dev/null 2>&1; then
+            print_success "Flake lock is healthy"
+        else
+            print_warning "Flake lock issues detected:"
+            flake-checker --no-telemetry 2>&1 | head -20 | sed 's/^/    /'
+        fi
+    else
+        print_warning "flake-checker not found, skipping flake health check"
     fi
 }
 
@@ -297,6 +312,7 @@ echo -e "${MAGENTA}╚═══════════════════�
 check_nix_syntax || true
 check_formatting || true
 check_linting || true
+check_flake_health || true
 check_git_status || true
 check_secrets || true
 check_documentation || true

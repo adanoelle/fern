@@ -68,10 +68,10 @@ preflight_checks() {
     
     # Format check
     print_status "Checking code formatting..."
-    if nixpkgs-fmt --check . >/dev/null 2>&1; then
+    if nixfmt --check . >/dev/null 2>&1; then
         print_success "Code formatting is correct"
     else
-        print_warning "Code is not formatted. Run: nixpkgs-fmt ."
+        print_warning "Code is not formatted. Run: nixfmt ."
     fi
 }
 

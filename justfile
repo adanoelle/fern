@@ -8,45 +8,64 @@ default:
 
 # Rebuild and switch to the new configuration
 switch:
-    sudo nixos-rebuild switch --flake .#fern
+    nh os switch .
 
 # Test the configuration without switching
 test:
-    sudo nixos-rebuild test --flake .#fern
+    nh os test .
 
 # Test with --show-trace for debugging
 test-trace:
-    sudo nixos-rebuild test --flake .#fern --show-trace
+    nh os test . -- --show-trace
 
 # Dry-build the configuration (no activation)
 dry:
-    sudo nixos-rebuild dry-build --flake .#fern
+    nh os build . -- --dry-run
 
 # Rollback to the previous generation
 rollback:
     sudo nixos-rebuild switch --rollback
 
+# Bootstrap rebuild (when nh is not yet installed)
+bootstrap:
+    sudo nixos-rebuild test --flake .#fern
+
 # Update all flake inputs
 update:
     nix flake update
 
-# Garbage-collect old generations (user + root)
+# Garbage-collect old generations (nh smart clean)
 gc:
-    nix-collect-garbage -d
-    sudo nix-collect-garbage -d
+    nh clean all --keep 5 --keep-since 7d
 
 # --- Quality ---
 
 # Format all Nix files
 fmt:
-    nixpkgs-fmt .
+    find . -name '*.nix' -not -path './.direnv/*' -not -path './result/*' | xargs nixfmt
 
 # Run flake check
 check:
     nix flake check
 
-# Format then check
-lint: fmt check
+# Lint: format, flake check, statix, deadnix
+lint: fmt check statix deadnix
+
+# Run statix linter
+statix:
+    statix check
+
+# Check for dead Nix code
+deadnix:
+    deadnix .
+
+# Check flake.lock health
+flake-health:
+    flake-checker
+
+# Diff the last two system generations
+diff-gen:
+    nvd diff $(ls -d1v /nix/var/nix/profiles/system-*-link | tail -2)
 
 # --- Documentation ---
 

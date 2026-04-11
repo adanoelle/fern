@@ -12,6 +12,7 @@
       den.aspects.glow
       den.aspects.helix
       den.aspects.hyfetch
+      den.aspects.nix-diff
       den.aspects.nix-tree
       den.aspects.prettier
       den.aspects.tree
