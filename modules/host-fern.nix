@@ -3,6 +3,7 @@
 {
   den.aspects.fern = {
     includes = [
+      den.aspects.boot
       den.aspects.core
       den.aspects.nh
       den.aspects.audio
@@ -23,7 +24,7 @@
     ];
 
     nixos =
-      { pkgs, lib, ... }:
+      { pkgs, ... }:
       {
         imports = [
           ../hosts/fern/hardware.nix
@@ -35,9 +36,7 @@
 
         programs.nix-ld.enable = true;
 
-        # Boot (systemd-boot — Minisforum firmware resets EFI boot order)
-        boot.loader.systemd-boot.enable = true;
-        boot.loader.efi.canTouchEfiVariables = true;
+        # Low-latency kernel for the pro-audio workstation role
         boot.kernelPackages = pkgs.linuxPackages_zen;
 
         # AMD IOMMU passthrough — prevents DMA interference with USB audio
@@ -75,30 +74,6 @@
         # Disable LightDM (auto-enabled when xserver is on);
         # use greetd from the greet module instead.
         services.xserver.displayManager.lightdm.enable = false;
-
-        # Disable regreet (GTK greeter renders with corruption on Granite Ridge iGPU);
-        # use tuigreet as a lightweight TTY-based greeter instead.
-        # Offer both Niri (default) and Hyprland sessions.
-        programs.regreet.enable = lib.mkForce false;
-        services.greetd.settings.default_session = {
-          command = builtins.concatStringsSep " " [
-            "${pkgs.greetd.tuigreet}/bin/tuigreet"
-            "--time"
-            "--remember"
-            "--sessions ${pkgs.writeTextDir "share/wayland-sessions/niri.desktop" ''
-              [Desktop Entry]
-              Name=Niri
-              Exec=niri-session
-              Type=Application
-            ''}/share/wayland-sessions:${pkgs.writeTextDir "share/wayland-sessions/hyprland.desktop" ''
-              [Desktop Entry]
-              Name=Hyprland
-              Exec=Hyprland
-              Type=Application
-            ''}/share/wayland-sessions"
-          ];
-          user = "greeter";
-        };
 
         environment.systemPackages = with pkgs; [
           mesa-demos
