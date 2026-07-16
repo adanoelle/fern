@@ -31,7 +31,7 @@ fern/
 │   ├── secrets.nix        # SOPS-nix, age keys
 │   ├── secrets-guard.nix  # git-secrets, trufflehog
 │   ├── monitoring.nix     # Hardware sensors (lm_sensors)
-│   ├── workspace.nix      # XDG user directories
+│   ├── workspace.nix      # Archivist home taxonomy (XDG dirs, FILING.md)
 │   ├── dev.nix            # Dev shell (just, mdbook, nixpkgs-fmt)
 │   ├── docs.nix           # mdBook documentation build
 │   ├── cli/               # CLI tool aspects
