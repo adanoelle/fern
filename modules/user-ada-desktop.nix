@@ -11,37 +11,39 @@
       den.aspects.desktop-apps
     ];
 
-    homeManager = {
-      desktop.hyprland = {
-        enable = true;
-        bar.enable = false;
-        idle.enable = true;
-        lock.enable = true;
-
-        fern = {
-          enable = false;
-          obs.enable = false;
-          themeWatcher.enable = false;
-        };
-
-        wallpaper = {
+    homeManager =
+      { config, ... }:
+      {
+        desktop.hyprland = {
           enable = true;
-          path = "/home/ada/wallpapers/shrine.png";
+          bar.enable = false;
+          idle.enable = true;
+          lock.enable = true;
 
-          transition = {
-            type = "fade";
-            duration = 1.2;
-            fps = 60;
+          fern = {
+            enable = false;
+            obs.enable = false;
+            themeWatcher.enable = false;
+          };
+
+          wallpaper = {
+            enable = true;
+            path = "${config.home.homeDirectory}/media/wallpapers/shrine.png";
+
+            transition = {
+              type = "fade";
+              duration = 1.2;
+              fps = 60;
+            };
+          };
+
+          style = {
+            gapsIn = 6;
+            gapsOut = 12;
+            border = 2;
+            rounding = 5;
           };
         };
-
-        style = {
-          gapsIn = 6;
-          gapsOut = 12;
-          border = 2;
-          rounding = 5;
-        };
       };
-    };
   };
 }
