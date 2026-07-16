@@ -65,8 +65,6 @@
         hyprshot_full_file
       ];
 
-      home.file."Pictures/Screenshots/.keep".text = "";
-
       xdg.configFile."satty/config.toml".text = ''
         [general]
         save-after-copy = true
