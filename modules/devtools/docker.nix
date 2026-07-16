@@ -13,7 +13,8 @@
         };
       };
 
-      users.users.ada.extraGroups = [ "docker" ];
+      # "docker" group membership is granted centrally in modules/users.nix,
+      # conditional on virtualisation.docker.enable.
 
       environment.systemPackages = with pkgs; [
         docker-compose
