@@ -22,7 +22,11 @@
         "flakes"
       ];
 
-      nix.settings.trusted-users = lib.mkDefault [
+      # No mkDefault here: nixpkgs itself *defines* trusted-users = [ "root" ]
+      # at normal priority (nixos/modules/config/nix.nix), so an mkDefault
+      # list silently loses instead of merging. A plain definition merges
+      # with it, and hosts can still append (or mkForce to override).
+      nix.settings.trusted-users = [
         "root"
         "ada"
       ];
