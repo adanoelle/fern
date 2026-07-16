@@ -16,6 +16,7 @@
 # Architecture
 
 - [Repository Layout](architecture/repository-layout.md)
+- [Home Directory Taxonomy](architecture/home-directory-taxonomy.md)
 - [The Flake Entry Point](architecture/flake-entry-point.md)
 - [Dendritic Bootstrap](architecture/dendritic-bootstrap.md)
 - [Topology & Hosts](architecture/topology-and-hosts.md)
