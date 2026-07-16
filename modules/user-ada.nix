@@ -17,7 +17,7 @@
     ];
 
     homeManager =
-      { pkgs, ... }:
+      { pkgs, config, ... }:
       {
         home.packages = [ pkgs.home-manager ];
 
@@ -36,7 +36,11 @@
           personal = {
             name = "adanoelle";
             email = "adanoelleyoung@gmail.com";
-            directory = "/home/ada/personal/";
+            # No trailing slash: identities.nix appends one when building
+            # the includeIf gitdir condition. ~/src is all personal today;
+            # a future work identity adds "…/src/work" and wins as the
+            # later, more-specific includeIf.
+            directory = "${config.home.homeDirectory}/src";
             signingKey = "/home/ada/.ssh/github";
           };
         };
