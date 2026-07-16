@@ -44,40 +44,40 @@ Create `modules/host-newhost.nix`:
 
 ```nix
 # modules/host-newhost.nix
-{ den, inputs, ... }:
+{ den, ... }:
 {
   den.aspects.newhost = {
     includes = [
-      den.aspects.core         # Nix settings, garbage collection
-      den.aspects.users        # User account, NetworkManager
-      den.aspects.audio        # PipeWire (if needed)
-      den.aspects.greetd       # Display manager (if desktop)
-      den.aspects.fonts        # Fonts (if desktop)
-      # Add other aspects as needed
+      den.aspects.boot          # systemd-boot (UEFI x86)
+      den.aspects.workstation   # role: graphical machine base
+      # or den.aspects.server for a headless box
+      # Add host-specific aspects as needed
+    ];
+
+    # Graphical/dev hosts forward user layers; a server forwards none
+    # and its users get only the base ada aspect.
+    provides.to-users.includes = [
+      den.aspects.ada-desktop
+      den.aspects.ada-dev
     ];
 
     nixos = { pkgs, ... }: {
       imports = [ ../hosts/newhost/hardware.nix ];
 
-      # Boot loader
-      boot.loader.systemd-boot.enable = true;
-      boot.loader.efi.canTouchEfiVariables = true;
-
       # GPU (choose one or configure inline)
       hardware.graphics.enable = true;
 
-      # Timezone
-      time.timeZone = "America/New_York";
-
-      # Trusted users for remote builds
-      nix.settings.trusted-users = [ "root" "ada" ];
+      # Pin at the NixOS release current when this machine is installed
+      system.stateVersion = "25.11";
     };
   };
 }
 ```
 
-The `includes` list determines which shared aspects the new host uses. Start
-with `core` and `users`, then add aspects as needed.
+Pick a **role** from `modules/roles/` (workstation, server, dev-machine) as the
+base, then add host-specific aspects. Fleet defaults — timezone, trusted-users,
+nix-ld — come from `core` via `mkDefault`; override them in the `nixos` block
+only if this machine differs.
 
 ## Step 4: Test the build
 
@@ -104,18 +104,17 @@ sudo nixos-rebuild switch --flake .#newhost
 
 The two existing hosts show the pattern:
 
-**Fern** (full workstation -- 15 aspect includes):
+**Fern** (roles + fern-specific aspects):
 ```nix
 den.aspects.fern.includes = [
-  den.aspects.core  den.aspects.audio  den.aspects.monitoring
-  den.aspects.users  den.aspects.secrets-guard  den.aspects.greetd
-  den.aspects.fonts  den.aspects.docker  den.aspects.c-cpp
-  den.aspects.localstack  den.aspects.rust  den.aspects.node-ts
-  den.aspects.aws-cli  den.aspects.lmstudio  den.aspects.teams
+  den.aspects.boot  den.aspects.workstation  den.aspects.dev-machine
+  den.aspects.monitoring  den.aspects.niri
+  den.aspects.lmstudio  den.aspects.teams
 ];
 ```
 
-**Moss** (minimal -- 9 aspect includes):
+**Moss** (explicit list -- Asahi hardware makes it quirky enough to compose by
+hand):
 ```nix
 den.aspects.moss.includes = [
   den.aspects.boot-asahi  den.aspects.core  den.aspects.docker
@@ -124,16 +123,18 @@ den.aspects.moss.includes = [
 ];
 ```
 
-User-level configuration is shared automatically -- both hosts have user `ada`,
-so both get the same CLI tools, git suite, desktop environment, and shell
-configuration through the user aspect.
+User-level configuration is layered: every host's `ada` gets the base aspect
+(CLI tools, git suite, shells) automatically, and each host decides which extra
+layers to forward via `provides.to-users` -- both current machines forward
+`ada-desktop` and `ada-dev`.
 
 ## Key files
 
 | File | Purpose |
 |------|---------|
 | `modules/hosts.nix` | Topology (add your host here) |
-| `modules/host-fern.nix` | Example: full workstation host |
-| `modules/host-moss.nix` | Example: minimal host |
+| `modules/roles/` | Role bundles: workstation, server, dev-machine |
+| `modules/host-fern.nix` | Example: role-composed workstation host |
+| `modules/host-moss.nix` | Example: explicitly-composed host |
 | `modules/defaults.nix` | Defaults applied to all hosts |
 | `hosts/<name>/hardware.nix` | Auto-generated hardware config |

@@ -12,9 +12,25 @@
 
 ## User aspects
 
-| Aspect | File | Type | Users |
-|--------|------|------|-------|
-| `ada` | `modules/user-ada.nix` | homeManager | ada (both hosts) |
+The user is layered: the base aspect applies everywhere, and hosts forward
+extra layers via `provides.to-users` (so a headless host's `ada` stays
+minimal).
+
+| Aspect | File | Type | Applied |
+|--------|------|------|---------|
+| `ada` | `modules/user-ada.nix` | homeManager | ada, every host (base: shells, cli, git, ssh) |
+| `ada-desktop` | `modules/user-ada-desktop.nix` | homeManager | forwarded by fern, moss (Hyprland prefs + desktop-apps) |
+| `ada-dev` | `modules/user-ada-dev.nix` | homeManager | forwarded by fern, moss (devtools bundle) |
+
+## Role aspects
+
+Host role bundles — compose these instead of long per-host include lists.
+
+| Aspect | File | Includes |
+|--------|------|----------|
+| `workstation` | `modules/roles/workstation.nix` | core, nh, users, secrets-guard, greetd, fonts, audio, docker |
+| `dev-machine` | `modules/roles/dev-machine.nix` | c-cpp, localstack, rust, node-ts, aws-cli |
+| `server` | `modules/roles/server.nix` | core, nh, users, secrets-guard (skeleton — hardening TODOs in file) |
 
 ## Bundle aspects
 
@@ -22,8 +38,8 @@
 |--------|------|----------|
 | `cli` | `modules/cli/bundle.nix` | bat, broot, claude-code, crypt, delta, ghostty, glow, helix, hyfetch, nix-tree, prettier, tree, audio-tools |
 | `git-suite` | `modules/git/bundle.nix` | git-core, git-aliases, git-identities, git-github, git-tools, git-safety, git-help, git-claude-code, git-claude-enhanced, git-worktree, git-worktree-enhanced, git-helix, git-prompts |
-| `desktop-apps` | `modules/desktop/bundle.nix` | hyprland, chromium, obs, screenshot, gaming-hm |
-| `devtools` | `modules/devtools/bundle.nix` | docker, rust, node-ts, c-cpp, python, csharp, ada-dev, localstack, zig, gamedev |
+| `desktop-apps` | `modules/desktop/bundle.nix` | niri, hyprland, chromium, obs, screenshot, gaming-hm, daw |
+| `devtools` | `modules/devtools/bundle.nix` | docker, rust, node-ts, c-cpp, python, csharp, ada-lang, localstack, zig, gamedev |
 | `shells` | `modules/shells/bundle.nix` | nushell, starship, zoxide, devenv |
 
 ## System aspects (nixos)
@@ -34,18 +50,20 @@ Aspects providing NixOS system-level configuration.
 |--------|------|-------------|-------------|
 | `audio` | `modules/audio.nix` | PipeWire, low-latency, Audient iD24, tools | fern, moss |
 | `aws-cli` | `modules/cloud/aws-cli.nix` | AWS CLI, vault, SAM, Terraform, security tools | fern |
-| `boot` | `modules/boot.nix` | GRUB + Zen kernel (x86_64 legacy) | -- |
+| `boot` | `modules/boot.nix` | systemd-boot (UEFI x86 default; kernel chosen per host) | fern |
 | `boot-asahi` | `modules/asahi/boot.nix` | systemd-boot (Apple Silicon) | moss |
 | `c-cpp` | `modules/devtools/c-cpp.nix` | GCC, Clang, CMake, hardening flags | fern |
-| `core` | `modules/core.nix` | Nix settings, flakes, garbage collection, overlays | fern, moss |
+| `core` | `modules/core.nix` | Nix settings, overlays, fleet defaults (trusted-users, nix-ld, timezone via mkDefault) | fern, moss |
 | `docker` | `modules/devtools/docker.nix` | Docker Engine, BuildKit, Compose, utilities | fern, moss |
 | `fonts` | `modules/fonts.nix` | Nerd Fonts, fontconfig | fern |
 | `gaming` | `modules/gaming.nix` | Steam, Gamescope, GameMode, controllers | -- |
 | `graphics-asahi` | `modules/asahi/graphics.nix` | Asahi experimental GPU driver | moss |
-| `greetd` | `modules/desktop/greetd.nix` | greetd, regreet, seatd, XDG portals, Polkit | fern, moss |
+| `greetd` | `modules/desktop/greetd.nix` | greetd, tuigreet (sessions offered per enabled compositor), seatd, XDG portals, Polkit | fern, moss |
 | `lmstudio` | `modules/desktop/lmstudio.nix` | LM Studio AppImage wrapper | fern |
 | `localstack` | `modules/devtools/localstack.nix` | LocalStack container, awslocal wrapper | fern |
 | `monitoring` | `modules/monitoring.nix` | Hardware sensors (lm_sensors) | fern |
+| `nh` | `modules/cli/nh.nix` | nh rebuild helper + scheduled clean | fern |
+| `niri` | `modules/desktop/niri.nix` | Niri compositor (nixos enable + HM settings) | fern |
 | `node-ts` | `modules/devtools/node-ts.nix` | Node.js, pnpm, Deno, CDK, nix-ld | fern |
 | `rust` | `modules/devtools/rust.nix` | Stable Rust, rust-analyzer, cargo tools, hardening | fern |
 | `secrets` | `modules/secrets.nix` | SOPS-nix, age key, SSH key decryption | moss |
@@ -117,7 +135,7 @@ Aspects providing Home Manager user-level configuration.
 
 | Aspect | File | Description |
 |--------|------|-------------|
-| `ada-dev` | `modules/devtools/ada.nix` | GNAT, GPRBuild, Alire |
+| `ada-lang` | `modules/devtools/ada.nix` | GNAT, GPRBuild, Alire (renamed from `ada-dev`; that name is now the user dev layer) |
 | `csharp` | `modules/devtools/csharp.nix` | .NET SDK, OmniSharp |
 | `gamedev` | `modules/devtools/gamedev.nix` | SDL2, GLM, Box2D, Tracy, ImGui |
 | `python` | `modules/devtools/python.nix` | Python 3.12, uv, ruff, pyright |

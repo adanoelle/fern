@@ -1,16 +1,12 @@
-# modules/boot.nix — GRUB bootloader (x86)
+# modules/boot.nix — systemd-boot bootloader (UEFI x86 default)
+#
+# Kernel choice is deliberately not set here — hosts pick their own
+# (e.g. zen on fern, LTS on a server). Apple Silicon hosts use the
+# boot-asahi aspect instead (canTouchEfiVariables must be false there).
 { den, ... }:
 {
-  den.aspects.boot.nixos =
-    { pkgs, ... }:
-    {
-      boot.kernelPackages = pkgs.linuxPackages_zen;
-
-      boot.loader.grub = {
-        enable = true;
-        efiSupport = true;
-        devices = [ "nodev" ];
-      };
-      boot.loader.efi.canTouchEfiVariables = true;
-    };
+  den.aspects.boot.nixos = {
+    boot.loader.systemd-boot.enable = true;
+    boot.loader.efi.canTouchEfiVariables = true;
+  };
 }

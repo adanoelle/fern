@@ -1,4 +1,8 @@
 # modules/host-moss.nix — moss Apple Silicon host aspect
+#
+# moss keeps an explicit aspect list rather than the workstation role:
+# adopting the role would add nh and fonts, and Asahi hardware makes it
+# quirky enough to compose by hand. Revisit once the role settles.
 { den, inputs, ... }:
 {
   den.aspects.moss = {
@@ -14,20 +18,18 @@
       den.aspects.secrets-guard
     ];
 
-    nixos =
-      { pkgs, ... }:
-      {
-        imports = [
-          ../hosts/moss/hardware.nix
-          inputs.nixos-apple-silicon.nixosModules.apple-silicon-support
-        ];
+    # moss is a portable workstation: its users get the same desktop
+    # and dev layers as on fern.
+    provides.to-users.includes = [
+      den.aspects.ada-desktop
+      den.aspects.ada-dev
+    ];
 
-        programs.nix-ld.enable = true;
-        nix.settings.trusted-users = [
-          "root"
-          "ada"
-        ];
-        time.timeZone = "America/New_York";
-      };
+    nixos = {
+      imports = [
+        ../hosts/moss/hardware.nix
+        inputs.nixos-apple-silicon.nixosModules.apple-silicon-support
+      ];
+    };
   };
 }

@@ -1,29 +1,34 @@
 # modules/host-fern.nix — fern workstation host aspect
+#
+# Composition only: roles + user layers + genuinely fern-specific
+# hardware config. Anything another machine could want belongs in a
+# role (modules/roles/) or a shared aspect.
 { den, inputs, ... }:
 {
   den.aspects.fern = {
     includes = [
-      den.aspects.core
-      den.aspects.nh
-      den.aspects.audio
+      den.aspects.boot
+      den.aspects.workstation
+      den.aspects.dev-machine
       den.aspects.monitoring
-      den.aspects.users
-      den.aspects.secrets-guard
-      den.aspects.greetd
-      den.aspects.fonts
       den.aspects.niri
-      den.aspects.docker
-      den.aspects.c-cpp
-      den.aspects.localstack
-      den.aspects.rust
-      den.aspects.node-ts
-      den.aspects.aws-cli
       den.aspects.lmstudio
       den.aspects.teams
     ];
 
+    # Forward user layers: fern is a graphical dev machine, so its
+    # users get the desktop and dev toolchain layers on top of the
+    # base ada aspect. Niri is forwarded here (not from desktop-apps)
+    # because its homeManager options only exist on hosts importing
+    # the niri-flake NixOS module, which fern does below.
+    provides.to-users.includes = [
+      den.aspects.ada-desktop
+      den.aspects.ada-dev
+      den.aspects.niri
+    ];
+
     nixos =
-      { pkgs, lib, ... }:
+      { pkgs, ... }:
       {
         imports = [
           ../hosts/fern/hardware.nix
@@ -33,11 +38,7 @@
         # Use nixpkgs niri (avoids niri-flake fetchGit evaluation issue with Smithay)
         programs.niri.package = pkgs.niri;
 
-        programs.nix-ld.enable = true;
-
-        # Boot (systemd-boot — Minisforum firmware resets EFI boot order)
-        boot.loader.systemd-boot.enable = true;
-        boot.loader.efi.canTouchEfiVariables = true;
+        # Low-latency kernel for the pro-audio workstation role
         boot.kernelPackages = pkgs.linuxPackages_zen;
 
         # AMD IOMMU passthrough — prevents DMA interference with USB audio
@@ -76,41 +77,11 @@
         # use greetd from the greet module instead.
         services.xserver.displayManager.lightdm.enable = false;
 
-        # Disable regreet (GTK greeter renders with corruption on Granite Ridge iGPU);
-        # use tuigreet as a lightweight TTY-based greeter instead.
-        # Offer both Niri (default) and Hyprland sessions.
-        programs.regreet.enable = lib.mkForce false;
-        services.greetd.settings.default_session = {
-          command = builtins.concatStringsSep " " [
-            "${pkgs.greetd.tuigreet}/bin/tuigreet"
-            "--time"
-            "--remember"
-            "--sessions ${pkgs.writeTextDir "share/wayland-sessions/niri.desktop" ''
-              [Desktop Entry]
-              Name=Niri
-              Exec=niri-session
-              Type=Application
-            ''}/share/wayland-sessions:${pkgs.writeTextDir "share/wayland-sessions/hyprland.desktop" ''
-              [Desktop Entry]
-              Name=Hyprland
-              Exec=Hyprland
-              Type=Application
-            ''}/share/wayland-sessions"
-          ];
-          user = "greeter";
-        };
-
         environment.systemPackages = with pkgs; [
           mesa-demos
           vulkan-tools
           firefox
         ];
-
-        nix.settings.trusted-users = [
-          "root"
-          "ada"
-        ];
-        time.timeZone = "America/New_York";
       };
   };
 }

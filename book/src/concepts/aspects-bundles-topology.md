@@ -160,20 +160,24 @@ something includes it. The host aspect includes the aspects it needs:
 The user aspect does the same for user-level bundles:
 
 ```nix
-# modules/user-ada.nix (simplified)
+# modules/user-ada.nix (simplified — the BASE layer)
 { den, ... }:
 {
   den.aspects.ada = {
     includes = [
       den.aspects.cli
       den.aspects.git-suite
-      den.aspects.desktop-apps
       den.aspects.shells
+      den.aspects.workspace
     ];
     homeManager = { ... }: { /* user-specific config */ };
   };
 }
 ```
+
+Desktop and dev-toolchain layers (`ada-desktop`, `ada-dev`) live in separate
+aspects that hosts forward via `provides.to-users` — so the same user is a
+full desktop user on a workstation and a minimal shell user on a server.
 
 Aspects that are not included by any host or user are simply not evaluated. No
 enable flags needed.
@@ -186,7 +190,9 @@ enable flags needed.
 | `den.aspects.<category>` | Bundle aspect | `den.aspects.cli`, `den.aspects.shells` |
 | `den.aspects.<prefix>-<tool>` | Namespaced sub-aspect | `den.aspects.git-core`, `den.aspects.git-aliases` |
 | `den.aspects.<hostname>` | Host aspect | `den.aspects.fern`, `den.aspects.moss` |
-| `den.aspects.<username>` | User aspect | `den.aspects.ada` |
+| `den.aspects.<username>` | User base aspect | `den.aspects.ada` |
+| `den.aspects.<username>-<layer>` | User layer (forwarded per host) | `den.aspects.ada-desktop`, `den.aspects.ada-dev` |
+| `den.aspects.<role>` | Host role bundle | `den.aspects.workstation`, `den.aspects.server` |
 
 ## How den differs from raw NixOS modules
 
