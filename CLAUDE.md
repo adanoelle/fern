@@ -2,13 +2,21 @@
 
 ## Project Overview
 
-This is a comprehensive NixOS configuration using flakes, Home Manager, and a
-modular architecture. The system is designed for a development workstation with
-Hyprland, advanced git workflows, and multiple language toolchains.
+A multi-machine NixOS configuration built on the **dendritic pattern**:
+flake-parts + [import-tree](https://github.com/vic/import-tree) +
+[den](https://github.com/vic/den). Every file under `modules/` is a
+flake-parts module, auto-imported — there is no central import list.
+Configuration is expressed as **den aspects** composed onto hosts and users.
+
+Current machines:
+
+- **fern** — x86_64 desktop workstation (AMD, Niri/Hyprland, pro audio, dev)
+- **moss** — Apple Silicon laptop (Asahi)
+
+Planned: homelab server, dedicated gaming machine. The `modules/roles/`
+layer exists so those become "hardware file + role + quirks".
 
 ## Quick Commands
-
-### Essential Operations
 
 ```bash
 # All common operations are available via just (inside devShell)
@@ -23,320 +31,156 @@ just fmt          # format Nix files (nixfmt)
 just check        # nix flake check
 just lint         # fmt + check + statix + deadnix
 just gc           # smart garbage-collect (nh clean)
-just statix       # run statix linter
-just deadnix      # check for dead Nix code
-just flake-health # check flake.lock health
 just diff-gen     # diff last two system generations
+just book-serve   # mdBook docs with live reload
+direnv allow      # one-time; devShell auto-activates via .envrc
 ```
-
-### Documentation
-
-```bash
-# Serve with live reload + open browser
-just book-serve
-
-# Build to book/build/
-just book-build
-
-# Pure Nix build
-just book-nix
-
-# Dev shell with repo tools (just, mdbook, nixfmt, statix, deadnix, …)
-direnv allow       # one-time; auto-activates via .envrc
-# or: nix develop
-```
-
-### Development Workflow
-
-```bash
-# Start a Claude session in worktree
-ccn feature-name
-
-# Check what changed
-git status
-git diff
-
-# Commit changes
-ga .
-gc -m "feat: Add new feature"
-
-# View system logs
-journalctl -b -u service-name
-
-# Check rebuild output
-just test-trace
-```
-
-## Code Conventions
-
-### Nix Style Guide
-
-1. **Module Structure**
-
-   ```nix
-   { config, lib, pkgs, ... }:
-   let
-     cfg = config.programs.moduleName;
-   in
-   {
-     options.programs.moduleName = { ... };
-     config = lib.mkIf cfg.enable { ... };
-   }
-   ```
-
-2. **Best Practices**
-
-   - Use `mkIf` for conditional configuration
-   - Prefer `mkDefault` over direct assignment for overrideable values
-   - Use `mkForce` only when absolutely necessary
-   - Reference modules via `self.nixosModules.name` or `self.homeModules.name`
-   - Group related configuration together
-
-3. **Naming Conventions**
-   - System modules: `nix/modules/category/name.nix`
-   - Home modules: `nix/home/category/name.nix`
-   - Use descriptive names: `audio.nix` not `aud.nix`
-   - Dash-separate compound names: `claude-code.nix`
-
-## Safety Rules
-
-### ⚠️ CRITICAL - Always Follow
-
-1. **NEVER** modify hardware-configuration.nix directly
-2. **NEVER** work directly in the main branch - use worktrees
-3. **ALWAYS** run `nix flake check` before rebuilding
-4. **ALWAYS** test with `nixos-rebuild test` before switching
-5. **ALWAYS** format code with `nixfmt` before committing
-6. **ALWAYS** check for uncommitted changes before major operations
-7. **NEVER** use `sudo` with git commands
-8. **ALWAYS** create snapshots before AI-assisted sessions
-
-### Pre-Rebuild Checklist
-
-- [ ] Run `nix flake check`
-- [ ] Format with `nixfmt .`
-- [ ] Test with `just test`
-- [ ] Check logs if test fails: `journalctl -xe`
-- [ ] Commit working configuration before switching
 
 ## Directory Structure
 
 ```
 fern/
-├── CLAUDE.md           # This file
-├── README.md           # Main documentation
-├── justfile           # Command recipes (primary interface)
-├── flake.nix          # Flake definition
-├── flake.lock         # Pinned dependencies
-├── flake.parts/       # Modular flake organization
-│   ├── 00-overlay.nix
-│   ├── 10-core.nix
-│   ├── 20-nixos-mods.nix
-│   ├── 30-home-mods.nix
-│   ├── 40-hosts.nix
-│   ├── 50-dev.nix
-│   └── 60-docs.nix
-├── hosts/             # Machine configurations
-│   └── fern/          # Primary workstation
-├── nix/               # All modules
-│   ├── home/          # Home Manager modules
-│   │   ├── cli.nix
-│   │   ├── git/       # Git suite
-│   │   ├── desktop/   # Hyprland environment
-│   │   ├── devtools/  # Language toolchains
-│   │   └── shells/    # Shell configs
-│   └── modules/       # System modules
-│       ├── core.nix
-│       ├── boot.nix
-│       └── ...
-├── book/              # mdBook documentation
-├── docs/              # Documentation
-└── secrets/           # SOPS-encrypted secrets
+├── CLAUDE.md            # This file
+├── flake.nix            # Inputs + mkFlake over (import-tree ./modules)
+├── flake.lock           # Pinned dependencies (only touch via nix flake update)
+├── justfile             # Command recipes (primary interface)
+├── hosts/               # ONLY hardware-configuration files
+│   ├── fern/hardware.nix
+│   └── moss/hardware.nix
+├── modules/             # Everything else — every .nix here is auto-imported
+│   ├── dendritic.nix    # den bootstrap (mutual-provider, hm bridge, schema)
+│   ├── hosts.nix        # Topology: den.hosts.<system>.<name>.users.<user>
+│   ├── defaults.nix     # den.default — applied to all hosts/users
+│   ├── core.nix         # Nix settings + fleet-wide defaults (mkDefault)
+│   ├── host-fern.nix    # Host aspect: roles + user layers + hardware quirks
+│   ├── host-moss.nix    # Host aspect for the Asahi laptop
+│   ├── user-ada.nix     # User BASE layer (safe on any host, even headless)
+│   ├── user-ada-desktop.nix  # User desktop layer (forwarded by GUI hosts)
+│   ├── user-ada-dev.nix      # User dev-toolchain layer
+│   ├── roles/           # Host role bundles: workstation, server, dev-machine
+│   ├── boot.nix         # systemd-boot (UEFI x86 default); asahi/ has its own
+│   ├── cli/ desktop/ devtools/ git/ shells/ ...  # aspect modules by category
+│   └── */bundle.nix     # Category bundles (den.aspects.cli, devtools, …)
+├── book/                # mdBook documentation
+└── secrets/             # SOPS-encrypted secrets (edit only via sops)
 ```
 
-## Common Patterns
+## The Dendritic Pattern Here
 
-### Adding a New System Module
+### Aspects
 
-1. Create module file: `nix/modules/category/name.nix`
-2. Register in `flake.parts/20-nixos-mods.nix`
-3. Import in `hosts/fern/configuration.nix`
-4. Enable and configure
-5. Test and commit
-
-### Adding a New Home Module
-
-1. Create module file: `nix/home/category/name.nix`
-2. Register in `flake.parts/30-home-mods.nix`
-3. Import in home-manager configuration
-4. Enable and configure
-5. Test and commit
-
-### Creating a Package Override
+Every unit of configuration is an aspect with optional per-class sides:
 
 ```nix
-# In flake.parts/10-overlays.nix
-(final: prev: {
-  packageName = prev.packageName.override {
-    someOption = true;
+# modules/category/thing.nix
+{ den, ... }:
+{
+  den.aspects.thing = {
+    includes = [ den.aspects.other ];          # compose aspects
+    nixos = { pkgs, ... }: { ... };            # system side
+    homeManager = { pkgs, ... }: { ... };      # user side
   };
-})
+}
 ```
 
-## Language-Specific Notes
+New module = new file under `modules/` — import-tree picks it up
+automatically. Paths with a `_`-prefixed component (e.g.
+`desktop/_hyprland/`) are NOT auto-imported; they're helpers imported
+explicitly by a parent module.
 
-### Working with Nix
+### Topology and layering
 
-- The system uses Nix flakes (experimental feature)
-- Home Manager is integrated via NixOS module
-- Overlays are applied for Rust and Zig
-- Binary cache can be configured for faster builds
+- `modules/hosts.nix` declares machines and their users. A user named
+  `ada` gets `den.aspects.ada` automatically.
+- Host aspects (`host-*.nix`) compose **roles** from `modules/roles/`
+  plus hardware-specific config, and forward extra user layers via
+  `provides.to-users.includes` (enabled by `den._.mutual-provider` in
+  `dendritic.nix`). This is how the same user gets a desktop on fern
+  but would stay minimal on a server.
+- User aspects are layered: `ada` (base, machine-agnostic) ←
+  `ada-desktop`, `ada-dev` (forwarded per-host). Keep it that way:
+  never add GUI or toolchain config to the base layer.
+- Fleet-wide defaults live in `core.nix` with `lib.mkDefault` so hosts
+  can override; per-machine facts (kernel, udev rules, sensors chip)
+  live in the host aspect.
 
-### Primary Technologies
+### Naming conventions
 
-- **Shell**: Nushell (with Bash/Zsh compatibility)
-- **Editor**: Helix (with LSP configuration)
-- **Desktop**: Hyprland (Wayland compositor)
-- **Terminal**: Ghostty
-- **Git**: Enhanced with worktrees and AI safety
+- Aspect files: `modules/category/name.nix`, dash-separated
+  (`claude-code.nix`). Aspect name matches file name.
+- `ada-*` aspect names are reserved for user layers; the Ada language
+  toolchain is `ada-lang` (modules/devtools/ada.nix).
+- Category bundles are `bundle.nix` defining `den.aspects.<category>`.
 
-## Troubleshooting Patterns
+## Adding Things
 
-### Build Failures
+### A new module/aspect
+
+1. Create `modules/category/name.nix` defining `den.aspects.name`
+2. Include it from a bundle, role, or host aspect
+3. `just check`, `just test`, commit
+
+### A new machine
+
+1. Generate `hosts/<name>/hardware.nix` on the machine
+2. Add topology: `den.hosts.<system>.<name>.users.ada = { };`
+3. Create `modules/host-<name>.nix`: hardware import + boot aspect +
+   role (+ `provides.to-users` layers if graphical)
+4. Pin `system.stateVersion` for the new host at the current release
+5. Add the host's age key as a sops recipient before enabling `secrets`
+
+## Safety Rules
+
+### ⚠️ CRITICAL - Always Follow
+
+1. **NEVER** modify `hosts/*/hardware.nix` by hand
+2. **NEVER** work directly in the main branch - use worktrees
+3. **ALWAYS** run `nix flake check` before rebuilding
+4. **ALWAYS** test with `just test` before `just switch`
+5. **ALWAYS** format with `nixfmt` (`just fmt`) before committing
+6. **NEVER** use `sudo` with git commands
+7. **NEVER** edit files in `secrets/` directly - use sops
+8. `flake.lock` changes only via `just update` / `nix flake update`
+
+## Key Technologies
+
+- **Compositor**: Niri (primary), Hyprland (fallback session)
+- **Greeter**: greetd + tuigreet (regreet removed — GPU corruption)
+- **Shell**: Fish (system) / Nushell; **Editor**: Helix; **Terminal**: Ghostty/Kitty
+- **Theming**: garden-shell palette (`garden.terminal` aspect namespace)
+- **Audio**: PipeWire + musnix low-latency (studio hardware on fern)
+- **Secrets**: sops-nix with age keys
+
+## Troubleshooting
 
 ```bash
-# Get detailed error
-just test-trace
-
-# Check specific module evaluation
-nix eval .#nixosConfigurations.fern.config.programs.git
-
-# Clean and retry
-nix-collect-garbage -d
-nix flake update
+just test-trace                       # detailed eval/build errors
+nix eval .#nixosConfigurations.fern.config.system.build.toplevel.drvPath
+grep -rn "aspects.name" modules/      # find aspect definition + includers
+just diff-gen                         # what changed between generations
 ```
 
-### Module Not Found
+Common gotchas:
 
-```bash
-# List available modules
-nix eval .#nixosModules --apply builtins.attrNames
-nix eval .#homeModules --apply builtins.attrNames
-
-# Check module registration
-grep "moduleName" flake.parts/*.nix
-```
-
-### Configuration Conflicts
-
-```bash
-# Find duplicate definitions
-grep -r "programs.thing" nix/
-
-# Check for infinite recursion
-nix eval .#nixosConfigurations.fern --show-trace
-```
-
-## Testing Commands
-
-### System Testing
-
-```bash
-# Dry run
-just dry
-
-# Build VM for testing
-nixos-rebuild build-vm --flake .#fern
-./result/bin/run-fern-vm
-
-# Check service status
-systemctl status service-name
-journalctl -u service-name -f
-```
-
-### Validation
-
-```bash
-# Nix syntax check
-nix flake check
-
-# Format check
-nixfmt --check .
-
-# Linting
-statix check
-
-# Dead code detection
-deadnix .
-
-# Flake lock health
-flake-checker
-```
-
-## Git Workflow Integration
-
-### Worktree Operations
-
-```bash
-# Create worktree for feature
-wtn feature-name
-
-# Start Claude in worktree
-claude  # Or: cc
-
-# Review changes
-git diff
-git status
-
-# Finish worktree
-wts main
-wtr feature-name
-```
-
-### Identity Management
-
-```bash
-# Check current identity
-gid
-
-# Switch for this repo
-gid switch personal --local
-```
-
-## Performance Tips
-
-1. Use `--show-trace` only when debugging
-2. Enable binary cache for faster rebuilds
-3. Use `nixos-rebuild test` for quick iteration
-4. Keep generations clean with regular garbage collection
-5. Use worktrees to parallelize development
-
-## Important Files to Never Modify
-
-- `hardware-configuration.nix` - Auto-generated hardware config
-- `flake.lock` - Only update via `nix flake update`
-- Files in `secrets/` - Use SOPS for editing
-
-## Useful Aliases Available
-
-- `g` - git status
-- `ga` - git add
-- `gc` - git commit
-- `gp` - git push
-- `wtn` - new worktree
-- `ccn` - Claude in new worktree
-- `hx` - Helix editor
+- "option does not exist" for `programs.niri.*`: the niri-flake NixOS
+  module is imported once at host level (host-fern.nix), not in the
+  niri aspect — a new host using Niri needs that import too.
+- Duplicate option declaration: an upstream NixOS module imported
+  inside an aspect that's included twice. Import such modules once at
+  the host level instead.
+- User half-defined ("exactly one of isSystemUser/isNormalUser"): a
+  system aspect touches `users.users.<name>` on a host that doesn't
+  include the `users` aspect.
 
 ## When Working on This Project
 
-1. Understand the modular structure
-2. Follow existing patterns
-3. Test changes incrementally
-4. Document new modules
-5. Keep commits atomic and descriptive
-6. Use conventional commits (feat, fix, docs, etc.)
+1. Follow the aspect layering: base vs role vs host vs user layer
+2. New config goes in the most-shared place it's correct for —
+   hardware facts in host aspects, preferences in user layers
+3. Test incrementally; keep commits atomic; conventional commits
+   (feat, fix, docs, refactor, …)
 
 ---
 
-_This file helps Claude understand your project. Keep it updated as conventions
-evolve._
+_This file helps Claude understand your project. Keep it updated as
+conventions evolve._

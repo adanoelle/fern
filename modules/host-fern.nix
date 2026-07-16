@@ -1,26 +1,27 @@
 # modules/host-fern.nix — fern workstation host aspect
+#
+# Composition only: roles + user layers + genuinely fern-specific
+# hardware config. Anything another machine could want belongs in a
+# role (modules/roles/) or a shared aspect.
 { den, inputs, ... }:
 {
   den.aspects.fern = {
     includes = [
       den.aspects.boot
-      den.aspects.core
-      den.aspects.nh
-      den.aspects.audio
+      den.aspects.workstation
+      den.aspects.dev-machine
       den.aspects.monitoring
-      den.aspects.users
-      den.aspects.secrets-guard
-      den.aspects.greetd
-      den.aspects.fonts
       den.aspects.niri
-      den.aspects.docker
-      den.aspects.c-cpp
-      den.aspects.localstack
-      den.aspects.rust
-      den.aspects.node-ts
-      den.aspects.aws-cli
       den.aspects.lmstudio
       den.aspects.teams
+    ];
+
+    # Forward user layers: fern is a graphical dev machine, so its
+    # users get the desktop and dev toolchain layers on top of the
+    # base ada aspect.
+    provides.to-users.includes = [
+      den.aspects.ada-desktop
+      den.aspects.ada-dev
     ];
 
     nixos =
@@ -33,8 +34,6 @@
 
         # Use nixpkgs niri (avoids niri-flake fetchGit evaluation issue with Smithay)
         programs.niri.package = pkgs.niri;
-
-        programs.nix-ld.enable = true;
 
         # Low-latency kernel for the pro-audio workstation role
         boot.kernelPackages = pkgs.linuxPackages_zen;
@@ -80,12 +79,6 @@
           vulkan-tools
           firefox
         ];
-
-        nix.settings.trusted-users = [
-          "root"
-          "ada"
-        ];
-        time.timeZone = "America/New_York";
       };
   };
 }

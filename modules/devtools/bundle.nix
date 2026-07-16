@@ -9,7 +9,7 @@
       den.aspects.c-cpp
       den.aspects.python
       den.aspects.csharp
-      den.aspects.ada-dev
+      den.aspects.ada-lang
       den.aspects.localstack
       den.aspects.zig
       den.aspects.gamedev
