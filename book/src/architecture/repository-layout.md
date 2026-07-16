@@ -14,9 +14,15 @@ fern/
 │   ├── overlays.nix       # Nixpkgs config + overlays (Rust, Zig, Claude)
 │   ├── host-fern.nix      # Fern host aspect (x86_64, AMD GPU)
 │   ├── host-moss.nix      # Moss host aspect (aarch64, Asahi)
-│   ├── user-ada.nix       # User ada aspect (bundles, Hyprland, git)
-│   ├── core.nix           # Nix settings, garbage collection
-│   ├── boot.nix           # GRUB + Zen kernel (legacy, fern pre-migration)
+│   ├── user-ada.nix       # User ada BASE layer (shells, cli, git, ssh)
+│   ├── user-ada-desktop.nix  # Desktop layer (forwarded by GUI hosts)
+│   ├── user-ada-dev.nix   # Dev-toolchain layer (forwarded per host)
+│   ├── roles/             # Host role bundles
+│   │   ├── workstation.nix   # Graphical machine base
+│   │   ├── dev-machine.nix   # Host-side dev toolchains
+│   │   └── server.nix        # Headless skeleton (homelab landing zone)
+│   ├── core.nix           # Nix settings, overlays, fleet defaults
+│   ├── boot.nix           # systemd-boot (UEFI x86 default)
 │   ├── users.nix          # User account, NetworkManager, SSH
 │   ├── audio.nix          # PipeWire, low-latency, Audient iD24
 │   ├── graphics.nix       # NVIDIA modesetting, VRR, Wayland
@@ -96,7 +102,8 @@ fern/
 | Den bootstrap and HM bridge | `modules/dendritic.nix` |
 | Host/user topology | `modules/hosts.nix` |
 | What a specific host includes | `modules/host-fern.nix`, `modules/host-moss.nix` |
-| What a user includes | `modules/user-ada.nix` |
+| Host role bundles | `modules/roles/` |
+| What a user includes | `modules/user-ada.nix` (+ `-desktop`/`-dev` layers) |
 | A system-level service or driver | `modules/*.nix` (top-level) |
 | A user-level tool or dotfile | `modules/cli/`, `modules/shells/`, `modules/desktop/` |
 | Git configuration (all of it) | `modules/git/` |

@@ -43,7 +43,7 @@ new CLI tool means creating the aspect file and adding one line to this bundle.
 | `cli` | `modules/cli/bundle.nix` | bat, broot, claude-code, crypt, delta, ghostty, glow, helix, hyfetch, nix-tree, prettier, tree, audio-tools |
 | `shells` | `modules/shells/bundle.nix` | nushell, starship, zoxide, devenv |
 | `desktop-apps` | `modules/desktop/bundle.nix` | hyprland, chromium, obs, screenshot, gaming-hm |
-| `devtools` | `modules/devtools/bundle.nix` | docker, rust, node-ts, c-cpp, python, csharp, ada-dev, localstack, zig, gamedev |
+| `devtools` | `modules/devtools/bundle.nix` | docker, rust, node-ts, c-cpp, python, csharp, ada-lang, localstack, zig, gamedev |
 
 ## Orchestrator bundles
 
@@ -150,42 +150,52 @@ programs.gitSuite = {
 
 ## Bundle composition hierarchy
 
-Bundles compose into a tree. The user aspect sits at the top:
+Bundles compose into a tree. The user is layered: the base aspect includes the
+machine-agnostic bundles, and hosts forward the desktop/dev layers via
+`provides.to-users`:
 
 ```
-den.aspects.ada (user)
+den.aspects.ada (user base — applies on every host)
 ├── den.aspects.cli (bundle)
 │   ├── den.aspects.bat
 │   ├── den.aspects.helix
 │   ├── den.aspects.ghostty
-│   └── ... (13 aspects)
+│   └── ...
 ├── den.aspects.git-suite (orchestrator bundle)
 │   ├── den.aspects.git-core
 │   ├── den.aspects.git-aliases
 │   └── ... (13 aspects)
-├── den.aspects.desktop-apps (bundle)
-│   ├── den.aspects.hyprland
-│   ├── den.aspects.chromium
-│   └── ... (5 aspects)
-├── den.aspects.devtools (bundle)
-│   ├── den.aspects.rust
-│   ├── den.aspects.docker
-│   └── ... (10 aspects)
 ├── den.aspects.shells (bundle)
 │   ├── den.aspects.nushell
 │   ├── den.aspects.starship
 │   ├── den.aspects.zoxide
 │   └── den.aspects.devenv
-└── den.aspects.workspace
+├── den.aspects.workspace
+└── garden.terminal (from the garden-shell namespace)
+
+den.aspects.ada-desktop (forwarded by graphical hosts)
+└── den.aspects.desktop-apps (bundle)
+    ├── den.aspects.niri
+    ├── den.aspects.hyprland
+    ├── den.aspects.chromium
+    └── ... (7 aspects)
+
+den.aspects.ada-dev (forwarded by dev hosts)
+└── den.aspects.devtools (bundle)
+    ├── den.aspects.rust
+    ├── den.aspects.docker
+    └── ... (10 aspects)
 ```
 
 ## Key files
 
 | File | Purpose |
 |------|---------|
-| `modules/cli/bundle.nix` | Pure bundle (13 CLI tools) |
+| `modules/cli/bundle.nix` | Pure bundle (CLI tools) |
 | `modules/shells/bundle.nix` | Pure bundle (4 shell tools) |
-| `modules/desktop/bundle.nix` | Pure bundle (5 desktop apps) |
+| `modules/desktop/bundle.nix` | Pure bundle (7 desktop apps) |
 | `modules/devtools/bundle.nix` | Pure bundle (10 dev toolchains) |
 | `modules/git/bundle.nix` | Orchestrator bundle (13 git aspects) |
-| `modules/user-ada.nix` | User aspect composing all bundles |
+| `modules/user-ada.nix` | User base layer (machine-agnostic bundles) |
+| `modules/user-ada-desktop.nix` | Desktop layer (forwarded by GUI hosts) |
+| `modules/user-ada-dev.nix` | Dev layer (forwarded per host) |

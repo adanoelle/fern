@@ -138,7 +138,7 @@ This is the standard NixOS module pattern (`options` + `config` + `mkIf`),
 hosted inside a den aspect. The user aspect sets these options:
 
 ```nix
-# modules/user-ada.nix (excerpt)
+# modules/user-ada-desktop.nix (excerpt)
 homeManager = { ... }: {
   desktop.hyprland = {
     enable = true;

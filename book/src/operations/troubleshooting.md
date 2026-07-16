@@ -159,7 +159,7 @@ If evaluation is slow, check for:
 # Roll back to previous generation
 just rollback
 
-# Or select a specific generation at boot via GRUB
+# Or select a specific generation at boot via the systemd-boot menu
 ```
 
 ### Emergency rebuild from old generation
@@ -167,7 +167,7 @@ just rollback
 If the current configuration is broken and you cannot build:
 
 ```bash
-# Boot into a previous generation from GRUB
+# Boot into a previous generation from the systemd-boot menu
 # Then fix the configuration and rebuild
 sudo nixos-rebuild switch --flake .#fern
 ```

@@ -107,8 +107,10 @@ den.aspects.fern.includes = [
   den.aspects.my-service
 ];
 
-# For user-level aspects, add to the user:
-# modules/user-ada.nix
+# For user-level aspects, add to the right user LAYER:
+#   modules/user-ada.nix          — base (safe on any host, even headless)
+#   modules/user-ada-desktop.nix  — GUI-only tools
+#   modules/user-ada-dev.nix      — dev toolchains
 den.aspects.ada.includes = [
   # ... existing includes ...
   den.aspects.my-tool

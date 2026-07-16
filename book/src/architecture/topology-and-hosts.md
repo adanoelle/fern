@@ -52,28 +52,25 @@ which other aspects it includes.
 {
   den.aspects.fern = {
     includes = [
-      den.aspects.core
-      den.aspects.audio
+      den.aspects.boot         # systemd-boot (UEFI x86 default)
+      den.aspects.workstation  # role: core, nh, users, greetd, fonts, audio, docker, ...
+      den.aspects.dev-machine  # role: c-cpp, rust, node-ts, localstack, aws-cli
       den.aspects.monitoring
-      den.aspects.users
-      den.aspects.secrets-guard
-      den.aspects.greetd
-      den.aspects.fonts
-      den.aspects.docker
-      den.aspects.c-cpp
-      den.aspects.localstack
-      den.aspects.rust
-      den.aspects.node-ts
-      den.aspects.aws-cli
+      den.aspects.niri
       den.aspects.lmstudio
       den.aspects.teams
     ];
 
-    nixos = { pkgs, lib, ... }: {
+    # Forward user layers: fern's users get desktop + dev on top of
+    # the base ada aspect.
+    provides.to-users.includes = [
+      den.aspects.ada-desktop
+      den.aspects.ada-dev
+    ];
+
+    nixos = { pkgs, ... }: {
       imports = [ ../hosts/fern/hardware.nix ];
 
-      boot.loader.systemd-boot.enable = true;
-      boot.loader.efi.canTouchEfiVariables = true;
       boot.kernelPackages = pkgs.linuxPackages_zen;
 
       hardware.graphics.enable = true;
@@ -82,18 +79,16 @@ which other aspects it includes.
       environment.systemPackages = with pkgs; [
         mesa-demos vulkan-tools firefox
       ];
-
-      nix.settings.trusted-users = [ "root" "ada" ];
-      time.timeZone = "America/New_York";
     };
   };
 }
 ```
 
-The `includes` list pulls in shared aspects (core, audio, docker) and
-fern-specific ones (cloud tools, dev toolchains, desktop apps). The `nixos`
-block contains configuration that only makes sense for this specific machine:
-hardware imports, boot loader, GPU setup, and timezone.
+The `includes` list composes **roles** (workstation, dev-machine) plus
+fern-specific aspects. The `nixos` block contains configuration that only makes
+sense for this specific machine: hardware imports, kernel choice, GPU setup,
+and audio-device quirks. Fleet-wide defaults (timezone, trusted-users, nix-ld)
+come from `core` via `mkDefault`.
 
 ### Moss (Apple Silicon)
 
@@ -114,15 +109,16 @@ hardware imports, boot loader, GPU setup, and timezone.
       den.aspects.secrets-guard
     ];
 
-    nixos = { pkgs, ... }: {
+    provides.to-users.includes = [
+      den.aspects.ada-desktop
+      den.aspects.ada-dev
+    ];
+
+    nixos = {
       imports = [
         ../hosts/moss/hardware.nix
         inputs.nixos-apple-silicon.nixosModules.apple-silicon-support
       ];
-
-      programs.nix-ld.enable = true;
-      nix.settings.trusted-users = [ "root" "ada" ];
-      time.timeZone = "America/New_York";
     };
   };
 }
@@ -136,16 +132,18 @@ uses `boot-asahi` and `graphics-asahi` instead of the x86-specific equivalents.
 Both hosts include `core`, `audio`, `users`, `docker`, `greetd`, and
 `secrets-guard`. The divergence is in:
 
-- **Boot**: fern uses systemd-boot + Zen kernel inline; moss uses the
-  `boot-asahi` aspect
+- **Boot**: fern uses the `boot` aspect (systemd-boot) + Zen kernel; moss uses
+  the `boot-asahi` aspect
 - **GPU**: fern enables Mesa/AMDGPU inline; moss uses the `graphics-asahi`
   aspect
 - **Dev tools**: only fern includes `rust`, `c-cpp`, `node-ts`, cloud CLIs
 - **Desktop apps**: only fern includes `lmstudio`, `teams`
 
-User-level configuration (cli, git, shells, desktop) is handled by the user
-aspect (`modules/user-ada.nix`), which applies to `ada` on both machines via the
-mutual provider.
+User-level configuration is layered: the base aspect (`modules/user-ada.nix` —
+cli, git, shells) applies to `ada` on every machine, while each host forwards
+the `ada-desktop` and `ada-dev` layers via `provides.to-users` (the mutual
+provider). A future headless host would forward neither, keeping its `ada`
+minimal.
 
 ## How den resolves the pipeline
 
@@ -166,6 +164,9 @@ When you run `nixos-rebuild switch --flake .#fern`:
 | `modules/hosts.nix` | Topology declaration |
 | `modules/host-fern.nix` | Fern host aspect and includes |
 | `modules/host-moss.nix` | Moss host aspect and includes |
-| `modules/user-ada.nix` | User ada aspect and includes |
+| `modules/roles/` | Role bundles composed by host aspects |
+| `modules/user-ada.nix` | User ada base layer |
+| `modules/user-ada-desktop.nix` | Desktop layer (forwarded by GUI hosts) |
+| `modules/user-ada-dev.nix` | Dev-toolchain layer (forwarded per host) |
 | `hosts/fern/hardware.nix` | Fern hardware (auto-generated) |
 | `hosts/moss/hardware.nix` | Moss hardware (auto-generated) |
