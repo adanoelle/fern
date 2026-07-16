@@ -30,6 +30,10 @@
         ../hosts/moss/hardware.nix
         inputs.nixos-apple-silicon.nixosModules.apple-silicon-support
       ];
+
+      # Frozen at the release moss was installed with. NEVER bump this:
+      # it gates stateful data migrations, not features.
+      system.stateVersion = "25.11";
     };
   };
 }

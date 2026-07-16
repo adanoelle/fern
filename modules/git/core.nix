@@ -24,16 +24,16 @@
           description = "Git package to use";
         };
 
+        # No defaults: git identity is personal, not a module opinion.
+        # gitSuite forwards these from its own (also required) options.
         userName = mkOption {
           type = types.str;
-          default = "adanoelle";
-          description = "Default git user name";
+          description = "Git user name (required)";
         };
 
         userEmail = mkOption {
           type = types.str;
-          default = "adanoelleyoung@gmail.com";
-          description = "Default git user email";
+          description = "Git user email (required)";
         };
 
         editor = mkOption {

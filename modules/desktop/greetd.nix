@@ -70,10 +70,7 @@
         quickshell
       ];
 
-      users.users.ada.extraGroups = [
-        "video"
-        "input"
-        "seat"
-      ];
+      # "video"/"input"/"seat" group membership is granted centrally in
+      # modules/users.nix, conditional on services.greetd.enable.
     };
 }

@@ -74,7 +74,8 @@
 
       security.rtkit.enable = true;
 
-      users.users.ada.extraGroups = [ "audio" ];
+      # "audio" group membership is granted centrally in modules/users.nix,
+      # conditional on services.pipewire.enable.
 
       environment.systemPackages = with pkgs; [
         audacity

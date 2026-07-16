@@ -2,8 +2,20 @@
 { den, ... }:
 {
   den.default = {
-    nixos.system.stateVersion = "25.11";
-    homeManager.home.stateVersion = "25.11";
+    # Fallbacks for hosts/users that haven't pinned their own. Each host
+    # must pin system.stateVersion at whatever release it was installed
+    # with (see host-*.nix); a fleet-wide value only happens to be
+    # correct while every machine was installed on the same release.
+    nixos =
+      { lib, ... }:
+      {
+        system.stateVersion = lib.mkDefault "25.11";
+      };
+    homeManager =
+      { lib, ... }:
+      {
+        home.stateVersion = lib.mkDefault "25.11";
+      };
 
     includes = [
       den._.define-user

@@ -39,6 +39,7 @@
 
       hardware.steam-hardware.enable = true;
       services.joycond.enable = true;
-      users.users.ada.extraGroups = [ "gamemode" ];
+      # "gamemode" group membership is granted centrally in
+      # modules/users.nix, conditional on programs.gamemode.enable.
     };
 }

@@ -35,6 +35,10 @@
           inputs.niri.nixosModules.niri
         ];
 
+        # Frozen at the release fern was installed with. NEVER bump this:
+        # it gates stateful data migrations, not features.
+        system.stateVersion = "25.11";
+
         # Use nixpkgs niri (avoids niri-flake fetchGit evaluation issue with Smithay)
         programs.niri.package = pkgs.niri;
 

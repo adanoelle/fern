@@ -4,6 +4,14 @@
     nixos =
       { pkgs, ... }:
       {
+        # Parts of the .NET toolchain here still pull in EOL dotnet 6;
+        # scope the insecure-package exception to hosts that actually
+        # carry this aspect instead of the whole fleet (was in core.nix).
+        nixpkgs.config.permittedInsecurePackages = [
+          "dotnet-sdk-6.0.428"
+          "dotnet-runtime-6.0.36"
+        ];
+
         environment.systemPackages = [
           (
             with pkgs.dotnetCorePackages;
