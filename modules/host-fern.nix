@@ -18,10 +18,13 @@
 
     # Forward user layers: fern is a graphical dev machine, so its
     # users get the desktop and dev toolchain layers on top of the
-    # base ada aspect.
+    # base ada aspect. Niri is forwarded here (not from desktop-apps)
+    # because its homeManager options only exist on hosts importing
+    # the niri-flake NixOS module, which fern does below.
     provides.to-users.includes = [
       den.aspects.ada-desktop
       den.aspects.ada-dev
+      den.aspects.niri
     ];
 
     nixos =
