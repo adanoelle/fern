@@ -27,13 +27,15 @@
       {
         options.programs.gitSuite = {
           enable = mkEnableOption "Complete Git suite configuration";
+          # No defaults: git identity is personal, not a module opinion.
+          # Each user layer must set these (see user-ada.nix).
           userName = mkOption {
             type = types.str;
-            default = "adanoelle";
+            description = "Git user name (required)";
           };
           userEmail = mkOption {
             type = types.str;
-            default = "adanoelleyoung@gmail.com";
+            description = "Git user email (required)";
           };
           editor = mkOption {
             type = types.str;
