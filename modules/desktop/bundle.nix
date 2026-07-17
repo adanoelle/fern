@@ -14,6 +14,7 @@
       den.aspects.screenshot
       den.aspects.gaming-hm
       den.aspects.daw
+      den.aspects.bitwarden
     ];
   };
 }

@@ -27,6 +27,7 @@
       den.aspects.fzf
       den.aspects.fd
       den.aspects.ripgrep
+      den.aspects.rbw
       den.aspects.jq
     ];
   };
