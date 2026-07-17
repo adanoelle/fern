@@ -6,7 +6,9 @@
 #   - hardened SSH (key-only auth, no root login)
 #   - server networking (systemd-networkd instead of NetworkManager,
 #     which currently comes bundled via den.aspects.users)
-#   - the secrets aspect, once per-host sops keys exist
+#   - the secrets aspect: register the host in .sops.yaml first
+#     (ssh-keyscan -t ed25519 <host> | ssh-to-age, add anchor + rule,
+#     sops updatekeys secrets/*.yaml), then include den.aspects.secrets
 { den, ... }:
 {
   den.aspects.server.includes = [

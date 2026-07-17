@@ -28,16 +28,19 @@
     nixos = {
       imports = [ inputs.sops-nix.nixosModules.sops ];
 
-      sops.age = {
-        generateKey = true;
-        keyFile = "/var/lib/sops-nix/key.txt";
+      sops = {
+        defaultSopsFile = ../secrets/main.yaml;
+
+        # Canonical per-host identity: the SSH host key, converted to
+        # age at activation (ssh-to-age). Register new hosts in
+        # .sops.yaml and run `sops updatekeys` BEFORE enabling this
+        # aspect — otherwise activation fails loudly (by design).
+        age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+
+        # Don't import RSA host keys into a throwaway GPG keyring
+        # (sops-nix defaults this from services.openssh.hostKeys).
+        gnupg.sshKeyPaths = [ ];
       };
-
-      security.sudo.extraConfig = ''
-        Defaults env_keep += "SOPS_AGE_KEY_FILE"
-      '';
-
-      sops.defaultSopsFile = ../secrets/main.yaml;
     };
   };
 }

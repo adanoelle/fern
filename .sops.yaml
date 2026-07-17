@@ -1,0 +1,21 @@
+# .sops.yaml — recipient registry and creation rules.
+#
+# New machine registration (BEFORE its first rebuild with secrets):
+#   ssh-keyscan -t ed25519 <host> | ssh-to-age     # or on the machine:
+#   ssh-to-age < /etc/ssh/ssh_host_ed25519_key.pub
+# then add &host_<name> below, extend the rules, and run:
+#   sops updatekeys secrets/<file>.yaml
+keys:
+  # ada's personal editing key (~/.config/sops/age/keys.txt — backed up)
+  - &admin_ada age100dcyxe580rdv2cuar3rwedjptzstutwr74psc5sxxxqr64y79xsgum4yk
+  # hosts (ssh-to-age of /etc/ssh/ssh_host_ed25519_key.pub)
+  - &host_fern age1gqxz9qd4a245e4c5ruaka9e325un0zu74rrs5mugach32f7y3fyskakr4u
+  # - &host_moss age1...   # register when moss rejoins the fleet
+
+creation_rules:
+  - path_regex: ^secrets/main\.yaml$
+    key_groups:
+      - age: [ *admin_ada, *host_fern ]
+  # Per-host files later, e.g.:
+  # - path_regex: ^secrets/moss\.yaml$
+  #   key_groups: [ { age: [ *admin_ada, *host_moss ] } ]

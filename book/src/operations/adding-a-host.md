@@ -79,7 +79,30 @@ base, then add host-specific aspects. Fleet defaults — timezone, trusted-users
 nix-ld — come from `core` via `mkDefault`; override them in the `nixos` block
 only if this machine differs.
 
-## Step 4: Test the build
+## Step 4: Register the host as a sops recipient
+
+**Do this before the first build.** Any role that includes the `secrets`
+aspect (workstation does) needs the host registered in `.sops.yaml`, or the
+first activation will fail loudly — by design.
+
+The host's decryption identity is derived from its SSH host key, so it exists
+as soon as the machine has booted NixOS once:
+
+```bash
+ssh-keyscan -t ed25519 <host> | ssh-to-age
+```
+
+Add the resulting `age1...` recipient to `.sops.yaml` as `&host_<name>`,
+extend the `creation_rules` to include it, then re-key and commit:
+
+```bash
+sops updatekeys secrets/*.yaml
+git commit -am "chore(secrets): register <host> as sops recipient"
+```
+
+See [SOPS-nix](../security/sops-nix.md) for details and recovery procedures.
+
+## Step 5: Test the build
 
 ```bash
 # Dry build (does not require the target machine)
@@ -92,7 +115,7 @@ sudo nixos-rebuild test --flake .#newhost
 nixos-rebuild test --flake .#newhost --target-host newhost --build-host localhost
 ```
 
-## Step 5: Deploy
+## Step 6: Deploy
 
 On the target machine (or via remote deploy):
 
@@ -137,4 +160,5 @@ layers to forward via `provides.to-users` -- both current machines forward
 | `modules/host-fern.nix` | Example: role-composed workstation host |
 | `modules/host-moss.nix` | Example: explicitly-composed host |
 | `modules/defaults.nix` | Defaults applied to all hosts |
+| `.sops.yaml` | Sops recipient registry (register new hosts here) |
 | `hosts/<name>/hardware.nix` | Auto-generated hardware config |
