@@ -127,7 +127,10 @@ explicitly by a parent module.
 3. Create `modules/host-<name>.nix`: hardware import + boot aspect +
    role (+ `provides.to-users` layers if graphical)
 4. Pin `system.stateVersion` for the new host at the current release
-5. Add the host's age key as a sops recipient before enabling `secrets`
+5. Register the host as a sops recipient BEFORE the first build with the
+   `secrets` aspect (activation fails loudly otherwise):
+   `ssh-keyscan -t ed25519 <host> | ssh-to-age`, add the `&host_<name>`
+   anchor + rule to `.sops.yaml`, then `sops updatekeys secrets/*.yaml`
 
 ## Safety Rules
 
