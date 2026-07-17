@@ -269,6 +269,26 @@ in
                 "-c"
                 "qs -c garden ipc call garden toggleSettings"
               ];
+              "${mod}+Shift+N".action.spawn = [
+                "sh"
+                "-c"
+                "qs -c garden ipc call garden toggleNotifications"
+              ];
+              "${mod}+Shift+M".action.spawn = [
+                "sh"
+                "-c"
+                "qs -c garden ipc call garden toggleNotificationCenter"
+              ];
+              "${mod}+Escape".action.spawn = [
+                "sh"
+                "-c"
+                "qs -c garden ipc call garden togglePowerMenu"
+              ];
+              "${mod}+Alt+L".action.spawn = [
+                "sh"
+                "-c"
+                "qs -c garden ipc call garden lock"
+              ];
 
               # Session
               "${mod}+Shift+E".action.quit = [ ];
@@ -355,6 +375,26 @@ in
           # ── Misc ─────────────────────────────────────────────
           prefer-no-csd = true;
           hotkey-overlay.skip-at-startup = true;
+        };
+
+        # ── Idle + before-sleep locking (garden lock screen) ───
+        # niri implements ext-idle-notify-v1; swayidle drives the garden
+        # session lock via IPC. before-sleep holds a logind inhibitor so
+        # the lock engages before suspend.
+        services.swayidle = {
+          enable = true;
+          timeouts = [
+            {
+              timeout = 600;
+              command = "${pkgs.quickshell}/bin/qs -c garden ipc call garden lock";
+            }
+          ];
+          events = [
+            {
+              event = "before-sleep";
+              command = "${pkgs.quickshell}/bin/qs -c garden ipc call garden lock";
+            }
+          ];
         };
       };
   };
