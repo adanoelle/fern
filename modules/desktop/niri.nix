@@ -42,6 +42,9 @@ in
       }:
       {
         programs.niri.settings = {
+          # Built-in Print action target (default would resurrect ~/Pictures/Screenshots)
+          screenshot-path = "~/media/screenshots/screenshot-%Y-%m-%d_%H-%M-%S.png";
+
           # ── Named workspaces (channels) ──────────────────────
           workspaces = {
             "1-studio" = {

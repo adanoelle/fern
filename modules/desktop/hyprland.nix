@@ -78,7 +78,7 @@
           # Keep your existing path and monitor options for compatibility
           path = lib.mkOption {
             type = lib.types.str;
-            default = "${config.home.homeDirectory}/Pictures/wallpaper.png";
+            default = "${config.home.homeDirectory}/media/wallpapers/wallpaper.png";
           };
           monitor = lib.mkOption {
             type = lib.types.str;
@@ -90,8 +90,8 @@
             type = lib.types.attrsOf lib.types.str;
             default = { };
             example = {
-              "HDMI-A-1" = "/home/ada/wallpapers/shrine.png";
-              "DP-2" = "/home/ada/wallpapers/forest.jpg";
+              "HDMI-A-1" = "/home/ada/media/wallpapers/shrine.png";
+              "DP-2" = "/home/ada/media/wallpapers/forest.jpg";
             };
             description = "Per-monitor wallpaper paths (optional, uses path/monitor if empty)";
           };
@@ -100,8 +100,8 @@
             type = lib.types.attrsOf lib.types.str;
             default = { };
             example = {
-              "1" = "/home/ada/wallpapers/shrine.png";
-              "2" = "/home/ada/wallpapers/mononoke_tree.png";
+              "1" = "/home/ada/media/wallpapers/shrine.png";
+              "2" = "/home/ada/media/wallpapers/mononoke_tree.png";
             };
             description = "Per-workspace wallpaper paths (optional)";
           };
@@ -171,7 +171,7 @@
             };
             directory = lib.mkOption {
               type = lib.types.str;
-              default = "${config.home.homeDirectory}/wallpapers";
+              default = "${config.home.homeDirectory}/media/wallpapers";
             };
           };
           perWorkspace = lib.mkOption {

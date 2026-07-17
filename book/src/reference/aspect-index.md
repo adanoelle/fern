@@ -145,7 +145,7 @@ Aspects providing Home Manager user-level configuration.
 
 | Aspect | File | Description |
 |--------|------|-------------|
-| `workspace` | `modules/workspace.nix` | XDG user directories |
+| `workspace` | `modules/workspace.nix` | Archivist home taxonomy: XDG user dirs (inbox/docs/media), notes + archive tree, `~/docs/FILING.md` manual |
 
 ## Infrastructure aspects
 
