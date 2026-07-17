@@ -36,6 +36,7 @@
 
 # Desktop Environment
 
+- [Niri](desktop/niri.md)
 - [Hyprland](desktop/hyprland.md)
 - [Fern Shell (QuickShell)](desktop/fern-shell.md)
 - [Wallpaper & Theming](desktop/wallpaper-and-theming.md)
@@ -100,6 +101,7 @@
 
 - [SOPS-nix](security/sops-nix.md)
 - [Secret Guard](security/secret-guard.md)
+- [Password Manager](security/password-manager.md)
 
 ---
 
