@@ -18,7 +18,8 @@
       "Bash(nix hash:*)",
       "Bash(nix develop:*)",
       "Bash(nix build:*)",
-      "Bash(systemctl status:*)"
+      "Bash(systemctl status:*)",
+      "Bash(ls:*)"
     ]
   }
 }
