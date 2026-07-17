@@ -13,6 +13,7 @@
     den.aspects.nh
     den.aspects.users
     den.aspects.secrets-guard
+    den.aspects.secrets
     den.aspects.greetd
     den.aspects.fonts
     den.aspects.audio
