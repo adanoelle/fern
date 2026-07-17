@@ -67,6 +67,15 @@ in
           # ── Startup programs ─────────────────────────────────
           spawn-at-startup = [
             { command = [ "xwayland-satellite" ]; }
+            # Garden shell (quickshell) — receives the Mod+Slash/Tab/Comma
+            # IPC binds below; without it those binds silently do nothing.
+            {
+              command = [
+                "qs"
+                "-c"
+                "garden"
+              ];
+            }
             { command = [ "kitty" ]; }
             {
               command = [
