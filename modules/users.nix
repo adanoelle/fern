@@ -29,6 +29,13 @@
               users.users = lib.genAttrs (map (u: u.userName) (lib.attrValues host.users)) (_: {
                 isNormalUser = true;
                 shell = pkgs.fish;
+                # Key-only sshd (below) needs at least one authorized key,
+                # or hosts built from this config are unreachable over SSH.
+                # This is ada's sops-managed key (~/.ssh/github); public
+                # halves are safe to commit.
+                openssh.authorizedKeys.keys = [
+                  "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILFcuaT78TweAsGP6nqUmqIV2sx7mF1Jt0mqtMKV+4Ft ada@fern github"
+                ];
                 extraGroups =
                   [
                     "wheel"
