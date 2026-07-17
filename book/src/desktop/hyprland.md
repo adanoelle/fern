@@ -3,6 +3,9 @@
 > Hyprland is the Wayland compositor at the center of the desktop environment,
 > configured with dwindle tiling, Catppuccin colors, and hjkl-based navigation.
 
+Hyprland is now the **fallback session**: [Niri](niri.md) is the primary
+compositor, and greetd offers both sessions at login.
+
 The Hyprland configuration is a den aspect (`den.aspects.hyprland`) defined in
 `modules/desktop/hyprland.nix`, with sub-modules split into
 `modules/desktop/_hyprland/`. The underscore prefix convention (`_hyprland/`)

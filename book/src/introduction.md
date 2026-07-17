@@ -7,8 +7,8 @@ discovery.
 
 ## Key technologies
 
-- **Hyprland** -- Wayland compositor with per-workspace wallpapers and a custom
-  QuickShell bar
+- **Niri** -- Primary scrollable-tiling Wayland compositor, paired with the
+  garden shell (QuickShell); Hyprland is retained as a fallback session
 - **Helix** -- Modal text editor with per-language LSP integration
 - **Nushell** -- Structured-data shell with Starship prompt and Zoxide
   navigation
@@ -24,7 +24,7 @@ discovery.
 ## Quick start
 
 ```bash
-# Enter the dev shell (provides just, mdbook, nixpkgs-fmt)
+# Enter the dev shell (provides just, mdbook, nixfmt)
 nix develop            # or: direnv allow
 
 # Test a rebuild without switching

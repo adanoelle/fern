@@ -19,8 +19,8 @@ minimal).
 | Aspect | File | Type | Applied |
 |--------|------|------|---------|
 | `ada` | `modules/user-ada.nix` | homeManager | ada, every host (base: shells, cli, git, ssh) |
-| `ada-desktop` | `modules/user-ada-desktop.nix` | homeManager | forwarded by fern, moss (Hyprland prefs + desktop-apps) |
-| `ada-dev` | `modules/user-ada-dev.nix` | homeManager | forwarded by fern, moss (devtools bundle) |
+| `ada-desktop` | `modules/user-ada-desktop.nix` | homeManager | forwarded by fern, moss (parked) (desktop prefs + desktop-apps) |
+| `ada-dev` | `modules/user-ada-dev.nix` | homeManager | forwarded by fern, moss (parked) (devtools bundle) |
 
 ## Role aspects
 
@@ -28,7 +28,7 @@ Host role bundles — compose these instead of long per-host include lists.
 
 | Aspect | File | Includes |
 |--------|------|----------|
-| `workstation` | `modules/roles/workstation.nix` | core, nh, users, secrets-guard, greetd, fonts, audio, docker |
+| `workstation` | `modules/roles/workstation.nix` | core, nh, users, secrets-guard, secrets, greetd, fonts, audio, docker |
 | `dev-machine` | `modules/roles/dev-machine.nix` | c-cpp, localstack, rust, node-ts, aws-cli |
 | `server` | `modules/roles/server.nix` | core, nh, users, secrets-guard (skeleton — hardening TODOs in file) |
 
@@ -36,9 +36,9 @@ Host role bundles — compose these instead of long per-host include lists.
 
 | Aspect | File | Includes |
 |--------|------|----------|
-| `cli` | `modules/cli/bundle.nix` | bat, broot, claude-code, crypt, delta, ghostty, glow, helix, hyfetch, nix-tree, prettier, tree, audio-tools |
+| `cli` | `modules/cli/bundle.nix` | bat, broot, claude-code, crypt, delta, ghostty, glow, helix, hyfetch, nix-diff, nix-tree, prettier, tree, audio-tools, kitty, kakoune, yazi, lazygit, btop, fzf, fd, ripgrep, rbw, jq |
 | `git-suite` | `modules/git/bundle.nix` | git-core, git-aliases, git-identities, git-github, git-tools, git-safety, git-help, git-claude-code, git-claude-enhanced, git-worktree, git-worktree-enhanced, git-helix, git-prompts |
-| `desktop-apps` | `modules/desktop/bundle.nix` | niri, hyprland, chromium, obs, screenshot, gaming-hm, daw |
+| `desktop-apps` | `modules/desktop/bundle.nix` | hyprland, chromium, obs, screenshot, gaming-hm, daw, bitwarden (niri is deliberately NOT here — hosts forward it via provides.to-users) |
 | `devtools` | `modules/devtools/bundle.nix` | docker, rust, node-ts, c-cpp, python, csharp, ada-lang, localstack, zig, gamedev |
 | `shells` | `modules/shells/bundle.nix` | nushell, starship, zoxide, devenv |
 
@@ -63,10 +63,10 @@ Aspects providing NixOS system-level configuration.
 | `localstack` | `modules/devtools/localstack.nix` | LocalStack container, awslocal wrapper | fern |
 | `monitoring` | `modules/monitoring.nix` | Hardware sensors (lm_sensors) | fern |
 | `nh` | `modules/cli/nh.nix` | nh rebuild helper + scheduled clean | fern |
-| `niri` | `modules/desktop/niri.nix` | Niri compositor (nixos enable + HM settings) | fern |
+| `niri` | `modules/desktop/niri.nix` | Niri compositor (nixos enable + HM settings) | fern (also forwarded to users via host provides.to-users) |
 | `node-ts` | `modules/devtools/node-ts.nix` | Node.js, pnpm, Deno, CDK, nix-ld | fern |
 | `rust` | `modules/devtools/rust.nix` | Stable Rust, rust-analyzer, cargo tools, hardening | fern |
-| `secrets` | `modules/secrets.nix` | SOPS-nix, age key, SSH key decryption | moss |
+| `secrets` | `modules/secrets.nix` | SOPS-nix, age key, SSH key decryption | fern (via workstation role), moss (parked) |
 | `secrets-guard` | `modules/secrets-guard.nix` | git-secrets, trufflehog | fern, moss |
 | `teams` | `modules/desktop/teams.nix` | Microsoft Teams | fern |
 | `users` | `modules/users.nix` | User account, NetworkManager, SSH | fern, moss |
@@ -82,16 +82,27 @@ Aspects providing Home Manager user-level configuration.
 | `audio-tools` | `modules/cli/audio-tools.nix` | LSP audio plugins |
 | `bat` | `modules/cli/bat.nix` | Bat syntax highlighter, man pager |
 | `broot` | `modules/cli/broot.nix` | File explorer with Nushell integration |
+| `btop` | `modules/cli/btop.nix` | System monitor |
 | `claude-code` | `modules/cli/claude-code.nix` | Claude Code CLI package |
 | `crypt` | `modules/cli/crypt.nix` | Age encryption tool |
 | `delta` | `modules/cli/delta.nix` | Delta diff tool, Catppuccin Frappe theme |
+| `fd` | `modules/cli/fd.nix` | Fast file finder |
+| `fzf` | `modules/cli/fzf.nix` | Fuzzy finder |
 | `ghostty` | `modules/cli/ghostty.nix` | Ghostty terminal emulator |
 | `glow` | `modules/cli/glow.nix` | Markdown viewer |
 | `helix` | `modules/cli/helix.nix` | Helix editor, LSP, theme |
 | `hyfetch` | `modules/cli/hyfetch.nix` | System info display (fastfetch) |
+| `jq` | `modules/cli/jq.nix` | JSON processor |
+| `kakoune` | `modules/cli/kakoune.nix` | Kakoune editor |
+| `kitty` | `modules/cli/kitty.nix` | Kitty terminal (garden terminal stack) |
+| `lazygit` | `modules/cli/lazygit.nix` | Git TUI |
+| `nix-diff` | `modules/cli/nix-diff.nix` | Derivation diff tool |
 | `nix-tree` | `modules/cli/nix-tree.nix` | Nix dependency visualizer |
 | `prettier` | `modules/cli/prettier.nix` | Code formatter |
+| `rbw` | `modules/cli/rbw.nix` | Bitwarden CLI client (see [Password Manager](../security/password-manager.md)) |
+| `ripgrep` | `modules/cli/ripgrep.nix` | Fast grep |
 | `tree` | `modules/cli/tree.nix` | Directory tree viewer |
+| `yazi` | `modules/cli/yazi.nix` | Terminal file manager |
 
 ### Git suite
 
@@ -115,7 +126,8 @@ Aspects providing Home Manager user-level configuration.
 
 | Aspect | File | Description |
 |--------|------|-------------|
-| `hyprland` | `modules/desktop/hyprland.nix` | Hyprland compositor + sub-modules |
+| `hyprland` | `modules/desktop/hyprland.nix` | Hyprland compositor (fallback session) + sub-modules |
+| `bitwarden` | `modules/desktop/bitwarden.nix` | Bitwarden desktop app |
 | `chromium` | `modules/desktop/chromium.nix` | Ungoogled Chromium |
 | `gaming-hm` | `modules/desktop/gaming-hm.nix` | MangoHud, Lutris, ProtonUp |
 | `nyxt` | `modules/desktop/nyxt.nix` | Nyxt browser |

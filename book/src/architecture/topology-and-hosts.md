@@ -5,16 +5,24 @@
 
 ## The topology
 
-The entire host/user structure is declared in three lines:
+The entire host/user structure is declared in a few lines:
 
 ```nix
 # modules/hosts.nix
 { ... }:
 {
   den.hosts.x86_64-linux.fern.users.ada = {};
-  den.hosts.aarch64-linux.moss.users.ada = {};
+  # moss is parked (see below)
+  # den.hosts.aarch64-linux.moss.users.ada = {};
 }
 ```
+
+> **Moss is currently parked.** Its `hardware.nix` is still the installer
+> placeholder and several aspects pull x86_64-only packages (gnat13, ldtk,
+> renderdoc), so the config cannot evaluate on aarch64-linux. Its topology
+> line is commented out in `modules/hosts.nix`; the host aspect and docs
+> below describe its intended shape. Re-enable after generating the real
+> hardware.nix and platform-gating those packages.
 
 The path structure is `den.hosts.<system>.<hostname>.users.<username>`. Den uses
 this to:
@@ -27,7 +35,7 @@ this to:
 
 ## The two hosts
 
-| Property | fern | moss |
+| Property | fern | moss (parked) |
 |----------|------|------|
 | Architecture | x86_64-linux | aarch64-linux |
 | GPU | AMD (Mesa/AMDGPU) | Apple Silicon (Asahi) |
@@ -35,7 +43,7 @@ this to:
 | Gaming | Steam, Gamescope, GameMode | Not included |
 | Cloud tools | AWS, LocalStack | Not included |
 | Dev toolchains | Rust, C/C++, TypeScript | Not included |
-| Desktop | Hyprland + Fern Shell | Hyprland + Fern Shell |
+| Desktop | Niri (+ Hyprland fallback) + garden shell | Niri (+ Hyprland fallback) + garden shell |
 | Shells | Nushell, Starship, Zoxide | Nushell, Starship, Zoxide |
 | Git suite | Full suite | Full suite |
 

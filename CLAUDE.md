@@ -11,7 +11,9 @@ Configuration is expressed as **den aspects** composed onto hosts and users.
 Current machines:
 
 - **fern** — x86_64 desktop workstation (AMD, Niri/Hyprland, pro audio, dev)
-- **moss** — Apple Silicon laptop (Asahi)
+- **moss** — Apple Silicon laptop (Asahi) — parked: hardware.nix is still
+  the installer placeholder and some aspects pull x86_64-only packages;
+  see the comment in modules/hosts.nix
 
 Planned: homelab server, dedicated gaming machine. The `modules/roles/`
 layer exists so those become "hardware file + role + quirks".
