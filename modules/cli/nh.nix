@@ -2,7 +2,7 @@
 { den, ... }:
 {
   den.aspects.nh.nixos =
-    { lib, ... }:
+    { config, lib, ... }:
     {
       programs.nh = {
         enable = true;
@@ -10,8 +10,10 @@
         # upstream declares programs.nh.flake as `nullOr str` with an
         # OPTION default of null and never defines it, so nothing competes
         # at normal priority. Hosts where the checkout lives elsewhere
-        # just set programs.nh.flake plainly.
-        flake = lib.mkDefault "/home/ada/src/fern";
+        # just set programs.nh.flake plainly (mkDefault values are lazily
+        # discarded, so this default never evaluates on those hosts).
+        # Home dir is derived from the user account rather than hardcoded.
+        flake = lib.mkDefault "${config.users.users.ada.home}/src/fern";
         clean = {
           enable = true;
           dates = "weekly";
