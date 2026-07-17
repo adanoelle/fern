@@ -16,6 +16,10 @@
           flake-checker
           nix-output-monitor
           nvd
+          # secrets management (see book/src/security/sops-nix.md)
+          sops
+          ssh-to-age
+          age
         ];
       };
     };
