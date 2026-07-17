@@ -11,7 +11,14 @@
       "Bash(wc:*)",
       "Bash(git:*)",
       "Bash(true:*)",
-      "Bash(nixpkgs-fmt:*)"
+      "Bash(nixpkgs-fmt:*)",
+      "WebSearch",
+      "Bash(grep:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(nix hash:*)",
+      "Bash(nix develop:*)",
+      "Bash(nix build:*)",
+      "Bash(systemctl status:*)"
     ]
   }
 }
