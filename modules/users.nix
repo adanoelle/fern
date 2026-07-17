@@ -55,7 +55,16 @@
       programs.fish.enable = true;
 
       networking.networkmanager.enable = true;
-      services.openssh.enable = true;
+      # Key-only SSH fleet-wide: the workflow is entirely key-based, so
+      # never accept passwords on port 22. PermitRootLogin already
+      # defaults to "prohibit-password".
+      services.openssh = {
+        enable = true;
+        settings = {
+          PasswordAuthentication = false;
+          KbdInteractiveAuthentication = false;
+        };
+      };
     };
   };
 }
