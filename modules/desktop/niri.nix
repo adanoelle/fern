@@ -17,6 +17,9 @@ in
         # DDC/CI monitor brightness control (requires i2c-dev + i2c group)
         hardware.i2c.enable = true;
 
+        # Battery/power state on D-Bus for the garden bar (Phase E)
+        services.upower.enable = true;
+
         # XWayland support via xwayland-satellite + DDC/CI tool
         environment.systemPackages = with pkgs; [
           xwayland-satellite
@@ -237,20 +240,18 @@ in
                 "toggle"
               ];
 
-              # Brightness — DDC/CI via ddcutil (external monitor, no sysfs backlight)
+              # Brightness — DDC/CI via ddcutil (external monitor, no sysfs
+              # backlight). The IPC call first shows the garden OSD
+              # optimistically (ddcutil takes ~200ms and the poll is 3s).
               "XF86MonBrightnessUp".action.spawn = [
-                "ddcutil"
-                "setvcp"
-                "10"
-                "+"
-                "5"
+                "sh"
+                "-c"
+                "qs -c garden ipc call garden stepBrightnessOsd 5; exec ddcutil setvcp 10 + 5"
               ];
               "XF86MonBrightnessDown".action.spawn = [
-                "ddcutil"
-                "setvcp"
-                "10"
-                "-"
-                "5"
+                "sh"
+                "-c"
+                "qs -c garden ipc call garden stepBrightnessOsd -5; exec ddcutil setvcp 10 - 5"
               ];
 
               # Garden shell overlays
