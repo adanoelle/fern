@@ -18,7 +18,7 @@
       # --- Packages we rely on
       starship = pkgs.starship;
       zoxide = pkgs.zoxide;
-      delta = pkgs.gitAndTools.delta;
+      delta = pkgs.delta;
 
       # --- Where we'll store generated scripts
       starshipInit = "$HOME/.cache/starship/init.nu";

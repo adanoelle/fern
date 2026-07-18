@@ -33,7 +33,7 @@
         home.packages = with pkgs; [
           omnisharp-roslyn
           dotnet-sdk_8
-          nuget-to-nix
+          nuget-to-json
         ];
 
         programs.helix.languages = {

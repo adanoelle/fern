@@ -4,7 +4,7 @@
     nixos =
       { pkgs, ... }:
       let
-        python = pkgs.python312;
+        python = pkgs.python313;
       in
       {
         environment.systemPackages = with pkgs; [
@@ -22,8 +22,8 @@
           ruff
           black
           pyright
-          (pkgs.python312Packages.ipython)
-          (pkgs.python312Packages.jupyterlab)
+          (pkgs.python313Packages.ipython)
+          (pkgs.python313Packages.jupyterlab)
         ];
 
         programs.helix.languages = {

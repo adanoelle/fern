@@ -7,9 +7,10 @@
         environment.systemPackages = with pkgs; [
           nodejs_24
           pnpm
-          nodePackages.yarn
+          yarn
           deno
-          nodePackages.aws-cdk
+          # aws-cdk was removed from nixpkgs with the nodePackages set;
+          # install via `npm install -g aws-cdk` if needed.
           jq
           parallel
         ];
@@ -23,12 +24,11 @@
         home.packages = with pkgs; [
           eslint_d
           prettier
-          nodePackages.prettier
-          nodePackages.typescript
-          nodePackages.typescript-language-server
+          typescript
+          typescript-language-server
           tailwindcss
           deno
-          nodePackages.coc-jest
+          coc-jest
           playwright-test
         ];
 
