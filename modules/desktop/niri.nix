@@ -20,10 +20,13 @@ in
         # Battery/power state on D-Bus for the garden bar (Phase E)
         services.upower.enable = true;
 
-        # XWayland support via xwayland-satellite + DDC/CI tool
+        # XWayland support via xwayland-satellite + DDC/CI tool.
+        # quickshell lives here (not in greetd): the garden shell and its
+        # IPC binds below belong to the niri session.
         environment.systemPackages = with pkgs; [
           xwayland-satellite
           ddcutil
+          quickshell
         ];
 
         # Portal support for Niri
@@ -43,6 +46,10 @@ in
         config,
         ...
       }:
+      let
+        # Store path so binds survive quickshell not being on PATH
+        qs = "${pkgs.quickshell}/bin/qs";
+      in
       {
         programs.niri.settings = {
           # Built-in Print action target (default would resurrect ~/Pictures/Screenshots)
@@ -74,7 +81,7 @@ in
             # IPC binds below; without it those binds silently do nothing.
             {
               command = [
-                "qs"
+                qs
                 "-c"
                 "garden"
               ];
@@ -246,49 +253,49 @@ in
               "XF86MonBrightnessUp".action.spawn = [
                 "sh"
                 "-c"
-                "qs -c garden ipc call garden stepBrightnessOsd 5; exec ddcutil setvcp 10 + 5"
+                "${qs} -c garden ipc call garden stepBrightnessOsd 5; exec ddcutil setvcp 10 + 5"
               ];
               "XF86MonBrightnessDown".action.spawn = [
                 "sh"
                 "-c"
-                "qs -c garden ipc call garden stepBrightnessOsd -5; exec ddcutil setvcp 10 - 5"
+                "${qs} -c garden ipc call garden stepBrightnessOsd -5; exec ddcutil setvcp 10 - 5"
               ];
 
               # Garden shell overlays
               "${mod}+Slash".action.spawn = [
                 "sh"
                 "-c"
-                "qs -c garden ipc call garden toggleLauncher"
+                "${qs} -c garden ipc call garden toggleLauncher"
               ];
               "${mod}+Tab".action.spawn = [
                 "sh"
                 "-c"
-                "qs -c garden ipc call garden toggleSwitcher"
+                "${qs} -c garden ipc call garden toggleSwitcher"
               ];
               "${mod}+Comma".action.spawn = [
                 "sh"
                 "-c"
-                "qs -c garden ipc call garden toggleSettings"
+                "${qs} -c garden ipc call garden toggleSettings"
               ];
               "${mod}+Shift+N".action.spawn = [
                 "sh"
                 "-c"
-                "qs -c garden ipc call garden toggleNotifications"
+                "${qs} -c garden ipc call garden toggleNotifications"
               ];
               "${mod}+Shift+M".action.spawn = [
                 "sh"
                 "-c"
-                "qs -c garden ipc call garden toggleNotificationCenter"
+                "${qs} -c garden ipc call garden toggleNotificationCenter"
               ];
               "${mod}+Escape".action.spawn = [
                 "sh"
                 "-c"
-                "qs -c garden ipc call garden togglePowerMenu"
+                "${qs} -c garden ipc call garden togglePowerMenu"
               ];
               "${mod}+Alt+L".action.spawn = [
                 "sh"
                 "-c"
-                "qs -c garden ipc call garden lock"
+                "${qs} -c garden ipc call garden lock"
               ];
 
               # Session
@@ -387,15 +394,10 @@ in
           timeouts = [
             {
               timeout = 600;
-              command = "${pkgs.quickshell}/bin/qs -c garden ipc call garden lock";
+              command = "${qs} -c garden ipc call garden lock";
             }
           ];
-          events = [
-            {
-              event = "before-sleep";
-              command = "${pkgs.quickshell}/bin/qs -c garden ipc call garden lock";
-            }
-          ];
+          events."before-sleep" = "${qs} -c garden ipc call garden lock";
         };
       };
   };

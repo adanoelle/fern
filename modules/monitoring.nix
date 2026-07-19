@@ -34,7 +34,8 @@
         stress-ng
       ];
 
-      boot.kernelModules = [ "nct6775" ];
+      # Sensor chip kernel modules are per-machine facts — hosts load
+      # their own (fern: nct6775 in host-fern.nix).
 
       systemd.services.sensor-logger = {
         description = "Log hardware sensors";

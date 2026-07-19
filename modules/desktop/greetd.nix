@@ -51,24 +51,18 @@
       };
 
       services.seatd.enable = true;
-      programs.hyprland.enable = true;
 
+      # Compositors are NOT enabled here: hosts opt in themselves (see
+      # host-fern.nix) and the session list above follows what they chose.
       xdg.portal = {
         enable = true;
-        extraPortals = with pkgs; [
-          xdg-desktop-portal-hyprland
-          xdg-desktop-portal-gtk
-        ];
+        extraPortals = [
+          pkgs.xdg-desktop-portal-gtk
+        ]
+        ++ lib.optional config.programs.hyprland.enable pkgs.xdg-desktop-portal-hyprland;
       };
 
       security.polkit.enable = true;
-
-      environment.systemPackages = with pkgs; [
-        hyprland
-        sway
-        wl-clipboard
-        quickshell
-      ];
 
       # "video"/"input"/"seat" group membership is granted centrally in
       # modules/users.nix, conditional on services.greetd.enable.

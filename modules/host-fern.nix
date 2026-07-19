@@ -49,6 +49,10 @@
         # AMD IOMMU passthrough — prevents DMA interference with USB audio
         boot.kernelParams = [ "iommu=pt" ];
 
+        # Super-I/O sensor chip on fern's motherboard (consumed by the
+        # monitoring aspect's lm_sensors; per-machine fact lives here)
+        boot.kernelModules = [ "nct6775" ];
+
         # USB audio device rules (fern-specific hardware)
         # NOTE: Topping DAC ID (152a:8750) is unverified — check with lsusb when connected
         services.udev.extraRules = ''
