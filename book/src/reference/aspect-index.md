@@ -37,7 +37,7 @@ Host role bundles — compose these instead of long per-host include lists.
 | Aspect | File | Includes |
 |--------|------|----------|
 | `cli` | `modules/cli/bundle.nix` | bat, broot, claude-code, crypt, delta, ghostty, glow, helix, hyfetch, nix-diff, nix-tree, prettier, tree, audio-tools, kitty, kakoune, yazi, lazygit, btop, fzf, fd, ripgrep, rbw, jq |
-| `git-suite` | `modules/git/bundle.nix` | git-core, git-aliases, git-identities, git-github, git-tools, git-safety, git-help, git-claude-code, git-claude-enhanced, git-worktree, git-worktree-enhanced, git-helix, git-prompts |
+| `git-suite` | `modules/git/bundle.nix` | git-core, git-aliases, git-identities, git-github, git-tools, git-safety, git-help |
 | `desktop-apps` | `modules/desktop/bundle.nix` | hyprland, chromium, obs, screenshot, gaming-hm, daw, bitwarden (niri is deliberately NOT here — hosts forward it via provides.to-users) |
 | `devtools` | `modules/devtools/bundle.nix` | docker, rust, node-ts, c-cpp, python, csharp, ada-lang, localstack, zig, gamedev |
 | `shells` | `modules/shells/bundle.nix` | nushell, starship, zoxide, devenv |
@@ -115,12 +115,6 @@ Aspects providing Home Manager user-level configuration.
 | `git-tools` | `modules/git/tools.nix` | Lazygit, tig, git-absorb, git-lfs |
 | `git-safety` | `modules/git/safety.nix` | Protected branches, hooks |
 | `git-help` | `modules/git/help.nix` | tldr, quick-reference sheet |
-| `git-worktree` | `modules/git/worktree.nix` | `wt` helper script |
-| `git-worktree-enhanced` | `modules/git/worktree-enhanced.nix` | Dashboard, templates, parallel |
-| `git-helix` | `modules/git/helix.nix` | Difftastic, editor aliases |
-| `git-prompts` | `modules/git/prompts.nix` | Shell prompt git indicators |
-| `git-claude-code` | `modules/git/claude-code.nix` | Claude safety wrapper |
-| `git-claude-enhanced` | `modules/git/claude-enhanced.nix` | Claude session manager |
 
 ### Desktop
 

@@ -50,9 +50,7 @@
 - [Design & Orchestrator](git/design-and-orchestrator.md)
 - [Core & Aliases](git/core-and-aliases.md)
 - [Identity Management](git/identity-management.md)
-- [Worktrees](git/worktrees.md)
 - [Safety & Secrets](git/safety-and-secrets.md)
-- [Claude Code Integration](git/claude-code-integration.md)
 - [GitHub & Tools](git/github-and-tools.md)
 
 ---

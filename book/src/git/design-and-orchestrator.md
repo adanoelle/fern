@@ -45,12 +45,6 @@ den.aspects.git-suite = {
     den.aspects.git-tools
     den.aspects.git-safety
     den.aspects.git-help
-    den.aspects.git-claude-code
-    den.aspects.git-claude-enhanced
-    den.aspects.git-worktree
-    den.aspects.git-worktree-enhanced
-    den.aspects.git-helix
-    den.aspects.git-prompts
   ];
 
   homeManager = { config, lib, ... }:
@@ -65,7 +59,6 @@ den.aspects.git-suite = {
       enableTools = mkOption { type = types.bool; default = true; };
       enableSafety = mkOption { type = types.bool; default = true; };
       enableHelp = mkOption { type = types.bool; default = true; };
-      # ... more toggles
     };
 
     config = mkIf cfg.enable {
@@ -81,7 +74,6 @@ den.aspects.git-suite = {
       programs.gitTools.enable = cfg.enableTools;
       programs.gitSafety.enable = cfg.enableSafety;
       programs.gitHelp.enable = cfg.enableHelp;
-      # ...
     };
   };
 };
@@ -91,8 +83,8 @@ den.aspects.git-suite = {
 
 1. **Always-on features**: `gitCore`, `gitAliases`, and `gitIdentities` enable
    unconditionally when the suite is enabled
-2. **Optional features**: GitHub, tools, safety, help, worktrees, Claude Code
-   each have independent toggles
+2. **Optional features**: GitHub, tools, safety, and help each have
+   independent toggles
 3. **Shared config**: `userName`, `userEmail`, and `editor` are set once and
    forwarded to `gitCore`
 
@@ -125,12 +117,6 @@ programs.gitSuite = {
 | `git-tools` | Lazygit, tig, git-absorb, git-filter-repo, git-lfs | `enableTools` |
 | `git-safety` | Protected branch guards, pre-push hooks, safe operations | `enableSafety` |
 | `git-help` | tldr integration, quick-reference sheet | `enableHelp` |
-| `git-worktree` | `wt` helper script for worktree management | `enableWorktree` |
-| `git-worktree-enhanced` | Dashboard, parallel ops, templates | `enableWorktreeEnhanced` |
-| `git-helix` | Difftastic diff tool, editor aliases for modified files | `enableHelix` |
-| `git-prompts` | Shell prompt git status indicators | `enablePrompts` |
-| `git-claude-code` | `claude` wrapper with safety checks and snapshots | `enableClaudeCode` |
-| `git-claude-enhanced` | `claude-wt` session manager, monitoring | `enableClaudeEnhanced` |
 
 ## Key files
 
