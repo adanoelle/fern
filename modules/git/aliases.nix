@@ -112,7 +112,8 @@
           root = "rev-parse --show-toplevel";
           current = "rev-parse --abbrev-ref HEAD";
 
-        } // cfg.custom; # Merge in any custom aliases
+        }
+        // cfg.custom; # Merge in any custom aliases
 
         # Shell aliases for convenience (if enabled)
         home.shellAliases = mkIf cfg.enableShellAliases {

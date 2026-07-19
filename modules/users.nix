@@ -36,22 +36,21 @@
                 openssh.authorizedKeys.keys = [
                   "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILFcuaT78TweAsGP6nqUmqIV2sx7mF1Jt0mqtMKV+4Ft ada@fern github"
                 ];
-                extraGroups =
-                  [
-                    "wheel"
-                    "networkmanager"
-                  ]
-                  # DDC/CI brightness control; hardware.i2c is enabled by
-                  # the niri aspect (modules/desktop/niri.nix).
-                  ++ lib.optionals config.hardware.i2c.enable [ "i2c" ]
-                  ++ lib.optionals config.virtualisation.docker.enable [ "docker" ]
-                  ++ lib.optionals config.services.pipewire.enable [ "audio" ]
-                  ++ lib.optionals config.programs.gamemode.enable [ "gamemode" ]
-                  ++ lib.optionals config.services.greetd.enable [
-                    "video"
-                    "input"
-                    "seat"
-                  ];
+                extraGroups = [
+                  "wheel"
+                  "networkmanager"
+                ]
+                # DDC/CI brightness control; hardware.i2c is enabled by
+                # the niri aspect (modules/desktop/niri.nix).
+                ++ lib.optionals config.hardware.i2c.enable [ "i2c" ]
+                ++ lib.optionals config.virtualisation.docker.enable [ "docker" ]
+                ++ lib.optionals config.services.pipewire.enable [ "audio" ]
+                ++ lib.optionals config.programs.gamemode.enable [ "gamemode" ]
+                ++ lib.optionals config.services.greetd.enable [
+                  "video"
+                  "input"
+                  "seat"
+                ];
               });
             };
         }

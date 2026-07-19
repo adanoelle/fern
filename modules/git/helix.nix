@@ -149,24 +149,23 @@
         programs.zsh.initExtra = programs.bash.initExtra;
 
         # Shell aliases for quick access
-        home.shellAliases =
-          {
-            # Quick Helix + Git commands
-            hxm = "${cfg.editor} $(git ls-files -m 2>/dev/null)"; # Modified files
-            hxc = "${cfg.editor} $(git diff --name-only --diff-filter=U 2>/dev/null)"; # Conflicts
-            hxs = "${cfg.editor} $(git diff --cached --name-only 2>/dev/null)"; # Staged files
-            hxu = "${cfg.editor} $(git ls-files --others --exclude-standard 2>/dev/null)"; # Untracked
+        home.shellAliases = {
+          # Quick Helix + Git commands
+          hxm = "${cfg.editor} $(git ls-files -m 2>/dev/null)"; # Modified files
+          hxc = "${cfg.editor} $(git diff --name-only --diff-filter=U 2>/dev/null)"; # Conflicts
+          hxs = "${cfg.editor} $(git diff --cached --name-only 2>/dev/null)"; # Staged files
+          hxu = "${cfg.editor} $(git ls-files --others --exclude-standard 2>/dev/null)"; # Untracked
 
-            # Git with Helix
-            geh = "git edit-modified";
-            gec = "git edit-conflicts";
+          # Git with Helix
+          geh = "git edit-modified";
+          gec = "git edit-conflicts";
 
-            # Difftastic shortcuts
-          }
-          // optionalAttrs cfg.enableDifftastic {
-            gdt = "git difft";
-            gdts = "git difft --staged";
-          };
+          # Difftastic shortcuts
+        }
+        // optionalAttrs cfg.enableDifftastic {
+          gdt = "git difft";
+          gdts = "git difft --staged";
+        };
 
         # Create Helix-specific git config
         home.file.".config/helix/git-integration.toml" = {

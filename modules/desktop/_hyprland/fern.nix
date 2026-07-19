@@ -17,7 +17,8 @@ lib.mkIf (cfg.enable && cfg.fern.enable) {
     fernPkgs.fern-theme
     fernPkgs.fernctl
     fernPkgs.quickshell
-  ] ++ lib.optionals cfg.fern.obs.enable [ fernPkgs.fern-obs ];
+  ]
+  ++ lib.optionals cfg.fern.obs.enable [ fernPkgs.fern-obs ];
 
   # Symlink QML to quickshell config location
   xdg.configFile."quickshell/fern".source = "${fernPkgs.fern-shell}/share/fern";
