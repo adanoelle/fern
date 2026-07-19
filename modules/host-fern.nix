@@ -11,6 +11,7 @@
       den.aspects.workstation
       den.aspects.dev-machine
       den.aspects.monitoring
+      den.aspects.gaming
       den.aspects.niri
       den.aspects.lmstudio
       den.aspects.teams

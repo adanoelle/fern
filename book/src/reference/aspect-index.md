@@ -56,7 +56,7 @@ Aspects providing NixOS system-level configuration.
 | `core` | `modules/core.nix` | Nix settings, overlays, fleet defaults (trusted-users, nix-ld, timezone via mkDefault) | fern, moss |
 | `docker` | `modules/devtools/docker.nix` | Docker Engine, BuildKit, Compose, utilities | fern, moss |
 | `fonts` | `modules/fonts.nix` | Nerd Fonts, fontconfig | fern |
-| `gaming` | `modules/gaming.nix` | Steam, Gamescope, GameMode, controllers | -- |
+| `gaming` | `modules/gaming.nix` | Steam, Gamescope, GameMode, controllers | fern |
 | `graphics-asahi` | `modules/asahi/graphics.nix` | Asahi experimental GPU driver | moss |
 | `greetd` | `modules/desktop/greetd.nix` | greetd, tuigreet (sessions offered per enabled compositor), seatd, XDG portals, Polkit | fern, moss |
 | `lmstudio` | `modules/desktop/lmstudio.nix` | LM Studio AppImage wrapper | fern |

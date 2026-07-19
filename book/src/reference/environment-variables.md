@@ -46,17 +46,6 @@ Set by `modules/devtools/gamedev.nix`:
 | `CMAKE_PREFIX_PATH` | Paths to SDL2, ImGui, Tracy, etc. | CMake package discovery |
 | `PKG_CONFIG_PATH`   | Paths to game library `.pc` files | pkg-config discovery    |
 
-## NVIDIA / Graphics
-
-Set by `modules/graphics.nix`:
-
-| Variable                    | Value    | Purpose                              |
-| --------------------------- | -------- | ------------------------------------ |
-| `__GL_GSYNC_ALLOWED`        | `1`      | Enable GSync/VRR                     |
-| `__GL_VRR_ALLOWED`          | `1`      | Enable variable refresh rate         |
-| `WLR_NO_HARDWARE_CURSORS`   | `1`      | Software cursors (NVIDIA workaround) |
-| `__GLX_VENDOR_LIBRARY_NAME` | `nvidia` | Force NVIDIA GLX provider            |
-
 ## Wayland / Desktop
 
 Set by `modules/desktop/chromium.nix`:

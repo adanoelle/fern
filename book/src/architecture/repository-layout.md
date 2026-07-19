@@ -25,7 +25,6 @@ fern/
 │   ├── boot.nix           # systemd-boot (UEFI x86 default)
 │   ├── users.nix          # User account, NetworkManager, SSH
 │   ├── audio.nix          # PipeWire, low-latency, Audient iD24
-│   ├── graphics.nix       # NVIDIA modesetting, VRR, Wayland
 │   ├── fonts.nix          # Nerd Fonts, fontconfig
 │   ├── gaming.nix         # Steam, Gamescope, GameMode
 │   ├── secrets.nix        # SOPS-nix, age keys
