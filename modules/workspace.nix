@@ -14,6 +14,9 @@ _: {
       xdg.userDirs = {
         enable = true; # was false — the old block was inert
         createDirectories = true;
+        # Pinned: the default flips to false at stateVersion 26.05; keep
+        # XDG_*_DIR in the session so tools land files in the taxonomy.
+        setSessionVariables = true;
         download = "${home}/inbox";
         documents = "${home}/docs";
         pictures = "${home}/media/pictures";

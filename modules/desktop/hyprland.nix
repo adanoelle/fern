@@ -207,6 +207,9 @@ _: {
 
         wayland.windowManager.hyprland = {
           enable = true;
+          # Pinned: the default flips to "lua" at stateVersion 26.05; this
+          # config is written as hyprlang settings.
+          configType = "hyprlang";
           settings = {
             exec-once = [
               "${pkgs.dbus}/bin/dbus-update-activation-environment --systemd DISPLAY XAUTHORITY WAYLAND_DISPLAY HYPRLAND_INSTANCE_SIGNATURE XDG_CURRENT_DESKTOP"

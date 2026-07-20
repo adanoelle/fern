@@ -4,6 +4,9 @@ _: {
     programs.yazi = {
       enable = true;
       enableFishIntegration = true;
+      # Pinned: the default flips to "y" at stateVersion 26.05; keep the
+      # muscle-memory name explicit.
+      shellWrapperName = "yy";
 
       settings = {
         manager = {
