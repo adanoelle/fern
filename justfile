@@ -42,7 +42,7 @@ gc:
 
 # Format all Nix files
 fmt:
-    find . -name '*.nix' -not -path './.direnv/*' -not -path './result/*' | xargs nixfmt
+    find . -name '*.nix' -not -path './.direnv/*' -not -path './result/*' -not -path './.claude/*' | xargs nixfmt
 
 # Run flake check
 check:
@@ -55,9 +55,9 @@ lint: fmt check statix deadnix
 statix:
     statix check
 
-# Check for dead Nix code
+# Check for dead Nix code (hardware.nix files are generated — never hand-edited)
 deadnix:
-    deadnix .
+    deadnix . --exclude hosts/fern/hardware.nix hosts/moss/hardware.nix
 
 # Check flake.lock health
 flake-health:

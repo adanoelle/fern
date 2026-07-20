@@ -1,6 +1,5 @@
 # modules/fonts.nix — system fonts (garden typography)
-{ den, ... }:
-{
+_: {
   den.aspects.fonts.nixos =
     { pkgs, ... }:
     {

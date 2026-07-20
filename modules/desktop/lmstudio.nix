@@ -1,5 +1,4 @@
-{ den, ... }:
-{
+_: {
   den.aspects.lmstudio.nixos =
     { lib, pkgs, ... }:
     let

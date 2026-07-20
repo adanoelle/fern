@@ -1,6 +1,5 @@
 # modules/secrets-guard.nix — git-secrets and trufflehog
-{ den, ... }:
-{
+_: {
   den.aspects.secrets-guard.nixos =
     { pkgs, ... }:
     {

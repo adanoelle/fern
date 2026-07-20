@@ -2,7 +2,7 @@
 #
 # Everything here uses mkDefault where a host could reasonably want to
 # override (a host in another timezone just sets time.timeZone).
-{ den, inputs, ... }:
+{ inputs, ... }:
 {
   den.aspects.core.nixos =
     { lib, ... }:

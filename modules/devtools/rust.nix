@@ -1,5 +1,4 @@
-{ den, ... }:
-{
+_: {
   den.aspects.rust.nixos =
     { lib, pkgs, ... }:
     let
@@ -17,16 +16,20 @@
       ];
     in
     {
-      environment.systemPackages = [
-        stable
-        clippy
-        fmt
-        pkgs.rust-analyzer
-        pkgs.cargo-audit
-        pkgs.cargo-deny
-      ];
+      environment = {
+        systemPackages = [
+          stable
+          clippy
+          fmt
+          pkgs.rust-analyzer
+          pkgs.cargo-audit
+          pkgs.cargo-deny
+        ];
 
-      environment.variables.RUSTFLAGS = lib.strings.concatStringsSep " " commonFlags;
-      environment.variables.RUST_SRC_PATH = "${stable}/lib/rustlib/src/rust/library";
+        variables = {
+          RUSTFLAGS = lib.strings.concatStringsSep " " commonFlags;
+          RUST_SRC_PATH = "${stable}/lib/rustlib/src/rust/library";
+        };
+      };
     };
 }

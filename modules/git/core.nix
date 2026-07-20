@@ -1,6 +1,5 @@
 # modules/git/core.nix — core git configuration (script-free)
-{ den, ... }:
-{
+_: {
   den.aspects.git-core.homeManager =
     {
       config,
@@ -87,10 +86,10 @@
 
         programs.git = {
           enable = true;
-          package = cfg.package;
+          inherit (cfg) package;
 
-          userName = cfg.userName;
-          userEmail = cfg.userEmail;
+          inherit (cfg) userName;
+          inherit (cfg) userEmail;
 
           delta = mkIf cfg.delta.enable {
             enable = true;
@@ -103,7 +102,7 @@
           extraConfig = {
             init.defaultBranch = cfg.defaultBranch;
             core = {
-              editor = cfg.editor;
+              inherit (cfg) editor;
               autocrlf = "input";
               whitespace = "trailing-space,space-before-tab";
 

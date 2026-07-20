@@ -1,5 +1,4 @@
-{ den, ... }:
-{
+_: {
   den.aspects.node-ts = {
     nixos =
       { pkgs, ... }:
@@ -32,42 +31,46 @@
           playwright-test
         ];
 
-        programs.helix = {
-          enable = true;
-          languages = {
-            language-server.tsls = {
-              command = "typescript-language-server";
-              args = [ "--stdio" ];
+        programs = {
+          helix = {
+            enable = true;
+            languages = {
+              language-server.tsls = {
+                command = "typescript-language-server";
+                args = [ "--stdio" ];
+              };
+              language = [
+                {
+                  name = "typescript";
+                  language-servers = [ "tsls" ];
+                  formatter = {
+                    command = "prettier";
+                    args = [
+                      "--stdin-filepath"
+                      "file.ts"
+                    ];
+                  };
+                }
+                {
+                  name = "javascript";
+                  language-servers = [ "tsls" ];
+                  formatter = {
+                    command = "prettier";
+                    args = [
+                      "--stdin-filepath"
+                      "file.js"
+                    ];
+                  };
+                }
+              ];
             };
-            language = [
-              {
-                name = "typescript";
-                language-servers = [ "tsls" ];
-                formatter = {
-                  command = "prettier";
-                  args = [
-                    "--stdin-filepath"
-                    "file.ts"
-                  ];
-                };
-              }
-              {
-                name = "javascript";
-                language-servers = [ "tsls" ];
-                formatter = {
-                  command = "prettier";
-                  args = [
-                    "--stdin-filepath"
-                    "file.js"
-                  ];
-                };
-              }
-            ];
+          };
+
+          direnv = {
+            enable = true;
+            nix-direnv.enable = true;
           };
         };
-
-        programs.direnv.enable = true;
-        programs.direnv.nix-direnv.enable = true;
       };
   };
 }

@@ -1,5 +1,4 @@
-{ den, ... }:
-{
+_: {
   den.aspects.broot.homeManager =
     { pkgs, ... }:
     {

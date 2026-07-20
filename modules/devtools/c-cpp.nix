@@ -1,5 +1,4 @@
-{ den, ... }:
-{
+_: {
   den.aspects.c-cpp = {
     nixos =
       { lib, pkgs, ... }:

@@ -21,35 +21,37 @@
       {
         home.packages = [ pkgs.home-manager ];
 
-        programs.gitSuite = {
-          enable = true;
-          userName = "adanoelle";
-          userEmail = "adanoelleyoung@gmail.com";
-          editor = "hx";
-          enableGithub = true;
-          enableTools = true;
-          enableSafety = true;
-          enableHelp = true;
-        };
-
-        programs.gitIdentities.identities = {
-          personal = {
-            name = "adanoelle";
-            email = "adanoelleyoung@gmail.com";
-            # No trailing slash: identities.nix appends one when building
-            # the includeIf gitdir condition. ~/src is all personal today;
-            # a future work identity adds "…/src/work" and wins as the
-            # later, more-specific includeIf.
-            directory = "${config.home.homeDirectory}/src";
-            signingKey = "/home/ada/.ssh/github";
+        programs = {
+          gitSuite = {
+            enable = true;
+            userName = "adanoelle";
+            userEmail = "adanoelleyoung@gmail.com";
+            editor = "hx";
+            enableGithub = true;
+            enableTools = true;
+            enableSafety = true;
+            enableHelp = true;
           };
-        };
 
-        programs.ssh = {
-          enable = true;
-          addKeysToAgent = "yes";
-          matchBlocks."github.com" = {
-            identityFile = "~/.ssh/github";
+          gitIdentities.identities = {
+            personal = {
+              name = "adanoelle";
+              email = "adanoelleyoung@gmail.com";
+              # No trailing slash: identities.nix appends one when building
+              # the includeIf gitdir condition. ~/src is all personal today;
+              # a future work identity adds "…/src/work" and wins as the
+              # later, more-specific includeIf.
+              directory = "${config.home.homeDirectory}/src";
+              signingKey = "/home/ada/.ssh/github";
+            };
+          };
+
+          ssh = {
+            enable = true;
+            addKeysToAgent = "yes";
+            matchBlocks."github.com" = {
+              identityFile = "~/.ssh/github";
+            };
           };
         };
 

@@ -95,9 +95,7 @@ journalctl -u greetd -b
 
 Common issues:
 
-- NVIDIA driver not loaded: check `nvidia-smi`
 - Wrong Wayland session selected in greetd
-- Missing environment variables (check `graphics.nix`)
 
 ### Audio not working
 

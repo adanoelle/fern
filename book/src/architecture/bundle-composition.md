@@ -43,7 +43,7 @@ new CLI tool means creating the aspect file and adding one line to this bundle.
 | `cli` | `modules/cli/bundle.nix` | bat, broot, claude-code, crypt, delta, ghostty, glow, helix, hyfetch, nix-tree, prettier, tree, audio-tools |
 | `shells` | `modules/shells/bundle.nix` | nushell, starship, zoxide, devenv |
 | `desktop-apps` | `modules/desktop/bundle.nix` | hyprland, chromium, obs, screenshot, gaming-hm |
-| `devtools` | `modules/devtools/bundle.nix` | docker, rust, node-ts, c-cpp, python, csharp, ada-lang, localstack, zig, gamedev |
+| `devtools` | `modules/devtools/bundle.nix` | docker, rust, node-ts, c-cpp, python, csharp, ada-lang, zig, gamedev |
 
 ## Orchestrator bundles
 
@@ -68,12 +68,6 @@ and maps them to sub-aspect enable flags:
       den.aspects.git-tools
       den.aspects.git-safety
       den.aspects.git-help
-      den.aspects.git-claude-code
-      den.aspects.git-claude-enhanced
-      den.aspects.git-worktree
-      den.aspects.git-worktree-enhanced
-      den.aspects.git-helix
-      den.aspects.git-prompts
     ];
 
     homeManager = { config, lib, ... }:
@@ -89,12 +83,6 @@ and maps them to sub-aspect enable flags:
         enableTools = mkOption { type = types.bool; default = true; };
         enableSafety = mkOption { type = types.bool; default = true; };
         enableHelp = mkOption { type = types.bool; default = true; };
-        enableWorktree = mkOption { type = types.bool; default = false; };
-        enableWorktreeEnhanced = mkOption { type = types.bool; default = false; };
-        enableHelix = mkOption { type = types.bool; default = false; };
-        enablePrompts = mkOption { type = types.bool; default = false; };
-        enableClaudeCode = mkOption { type = types.bool; default = false; };
-        enableClaudeEnhanced = mkOption { type = types.bool; default = false; };
       };
 
       config = mkIf cfg.enable {
@@ -110,12 +98,6 @@ and maps them to sub-aspect enable flags:
         programs.gitTools.enable = cfg.enableTools;
         programs.gitSafety.enable = cfg.enableSafety;
         programs.gitHelp.enable = cfg.enableHelp;
-        programs.gitWorktree.enable = cfg.enableWorktree;
-        programs.gitWorktreeEnhanced.enable = cfg.enableWorktreeEnhanced;
-        programs.gitHelix.enable = cfg.enableHelix;
-        programs.gitPrompts.enable = cfg.enablePrompts;
-        programs.gitClaudeCode.enable = cfg.enableClaudeCode;
-        programs.gitClaudeEnhanced.enable = cfg.enableClaudeEnhanced;
         programs.gitGithub.editor = mkDefault cfg.editor;
       };
     };

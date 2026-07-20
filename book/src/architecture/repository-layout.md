@@ -19,13 +19,12 @@ fern/
 │   ├── user-ada-dev.nix   # Dev-toolchain layer (forwarded per host)
 │   ├── roles/             # Host role bundles
 │   │   ├── workstation.nix   # Graphical machine base
-│   │   ├── dev-machine.nix   # Host-side dev toolchains
+│   │   ├── dev-machine.nix   # Host-side dev services
 │   │   └── server.nix        # Headless skeleton (homelab landing zone)
 │   ├── core.nix           # Nix settings, overlays, fleet defaults
 │   ├── boot.nix           # systemd-boot (UEFI x86 default)
 │   ├── users.nix          # User account, NetworkManager, SSH
 │   ├── audio.nix          # PipeWire, low-latency, Audient iD24
-│   ├── graphics.nix       # NVIDIA modesetting, VRR, Wayland
 │   ├── fonts.nix          # Nerd Fonts, fontconfig
 │   ├── gaming.nix         # Steam, Gamescope, GameMode
 │   ├── secrets.nix        # SOPS-nix, age keys

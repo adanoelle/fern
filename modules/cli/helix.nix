@@ -1,5 +1,4 @@
-{ den, ... }:
-{
+_: {
   den.aspects.helix.homeManager =
     { pkgs, ... }:
     {
@@ -14,8 +13,10 @@
             true-color = true;
             line-number = "relative";
             mouse = false;
-            cursor-shape.insert = "bar";
-            cursor-shape.normal = "underline";
+            cursor-shape = {
+              insert = "bar";
+              normal = "underline";
+            };
             color-modes = true;
             cursorline = true;
             auto-save = true;
@@ -23,9 +24,11 @@
             lsp.display-messages = false;
           };
           keys.normal = {
-            space.space = "file_picker";
-            space.w = ":w";
-            space.q = ":q";
+            space = {
+              space = "file_picker";
+              w = ":w";
+              q = ":q";
+            };
             esc = [
               "collapse_selection"
               "keep_primary_selection"

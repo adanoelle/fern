@@ -34,20 +34,6 @@ The aliases aspect defines safe alternatives to dangerous Git commands:
 
 There is no alias for `push --force` -- if you need it, you must type it out.
 
-## Snapshot system
-
-The Claude Code integration (see [Claude Code Integration](claude-code-integration.md))
-creates `claude-snapshot/*` tags before each AI-assisted session. These provide
-a rollback point if a session goes wrong:
-
-```bash
-# List all snapshots
-claude-helpers snapshots
-
-# Revert to the most recent snapshot
-claude-helpers undo
-```
-
 ## Secret scanning
 
 Separate from the Git safety aspect, the `secrets-guard` aspect

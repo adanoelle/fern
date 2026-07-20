@@ -29,7 +29,7 @@ Host role bundles — compose these instead of long per-host include lists.
 | Aspect | File | Includes |
 |--------|------|----------|
 | `workstation` | `modules/roles/workstation.nix` | core, nh, users, secrets-guard, secrets, greetd, fonts, audio, docker |
-| `dev-machine` | `modules/roles/dev-machine.nix` | c-cpp, localstack, rust, node-ts, aws-cli |
+| `dev-machine` | `modules/roles/dev-machine.nix` | localstack, aws-cli |
 | `server` | `modules/roles/server.nix` | core, nh, users, secrets-guard (skeleton — hardening TODOs in file) |
 
 ## Bundle aspects
@@ -37,9 +37,9 @@ Host role bundles — compose these instead of long per-host include lists.
 | Aspect | File | Includes |
 |--------|------|----------|
 | `cli` | `modules/cli/bundle.nix` | bat, broot, claude-code, crypt, delta, ghostty, glow, helix, hyfetch, nix-diff, nix-tree, prettier, tree, audio-tools, kitty, kakoune, yazi, lazygit, btop, fzf, fd, ripgrep, rbw, jq |
-| `git-suite` | `modules/git/bundle.nix` | git-core, git-aliases, git-identities, git-github, git-tools, git-safety, git-help, git-claude-code, git-claude-enhanced, git-worktree, git-worktree-enhanced, git-helix, git-prompts |
+| `git-suite` | `modules/git/bundle.nix` | git-core, git-aliases, git-identities, git-github, git-tools, git-safety, git-help |
 | `desktop-apps` | `modules/desktop/bundle.nix` | hyprland, chromium, obs, screenshot, gaming-hm, daw, bitwarden (niri is deliberately NOT here — hosts forward it via provides.to-users) |
-| `devtools` | `modules/devtools/bundle.nix` | docker, rust, node-ts, c-cpp, python, csharp, ada-lang, localstack, zig, gamedev |
+| `devtools` | `modules/devtools/bundle.nix` | docker, rust, node-ts, c-cpp, python, csharp, ada-lang, zig, gamedev |
 | `shells` | `modules/shells/bundle.nix` | nushell, starship, zoxide, devenv |
 
 ## System aspects (nixos)
@@ -56,7 +56,7 @@ Aspects providing NixOS system-level configuration.
 | `core` | `modules/core.nix` | Nix settings, overlays, fleet defaults (trusted-users, nix-ld, timezone via mkDefault) | fern, moss |
 | `docker` | `modules/devtools/docker.nix` | Docker Engine, BuildKit, Compose, utilities | fern, moss |
 | `fonts` | `modules/fonts.nix` | Nerd Fonts, fontconfig | fern |
-| `gaming` | `modules/gaming.nix` | Steam, Gamescope, GameMode, controllers | -- |
+| `gaming` | `modules/gaming.nix` | Steam, Gamescope, GameMode, controllers | fern |
 | `graphics-asahi` | `modules/asahi/graphics.nix` | Asahi experimental GPU driver | moss |
 | `greetd` | `modules/desktop/greetd.nix` | greetd, tuigreet (sessions offered per enabled compositor), seatd, XDG portals, Polkit | fern, moss |
 | `lmstudio` | `modules/desktop/lmstudio.nix` | LM Studio AppImage wrapper | fern |
@@ -115,12 +115,6 @@ Aspects providing Home Manager user-level configuration.
 | `git-tools` | `modules/git/tools.nix` | Lazygit, tig, git-absorb, git-lfs |
 | `git-safety` | `modules/git/safety.nix` | Protected branches, hooks |
 | `git-help` | `modules/git/help.nix` | tldr, quick-reference sheet |
-| `git-worktree` | `modules/git/worktree.nix` | `wt` helper script |
-| `git-worktree-enhanced` | `modules/git/worktree-enhanced.nix` | Dashboard, templates, parallel |
-| `git-helix` | `modules/git/helix.nix` | Difftastic, editor aliases |
-| `git-prompts` | `modules/git/prompts.nix` | Shell prompt git indicators |
-| `git-claude-code` | `modules/git/claude-code.nix` | Claude safety wrapper |
-| `git-claude-enhanced` | `modules/git/claude-enhanced.nix` | Claude session manager |
 
 ### Desktop
 

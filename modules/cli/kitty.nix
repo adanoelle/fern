@@ -1,6 +1,5 @@
 # modules/cli/kitty.nix — Kitty terminal emulator (garden stack)
-{ den, inputs, ... }:
-{
+_: {
   den.aspects.kitty.homeManager =
     { pkgs, lib, ... }:
     {

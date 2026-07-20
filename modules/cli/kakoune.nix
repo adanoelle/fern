@@ -1,6 +1,5 @@
 # modules/cli/kakoune.nix — Kakoune editor (garden stack)
-{ den, inputs, ... }:
-{
+_: {
   den.aspects.kakoune.homeManager =
     { config, pkgs, ... }:
     let

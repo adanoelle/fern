@@ -1,6 +1,5 @@
 # modules/hosts.nix — den topology
-{ ... }:
-{
+_: {
   den.hosts.x86_64-linux.fern.users.ada = { };
 
   # moss (Apple Silicon / Asahi) is parked: its hardware.nix is still the

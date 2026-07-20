@@ -1,11 +1,9 @@
 # modules/git/safety.nix — git safety features via hooks and aliases
-{ den, ... }:
-{
+_: {
   den.aspects.git-safety.homeManager =
     {
       config,
       lib,
-      pkgs,
       ...
     }:
 

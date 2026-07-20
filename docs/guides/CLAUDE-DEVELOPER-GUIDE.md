@@ -159,14 +159,6 @@ Repository Root
 │   ├── prompts/            # Task prompts
 │   └── hooks/              # Automation scripts
 │
-├── nix/
-│   ├── modules/CLAUDE.md    # System module context
-│   └── home/
-│       └── git/CLAUDE.md    # Git suite context
-│
-├── scripts/
-│   └── CLAUDE.md            # Script documentation
-│
 └── docs/guides/
     └── claude-workflow.md    # Usage guide
 ```
@@ -207,10 +199,10 @@ claude
 git diff
 
 # 5. Validate changes
-./scripts/validate.sh
+just check
 
 # 6. Test the configuration
-./scripts/rebuild.sh test
+just test
 
 # 7. If good, commit
 ga . && gc -m "feat: Add htop package"
@@ -609,10 +601,6 @@ Skip:
 ### CLAUDE.md Files in This Repository
 
 - [`/CLAUDE.md`](../../CLAUDE.md) - Root context file
-- [`/nix/modules/CLAUDE.md`](../../nix/modules/CLAUDE.md) - System modules
-- [`/nix/home/git/CLAUDE.md`](../../nix/home/git/CLAUDE.md) - Git suite
-- [`/scripts/CLAUDE.md`](../../scripts/CLAUDE.md) - Automation scripts
-- [`/.claude/README.md`](../../.claude/README.md) - Claude tools
 
 ### Related Documentation
 

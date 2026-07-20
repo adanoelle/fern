@@ -1,6 +1,5 @@
 # modules/desktop/daw.nix — DAW applications
-{ den, ... }:
-{
+_: {
   den.aspects.daw.homeManager =
     { pkgs, ... }:
     {

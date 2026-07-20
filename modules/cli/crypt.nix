@@ -1,5 +1,4 @@
-{ den, ... }:
-{
+_: {
   den.aspects.crypt.homeManager =
     { pkgs, ... }:
     {

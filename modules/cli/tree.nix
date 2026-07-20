@@ -1,5 +1,4 @@
-{ den, ... }:
-{
+_: {
   den.aspects.tree.homeManager =
     { pkgs, ... }:
     {

@@ -1,6 +1,5 @@
 # modules/cli/rbw.nix — Bitwarden CLI client
-{ den, ... }:
-{
+_: {
   den.aspects.rbw.homeManager =
     { pkgs, ... }:
     {

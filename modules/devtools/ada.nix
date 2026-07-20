@@ -2,8 +2,7 @@
 #
 # Named ada-lang (not ada-dev) to avoid clashing with the ada-* user
 # aspect layers defined in modules/user-ada*.nix.
-{ den, ... }:
-{
+_: {
   den.aspects.ada-lang = {
     nixos =
       { pkgs, ... }:

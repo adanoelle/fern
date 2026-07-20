@@ -3,8 +3,7 @@
 # One capture point (~/inbox), filed by kind (docs/notes/media/src),
 # cold storage by year (~/archive). Desktop/Public/Templates are
 # disabled per the xdg-user-dirs spec by pointing them at $HOME.
-{ den, ... }:
-{
+_: {
   den.aspects.workspace.homeManager =
     { config, lib, ... }:
     let

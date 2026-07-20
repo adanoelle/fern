@@ -1,5 +1,4 @@
-{ den, ... }:
-{
+_: {
   den.aspects.gamedev.homeManager =
     { lib, pkgs, ... }:
     let

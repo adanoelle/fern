@@ -1,6 +1,5 @@
 # modules/shells/devenv.nix — devenv development environment manager
-{ den, ... }:
-{
+_: {
   den.aspects.devenv.homeManager =
     { pkgs, inputs, ... }:
     {

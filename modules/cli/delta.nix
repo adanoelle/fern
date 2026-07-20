@@ -2,7 +2,7 @@
 #
 # Maps garden palette colors to delta's theme settings. Uses the
 # bat-generated garden tmTheme for syntax highlighting.
-{ den, inputs, ... }:
+{ inputs, ... }:
 let
   palette = inputs.garden-shell.lib.palette.colors;
 in
