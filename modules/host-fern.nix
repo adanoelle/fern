@@ -10,6 +10,7 @@
       den.aspects.boot
       den.aspects.workstation
       den.aspects.dev-machine
+      den.aspects.homelab
       den.aspects.monitoring
       den.aspects.gaming
       den.aspects.niri
