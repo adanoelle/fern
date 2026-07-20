@@ -221,10 +221,23 @@ in
               # Floating
               "${mod}+V".action.toggle-window-floating = [ ];
 
-              # Screenshot — garden flow (save + copy + notification card)
-              "Print".action.spawn = [ "sh" "-c" "qs -c garden ipc call garden screenshot region" ];
-              "${mod}+Print".action.spawn = [ "sh" "-c" "qs -c garden ipc call garden screenshot window" ];
-              "${mod}+Shift+Print".action.spawn = [ "sh" "-c" "qs -c garden ipc call garden screenshot output" ];
+              # Screenshot — garden flow (save + copy + notification card).
+              # Super+S family: keyboard has no Print key.
+              "${mod}+S".action.spawn = [
+                "sh"
+                "-c"
+                "${qs} -c garden ipc call garden screenshot region"
+              ];
+              "${mod}+Shift+S".action.spawn = [
+                "sh"
+                "-c"
+                "${qs} -c garden ipc call garden screenshot window"
+              ];
+              "${mod}+Ctrl+S".action.spawn = [
+                "sh"
+                "-c"
+                "${qs} -c garden ipc call garden screenshot output"
+              ];
 
               # Volume (XF86 media keys)
               "XF86AudioRaiseVolume".action.spawn = [
