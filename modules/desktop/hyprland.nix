@@ -71,7 +71,7 @@ _: {
         };
 
         wallpaper = {
-          enable = lib.mkEnableOption "wallpaper management with swww";
+          enable = lib.mkEnableOption "wallpaper management with awww";
 
           # Keep your existing path and monitor options for compatibility
           path = lib.mkOption {
@@ -158,9 +158,9 @@ _: {
           };
         };
 
-        # Fancy wallpaper-driven theme (swww + pywal)
+        # Fancy wallpaper-driven theme (awww + pywal)
         theme = {
-          enable = lib.mkEnableOption "Wallpaper-driven theme with swww + pywal";
+          enable = lib.mkEnableOption "Wallpaper-driven theme with awww + pywal";
           rotate = {
             enable = lib.mkEnableOption "Periodic wallpaper rotation";
             minutes = lib.mkOption {

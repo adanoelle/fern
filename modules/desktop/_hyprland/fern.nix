@@ -8,7 +8,7 @@
 
 let
   cfg = config.desktop.hyprland;
-  fernPkgs = inputs.fern.packages.${pkgs.system};
+  fernPkgs = inputs.fern.packages.${pkgs.stdenv.hostPlatform.system};
 in
 lib.mkIf (cfg.enable && cfg.fern.enable) {
   # Install fern-shell packages (including quickshell for CLI access)

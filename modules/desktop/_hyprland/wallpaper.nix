@@ -10,8 +10,8 @@ let
   cfg = config.desktop.hyprland;
 
   # Helper to get wallpaper command with transitions
-  swwwCmd = path: monitor: ''
-    ${pkgs.swww}/bin/swww img "${path}" \
+  awwwCmd = path: monitor: ''
+    ${pkgs.awww}/bin/awww img "${path}" \
       ${lib.optionalString (monitor != "") "--outputs \"${monitor}\""} \
       --transition-type ${cfg.wallpaper.transition.type} \
       --transition-duration ${toString cfg.wallpaper.transition.duration} \
@@ -20,17 +20,17 @@ let
 in
 {
   config = lib.mkIf (cfg.enable && cfg.wallpaper.enable) {
-    home.packages = with pkgs; [ swww ];
+    home.packages = with pkgs; [ awww ];
 
-    # Add swww daemon initialization
+    # Add awww daemon initialization
     wayland.windowManager.hyprland.settings.exec-once = [
-      "${pkgs.swww}/bin/swww-daemon"
+      "${pkgs.awww}/bin/awww-daemon"
     ];
 
     # Main wallpaper service
-    systemd.user.services.swww-wallpaper = {
+    systemd.user.services.awww-wallpaper = {
       Unit = {
-        Description = "Set wallpapers with swww";
+        Description = "Set wallpapers with awww";
         After = [ "hyprland-session.target" ];
         PartOf = [ "hyprland-session.target" ];
       };
@@ -39,26 +39,26 @@ in
         Type = "oneshot";
         RemainAfterExit = true;
         ExecStart = pkgs.writeShellScript "set-wallpapers" ''
-          # Start swww daemon if it's not running
-          if ! ${pkgs.swww}/bin/swww query &>/dev/null; then
-            echo "Starting swww daemon..."
-            ${pkgs.swww}/bin/swww-daemon &
+          # Start awww daemon if it's not running
+          if ! ${pkgs.awww}/bin/awww query &>/dev/null; then
+            echo "Starting awww daemon..."
+            ${pkgs.awww}/bin/awww-daemon &
             daemon_pid=$!
           fi
 
-          # Wait for swww daemon with timeout
+          # Wait for awww daemon with timeout
           timeout=30
-          while ! ${pkgs.swww}/bin/swww query &>/dev/null && [ $timeout -gt 0 ]; do
+          while ! ${pkgs.awww}/bin/awww query &>/dev/null && [ $timeout -gt 0 ]; do
             sleep 1
             ((timeout--))
           done
 
           if [ $timeout -eq 0 ]; then
-            echo "Timeout waiting for swww daemon"
+            echo "Timeout waiting for awww daemon"
             exit 1
           fi
 
-          echo "swww daemon is ready"
+          echo "awww daemon is ready"
 
           # Set wallpapers based on configuration
           ${
@@ -66,13 +66,13 @@ in
               # Use per-monitor configuration
               lib.concatStringsSep "\n" (
                 lib.mapAttrsToList (
-                  monitor: path: "echo \"Setting wallpaper for ${monitor}: ${path}\"\n" + (swwwCmd path monitor)
+                  monitor: path: "echo \"Setting wallpaper for ${monitor}: ${path}\"\n" + (awwwCmd path monitor)
                 ) cfg.wallpaper.monitors
               )
             else
               # Use legacy single wallpaper configuration
               "echo \"Setting wallpaper for ${cfg.wallpaper.monitor}: ${cfg.wallpaper.path}\"\n"
-              + (swwwCmd cfg.wallpaper.path cfg.wallpaper.monitor)
+              + (awwwCmd cfg.wallpaper.path cfg.wallpaper.monitor)
           }
 
           echo "Wallpapers set successfully"
@@ -85,7 +85,7 @@ in
     };
 
     # Workspace wallpaper listener (only if workspace wallpapers are configured)
-    systemd.user.services.swww-workspace-listener = lib.mkIf (cfg.wallpaper.workspaces != { }) {
+    systemd.user.services.awww-workspace-listener = lib.mkIf (cfg.wallpaper.workspaces != { }) {
       Unit = {
         Description = "Hyprland workspace wallpaper switcher";
         After = [ "hyprland-session.target" ];
@@ -119,7 +119,7 @@ in
             esac
 
             if [[ -f "$wallpaper_path" ]]; then
-              ${swwwCmd "$wallpaper_path" ""}
+              ${awwwCmd "$wallpaper_path" ""}
             fi
           }
 
@@ -165,7 +165,7 @@ in
           else
             cfg.wallpaper.path
         }"
-        ${swwwCmd "$wallpaper_path" ""}
+        ${awwwCmd "$wallpaper_path" ""}
       ''}"
 
       # Random wallpaper from directory
@@ -174,7 +174,7 @@ in
         if [[ -d "$wallpaper_dir" ]]; then
           random_wallpaper=$(find "$wallpaper_dir" -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.webp" \) | shuf -n 1)
           if [[ -n "$random_wallpaper" ]]; then
-            ${swwwCmd "$random_wallpaper" ""}
+            ${awwwCmd "$random_wallpaper" ""}
           fi
         fi
       ''}"
