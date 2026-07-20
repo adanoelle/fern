@@ -8,6 +8,7 @@
   den.aspects.homelab = {
     includes = [
       den.aspects.tailscale
+      den.aspects.radicale
     ];
 
     nixos = {
