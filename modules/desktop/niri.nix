@@ -45,7 +45,9 @@ in
       }:
       {
         programs.niri.settings = {
-          # Built-in Print action target (default would resurrect ~/Pictures/Screenshots)
+          # Built-in Print action target (default would resurrect ~/Pictures/Screenshots).
+          # Garden's window-mode screenshot (`niri msg action screenshot-window`)
+          # depends on this pointing at ~/media/screenshots — do not remove.
           screenshot-path = "~/media/screenshots/screenshot-%Y-%m-%d_%H-%M-%S.png";
 
           # ── Named workspaces (channels) ──────────────────────
@@ -214,9 +216,10 @@ in
               # Floating
               "${mod}+V".action.toggle-window-floating = [ ];
 
-              # Screenshot
-              "Print".action.screenshot = [ ];
-              "${mod}+Print".action.screenshot-window = [ ];
+              # Screenshot — garden flow (save + copy + notification card)
+              "Print".action.spawn = [ "sh" "-c" "qs -c garden ipc call garden screenshot region" ];
+              "${mod}+Print".action.spawn = [ "sh" "-c" "qs -c garden ipc call garden screenshot window" ];
+              "${mod}+Shift+Print".action.spawn = [ "sh" "-c" "qs -c garden ipc call garden screenshot output" ];
 
               # Volume (XF86 media keys)
               "XF86AudioRaiseVolume".action.spawn = [
