@@ -38,7 +38,7 @@ _: {
           heaptrack
           renderdoc
           valgrind
-          linuxPackages.perf
+          perf
           flamegraph
         ]);
 

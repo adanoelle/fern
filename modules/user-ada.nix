@@ -48,9 +48,12 @@
 
           ssh = {
             enable = true;
-            addKeysToAgent = "yes";
-            matchBlocks."github.com" = {
-              identityFile = "~/.ssh/github";
+            # Old programs.ssh defaults (ForwardAgent no, ControlMaster no, …)
+            # match OpenSSH's own defaults, so nothing is lost by opting out.
+            enableDefaultConfig = false;
+            settings = {
+              "*".AddKeysToAgent = "yes";
+              "github.com".IdentityFile = "~/.ssh/github";
             };
           };
         };

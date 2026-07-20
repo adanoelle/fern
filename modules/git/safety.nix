@@ -42,7 +42,7 @@ _: {
 
       config = mkIf cfg.enable {
         # Safety-oriented git aliases
-        programs.git.aliases = {
+        programs.git.settings.alias = {
           # Safe force push
           pushf = "push --force-with-lease";
           pushforce = "push --force-with-lease";
@@ -127,7 +127,7 @@ _: {
         ];
 
         # Configure git to use our hooks
-        programs.git.extraConfig = {
+        programs.git.settings = {
           core.hooksPath = "${config.home.homeDirectory}/.config/git/hooks";
 
           # Additional safety settings (push.default is in core.nix)

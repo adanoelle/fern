@@ -19,7 +19,7 @@ the repo.
 │   ├── pictures/       photos and images kept for their own sake
 │   ├── screenshots/    tool-written captures (niri, hyprshot, satty)
 │   ├── wallpapers/     wallpaper images — these paths are LOAD-BEARING
-│   │                   (swww/hyprland config points here by name)
+│   │                   (awww/hyprland config points here by name)
 │   ├── video/          recordings (OBS default output)
 │   └── music/          audio library
 ├── src/              code — one subdir per repo/project

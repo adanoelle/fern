@@ -71,7 +71,7 @@ _: {
         };
 
         wallpaper = {
-          enable = lib.mkEnableOption "wallpaper management with swww";
+          enable = lib.mkEnableOption "wallpaper management with awww";
 
           # Keep your existing path and monitor options for compatibility
           path = lib.mkOption {
@@ -158,9 +158,9 @@ _: {
           };
         };
 
-        # Fancy wallpaper-driven theme (swww + pywal)
+        # Fancy wallpaper-driven theme (awww + pywal)
         theme = {
-          enable = lib.mkEnableOption "Wallpaper-driven theme with swww + pywal";
+          enable = lib.mkEnableOption "Wallpaper-driven theme with awww + pywal";
           rotate = {
             enable = lib.mkEnableOption "Periodic wallpaper rotation";
             minutes = lib.mkOption {
@@ -207,6 +207,9 @@ _: {
 
         wayland.windowManager.hyprland = {
           enable = true;
+          # Pinned: the default flips to "lua" at stateVersion 26.05; this
+          # config is written as hyprlang settings.
+          configType = "hyprlang";
           settings = {
             exec-once = [
               "${pkgs.dbus}/bin/dbus-update-activation-environment --systemd DISPLAY XAUTHORITY WAYLAND_DISPLAY HYPRLAND_INSTANCE_SIGNATURE XDG_CURRENT_DESKTOP"

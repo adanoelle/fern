@@ -98,40 +98,42 @@ _: {
             };
           };
 
-          git = {
+          git.settings = mkMerge [
             # Git configuration for LFS
-            extraConfig = mkIf cfg.gitLfs.enable {
+            (mkIf cfg.gitLfs.enable {
               filter.lfs = {
                 clean = "git-lfs clean -- %f";
                 smudge = "git-lfs smudge -- %f";
                 process = "git-lfs filter-process";
                 required = true;
               };
-            };
+            })
 
             # Git aliases for tools
-            aliases = mkMerge [
-              # LazyGit
-              (mkIf cfg.lazygit.enable {
-                lg = "!lazygit";
-                visual = "!lazygit";
-              })
+            {
+              alias = mkMerge [
+                # LazyGit
+                (mkIf cfg.lazygit.enable {
+                  lg = "!lazygit";
+                  visual = "!lazygit";
+                })
 
-              # Tig
-              (mkIf cfg.tig.enable {
-                t = "!tig";
-                ta = "!tig --all";
-                ts = "!tig status";
-                tb = "!tig blame";
-              })
+                # Tig
+                (mkIf cfg.tig.enable {
+                  t = "!tig";
+                  ta = "!tig --all";
+                  ts = "!tig status";
+                  tb = "!tig blame";
+                })
 
-              # Git absorb
-              (mkIf cfg.gitAbsorb.enable {
-                absorb = "!git-absorb";
-                fix = "!git-absorb --and-rebase";
-              })
-            ];
-          };
+                # Git absorb
+                (mkIf cfg.gitAbsorb.enable {
+                  absorb = "!git-absorb";
+                  fix = "!git-absorb --and-rebase";
+                })
+              ];
+            }
+          ];
         };
 
         # Shell aliases

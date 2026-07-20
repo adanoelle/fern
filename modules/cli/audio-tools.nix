@@ -15,7 +15,7 @@ _: {
         wolf-shaper
 
         # Synthesizers
-        surge-XT
+        surge-xt
         vital
         helm
         zynaddsubfx

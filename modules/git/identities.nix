@@ -96,29 +96,33 @@ _: {
           # Set up includeIf configurations for identity switching
           includes = generateIncludes;
 
-          # Set the default identity from the primary setting
-          extraConfig = mkIf (cfg.identities ? ${cfg.primary}) (
-            let
-              primaryIdentity = cfg.identities.${cfg.primary};
-            in
+          settings = mkMerge [
+            # Set the default identity from the primary setting
+            (mkIf (cfg.identities ? ${cfg.primary}) (
+              let
+                primaryIdentity = cfg.identities.${cfg.primary};
+              in
+              {
+                user.name = mkDefault primaryIdentity.name;
+                user.email = mkDefault primaryIdentity.email;
+              }
+              // optionalAttrs (primaryIdentity.signingKey != null) {
+                user.signingkey = mkDefault primaryIdentity.signingKey;
+              }
+            ))
+
+            # Add helpful aliases for identity management
             {
-              user.name = mkDefault primaryIdentity.name;
-              user.email = mkDefault primaryIdentity.email;
-            }
-            // optionalAttrs (primaryIdentity.signingKey != null) {
-              user.signingkey = mkDefault primaryIdentity.signingKey;
-            }
-          );
+              alias = {
+                # Check current identity
+                id = "!echo \"Name: $(git config user.name), Email: $(git config user.email)\"";
+                id-full = "config --get-regexp '^user\\.'";
 
-          # Add helpful aliases for identity management
-          aliases = {
-            # Check current identity
-            id = "!echo \"Name: $(git config user.name), Email: $(git config user.email)\"";
-            id-full = "config --get-regexp '^user\\.'";
-
-            # List all configured identities (shows includes)
-            id-list = "config --get-regexp '^includeif\\.'";
-          };
+                # List all configured identities (shows includes)
+                id-list = "config --get-regexp '^includeif\\.'";
+              };
+            }
+          ];
         };
 
         home = {
