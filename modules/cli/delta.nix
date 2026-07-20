@@ -10,8 +10,9 @@ in
   den.aspects.delta.homeManager =
     { lib, ... }:
     {
-      programs.git.delta = {
+      programs.delta = {
         enable = true;
+        enableGitIntegration = true;
         options = {
           navigate = true;
           line-numbers = true;
@@ -22,7 +23,7 @@ in
         };
       };
 
-      programs.git.extraConfig."delta \"ada-theme\"" = {
+      programs.git.settings."delta \"ada-theme\"" = {
         dark = true;
         minus-style = "bold ${palette.urgent}";
         plus-style = "bold ${palette.ok}";

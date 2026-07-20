@@ -31,7 +31,7 @@ _: {
 
       config = mkIf cfg.enable {
         # Git aliases - pure git functionality
-        programs.git.aliases = {
+        programs.git.settings.alias = {
           # --- Status and Info
           s = "status -sb";
           ss = "status";

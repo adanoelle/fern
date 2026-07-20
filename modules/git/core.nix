@@ -84,22 +84,28 @@ _: {
       config = mkIf cfg.enable {
         # Don't add to home.packages - programs.git handles it
 
+        programs.delta = mkIf cfg.delta.enable {
+          enable = true;
+          enableGitIntegration = true;
+          options = cfg.delta.options // {
+            # Helix-specific hyperlink format if editor is hx
+            hyperlinks-file-link-format = mkIf (cfg.editor == "hx") "hx://{path}:{line}";
+          };
+        };
+
         programs.git = {
           enable = true;
           inherit (cfg) package;
 
-          inherit (cfg) userName;
-          inherit (cfg) userEmail;
-
-          delta = mkIf cfg.delta.enable {
-            enable = true;
-            options = cfg.delta.options // {
-              # Helix-specific hyperlink format if editor is hx
-              hyperlinks-file-link-format = mkIf (cfg.editor == "hx") "hx://{path}:{line}";
+          settings = {
+            user = {
+              name = cfg.userName;
+              email = cfg.userEmail;
+              signingkey = mkIf cfg.signCommits (
+                if cfg.signingKey != "" then cfg.signingKey else "${config.home.homeDirectory}/.ssh/github"
+              );
             };
-          };
 
-          extraConfig = {
             init.defaultBranch = cfg.defaultBranch;
             core = {
               inherit (cfg) editor;
@@ -114,12 +120,9 @@ _: {
               # fsmonitor = false; # Explicitly disabled for Linux
             };
 
-            # SSH signing configuration
+            # SSH signing configuration (key lives in settings.user above)
             commit.gpgsign = cfg.signCommits;
             gpg.format = mkIf cfg.signCommits "ssh";
-            user.signingkey = mkIf cfg.signCommits (
-              if cfg.signingKey != "" then cfg.signingKey else "${config.home.homeDirectory}/.ssh/github"
-            );
             gpg.ssh.allowedSignersFile = mkIf cfg.signCommits "${config.home.homeDirectory}/.config/git/allowed_signers";
 
             # Essential settings

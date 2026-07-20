@@ -78,7 +78,7 @@ _: {
         # Note: The gh module already sets up credential helpers, so we don't need to duplicate
 
         # Git aliases for GitHub integration (no scripts!)
-        programs.git.aliases = {
+        programs.git.settings.alias = {
           # Pull request workflows
           pr-create = "!gh pr create";
           pr-list = "!gh pr list";

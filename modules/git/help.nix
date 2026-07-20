@@ -26,7 +26,7 @@ _: {
 
       config = mkIf cfg.enable {
         # Git aliases for help
-        programs.git.aliases = {
+        programs.git.settings.alias = {
           # Help commands
           h = "help";
           help-config = "config --list --show-origin";
