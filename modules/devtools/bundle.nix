@@ -10,7 +10,10 @@
       den.aspects.python
       den.aspects.csharp
       den.aspects.ada-lang
-      den.aspects.localstack
+      # localstack is a system container service owned by the dev-machine
+      # role (modules/roles/dev-machine.nix). Including it here too applies
+      # its nixos module twice, duplicating the oci-container port list
+      # (docker then fails binding 4566 against itself).
       den.aspects.zig
       den.aspects.gamedev
     ];
