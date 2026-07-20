@@ -1,9 +1,8 @@
 # Claude Code Workflow Guide
 
-> **See also:** The book's
-> [Claude Code Integration](../../book/src/git/claude-code-integration.md)
-> chapter covers the Nix module design and safety architecture in depth.
-> This guide is a practical quick-reference.
+> **See also:** The book's [Git section](../../book/src/git/) covers the
+> Nix module design and safety architecture in depth. This guide is a
+> practical quick-reference.
 
 This guide explains how to effectively use Claude Code with the Fern NixOS
 configuration, leveraging the CLAUDE.md files and integration features.
@@ -126,8 +125,8 @@ When adding new modules:
 
 3. **Test incrementally:**
    ```bash
-   ./scripts/validate.sh
-   ./scripts/rebuild.sh test
+   just check
+   just test
    ```
 
 ## Safety Features
@@ -162,7 +161,7 @@ Always validate before rebuilding:
 
 ```bash
 # Full validation
-./scripts/validate.sh
+just lint
 
 # Quick validation
 nix flake check
@@ -198,9 +197,7 @@ The main context file provides:
 
 Each major module has context:
 
-- `/nix/home/git/CLAUDE.md` - Git suite specifics
-- `/nix/modules/CLAUDE.md` - System module patterns
-- `/scripts/CLAUDE.md` - Script documentation
+- `/CLAUDE.md` - Project overview, commands, and safety rules
 
 ### How Claude Uses These Files
 
@@ -239,7 +236,7 @@ cat .claude/prompts/debug-nix-error.md
 .claude/hooks/pre-rebuild.sh
 
 # Integrate into workflow
-alias rebuild='.claude/hooks/pre-rebuild.sh && ./scripts/rebuild.sh'
+alias rebuild='.claude/hooks/pre-rebuild.sh && just switch'
 ```
 
 ## Best Practices
@@ -259,7 +256,7 @@ claude         # In main branch (avoid!)
 
 ```bash
 # Good workflow
-./scripts/validate.sh && ./scripts/rebuild.sh test
+just check && just test
 
 # Bad workflow
 sudo nixos-rebuild switch  # No validation!
@@ -405,13 +402,13 @@ Add to CLAUDE.md:
 
 ### Automated Workflows
 
-Create in scripts:
+Add a recipe to the justfile:
 
-```bash
-#!/usr/bin/env bash
-# scripts/claude-task.sh
-ccn task-name
-# Automated setup...
+```make
+# justfile
+claude-task name:
+    git worktree add .claude/worktrees/{{name}} -b worktree-{{name}}
+    # Automated setup...
 ```
 
 ## Tips for Effective Claude Use
