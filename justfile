@@ -51,9 +51,9 @@ check:
 # Lint: format, flake check, statix, deadnix
 lint: fmt check statix deadnix
 
-# Run statix linter
+# Run statix linter (ignore agent worktrees under .claude/)
 statix:
-    statix check
+    statix check -i '.claude'
 
 # Check for dead Nix code (hardware.nix files are generated — never hand-edited)
 deadnix:
