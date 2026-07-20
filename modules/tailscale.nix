@@ -9,6 +9,13 @@
 # persists in /var/lib/tailscale. Deliberately no authKeyFile/sops:
 # auth keys expire and are a standing liability for a tailnet this
 # small.
+#
+# NB: den resolves includes into a plain imports tree — it does NOT
+# dedupe diamond includes (this aspect is reached via both the homelab
+# role and the radicale aspect). The explicit module `key`s below let
+# the NixOS module system deduplicate the instances; without them,
+# list options (extraSetFlags, trustedInterfaces) get duplicated
+# entries and `tailscale set` rejects the repeated flag.
 _: {
   den.aspects.tailscale = {
     # Let the host's (single) topology user drive the tailscale CLI
@@ -21,7 +28,8 @@ _: {
         in
         {
           nixos = {
-            services.tailscale.extraSetFlags = [ "--operator=${user}" ];
+            key = "den-aspect:tailscale-operator";
+            config.services.tailscale.extraSetFlags = [ "--operator=${user}" ];
           };
         }
       )
@@ -30,21 +38,24 @@ _: {
     nixos =
       { lib, ... }:
       {
-        services.tailscale = {
-          enable = true;
-          # Plain client by default; the homelab role bumps this to
-          # "both" so routing features are a console toggle there.
-          useRoutingFeatures = lib.mkDefault "client";
-          # UDP 41641 — direct peer paths instead of DERP relays.
-          openFirewall = true;
+        key = "den-aspect:tailscale";
+        config = {
+          services.tailscale = {
+            enable = true;
+            # Plain client by default; the homelab role bumps this to
+            # "both" so routing features are a console toggle there.
+            useRoutingFeatures = lib.mkDefault "client";
+            # UDP 41641 — direct peer paths instead of DERP relays.
+            openFirewall = true;
+          };
+
+          networking.firewall.trustedInterfaces = [ "tailscale0" ];
+
+          # systemd-resolved gives MagicDNS clean split-DNS alongside
+          # NetworkManager. Escape hatch if DNS ever misbehaves (no
+          # rebuild needed): `tailscale set --accept-dns=false`.
+          services.resolved.enable = lib.mkDefault true;
         };
-
-        networking.firewall.trustedInterfaces = [ "tailscale0" ];
-
-        # systemd-resolved gives MagicDNS clean split-DNS alongside
-        # NetworkManager. Escape hatch if DNS ever misbehaves (no
-        # rebuild needed): `tailscale set --accept-dns=false`.
-        services.resolved.enable = lib.mkDefault true;
       };
   };
 }

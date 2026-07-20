@@ -15,7 +15,10 @@
         in
         {
           nixos = {
-            sops.secrets."ssh_id_ed25519" = {
+            # Dedup key: this aspect is diamond-included (workstation
+            # role + radicale); see the note in modules/tailscale.nix.
+            key = "den-aspect:secrets-user";
+            config.sops.secrets."ssh_id_ed25519" = {
               path = "/home/${user}/.ssh/github";
               owner = user;
               mode = "0600";
@@ -26,9 +29,10 @@
     ];
 
     nixos = {
+      key = "den-aspect:secrets";
       imports = [ inputs.sops-nix.nixosModules.sops ];
 
-      sops = {
+      config.sops = {
         defaultSopsFile = ../secrets/main.yaml;
 
         # Canonical per-host identity: the SSH host key, converted to

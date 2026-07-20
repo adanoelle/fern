@@ -11,8 +11,10 @@
 { den, ... }:
 {
   den.aspects.radicale = {
-    # Kept self-contained for a future dedicated server host — den
-    # dedupes diamond includes, so overlapping with a role is fine.
+    # Kept self-contained for a future dedicated server host. den does
+    # NOT dedupe diamond includes itself; tailscale and secrets stay
+    # safe to double-include via their module `key`s (see the note in
+    # modules/tailscale.nix).
     includes = [
       den.aspects.tailscale
       den.aspects.secrets
