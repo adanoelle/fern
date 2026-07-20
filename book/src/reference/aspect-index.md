@@ -29,7 +29,7 @@ Host role bundles — compose these instead of long per-host include lists.
 | Aspect | File | Includes |
 |--------|------|----------|
 | `workstation` | `modules/roles/workstation.nix` | core, nh, users, secrets-guard, secrets, greetd, fonts, audio, docker |
-| `dev-machine` | `modules/roles/dev-machine.nix` | c-cpp, localstack, rust, node-ts, aws-cli |
+| `dev-machine` | `modules/roles/dev-machine.nix` | localstack, aws-cli |
 | `server` | `modules/roles/server.nix` | core, nh, users, secrets-guard (skeleton — hardening TODOs in file) |
 
 ## Bundle aspects
@@ -39,7 +39,7 @@ Host role bundles — compose these instead of long per-host include lists.
 | `cli` | `modules/cli/bundle.nix` | bat, broot, claude-code, crypt, delta, ghostty, glow, helix, hyfetch, nix-diff, nix-tree, prettier, tree, audio-tools, kitty, kakoune, yazi, lazygit, btop, fzf, fd, ripgrep, rbw, jq |
 | `git-suite` | `modules/git/bundle.nix` | git-core, git-aliases, git-identities, git-github, git-tools, git-safety, git-help |
 | `desktop-apps` | `modules/desktop/bundle.nix` | hyprland, chromium, obs, screenshot, gaming-hm, daw, bitwarden (niri is deliberately NOT here — hosts forward it via provides.to-users) |
-| `devtools` | `modules/devtools/bundle.nix` | docker, rust, node-ts, c-cpp, python, csharp, ada-lang, localstack, zig, gamedev |
+| `devtools` | `modules/devtools/bundle.nix` | docker, rust, node-ts, c-cpp, python, csharp, ada-lang, zig, gamedev |
 | `shells` | `modules/shells/bundle.nix` | nushell, starship, zoxide, devenv |
 
 ## System aspects (nixos)

@@ -62,7 +62,7 @@ which other aspects it includes.
     includes = [
       den.aspects.boot         # systemd-boot (UEFI x86 default)
       den.aspects.workstation  # role: core, nh, users, greetd, fonts, audio, docker, ...
-      den.aspects.dev-machine  # role: c-cpp, rust, node-ts, localstack, aws-cli
+      den.aspects.dev-machine  # role: localstack, aws-cli
       den.aspects.monitoring
       den.aspects.niri
       den.aspects.lmstudio

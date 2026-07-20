@@ -43,7 +43,7 @@ new CLI tool means creating the aspect file and adding one line to this bundle.
 | `cli` | `modules/cli/bundle.nix` | bat, broot, claude-code, crypt, delta, ghostty, glow, helix, hyfetch, nix-tree, prettier, tree, audio-tools |
 | `shells` | `modules/shells/bundle.nix` | nushell, starship, zoxide, devenv |
 | `desktop-apps` | `modules/desktop/bundle.nix` | hyprland, chromium, obs, screenshot, gaming-hm |
-| `devtools` | `modules/devtools/bundle.nix` | docker, rust, node-ts, c-cpp, python, csharp, ada-lang, localstack, zig, gamedev |
+| `devtools` | `modules/devtools/bundle.nix` | docker, rust, node-ts, c-cpp, python, csharp, ada-lang, zig, gamedev |
 
 ## Orchestrator bundles
 
