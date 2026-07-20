@@ -1,5 +1,5 @@
 # modules/audio.nix — PipeWire pro audio stack with musnix tuning
-{ den, inputs, ... }:
+{ inputs, ... }:
 {
   den.aspects.audio.nixos =
     { pkgs, ... }:

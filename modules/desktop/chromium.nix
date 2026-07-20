@@ -1,5 +1,4 @@
-{ den, ... }:
-{
+_: {
   den.aspects.chromium.homeManager =
     { pkgs, ... }:
     {

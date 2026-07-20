@@ -54,19 +54,21 @@
         };
 
         config = mkIf cfg.enable {
-          programs.gitCore = {
-            enable = true;
-            userName = cfg.userName;
-            userEmail = cfg.userEmail;
-            editor = cfg.editor;
+          programs = {
+            gitCore = {
+              enable = true;
+              inherit (cfg) userName userEmail editor;
+            };
+            gitAliases.enable = true;
+            gitIdentities.enable = true;
+            gitGithub = {
+              enable = cfg.enableGithub;
+              editor = mkDefault cfg.editor;
+            };
+            gitTools.enable = cfg.enableTools;
+            gitSafety.enable = cfg.enableSafety;
+            gitHelp.enable = cfg.enableHelp;
           };
-          programs.gitAliases.enable = true;
-          programs.gitIdentities.enable = true;
-          programs.gitGithub.enable = cfg.enableGithub;
-          programs.gitTools.enable = cfg.enableTools;
-          programs.gitSafety.enable = cfg.enableSafety;
-          programs.gitHelp.enable = cfg.enableHelp;
-          programs.gitGithub.editor = mkDefault cfg.editor;
         };
       };
   };

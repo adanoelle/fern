@@ -1,5 +1,4 @@
-{ den, ... }:
-{
+_: {
   den.aspects.glow.homeManager =
     { pkgs, ... }:
     {

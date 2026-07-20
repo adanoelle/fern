@@ -1,12 +1,10 @@
 # modules/desktop/hyprland.nix — Hyprland Wayland compositor
-{ den, ... }:
-{
+_: {
   den.aspects.hyprland.homeManager =
     {
       pkgs,
       lib,
       config,
-      inputs,
       ...
     }:
     let

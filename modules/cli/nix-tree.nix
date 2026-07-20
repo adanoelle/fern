@@ -1,5 +1,4 @@
-{ den, ... }:
-{
+_: {
   den.aspects.nix-tree.homeManager =
     { pkgs, ... }:
     {

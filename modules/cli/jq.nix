@@ -1,6 +1,5 @@
 # modules/cli/jq.nix — jq JSON processor
-{ den, ... }:
-{
+_: {
   den.aspects.jq.homeManager =
     { pkgs, ... }:
     {

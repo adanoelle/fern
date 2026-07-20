@@ -1,11 +1,9 @@
 # modules/git/aliases.nix — git aliases configuration
-{ den, ... }:
-{
+_: {
   den.aspects.git-aliases.homeManager =
     {
       config,
       lib,
-      pkgs,
       ...
     }:
 

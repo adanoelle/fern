@@ -1,6 +1,5 @@
 # modules/cli/fd.nix — fd find replacement
-{ den, ... }:
-{
+_: {
   den.aspects.fd.homeManager =
     { pkgs, ... }:
     {

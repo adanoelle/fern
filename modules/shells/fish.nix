@@ -1,8 +1,8 @@
 # modules/shells/fish.nix — Fish shell (garden stack)
-{ den, inputs, ... }:
+{ inputs, ... }:
 {
   den.aspects.fish.homeManager =
-    { pkgs, lib, ... }:
+    { pkgs, ... }:
     let
       palette = inputs.garden-shell.lib.palette.colors;
       # Strip leading # for fish's bare-hex format

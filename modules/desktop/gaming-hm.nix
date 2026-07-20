@@ -1,5 +1,4 @@
-{ den, ... }:
-{
+_: {
   den.aspects.gaming-hm.homeManager =
     { pkgs, ... }:
     {

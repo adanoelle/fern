@@ -1,6 +1,5 @@
 # modules/asahi/graphics.nix — Apple Silicon GPU (Asahi)
-{ den, ... }:
-{
+_: {
   den.aspects.graphics-asahi.nixos =
     { pkgs, ... }:
     {

@@ -1,6 +1,5 @@
 # modules/shells/nushell.nix — Nushell developer shell with prompt, zoxide, aliases
-{ den, ... }:
-{
+_: {
   den.aspects.nushell.homeManager =
     { pkgs, lib, ... }:
 
@@ -16,9 +15,9 @@
 
     let
       # --- Packages we rely on
-      starship = pkgs.starship;
-      zoxide = pkgs.zoxide;
-      delta = pkgs.delta;
+      inherit (pkgs) starship;
+      inherit (pkgs) zoxide;
+      inherit (pkgs) delta;
 
       # --- Where we'll store generated scripts
       starshipInit = "$HOME/.cache/starship/init.nu";
@@ -90,28 +89,32 @@
         extraConfig = extraCfg;
       };
 
-      home.sessionVariables.SOPS_AGE_KEY_FILE = "$HOME/.config/sops/age/keys.txt";
+      home = {
+        sessionVariables.SOPS_AGE_KEY_FILE = "$HOME/.config/sops/age/keys.txt";
 
-      home.packages = with pkgs; [
-        nushell
-        starship
-        zoxide
-        delta
-        bat
-        ripgrep
-        fd
-        git
-      ];
+        packages = with pkgs; [
+          nushell
+          starship
+          zoxide
+          delta
+          bat
+          ripgrep
+          fd
+          git
+        ];
 
-      # --- Activation hooks – generate init scripts before Nushell runs
-      home.activation.starshipInit = lib.hm.dag.entryAfter [ "installPackages" ] ''
-        mkdir -p ~/.cache/starship
-        ${starship}/bin/starship init nu > ${starshipInit}
-      '';
+        # --- Activation hooks – generate init scripts before Nushell runs
+        activation = {
+          starshipInit = lib.hm.dag.entryAfter [ "installPackages" ] ''
+            mkdir -p ~/.cache/starship
+            ${starship}/bin/starship init nu > ${starshipInit}
+          '';
 
-      home.activation.zoxideInit = lib.hm.dag.entryAfter [ "starshipInit" ] ''
-        mkdir -p ~/.cache
-        ${zoxide}/bin/zoxide init nushell > ${zoxideInit}
-      '';
+          zoxideInit = lib.hm.dag.entryAfter [ "starshipInit" ] ''
+            mkdir -p ~/.cache
+            ${zoxide}/bin/zoxide init nushell > ${zoxideInit}
+          '';
+        };
+      };
     };
 }

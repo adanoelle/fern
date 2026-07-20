@@ -2,13 +2,13 @@
 #
 # Base lazygit setup lives in modules/git/tools.nix.
 # This aspect only overrides the theme with garden palette colors.
-{ den, inputs, ... }:
+{ inputs, ... }:
 let
   palette = inputs.garden-shell.lib.palette.colors;
 in
 {
   den.aspects.lazygit.homeManager =
-    { pkgs, lib, ... }:
+    { lib, ... }:
     {
       programs.lazygit.settings.gui = {
         showIcons = true;

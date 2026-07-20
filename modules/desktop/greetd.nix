@@ -4,8 +4,7 @@
 # (regreet corrupted on fern's Granite Ridge iGPU). Session entries are
 # offered only for compositors the host actually enables; Niri is listed
 # first so it is the default choice.
-{ den, ... }:
-{
+_: {
   den.aspects.greetd.nixos =
     {
       config,

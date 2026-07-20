@@ -3,7 +3,7 @@
 # NOTE: The niri-flake NixOS module must be imported once at the host level
 # (see host-fern.nix) to avoid duplicate option declarations. This aspect
 # only enables it and provides the Home Manager settings.
-{ den, inputs, ... }:
+{ inputs, ... }:
 let
   palette = inputs.garden-shell.lib.palette.colors;
 in
@@ -42,8 +42,6 @@ in
     homeManager =
       {
         pkgs,
-        lib,
-        config,
         ...
       }:
       let

@@ -1,6 +1,5 @@
 # modules/monitoring.nix — hardware sensor monitoring
-{ den, ... }:
-{
+_: {
   den.aspects.monitoring.nixos =
     {
       config,

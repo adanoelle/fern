@@ -1,6 +1,5 @@
 # modules/cli/ripgrep.nix — ripgrep grep replacement
-{ den, ... }:
-{
+_: {
   den.aspects.ripgrep.homeManager =
     { pkgs, ... }:
     {

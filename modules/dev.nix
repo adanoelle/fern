@@ -1,6 +1,5 @@
 # modules/dev.nix — development shell & formatter
-{ ... }:
-{
+_: {
   perSystem =
     { pkgs, ... }:
     {

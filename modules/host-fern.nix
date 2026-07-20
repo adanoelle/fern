@@ -43,15 +43,17 @@
         # Use nixpkgs niri (avoids niri-flake fetchGit evaluation issue with Smithay)
         programs.niri.package = pkgs.niri;
 
-        # Low-latency kernel for the pro-audio workstation role
-        boot.kernelPackages = pkgs.linuxPackages_zen;
+        boot = {
+          # Low-latency kernel for the pro-audio workstation role
+          kernelPackages = pkgs.linuxPackages_zen;
 
-        # AMD IOMMU passthrough — prevents DMA interference with USB audio
-        boot.kernelParams = [ "iommu=pt" ];
+          # AMD IOMMU passthrough — prevents DMA interference with USB audio
+          kernelParams = [ "iommu=pt" ];
 
-        # Super-I/O sensor chip on fern's motherboard (consumed by the
-        # monitoring aspect's lm_sensors; per-machine fact lives here)
-        boot.kernelModules = [ "nct6775" ];
+          # Super-I/O sensor chip on fern's motherboard (consumed by the
+          # monitoring aspect's lm_sensors; per-machine fact lives here)
+          kernelModules = [ "nct6775" ];
+        };
 
         # USB audio device rules (fern-specific hardware)
         # NOTE: Topping DAC ID (152a:8750) is unverified — check with lsusb when connected

@@ -2,7 +2,6 @@
 {
   den,
   inputs,
-  lib,
   ...
 }:
 {

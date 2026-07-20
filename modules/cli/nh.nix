@@ -1,6 +1,5 @@
 # modules/cli/nh.nix — nh: NixOS rebuild helper with smart clean
-{ den, ... }:
-{
+_: {
   den.aspects.nh.nixos =
     { config, lib, ... }:
     {

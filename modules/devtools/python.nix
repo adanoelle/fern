@@ -1,5 +1,4 @@
-{ den, ... }:
-{
+_: {
   den.aspects.python = {
     nixos =
       { pkgs, ... }:
@@ -22,8 +21,8 @@
           ruff
           black
           pyright
-          (pkgs.python313Packages.ipython)
-          (pkgs.python313Packages.jupyterlab)
+          pkgs.python313Packages.ipython
+          pkgs.python313Packages.jupyterlab
         ];
 
         programs.helix.languages = {

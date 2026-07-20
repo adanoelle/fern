@@ -1,6 +1,5 @@
 # modules/cli/nix-diff.nix — nix-diff: compare Nix derivations
-{ den, ... }:
-{
+_: {
   den.aspects.nix-diff.homeManager =
     { pkgs, ... }:
     {

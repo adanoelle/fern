@@ -1,6 +1,5 @@
 # modules/git/tools.nix — additional git tools (no scripts)
-{ den, ... }:
-{
+_: {
   den.aspects.git-tools.homeManager =
     {
       config,
@@ -69,67 +68,71 @@
           ++ (optional cfg.gitFilterRepo.enable git-filter-repo)
           ++ (optional cfg.gitLfs.enable git-lfs);
 
-        # LazyGit configuration (if enabled)
-        programs.lazygit = mkIf cfg.lazygit.enable {
-          enable = true;
-          settings = {
-            gui = {
-              theme = "auto";
-              showFileTree = true;
-              showCommandLog = false;
-              showRandomTip = false;
-            };
-            git = {
-              paging = {
-                colorArg = "always";
-                pager = "delta --paging=never";
+        programs = {
+          # LazyGit configuration (if enabled)
+          lazygit = mkIf cfg.lazygit.enable {
+            enable = true;
+            settings = {
+              gui = {
+                theme = "auto";
+                showFileTree = true;
+                showCommandLog = false;
+                showRandomTip = false;
               };
-            };
-            keybinding = {
-              universal = {
-                quit = "q";
-                quit-alt1 = "<c-c>";
-                return = "<esc>";
-                togglePanel = "<tab>";
-                prevItem = "<up>";
-                nextItem = "<down>";
+              git = {
+                paging = {
+                  colorArg = "always";
+                  pager = "delta --paging=never";
+                };
+              };
+              keybinding = {
+                universal = {
+                  quit = "q";
+                  quit-alt1 = "<c-c>";
+                  return = "<esc>";
+                  togglePanel = "<tab>";
+                  prevItem = "<up>";
+                  nextItem = "<down>";
+                };
               };
             };
           };
-        };
 
-        # Git configuration for LFS
-        programs.git.extraConfig = mkIf cfg.gitLfs.enable {
-          filter.lfs = {
-            clean = "git-lfs clean -- %f";
-            smudge = "git-lfs smudge -- %f";
-            process = "git-lfs filter-process";
-            required = true;
+          git = {
+            # Git configuration for LFS
+            extraConfig = mkIf cfg.gitLfs.enable {
+              filter.lfs = {
+                clean = "git-lfs clean -- %f";
+                smudge = "git-lfs smudge -- %f";
+                process = "git-lfs filter-process";
+                required = true;
+              };
+            };
+
+            # Git aliases for tools
+            aliases = mkMerge [
+              # LazyGit
+              (mkIf cfg.lazygit.enable {
+                lg = "!lazygit";
+                visual = "!lazygit";
+              })
+
+              # Tig
+              (mkIf cfg.tig.enable {
+                t = "!tig";
+                ta = "!tig --all";
+                ts = "!tig status";
+                tb = "!tig blame";
+              })
+
+              # Git absorb
+              (mkIf cfg.gitAbsorb.enable {
+                absorb = "!git-absorb";
+                fix = "!git-absorb --and-rebase";
+              })
+            ];
           };
         };
-
-        # Git aliases for tools
-        programs.git.aliases = mkMerge [
-          # LazyGit
-          (mkIf cfg.lazygit.enable {
-            lg = "!lazygit";
-            visual = "!lazygit";
-          })
-
-          # Tig
-          (mkIf cfg.tig.enable {
-            t = "!tig";
-            ta = "!tig --all";
-            ts = "!tig status";
-            tb = "!tig blame";
-          })
-
-          # Git absorb
-          (mkIf cfg.gitAbsorb.enable {
-            absorb = "!git-absorb";
-            fix = "!git-absorb --and-rebase";
-          })
-        ];
 
         # Shell aliases
         home.shellAliases = mkMerge [

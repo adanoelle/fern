@@ -1,6 +1,5 @@
 # modules/git/github.nix — GitHub CLI integration (no scripts)
-{ den, ... }:
-{
+_: {
   den.aspects.git-github.homeManager =
     {
       config,
@@ -66,12 +65,12 @@
 
           settings = {
             git_protocol = cfg.gitProtocol;
-            editor = cfg.editor;
+            inherit (cfg) editor;
             prompt = "enabled";
             pager = "less";
             browser = mkIf (cfg.browser != "") cfg.browser;
 
-            aliases = cfg.aliases;
+            inherit (cfg) aliases;
           };
         };
 

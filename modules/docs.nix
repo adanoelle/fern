@@ -1,6 +1,5 @@
 # modules/docs.nix — mdBook documentation
-{ ... }:
-{
+_: {
   perSystem =
     { pkgs, ... }:
     {

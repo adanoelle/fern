@@ -1,5 +1,5 @@
 # modules/secrets.nix — SOPS-nix integration
-{ den, inputs, ... }:
+{ inputs, ... }:
 {
   den.aspects.secrets = {
     # The user-owned secret derives its owner/path from the den topology

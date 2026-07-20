@@ -11,8 +11,7 @@
 # satisfied by that context gets called with it (den.lib.parametric
 # fixedTo / take.atLeast). So `{ host, ... }:` below receives the den
 # host, and host.users is the topology from modules/hosts.nix.
-{ den, ... }:
-{
+_: {
   den.aspects.users = {
     includes = [
       (

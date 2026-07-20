@@ -1,6 +1,5 @@
 # modules/shells/starship.nix — Starship cross-shell prompt
-{ den, ... }:
-{
+_: {
   den.aspects.starship.homeManager =
     { pkgs, ... }:
     {

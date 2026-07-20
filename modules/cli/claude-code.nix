@@ -1,5 +1,4 @@
-{ den, ... }:
-{
+_: {
   den.aspects.claude-code.homeManager =
     { pkgs, ... }:
     {
