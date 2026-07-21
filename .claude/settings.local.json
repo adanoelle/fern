@@ -22,7 +22,8 @@
       "Bash(ls:*)",
       "Bash(just fmt:*)",
       "Bash(git add:*)",
-      "Bash(journalctl:*)"
+      "Bash(journalctl:*)",
+      "Bash(deadnix .:*)"
     ]
   }
 }
