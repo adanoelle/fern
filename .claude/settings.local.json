@@ -19,7 +19,11 @@
       "Bash(nix develop:*)",
       "Bash(nix build:*)",
       "Bash(systemctl status:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(just fmt:*)",
+      "Bash(git add:*)",
+      "Bash(journalctl:*)",
+      "Bash(deadnix .:*)"
     ]
   }
 }
