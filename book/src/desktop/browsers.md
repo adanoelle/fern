@@ -1,7 +1,10 @@
 # Browsers
 
-> Two browsers are configured: Nyxt (keyboard-driven, default) and ungoogled
-> Chromium (Wayland-native, privacy-hardened).
+> Two browsers are configured because they serve different failure modes: Nyxt
+> (keyboard-driven, hackable, default) for daily browsing that fits the
+> keyboard-centric desktop, and ungoogled Chromium (Wayland-native,
+> privacy-hardened) for the sites and web apps where a WebKit browser falls
+> over. Neither leaks to Google by default.
 
 ## Nyxt
 
@@ -24,8 +27,8 @@ cause visual glitches or crashes with NVIDIA's Wayland driver.
 
 ### Keybindings
 
-The Nyxt configuration remaps controls from Ctrl to Super, matching the Hyprland
-mod key convention:
+The Nyxt configuration remaps controls from Ctrl to Super, matching the
+desktop's Super-based mod key convention:
 
 | Binding                   | Action                   |
 | ------------------------- | ------------------------ |

@@ -1,5 +1,10 @@
 # Debug Overlays
 
+> Why overlays instead of print statements or a debugger? Games are spatial
+> and temporal — a hitbox that's wrong for three frames is invisible in a log
+> and gone by the time a breakpoint fires. Rendering diagnostics *into the
+> game world*, live, is the only feedback loop that matches the problem.
+
 Debug overlays render diagnostic information directly into the game world —
 hitboxes, colliders, velocities, entity labels, and more. This chapter covers
 three complementary techniques available with the Fern gamedev stack.

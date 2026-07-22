@@ -1,7 +1,10 @@
 # Ghostty
 
-> Ghostty is the terminal emulator, configured as a CLI aspect with FiraCode
-> Nerd Font, Catppuccin Frappe theme, and keybindings for tabs and splits.
+> Ghostty is the secondary terminal emulator: kitty is the primary,
+> garden-themed terminal, while Ghostty is kept as a fast, batteries-included
+> alternative. It deliberately still uses the Catppuccin Frappé theme — it is
+> not wired into the garden run-time theming (see
+> [The Garden Design System](../desktop/garden.md)).
 
 ## Overview
 
@@ -13,15 +16,14 @@ correctness.
 ## Configuration
 
 ```nix
-den.aspects.ghostty.homeManager = { pkgs, ... }: {
+den.aspects.ghostty.homeManager = _: {
   programs.ghostty = {
     enable = true;
     settings = {
       font-family = "FiraCode Nerd Font";
-      font-size = 13;
+      font-size = 11;
       theme = "catppuccin-frappe";
-      window-decoration = false;
-      confirm-close-surface = false;
+      keybind = [ /* tabs, splits, font size — see below */ ];
     };
   };
 };
@@ -32,26 +34,24 @@ den.aspects.ghostty.homeManager = { pkgs, ... }: {
 | Setting | Value | Purpose |
 |---------|-------|---------|
 | `font-family` | FiraCode Nerd Font | Ligatures + icon glyphs |
-| `font-size` | 13 | Default font size |
-| `theme` | catppuccin-frappe | Matches the system-wide Catppuccin theme |
-| `window-decoration` | false | No title bar (Hyprland handles window chrome) |
-| `confirm-close-surface` | false | Close tabs without confirmation prompt |
+| `font-size` | 11 | Default font size |
+| `theme` | catppuccin-frappe | Frozen pre-garden theme (kitty carries the garden palette) |
 
 ### Keybindings
 
-The aspect defines keybindings for tab and split management:
+The aspect defines keybindings for tabs, splits, and font size:
 
 | Keybinding | Action |
 |------------|--------|
-| `Ctrl+Shift+T` | New tab |
-| `Ctrl+Shift+W` | Close tab |
-| `Ctrl+Tab` | Next tab |
-| `Ctrl+Shift+Tab` | Previous tab |
-| `Ctrl+Shift+Enter` | New split |
-| `Ctrl+Shift+H/J/K/L` | Navigate splits (vim-style) |
-| `Ctrl+Shift+Plus` | Increase font size |
-| `Ctrl+Shift+Minus` | Decrease font size |
-| `Ctrl+Shift+0` | Reset font size |
+| `Alt+T` / `Alt+W` | New tab / close tab |
+| `Alt+1-5` | Go to tab 1–5 |
+| `Alt+Shift+V` / `Alt+Shift+S` | New split right / down |
+| `Alt+H/J/K/L` | Navigate splits (vim-style) |
+| `Ctrl+Alt+H/J/K/L` | Resize splits |
+| `Shift+PageUp/PageDown` | Scroll by page |
+| `Ctrl+Equal` / `Ctrl+Minus` / `Ctrl+0` | Font size up / down / reset |
+| `Shift+Enter` | Insert literal newline |
+| `Ctrl+Shift+C/V` | Copy / paste |
 
 ## Part of the CLI bundle
 
@@ -62,20 +62,9 @@ Ghostty is included in the CLI bundle:
 den.aspects.cli.includes = [ den.aspects.ghostty /* ... */ ];
 ```
 
-It is also set as the default terminal in the Hyprland aspect:
-
-```nix
-# modules/desktop/hyprland.nix (excerpt)
-terminal = lib.mkOption { type = lib.types.str; default = "ghostty"; };
-```
-
-Pressing `Super+Return` in Hyprland opens Ghostty.
-
-## Terminfo
-
-The aspect sets `TERMINFO_DIRS` to include Ghostty's terminfo database, ensuring
-that remote SSH sessions and tools like `tmux` correctly recognize the terminal
-capabilities.
+It is also the default terminal of the
+[Hyprland fallback session](../desktop/hyprland.md) (`Super+Return`); the
+primary Niri session spawns kitty.
 
 ## Key files
 
@@ -83,4 +72,4 @@ capabilities.
 |------|---------|
 | `modules/cli/ghostty.nix` | Ghostty configuration and keybindings |
 | `modules/cli/bundle.nix` | CLI bundle (includes ghostty) |
-| `modules/desktop/hyprland.nix` | Sets ghostty as default terminal |
+| `modules/desktop/hyprland.nix` | Sets ghostty as default terminal (fallback session) |
