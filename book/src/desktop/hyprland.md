@@ -1,18 +1,24 @@
-# Hyprland
+# Hyprland (Legacy Fallback)
 
-> Hyprland is the Wayland compositor at the center of the desktop environment,
-> configured with dwindle tiling, Catppuccin colors, and hjkl-based navigation.
+> **Legacy.** Hyprland was the original desktop; it is retained only as a
+> fallback greetd session for regression testing and as a safety net while
+> [Niri](niri.md) + the [garden shell](garden.md) are the daily driver.
+> This chapter and its sub-chapters (Fern Shell, Wallpaper, Idle & Lock)
+> document the retained Hyprland-era stack as-is.
 
-Hyprland is now the **fallback session**: [Niri](niri.md) is the primary
-compositor, and greetd offers both sessions at login.
+Why keep it at all? A second, independent compositor session is cheap
+insurance: if a Niri or garden-shell regression breaks the desktop, Hyprland
+still boots from greetd and the machine stays usable.
 
 The Hyprland configuration is a den aspect (`den.aspects.hyprland`) defined in
 `modules/desktop/hyprland.nix`, with sub-modules split into
 `modules/desktop/_hyprland/`. The underscore prefix convention (`_hyprland/`)
-indicates a private sub-module directory belonging to the `hyprland.nix` aspect.
-The main aspect file defines the window manager behavior, keybindings,
-animations, and style. Sub-modules handle the bar, wallpaper, idle/lock, and the
-Fern shell.
+indicates a private sub-module directory belonging to the `hyprland.nix`
+aspect — import-tree skips `_`-prefixed paths, so these files are imported
+explicitly by the parent aspect. The main aspect file defines the window
+manager behavior, keybindings, animations, and style. Sub-modules handle the
+bar, wallpaper, idle/lock, and the Fern shell — each documented in the
+sub-chapters that follow.
 
 ## Core settings
 
@@ -101,6 +107,6 @@ monitor string). Per-host monitor setup is configured in the user aspect
 | `modules/desktop/hyprland.nix`             | Main den aspect: compositor config, keybindings, animations |
 | `modules/desktop/_hyprland/bar.nix`        | Waybar configuration (disabled by default)      |
 | `modules/desktop/_hyprland/fern.nix`       | Fern Shell integration                          |
-| `modules/desktop/_hyprland/wallpaper.nix`  | swww wallpaper management                       |
+| `modules/desktop/_hyprland/wallpaper.nix`  | awww wallpaper management                       |
 | `modules/desktop/_hyprland/idlelock.nix`   | hypridle + hyprlock                             |
 | `modules/desktop/screenshot.nix`           | Screenshot scripts and bindings                 |
