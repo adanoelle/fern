@@ -15,15 +15,23 @@ This repository has two documentation systems:
 | How is the flake structured? | Book — [Architecture](../book/src/architecture/) |
 | How do I use git identities / the git suite? | Book — [Git](../book/src/git/) |
 | Day-to-day conventions and safety rules | [CLAUDE.md](../CLAUDE.md) |
-| Garden shell / palette design planning | [plan/](./plan/) |
+| How the garden desktop is integrated | Book — [Garden](../book/src/desktop/garden.md) |
+| Garden design references / open decisions | [plan/garden-design-docs/](./plan/garden-design-docs/) |
+| What the garden build plan was (historical) | [plan/archive/](./plan/archive/) |
 
 ## Planning
 
-Active design documents for upcoming work. These are living drafts, not
-reference material.
+Design documents for upcoming and in-flight work. These are living drafts,
+not reference material — once something ships, the book documents it.
 
-- **[plan/](./plan/)** — Garden design system: shell mockups, palette editor,
-  session handoff notes, jam sessions
+- **[plan/](./plan/)** — active plans (`art-bundle.md`) and the garden shell
+  `.jsx` mockups
+- **[plan/garden-design-docs/](./plan/garden-design-docs/)** — garden design
+  references (00–08, 11); `06-open-questions.md` is the living decision record
+- **[plan/archive/](./plan/archive/)** — completed plans from the garden
+  build-out (build/session plans, handoffs, jam session); see its README
+- Shell-internal planning lives in the **garden-shell repo**
+  (`plan/core-services-plan.md`)
 
 ## Common Commands
 

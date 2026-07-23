@@ -1,9 +1,11 @@
-# Idle & Lock
+# Idle & Lock (Hyprland)
 
-> hypridle manages idle timeouts (dim, lock, suspend) and hyprlock provides the
-> lock screen with Catppuccin styling.
+> **Legacy.** This hypridle/hyprlock setup applies only to the
+> [Hyprland fallback session](hyprland.md). In the primary Niri session,
+> idle and lock are handled by swayidle driving the garden shell's lock
+> screen — see [Niri § Idle & Lock](niri.md#idle--lock).
 
-The idle and lock configuration lives in
+The Hyprland idle and lock configuration lives in
 `modules/desktop/_hyprland/idlelock.nix` and is enabled via
 `desktop.hyprland.idle.enable` and `desktop.hyprland.lock.enable`.
 

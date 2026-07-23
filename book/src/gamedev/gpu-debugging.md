@@ -1,5 +1,11 @@
 # GPU Debugging
 
+> Why dedicated GPU tools? When rendering goes wrong, the CPU-side code often
+> looks perfect — the bug lives in state the driver holds: pipeline setup,
+> texture formats, shader inputs. Only a frame capture shows what the GPU
+> actually received, and only live counters show where frame time actually
+> goes.
+
 This chapter covers tools for debugging GPU rendering and monitoring graphics
 performance.
 

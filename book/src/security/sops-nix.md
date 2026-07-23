@@ -79,6 +79,12 @@ Never edit files under `secrets/` by any other means.
    target path, owner, and mode
 3. `just test`, then `just switch`
 
+Service aspects can also declare their own secrets next to the service that
+consumes them — e.g. `sops.secrets.radicale_htpasswd` lives in
+`modules/radicale.nix` (owner, mode 0400, `restartUnits`) rather than in
+`modules/secrets.nix`, so the aspect stays self-contained. See
+[Homelab (Tailscale & Radicale)](../services/homelab.md).
+
 ## Registering a new machine
 
 **This must happen before the machine's first rebuild with the `secrets`

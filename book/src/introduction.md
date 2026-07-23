@@ -1,25 +1,40 @@
 # Introduction
 
-Fern is a NixOS configuration for a development workstation. It manages the full
-stack from bootloader to shell prompt using Nix flakes, Home Manager, and the
-[vic/den](https://github.com/vic/den) aspect framework with automatic module
-discovery.
+Fern is a **multi-machine NixOS configuration**. It exists so that several
+very different computers — a pro-audio dev workstation, a parked Apple
+Silicon laptop, a future homelab server — can share one identity, one set of
+conventions, and one review surface, while each machine only carries what it
+actually needs.
 
-## Key technologies
+The trick is **layering**: every fact lives in the most-shared place it is
+correct for. A machine is "hardware file + role + quirks"; a user is a
+machine-agnostic base layer plus feature layers (desktop, dev toolchain) that
+hosts forward when appropriate. The mechanics come from the **dendritic
+pattern** — flake-parts + [import-tree](https://github.com/vic/import-tree) +
+[den](https://github.com/vic/den) — where every file under `modules/` is
+auto-imported and file existence is registration. The reasoning behind all of
+this is in [Design Philosophy](concepts/design-philosophy.md).
 
-- **Niri** -- Primary scrollable-tiling Wayland compositor, paired with the
-  garden shell (QuickShell); Hyprland is retained as a fallback session
-- **Helix** -- Modal text editor with per-language LSP integration
-- **Nushell** -- Structured-data shell with Starship prompt and Zoxide
-  navigation
-- **Nix flakes** -- Reproducible system builds with pinned inputs via
-  `flake.lock`
-- **Home Manager** -- User-space configuration (dotfiles, services, packages) as
-  NixOS modules
-- **den** -- Aspect framework providing topology, includes, and dual-side
-  modules
-- **import-tree** -- Automatic recursive discovery of all modules in the tree
-- **SOPS-nix** -- Age-encrypted secrets decrypted at activation time
+## What runs where
+
+| Machine | Hardware | Status | Carries |
+|---------|----------|--------|---------|
+| **fern** | x86_64 desktop (AMD) | Active | workstation + dev-machine + homelab roles, Niri/garden desktop, pro audio, gaming |
+| **moss** | Apple Silicon laptop (Asahi) | Parked | placeholder hardware config; waiting on aarch64 fixes |
+| *(planned)* | homelab server | — | server + homelab roles (fern drops homelab) |
+| *(planned)* | gaming machine | — | hardware + gaming role + quirks |
+
+## Choose your path
+
+| You are… | Start here |
+|----------|-----------|
+| New to NixOS entirely | [Part I: Understanding Fern](concepts/design-philosophy.md), in order — philosophy, then [NixOS & Flakes](concepts/nixos-and-flakes.md) |
+| Comfortable with NixOS, new to den/dendritic | [Aspects, Bundles & Topology](concepts/aspects-bundles-topology.md), then [Part V: Architecture Internals](architecture/repository-layout.md) |
+| Curious about the desktop | [Part II: The Desktop](desktop/garden.md) — the garden design system, then [Niri](desktop/niri.md) |
+| Setting up or debugging homelab services | [Homelab (Tailscale & Radicale)](services/homelab.md) |
+| About to hack on this repo | [Part VI: Operations](operations/rebuilding.md) — rebuilding, [adding an aspect](operations/adding-an-aspect.md), [adding a host](operations/adding-a-host.md) |
+| Looking something up | [Reference](reference/aspect-index.md) — aspect index, aliases, environment variables |
+| Interested in how it got this way | [Appendix: Migration](migration/why-den.md) |
 
 ## Quick start
 
@@ -40,21 +55,22 @@ just book-serve
 just fmt
 ```
 
-## How to read this book
+## How this book is organized
 
-If you are new to NixOS, start with the [Concepts](concepts/nixos-and-flakes.md)
-chapter. It explains flakes, the module system, Home Manager, and the
-[aspects, bundles, and topology](concepts/aspects-bundles-topology.md)
-vocabulary used throughout this book.
+Every chapter leads with **why** — the reasoning and constraints — before
+**how** — the mechanics. If you only remember the why, you can rediscover the
+how; the reverse is not true.
 
-If you already know NixOS and want to understand how this repository is
-organized, go to [Architecture](architecture/repository-layout.md). The
-architecture section explains the flake entry point, den bootstrap, topology,
-aspect patterns, and bundle composition.
-
-If you are migrating from the old garden.* / flake-parts architecture, the
-[Migration](migration/why-den.md) section explains what changed and why.
-
-Everything else is reference material organized by topic: desktop environment,
-git suite, shells, language toolchains, game development, system services,
-security, and operations.
+- **Part I: Understanding Fern** — the concepts: philosophy, flakes, the
+  module system, Home Manager, and the den vocabulary.
+- **Part II: The Desktop (Garden)** — the garden design system, Niri, and
+  browsers; the retired Hyprland stack is kept as a documented fallback.
+- **Part III: Daily Life** — shells, the git suite, language toolchains, and
+  game development tooling.
+- **Part IV: The Machine** — system services (homelab, audio, graphics,
+  gaming, containers) and security/secrets.
+- **Part V: Architecture Internals** — how the flake, dendritic bootstrap,
+  topology, and aspect patterns actually work.
+- **Part VI: Operations & Reference** — day-to-day procedures and lookup
+  tables.
+- **Appendix: Migration** — the historical record of the move to den.

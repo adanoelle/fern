@@ -1,11 +1,14 @@
-# Wallpaper & Theming
+# Wallpaper (Hyprland)
 
-> Wallpapers are managed by swww with per-workspace images, fade transitions,
-> and Hyprland keybindings for cycling.
+> **Legacy.** This wallpaper machinery belongs to the
+> [Hyprland fallback session](hyprland.md). System-wide theming is no longer
+> Catppuccin-per-tool — it is the garden design system; see
+> [The Garden Design System](garden.md).
 
 The wallpaper module (`modules/desktop/_hyprland/wallpaper.nix`) provides a
-declarative way to assign wallpapers per monitor and per workspace, with smooth
-transitions handled by swww.
+declarative way to assign wallpapers per monitor and per workspace, with
+smooth transitions handled by **awww** (an animated-wallpaper daemon in the
+swww lineage).
 
 ## Wallpaper configuration
 
@@ -39,26 +42,24 @@ wallpaper = {
 };
 ```
 
-## Transition types
-
-swww supports these transition effects:
-
-`simple`, `fade`, `left`, `right`, `top`, `bottom`, `wipe`, `wave`, `grow`,
-`center`, `any`, `outer`, `random`
-
-The default is `fade` at 1.2 seconds and 60fps.
+Transitions are passed to `awww img` as `--transition-type`,
+`--transition-duration`, and `--transition-fps`; the default is `fade` at
+1.2 seconds and 60fps.
 
 ## How it works
 
-1. A systemd oneshot service (`swww-wallpaper`) starts swww and sets the initial
-   wallpaper on login
-2. If per-workspace wallpapers are configured, a Hyprland workspace listener
-   detects workspace switches and calls `swww img` with the mapped image
-3. Keybindings (`Super + W`, `Super + Shift + W`) cycle or randomize wallpapers
+1. `awww-daemon` is started via Hyprland `exec-once`, and a systemd oneshot
+   user service (`awww-wallpaper`) waits for the daemon (30s timeout) and
+   sets the initial wallpaper(s) on login
+2. If per-workspace wallpapers are configured, a listener service
+   (`awww-workspace-listener`) watches Hyprland's socket for workspace
+   switches and calls `awww img` with the mapped image
+3. Keybindings (`Super + W`, `Super + Shift + W`) cycle the current
+   workspace's wallpaper or pick a random image from the wallpaper directory
 
 ## Style options
 
-The Hyprland module exposes style options that affect the overall desktop
+The Hyprland module exposes style options that affect the fallback session's
 appearance:
 
 | Option           | Default | Description                      |
@@ -68,29 +69,19 @@ appearance:
 | `style.border`   | 2       | Window border width (px)         |
 | `style.rounding` | 5       | Corner rounding radius (px)      |
 
-## Color scheme
+## Theming
 
-The desktop uses the Catppuccin Frapp&eacute; palette throughout:
-
-| Element                 | Color              | Hex              |
-| ----------------------- | ------------------ | ---------------- |
-| Active window border    | Mauve              | `#cba6f7`        |
-| Inactive window border  | Base               | `#303446`        |
-| Waybar background       | Base (translucent) | `#303446` at 80% |
-| Lock screen input field | Base               | `#303446`        |
-| Lock screen border      | Mauve              | `#ca9ee6`        |
-| Lock screen text        | Text               | `#c6d0f5`        |
-
-The same palette is used in Ghostty (`catppuccin-frappe`), Helix
-(`catppuccin_frappe`), and delta (custom ada-theme based on Catppuccin Mocha).
+The Catppuccin values baked into the Hyprland stack (borders, Waybar,
+hyprlock) are frozen with the fallback session. Everywhere else — terminal,
+editor, git tooling, Niri borders, the shell — colors come from the garden
+palette, with live palette switching at run time. See
+[The Garden Design System](garden.md).
 
 ## Key files
 
 | File                                       | Purpose                                |
 | ------------------------------------------ | -------------------------------------- |
-| `modules/desktop/_hyprland/wallpaper.nix`  | swww wallpaper management module       |
+| `modules/desktop/_hyprland/wallpaper.nix`  | awww wallpaper management module       |
 | `modules/desktop/hyprland.nix`             | Style options (gaps, border, rounding) |
-| `modules/desktop/_hyprland/bar.nix`        | Waybar Catppuccin theme                |
-| `modules/desktop/_hyprland/idlelock.nix`   | Lock screen Catppuccin colors          |
-| `modules/cli/ghostty.nix`                  | Terminal Catppuccin theme              |
-| `modules/cli/helix.nix`                    | Editor Catppuccin theme                |
+| `modules/desktop/_hyprland/bar.nix`        | Waybar theme (fallback session)        |
+| `modules/desktop/_hyprland/idlelock.nix`   | Lock screen colors (fallback session)  |

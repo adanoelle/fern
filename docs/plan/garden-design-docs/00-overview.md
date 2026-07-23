@@ -48,11 +48,20 @@ garden-design-docs/
 │   bar design opportunities, layout spec, animation config
 │   → feeds: niri config + quickshell repo
 │
-└── 08-research-workflow.md
-    Zotero + Obsidian + Kakoune + Typst scholarly pipeline,
-    citation workflow, writing environment, self-authored work
-    → feeds: dotfiles + writing repos
+├── 08-research-workflow.md
+│   Zotero + Obsidian + Kakoune + Typst scholarly pipeline,
+│   citation workflow, writing environment, self-authored work
+│   → feeds: dotfiles + writing repos
+│
+└── 11-fern-shell-den-design.md
+    den/dendritic integration design for the shell
 ```
+
+**Archived:** `09-build-plan.md` and `10-session-plan.md` (the phased build
+and session breakdowns) shipped and now live in
+[`../archive/`](../archive/README.md), alongside the session-handoff and
+jam-session notes. The docs above remain as design reference;
+`06-open-questions.md` is the living decision record.
 
 ---
 

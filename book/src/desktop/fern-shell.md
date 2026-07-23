@@ -1,11 +1,14 @@
-# Fern Shell (QuickShell)
+# Fern Shell (Retired)
 
-> Fern Shell is a custom status bar built with QuickShell, replacing Waybar as
-> the primary panel. It runs as a hardened systemd user service.
+> **Retired.** Fern Shell was the Hyprland-era QuickShell status bar. It has
+> been replaced by **garden-shell**, which provides the bar, launcher,
+> notifications, power menu, and lock screen for the Niri session — see
+> [The Garden Design System](garden.md). This page documents the retained
+> integration for the [Hyprland fallback session](hyprland.md) only.
 
 Fern Shell is an external project (`adanoelle/fern-shell`) consumed as a flake
 input. The sub-module in `modules/desktop/_hyprland/fern.nix` integrates it into
-the desktop environment as a systemd user service with optional OBS integration
+the Hyprland session as a systemd user service with optional OBS integration
 and theme watching.
 
 ## What it provides

@@ -18,7 +18,7 @@ minimal).
 
 | Aspect | File | Type | Applied |
 |--------|------|------|---------|
-| `ada` | `modules/user-ada.nix` | homeManager | ada, every host (base: shells, cli, git, ssh) |
+| `ada` | `modules/user-ada.nix` | homeManager | ada, every host (base: shells, cli, git, ssh, `garden.terminal`) |
 | `ada-desktop` | `modules/user-ada-desktop.nix` | homeManager | forwarded by fern, moss (parked) (desktop prefs + desktop-apps) |
 | `ada-dev` | `modules/user-ada-dev.nix` | homeManager | forwarded by fern, moss (parked) (devtools bundle) |
 
@@ -30,6 +30,7 @@ Host role bundles — compose these instead of long per-host include lists.
 |--------|------|----------|
 | `workstation` | `modules/roles/workstation.nix` | core, nh, users, secrets-guard, secrets, greetd, fonts, audio, docker |
 | `dev-machine` | `modules/roles/dev-machine.nix` | localstack, aws-cli |
+| `homelab` | `modules/roles/homelab.nix` | tailscale, radicale + routing features (see [Homelab](../services/homelab.md)) |
 | `server` | `modules/roles/server.nix` | core, nh, users, secrets-guard (skeleton — hardening TODOs in file) |
 
 ## Bundle aspects
@@ -65,9 +66,11 @@ Aspects providing NixOS system-level configuration.
 | `nh` | `modules/cli/nh.nix` | nh rebuild helper + scheduled clean | fern |
 | `niri` | `modules/desktop/niri.nix` | Niri compositor (nixos enable + HM settings) | fern (also forwarded to users via host provides.to-users) |
 | `node-ts` | `modules/devtools/node-ts.nix` | Node.js, pnpm, Deno, CDK, nix-ld | fern |
+| `radicale` | `modules/radicale.nix` | Radicale CalDAV/CardDAV, tailnet-only, sops htpasswd (see [Homelab](../services/homelab.md)) | fern (via homelab role) |
 | `rust` | `modules/devtools/rust.nix` | Stable Rust, rust-analyzer, cargo tools, hardening | fern |
 | `secrets` | `modules/secrets.nix` | SOPS-nix, age key, SSH key decryption | fern (via workstation role), moss (parked) |
 | `secrets-guard` | `modules/secrets-guard.nix` | git-secrets, trufflehog | fern, moss |
+| `tailscale` | `modules/tailscale.nix` | Tailscale client, trusted interface, operator (see [Homelab](../services/homelab.md)) | fern (via homelab role + radicale) |
 | `teams` | `modules/desktop/teams.nix` | Microsoft Teams | fern |
 | `users` | `modules/users.nix` | User account, NetworkManager, SSH | fern, moss |
 
@@ -85,7 +88,7 @@ Aspects providing Home Manager user-level configuration.
 | `btop` | `modules/cli/btop.nix` | System monitor |
 | `claude-code` | `modules/cli/claude-code.nix` | Claude Code CLI package |
 | `crypt` | `modules/cli/crypt.nix` | Age encryption tool |
-| `delta` | `modules/cli/delta.nix` | Delta diff tool, Catppuccin Frappe theme |
+| `delta` | `modules/cli/delta.nix` | Delta diff tool, garden palette theme |
 | `fd` | `modules/cli/fd.nix` | Fast file finder |
 | `fzf` | `modules/cli/fzf.nix` | Fuzzy finder |
 | `ghostty` | `modules/cli/ghostty.nix` | Ghostty terminal emulator |
@@ -161,6 +164,7 @@ providing NixOS/HM configuration for the end user.
 | File | Purpose |
 |------|---------|
 | `modules/dendritic.nix` | Den bootstrap, HM bridge, mutual provider |
+| `modules/garden.nix` | Mounts the `garden.*` den namespace from garden-shell (see [The Garden Design System](../desktop/garden.md)) |
 | `modules/hosts.nix` | Topology declaration |
 | `modules/defaults.nix` | Global defaults (stateVersion, helpers) |
 | `modules/overlays.nix` | Nixpkgs config and overlays |
