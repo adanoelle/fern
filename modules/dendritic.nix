@@ -13,6 +13,12 @@
     # Enable host→user aspect forwarding via provides.to-users
     ctx.user.includes = [ den._.mutual-provider ];
 
+    # Same routing for standalone homes (den.homes."user@host"): the
+    # home's aspect can declare provides.<hostName> layers, mirroring
+    # what provides.to-users does for hosted users. Used by the ORNL
+    # work laptop (see modules/user-ada-work.nix).
+    ctx.home.includes = [ den._.mutual-provider ];
+
     # Home-manager bridge
     ctx.hm-host.nixos.home-manager = {
       useGlobalPkgs = true;
