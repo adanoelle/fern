@@ -7,7 +7,12 @@ _: {
       ...
     }:
     let
-      cfg = config.desktop.hyprland;
+      # Fallback keeps this aspect safe in homes that don't carry the
+      # hyprland aspect (which declares desktop.hyprland): everything
+      # below is hyprland-flow tooling, so it simply stays off there.
+      # The niri/garden screenshot flow is self-contained in
+      # garden.shell (see modules/desktop/niri.nix binds).
+      cfg = config.desktop.hyprland or { enable = false; };
       shotsDir = "${config.home.homeDirectory}/media/screenshots";
 
       hyprshot_region_annotate = pkgs.writeShellScriptBin "hyprshot-region-annotate" ''
