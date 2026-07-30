@@ -38,11 +38,21 @@
               name = "adanoelle";
               email = "adanoelleyoung@gmail.com";
               # No trailing slash: identities.nix appends one when building
-              # the includeIf gitdir condition. ~/src is all personal today;
-              # a future work identity adds "…/src/work" and wins as the
-              # later, more-specific includeIf.
+              # the includeIf gitdir condition. includeIf ordering is
+              # lexicographic (work > personal), so the more-specific
+              # ~/src/work condition below wins inside work repos.
               directory = "${config.home.homeDirectory}/src";
-              signingKey = "/home/ada/.ssh/github";
+              signingKey = "${config.home.homeDirectory}/.ssh/github";
+            };
+            # ORNL identity, rooted at ~/src/work on any host. Email is a
+            # placeholder until the real ORNL id is assigned (same fix-up
+            # commit as _ornlid_/_work-host_ in modules/hosts.nix).
+            work = {
+              name = "adanoelle";
+              email = "_ornlid_@ornl.gov";
+              directory = "${config.home.homeDirectory}/src/work";
+              signingKey = "${config.home.homeDirectory}/.ssh/ornl";
+              sshCommand = "ssh -i ~/.ssh/ornl -o IdentitiesOnly=yes";
             };
           };
 
