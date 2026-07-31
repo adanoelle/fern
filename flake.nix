@@ -64,6 +64,14 @@
       url = "github:ryoppippi/claude-code-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # GL/Vulkan wrappers for running Nix-built graphical apps on foreign
+    # distros (the ORNL Ubuntu laptop). Unused on NixOS hosts.
+    nixgl = {
+      url = "github:nix-community/nixGL";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
   };
 
   outputs =

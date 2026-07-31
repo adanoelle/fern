@@ -1,6 +1,30 @@
 # modules/hosts.nix — den topology
-_: {
+{ inputs, withSystem, ... }:
+{
   den.hosts.x86_64-linux.fern.users.ada = { };
+
+  # ORNL work laptop — Ubuntu 24.04, standalone home-manager only (no
+  # nixosConfiguration). The "<user>@<host>" key makes the flake attr
+  # match `whoami@hostname` so the home-manager CLI auto-selects it,
+  # while aspect = "ada" maps the ORNL login onto the existing ada
+  # aspect. Its work layer is forwarded via
+  # den.aspects.ada.provides."LAP155464" (modules/user-ada-work.nix).
+  den.homes.x86_64-linux."tyo@LAP155464" = {
+    aspect = "ada";
+    # den's default pkgs is plain inputs.nixpkgs.legacyPackages — no
+    # overlays, no allowUnfree. Reuse the flake's perSystem pkgs
+    # (modules/overlays.nix) so the cli bundle's claude-code overlay
+    # and unfree packages resolve.
+    pkgs = withSystem "x86_64-linux" ({ pkgs, ... }: pkgs);
+    # den's default instantiate passes no extraSpecialArgs; several
+    # homeManager sides (e.g. devtools/devenv.nix) take `inputs`.
+    instantiate =
+      { pkgs, modules }:
+      inputs.home-manager.lib.homeManagerConfiguration {
+        inherit pkgs modules;
+        extraSpecialArgs = { inherit inputs; };
+      };
+  };
 
   # moss (Apple Silicon / Asahi) is parked: its hardware.nix is still the
   # installer placeholder and several aspects pull x86_64-only packages

@@ -8,12 +8,17 @@
 { den, garden, ... }:
 {
   den.aspects.ada = {
+    # garden.terminal is NOT here: it's included by the desktop layer
+    # (user-ada-desktop.nix) and the work-laptop layer (via
+    # garden.shell). Putting it here would duplicate it on the work
+    # laptop, causing a kitty "already been included" warning — see
+    # book/src/operations/work-laptop-preflight.md (BLOCKER section).
+    # A future headless host can include garden.terminal explicitly.
     includes = [
       den.aspects.cli
       den.aspects.git-suite
       den.aspects.shells
       den.aspects.workspace
-      garden.terminal
     ];
 
     homeManager =
@@ -38,11 +43,19 @@
               name = "adanoelle";
               email = "adanoelleyoung@gmail.com";
               # No trailing slash: identities.nix appends one when building
-              # the includeIf gitdir condition. ~/src is all personal today;
-              # a future work identity adds "…/src/work" and wins as the
-              # later, more-specific includeIf.
+              # the includeIf gitdir condition. includeIf ordering is
+              # lexicographic (work > personal), so the more-specific
+              # ~/src/work condition below wins inside work repos.
               directory = "${config.home.homeDirectory}/src";
-              signingKey = "/home/ada/.ssh/github";
+              signingKey = "${config.home.homeDirectory}/.ssh/github";
+            };
+            # ORNL identity, rooted at ~/src/work on any host.
+            work = {
+              name = "adanoelle";
+              email = "tyo@ornl.gov";
+              directory = "${config.home.homeDirectory}/src/work";
+              signingKey = "${config.home.homeDirectory}/.ssh/ornl";
+              sshCommand = "ssh -i ~/.ssh/ornl -o IdentitiesOnly=yes";
             };
           };
 
