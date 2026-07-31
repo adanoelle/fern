@@ -5,6 +5,58 @@
 > swaylock) are in place, but **before** logging into the "Niri (garden)"
 > GDM session for the first time.
 
+## Status (2026-07-31)
+
+Pre-flight checks completed in a Claude Code session on the GNOME
+desktop. All checks pass. One non-blocking bug found (font name
+mismatch). Session is ready for first login.
+
+- [x] 1. Rebuild with real values (`home-manager switch` done)
+- [x] 2. System-level checks (all pass)
+- [x] 3. User-level checks (all pass, font bug noted)
+- [ ] 4. First login into Niri (garden)
+- [ ] 5. Post-login verification (keybinds, garden shell, lock screen)
+
+### Non-blocking issues found
+
+- **Font name mismatch in `modules/fonts.nix`**: the fontconfig
+  `defaultFonts` reference `"M PLUS 1p"` (old name) but
+  `mplus-outline-fonts.githubRelease` installs `"M PLUS 1"` (new name).
+  `fc-match "M PLUS 1p"` falls back to DejaVu Sans. Fix: change
+  `"M PLUS 1p"` to `"M PLUS 1"` in `modules/fonts.nix` (lines 29, 33).
+  Cosmetic only — affects fern too.
+
+- **SSH keys**: `~/.ssh/github` created and registered with GitHub
+  (auth + signing). `~/.ssh/ornl` exists but not yet registered with
+  ORNL GitLab (deferred). GitHub commit signing works.
+
+### If picking up from a new Claude session
+
+The Niri session is ready to try. If something went wrong during login:
+
+1. Switch to TTY with `Ctrl+Alt+F3`, log in
+2. Start a new Claude Code session: `cd ~/src/fern && claude`
+3. Say: "The first Niri login on the work laptop failed. See
+   `book/src/operations/work-laptop-preflight.md` for context and
+   section 5 below for troubleshooting."
+4. Share the output of:
+   ```bash
+   journalctl --user -u niri.service -b --no-pager | tail -40
+   systemctl --user status niri.service
+   ```
+
+If the session works but something specific is broken (garden shell,
+lock screen, keybinds), say: "Niri started on the work laptop but
+\<describe issue\>. See the pre-flight checklist for context."
+
+Key files for debugging:
+- `modules/foreign/ubuntu-desktop.nix` -- nixGL wrapping, systemd
+  units, session shim, portal routing
+- `modules/user-ada-work.nix` -- work-laptop layer (brightness keys)
+- `modules/desktop/niri-standalone.nix` -- home-module-only niri import
+
+---
+
 ## 1. Rebuild with real values
 
 If the last `home-manager switch` was run before the `_ornlid_`/`_work-host_`
@@ -43,7 +95,7 @@ ls -la ~/.config/systemd/user/niri-shutdown.target
 
 ```bash
 ls -la ~/.ssh/ornl ~/.ssh/ornl.pub
-ls -la ~/.ssh/github ~/.ssh/github.pub   # optional
+ls -la ~/.ssh/github ~/.ssh/github.pub
 ```
 
 If `~/.ssh/ornl` is missing, generate it before the session (git
@@ -131,16 +183,18 @@ qs --version
 
 ```bash
 cat ~/.config/xdg-desktop-portal/niri-portals.conf
-# Should list [niri] default=gtk;gnome
+# Should list [preferred] default=gtk;gnome
 ```
 
 ### Fonts installed
 
 ```bash
-fc-list | grep -i "M PLUS 1p" | head -1
-fc-list | grep -i "IBM Plex Mono" | head -1
-# Both should return results after home-manager activation
+fc-match "M PLUS 1"     # should resolve to Mplus1, NOT DejaVu
+fc-match "IBM Plex Mono" # should resolve to IBMPlexMono
 ```
+
+Note: the config currently references `"M PLUS 1p"` (old name) but the
+installed font is `"M PLUS 1"`. See the status section for the fix.
 
 ### ssh-agent conflict check
 
@@ -218,6 +272,9 @@ check that `qs -c garden` works from a terminal inside Niri.
 
 ## 6. Known limitations (first session)
 
+- **Font name mismatch**: `"M PLUS 1p"` in fontconfig defaults doesn't
+  match the installed `"M PLUS 1"`. Sans-serif falls back to DejaVu.
+  Fix pending in `modules/fonts.nix`.
 - **Garden BrightnessService** is DDC-only -- the panel brightness OSD
   won't show for brightnessctl changes; the brightness still changes,
   just without visual feedback from garden.
