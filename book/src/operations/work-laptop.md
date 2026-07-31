@@ -13,7 +13,7 @@ laptop gets a **standalone den home**:
 
 ```nix
 # modules/hosts.nix
-den.homes.x86_64-linux."_ornlid_@_work-host_" = {
+den.homes.x86_64-linux."tyo@LAP155464" = {
   aspect = "ada";   # ORNL login reuses the ada aspect
   pkgs = withSystem "x86_64-linux" ({ pkgs, ... }: pkgs);
   instantiate = { pkgs, modules }:
@@ -32,7 +32,7 @@ den.homes.x86_64-linux."_ornlid_@_work-host_" = {
   nixpkgs (no claude-code overlay, no allowUnfree) and pass no
   `extraSpecialArgs` (devtools/devenv.nix needs `inputs`).
 - den's `mutual-provider` (wired for homes via `ctx.home.includes` in
-  `modules/dendritic.nix`) routes `den.aspects.ada.provides."_work-host_"`
+  `modules/dendritic.nix`) routes `den.aspects.ada.provides."LAP155464"`
   into the home — this is where the **ada-work** layer attaches
   (`modules/user-ada-work.nix`): dev toolchain + niri + garden shell,
   deliberately without ada-desktop (no hyprland/DAW/gaming).
@@ -64,10 +64,9 @@ Aspects specific to the foreign distro:
   shared niri aspect binds `ddcutil`, which is DDC/CI for external
   monitors only — laptop panels need sysfs backlight).
 
-`_ornlid_` / `_work-host_` are placeholders (shell-safe on purpose: they
-appear in generated bash). Replace them with the real ORNL user id and
-hostname in `modules/hosts.nix`, `modules/user-ada-work.nix`, and the
-work git identity in `modules/user-ada.nix` once assigned.
+The ORNL user id (`tyo`) and hostname (`LAP155464`) are baked into
+`modules/hosts.nix`, `modules/user-ada-work.nix`, and the work git
+identity in `modules/user-ada.nix`.
 
 ## One-time root checklist (Ubuntu)
 
@@ -81,7 +80,7 @@ switch creates).
 2. **`/etc/nix/nix.conf`** — add:
 
    ```
-   trusted-users = root _ornlid_
+   trusted-users = root tyo
    extra-substituters = https://niri.cachix.org https://nix-community.cachix.org
    extra-trusted-public-keys = niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=
    ```
@@ -95,7 +94,7 @@ switch creates).
    [Desktop Entry]
    Name=Niri (garden)
    Comment=Scrollable-tiling Wayland compositor (Nix-managed)
-   Exec=/home/_ornlid_/.local/bin/niri-session-shim
+   Exec=/home/tyo/.local/bin/niri-session-shim
    Type=Application
    DesktopNames=niri
    ```
@@ -136,13 +135,11 @@ switch creates).
    # register with ORNL git hosting; optionally provision ~/.ssh/github
    ```
 
-4. Replace the `_ornlid_` / `_work-host_` placeholders with the real
-   values (branch + push, or a local edit for the first bootstrap).
-5. Bootstrap the home (no `home-manager` on PATH yet):
+4. Bootstrap the home (no `home-manager` on PATH yet):
 
    ```bash
    cd ~/src/fern
-   nix build '.#homeConfigurations."<id>@<host>".activationPackage'
+   nix build '.#homeConfigurations."tyo@LAP155464".activationPackage'
    ./result/activate
    ```
 
@@ -153,8 +150,8 @@ switch creates).
    home-manager switch --flake ~/src/fern   # auto-selects id@host
    ```
 
-6. Root steps 4–5, then `systemctl --user daemon-reload`.
-7. Log out → GDM → "Niri (garden)". Verify:
+5. Root steps 4–5, then `systemctl --user daemon-reload`.
+6. Log out → GDM → "Niri (garden)". Verify:
    - `niri msg outputs` and `systemctl --user status niri.service`
    - garden bar renders; `Mod+Slash` opens the launcher
    - `nixGLMesa glxinfo | grep renderer` shows the real GPU

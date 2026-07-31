@@ -44,12 +44,10 @@
               directory = "${config.home.homeDirectory}/src";
               signingKey = "${config.home.homeDirectory}/.ssh/github";
             };
-            # ORNL identity, rooted at ~/src/work on any host. Email is a
-            # placeholder until the real ORNL id is assigned (same fix-up
-            # commit as _ornlid_/_work-host_ in modules/hosts.nix).
+            # ORNL identity, rooted at ~/src/work on any host.
             work = {
               name = "adanoelle";
-              email = "_ornlid_@ornl.gov";
+              email = "tyo@ornl.gov";
               directory = "${config.home.homeDirectory}/src/work";
               signingKey = "${config.home.homeDirectory}/.ssh/ornl";
               sshCommand = "ssh -i ~/.ssh/ornl -o IdentitiesOnly=yes";

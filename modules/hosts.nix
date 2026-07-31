@@ -8,9 +8,8 @@
   # match `whoami@hostname` so the home-manager CLI auto-selects it,
   # while aspect = "ada" maps the ORNL login onto the existing ada
   # aspect. Its work layer is forwarded via
-  # den.aspects.ada.provides."_work-host_" (modules/user-ada-work.nix).
-  # Replace the _ornlid_/_work-host_ placeholders once assigned.
-  den.homes.x86_64-linux."_ornlid_@_work-host_" = {
+  # den.aspects.ada.provides."LAP155464" (modules/user-ada-work.nix).
+  den.homes.x86_64-linux."tyo@LAP155464" = {
     aspect = "ada";
     # den's default pkgs is plain inputs.nixpkgs.legacyPackages — no
     # overlays, no allowUnfree. Reuse the flake's perSystem pkgs

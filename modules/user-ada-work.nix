@@ -7,7 +7,7 @@
 # garden QML/tooling arrives by other means, but a standalone home has
 # to pull the whole bundle itself.
 #
-# Attached below via den.aspects.ada.provides."_work-host_", which
+# Attached below via den.aspects.ada.provides."LAP155464", which
 # den's mutual-provider routes into the standalone home (see
 # ctx.home.includes in modules/dendritic.nix and the den.homes entry in
 # modules/hosts.nix).
@@ -52,8 +52,6 @@
       };
   };
 
-  # Placeholder host name: replace _work-host_ (and _ornlid_ in
-  # modules/hosts.nix) with the real values once the laptop's hostname
-  # and ORNL user id are known.
-  den.aspects.ada.provides."_work-host_".includes = [ den.aspects.ada-work ];
+  # Forward the ada-work layer into the ORNL work laptop's standalone home.
+  den.aspects.ada.provides."LAP155464".includes = [ den.aspects.ada-work ];
 }
