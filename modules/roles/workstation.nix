@@ -17,6 +17,7 @@
     den.aspects.greetd
     den.aspects.fonts
     den.aspects.audio
+    den.aspects.bluetooth
     den.aspects.docker
   ];
 }
