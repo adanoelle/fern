@@ -73,6 +73,7 @@
 - [Adding an Aspect](operations/adding-an-aspect.md)
 - [Adding a Host](operations/adding-a-host.md)
 - [Work Laptop (Ubuntu + Standalone Home)](operations/work-laptop.md)
+  - [Pre-Flight Checklist](operations/work-laptop-preflight.md)
 - [Troubleshooting](operations/troubleshooting.md)
 - [Aspect Index](reference/aspect-index.md)
 - [Shell Aliases & Commands](reference/aliases.md)
