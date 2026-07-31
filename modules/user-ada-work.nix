@@ -31,7 +31,9 @@
         # (DDC/CI, external monitors only); on a laptop the internal
         # panel needs sysfs backlight via brightnessctl instead.
         # ddcutil remains available for docked external monitors.
-        home.packages = [ pkgs.brightnessctl ];
+        home.packages = [
+          pkgs.brightnessctl
+        ];
 
         programs.niri.settings.binds = {
           "XF86MonBrightnessUp".action = lib.mkForce {
@@ -48,7 +50,20 @@
               "5%-"
             ];
           };
+          # Lock: Ctrl+Alt+F1 (VT-switch to GDM greeter) is the only
+          # working lock on the ORNL laptop — garden lock and swaylock
+          # both fail with the YubiKey/PKCS#11 PAM stack. Unbind
+          # Mod+Alt+L so it can't accidentally fire a broken locker.
+          # See book/src/operations/work-laptop-preflight.md (BLOCKER).
+          "Mod+Alt+L".action = lib.mkForce { spawn = [ "true" ]; };
         };
+
+        # Disable swayidle entirely. Neither garden lock nor swaylock
+        # can authenticate with ORNL's YubiKey PAM stack.
+        # Lock manually with Ctrl+Alt+F1 (VT-switch to GDM greeter).
+        # TODO: automate via `sudo chvt 1` if a sudoers rule becomes
+        # possible, or find a non-root VT-switch mechanism.
+        services.swayidle.enable = lib.mkForce false;
       };
   };
 

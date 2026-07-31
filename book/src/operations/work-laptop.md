@@ -162,6 +162,15 @@ switch creates).
 
 ## Known rough edges
 
+- **Lock screen is manual VT-switch only**: neither garden lock nor
+  swaylock can authenticate with the ORNL YubiKey/PKCS#11 PAM stack.
+  Garden's `PamContext` can't drive multi-step PAM conversations;
+  swaylock's Nix-packaged libpam can't talk to the host `pam_pkcs11`.
+  swayidle is disabled and `Mod+Alt+L` is a no-op. **Lock by pressing
+  `Ctrl+Alt+F1`** (VT-switch to GDM greeter, which handles YubiKey
+  auth natively, then returns to the Niri session on tty2). Automated
+  idle lock would require `sudo chvt 1`, but CFEngine manages sudoers
+  on this machine. See `work-laptop-preflight.md` for full history.
 - Panel brightness may need the user in the `video` group (or a udev
   rule) for sysfs backlight writes; garden's BrightnessService is
   DDC-only, so the panel OSD won't track brightnessctl yet.

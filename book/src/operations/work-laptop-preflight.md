@@ -7,15 +7,13 @@
 
 ## Status (2026-07-31)
 
-Pre-flight checks completed in a Claude Code session on the GNOME
-desktop. All checks pass. One non-blocking bug found (font name
-mismatch). Session is ready for first login.
+Niri session boots and runs. Lock screen workaround in place.
 
 - [x] 1. Rebuild with real values (`home-manager switch` done)
 - [x] 2. System-level checks (all pass)
 - [x] 3. User-level checks (all pass, font bug noted)
-- [ ] 4. First login into Niri (garden)
-- [ ] 5. Post-login verification (keybinds, garden shell, lock screen)
+- [x] 4. First login into Niri (garden) — session works
+- [x] 5. Post-login verification — lock screen resolved (see below)
 
 ### Non-blocking issues found
 
@@ -30,30 +28,122 @@ mismatch). Session is ready for first login.
   (auth + signing). `~/.ssh/ornl` exists but not yet registered with
   ORNL GitLab (deferred). GitHub commit signing works.
 
+### BLOCKER: Lock screen authentication fails (YubiKey PAM)
+
+**Problem**: Neither garden lock nor swaylock can authenticate on the
+ORNL laptop. Both accept input but reject password and YubiKey PIN.
+GDM authenticates the same YubiKey successfully.
+
+**Root cause analysis**:
+
+1. **Garden lock** — garden's `PamContext` only handles single-response
+   PAM conversations. ORNL's `pam_u2f` (or `pam_pkcs11` in
+   `common-auth`) uses a multi-step conversation (PIN → touch).
+   Garden cannot drive this flow. Symptom: full red screen, no input
+   accepted.
+
+2. **Swaylock** — uses the Nix-packaged `libpam.so`, not Ubuntu's
+   system libpam. Even with absolute module paths in
+   `/etc/pam.d/swaylock`, the Nix libpam may handle the PKCS#11 /
+   YubiKey conversation differently from Ubuntu's libpam. Additionally,
+   `pam_pkcs11` may need session context (pcscd socket, environment)
+   that GDM provides but swaylock does not.
+
+3. **`pam_unix` fallback also fails** — even typing the Ubuntu user
+   password (not YubiKey PIN) does not unlock. The YubiKey being
+   inserted may cause `pam_pkcs11` (marked `sufficient`) to intercept
+   and fail before `pam_unix` is reached.
+
+**Current `/etc/pam.d/swaylock`** (rewritten with absolute paths):
+```
+auth sufficient /usr/lib/x86_64-linux-gnu/security/pam_pkcs11.so nodebug quiet
+auth [success=1 default=ignore] /usr/lib/x86_64-linux-gnu/security/pam_unix.so nullok
+auth requisite /usr/lib/x86_64-linux-gnu/security/pam_deny.so
+auth required  /usr/lib/x86_64-linux-gnu/security/pam_permit.so
+```
+
+**Approaches tested and results**:
+
+| Approach | Result |
+|----------|--------|
+| Garden lock (`qs -c garden ipc call garden lock`) | Red screen, no input accepted (PamContext can't drive multi-step PAM) |
+| Swaylock | Accepts input but rejects password and PIN (Nix libpam + pam_pkcs11 incompatibility) |
+| `loginctl lock-session` | No-op — GDM doesn't listen for the Lock signal on Niri sessions (only gnome-shell handles it) |
+
+**Solution: VT-switch to GDM greeter (verified working)**
+
+Switching to tty1 (`Ctrl+Alt+F1`) triggers GDM to spawn a fresh
+greeter. YubiKey authenticates normally. GDM then returns the user
+to the existing Niri session on tty2. The Niri session stays running
+throughout — no processes killed, no compositor lock screen involved.
+
+**Tested 2026-07-31**: `Ctrl+Alt+F1` → GDM greeter → YubiKey auth
+→ returned to Niri session on tty2. Works.
+
+**Session facts** (from `loginctl session-status`):
+- Session ID: 2, user tyo (24279)
+- Niri runs on: **tty2** (seat0, vc2)
+- Service: gdm-password, Type: wayland, Class: user
+- Leader: gdm-session-worker (pid 2546)
+- GDM greeter VT: **tty1** (spawns on demand, no persistent session)
+
+**What still needs to happen**:
+
+Manual `Ctrl+Alt+F1` works, but swayidle (idle timeout) and
+before-sleep (lid close) currently fire `swaylock`, which **will trap
+you** in a broken lock screen. These must be changed to trigger
+`chvt 1` instead, so idle and lid-close are safe.
+
+`chvt` requires root. The proposed solution is a narrowly-scoped
+sudoers rule:
+
+```
+tyo ALL=(root) NOPASSWD: /usr/bin/chvt 1
+```
+
+This allows only `chvt 1` (switch to GDM's VT), nothing else.
+`chvt` itself doesn't execute anything — it's a kernel ioctl that
+changes the active virtual terminal.
+
+**Status (2026-07-31): RESOLVED — workaround in place.**
+
+swayidle is disabled entirely (`services.swayidle.enable = mkForce
+false` in `user-ada-work.nix`). `Mod+Alt+L` is a no-op (`spawn
+["true"]`). swaylock removed from `home.packages`. No idle or
+lid-close lock triggers exist — the session cannot trap the user in
+a broken lock screen.
+
+**Lock workflow**: manually press `Ctrl+Alt+F1` before stepping away
+or closing the lid. GDM spawns its greeter, YubiKey authenticates,
+GDM returns to the Niri session on tty2.
+
+**Automated lock is not possible** without a root-level `chvt 1`
+call. A sudoers drop-in was considered but CFEngine manages
+`/etc/sudoers.d/` on this machine, so any local rule could be
+overwritten. This is accepted as a known limitation.
+
 ### If picking up from a new Claude session
 
-The Niri session is ready to try. If something went wrong during login:
+The lock screen issue is resolved. swayidle is disabled, swaylock is
+removed, `Mod+Alt+L` is a no-op. Lock manually with `Ctrl+Alt+F1`.
 
-1. Switch to TTY with `Ctrl+Alt+F3`, log in
-2. Start a new Claude Code session: `cd ~/src/fern && claude`
-3. Say: "The first Niri login on the work laptop failed. See
-   `book/src/operations/work-laptop-preflight.md` for context and
-   section 5 below for troubleshooting."
-4. Share the output of:
-   ```bash
-   journalctl --user -u niri.service -b --no-pager | tail -40
-   systemctl --user status niri.service
-   ```
+If revisiting automated lock in the future, the constraint is:
+`chvt 1` requires root, and CFEngine manages `/etc/sudoers.d/` so
+a local drop-in is unreliable. Alternatives to explore: polkit
+action for VT switching, `CAP_SYS_TTY_CONFIG` capability, or an
+upstream fix to garden's `PamContext` for multi-step PAM conversations.
 
-If the session works but something specific is broken (garden shell,
-lock screen, keybinds), say: "Niri started on the work laptop but
-\<describe issue\>. See the pre-flight checklist for context."
+Key files:
+- `modules/user-ada-work.nix` -- swayidle disabled, lock keybind no-op
+- `modules/desktop/niri.nix` -- base swayidle config (overridden)
+- `book/src/operations/work-laptop.md` -- runbook
 
-Key files for debugging:
-- `modules/foreign/ubuntu-desktop.nix` -- nixGL wrapping, systemd
-  units, session shim, portal routing
-- `modules/user-ada-work.nix` -- work-laptop layer (brightness keys)
-- `modules/desktop/niri-standalone.nix` -- home-module-only niri import
+Key files:
+- `modules/user-ada-work.nix` -- lock keybind + swayidle overrides
+- `modules/desktop/niri.nix` -- base swayidle config (lines 402-415)
+- `modules/foreign/ubuntu-desktop.nix` -- nixGL wrapping, session shim
+- `/etc/pam.d/swaylock` -- current PAM config (may become irrelevant)
+- `book/src/operations/work-laptop.md` -- runbook (needs update too)
 
 ---
 
@@ -227,7 +317,7 @@ pgrep -a ssh-agent
 | `Mod+B` | Firefox |
 | `Mod+1`--`Mod+5` | switch workspaces (studio/research/writing/music/system) |
 | `Mod+S` | screenshot (region mode) |
-| `Mod+Alt+L` | lock screen (PAM unlock with Ubuntu password) |
+| `Mod+Alt+L` | no-op (disabled — use `Ctrl+Alt+F1` to lock via GDM) |
 | Brightness keys | panel brightness (brightnessctl) |
 | Volume keys | wpctl adjusts default sink |
 | `Mod+Shift+E` | quit niri (back to GDM) |
@@ -260,10 +350,16 @@ journalctl --user -u quickshell -b 2>/dev/null || \
 Garden may need a moment to connect via IPC. If it never appears,
 check that `qs -c garden` works from a terminal inside Niri.
 
-### Lock screen doesn't unlock
+### Lock screen
 
-- PAM issue: verify `/etc/pam.d/swaylock` exists with `auth include common-auth`
-- Try `swaylock` directly from a terminal to test PAM independently
+swayidle and swaylock are disabled on the ORNL laptop. The only lock
+mechanism is `Ctrl+Alt+F1` (VT-switch to GDM greeter). See the
+BLOCKER section in Status above for the full history.
+
+If someone accidentally triggers garden lock (e.g., via `qs` IPC):
+1. `Ctrl+Alt+F3` → TTY login
+2. `pkill -f "qs.*garden"`
+3. `Ctrl+Alt+F2` → back to Niri
 
 ### GNOME session broken after
 
