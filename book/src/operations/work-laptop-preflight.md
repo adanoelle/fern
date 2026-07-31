@@ -136,14 +136,8 @@ upstream fix to garden's `PamContext` for multi-step PAM conversations.
 Key files:
 - `modules/user-ada-work.nix` -- swayidle disabled, lock keybind no-op
 - `modules/desktop/niri.nix` -- base swayidle config (overridden)
-- `book/src/operations/work-laptop.md` -- runbook
-
-Key files:
-- `modules/user-ada-work.nix` -- lock keybind + swayidle overrides
-- `modules/desktop/niri.nix` -- base swayidle config (lines 402-415)
 - `modules/foreign/ubuntu-desktop.nix` -- nixGL wrapping, session shim
-- `/etc/pam.d/swaylock` -- current PAM config (may become irrelevant)
-- `book/src/operations/work-laptop.md` -- runbook (needs update too)
+- `book/src/operations/work-laptop.md` -- runbook
 
 ---
 
@@ -218,12 +212,11 @@ cat /usr/share/wayland-sessions/niri.desktop
 # Exec= must be /home/tyo/.local/bin/niri-session-shim
 ```
 
-### PAM swaylock
+### PAM swaylock (no longer used)
 
-```bash
-cat /etc/pam.d/swaylock
-# Should contain: auth include common-auth
-```
+swaylock is disabled on the ORNL laptop (YubiKey PAM incompatibility).
+`/etc/pam.d/swaylock` exists on the host but is not exercised.
+See the BLOCKER section in Status above.
 
 ### Ubuntu dependencies
 
