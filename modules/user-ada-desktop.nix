@@ -4,11 +4,12 @@
 # and the desktop application bundle. Only hosts with a graphical
 # session forward this layer (via provides.to-users); a headless host
 # simply never applies it.
-{ den, ... }:
+{ den, garden, ... }:
 {
   den.aspects.ada-desktop = {
     includes = [
       den.aspects.desktop-apps
+      garden.terminal
     ];
 
     homeManager =

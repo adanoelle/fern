@@ -8,12 +8,17 @@
 { den, garden, ... }:
 {
   den.aspects.ada = {
+    # garden.terminal is NOT here: it's included by the desktop layer
+    # (user-ada-desktop.nix) and the work-laptop layer (via
+    # garden.shell). Putting it here would duplicate it on the work
+    # laptop, causing a kitty "already been included" warning — see
+    # book/src/operations/work-laptop-preflight.md (BLOCKER section).
+    # A future headless host can include garden.terminal explicitly.
     includes = [
       den.aspects.cli
       den.aspects.git-suite
       den.aspects.shells
       den.aspects.workspace
-      garden.terminal
     ];
 
     homeManager =
