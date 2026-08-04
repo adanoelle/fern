@@ -26,7 +26,7 @@
               { "device.name" = "~bluez_card.*"; }
             ];
             actions.update-props = {
-              "bluez5.auto-connect" = "[ a2dp_sink hfp_hf ]";
+              "bluez5.auto-connect" = "[ a2dp_sink ]";
               "bluez5.codecs" = "[ aac sbc_xq sbc ]";
             };
           }
