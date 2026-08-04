@@ -211,6 +211,7 @@ in
 
               # Fullscreen & overview
               "${mod}+F".action.maximize-column = [ ];
+              "${mod}+Shift+F".action.fullscreen-window = [ ];
               "${mod}+A".action.toggle-overview = [ ];
 
               # Column width cycling
@@ -359,6 +360,16 @@ in
             {
               matches = [ { app-id = "^lazygit$"; } ];
               open-floating = true;
+            }
+
+            # Full-width apps
+            {
+              matches = [{ app-id = "^libreoffice"; }];
+              default-column-width.proportion = 1.0;
+            }
+            {
+              matches = [{ app-id = "^teams-for-linux$"; }];
+              default-column-width.proportion = 1.0;
             }
 
             # Host tier borders — HPC (urgent red)
