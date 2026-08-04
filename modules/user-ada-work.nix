@@ -21,6 +21,7 @@
       garden.shell
       den.aspects.fonts
       den.aspects.imv
+      den.aspects.pdf
       den.aspects.screenshot
     ];
 
