@@ -23,6 +23,7 @@
       den.aspects.imv
       den.aspects.pdf
       den.aspects.screenshot
+      den.aspects.teams
     ];
 
     homeManager =
