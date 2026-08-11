@@ -18,6 +18,7 @@
       den.aspects.ada-dev
       den.aspects.niri-standalone
       den.aspects.ubuntu-desktop
+      den.aspects.docker-rootless
       garden.shell
       den.aspects.fonts
       den.aspects.imv

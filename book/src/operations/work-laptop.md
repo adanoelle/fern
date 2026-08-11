@@ -117,6 +117,66 @@ switch creates).
 8. **Verify apt-side deps** (all present on a default Ubuntu GNOME
    install): `xdg-desktop-portal` + gtk/gnome backends, PipeWire +
    WirePlumber (`wpctl` drives the volume binds).
+9. *Optional (containers — rootless Docker)*: the home config runs
+   `dockerd` rootless as a systemd user service
+   (`modules/foreign/docker-rootless.nix`, included by ada-work); no
+   root daemon, no `docker` group. First deployed 2026-08-10 for
+   theodolite's DeGAUSS comparative benchmark
+   ([adanoelle/theodolite#16](https://github.com/adanoelle/theodolite/pull/16)),
+   which runs the DeGAUSS geocoder container through this daemon.
+   Root-side prerequisites:
+
+   ```bash
+   sudo apt install uidmap dbus-user-session
+   grep tyo /etc/subuid /etc/subgid   # verify subordinate id ranges exist
+   # if absent (ORNL-provisioned user):
+   sudo usermod --add-subuids 100000-165535 --add-subgids 100000-165535 tyo
+   ```
+
+   **apt unreachable?** ORNL wires apt to an internal mirror that only
+   resolves on the lab network. `dbus-user-session` is preinstalled on
+   Ubuntu desktop; the only thing `uidmap` actually provides is setuid
+   `newuidmap`/`newgidmap`, and Nix can supply those. The Nix store
+   cannot hold setuid binaries (this is what NixOS's `/run/wrappers`
+   solves), so install setuid *copies* by hand — they only dlopen
+   world-readable store libs via rpath, so copies run fine:
+
+   ```bash
+   nix build --inputs-from ~/src/fern 'nixpkgs#shadow' -o /tmp/nix-shadow
+   sudo install -m 4755 -o root -g root "$(readlink -f /tmp/nix-shadow)/bin/newuidmap" /usr/local/bin/newuidmap
+   sudo install -m 4755 -o root -g root "$(readlink -f /tmp/nix-shadow)/bin/newgidmap" /usr/local/bin/newgidmap
+   ```
+
+   The docker user unit's PATH includes `/usr/local/bin` for exactly
+   this. `usermod` itself is in Ubuntu's base `passwd` package (always
+   present), so the subuid/subgid step above works regardless.
+
+   Ubuntu 24.04 restricts unprivileged user namespaces via AppArmor,
+   so the Nix-store `rootlesskit` needs a profile — the glob attachment
+   survives store-path changes across flake updates
+   (`/etc/apparmor.d/nix-rootlesskit`):
+
+   ```
+   abi <abi/4.0>,
+   include <tunables/global>
+
+   profile nix-rootlesskit /nix/store/*/bin/rootlesskit flags=(unconfined) {
+     userns,
+     include if exists <local/nix-rootlesskit>
+   }
+   ```
+
+   then `sudo apparmor_parser -r /etc/apparmor.d/nix-rootlesskit`.
+   After the next `home-manager switch`, verify:
+
+   ```bash
+   systemctl --user status docker
+   docker info | grep -i rootless   # DOCKER_HOST is set by the home config
+   docker run --rm hello-world
+   ```
+
+   (New login shells pick up `DOCKER_HOST`; existing ones need
+   `export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock`.)
 
 ## First-deploy runbook (on the laptop)
 
