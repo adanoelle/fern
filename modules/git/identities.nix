@@ -16,11 +16,15 @@ _: {
       makeIdentityConfig =
         identity:
         {
-          user.name = identity.name;
-          user.email = identity.email;
+          user = {
+            name = identity.name;
+            email = identity.email;
+          }
+          // optionalAttrs (identity.signingKey != null) {
+            signingkey = identity.signingKey;
+          };
         }
         // optionalAttrs (identity.signingKey != null) {
-          user.signingkey = identity.signingKey;
           commit.gpgsign = true;
           gpg.format = "ssh";
         }
