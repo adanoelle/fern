@@ -36,7 +36,17 @@ _: {
           "${home}/notes" \
           "${home}/archive" \
           "${home}/media/screenshots" \
-          "${home}/media/wallpapers"
+          "${home}/media/wallpapers" \
+          "${home}/work/notes" \
+          "${home}/work/notes/daily" \
+          "${home}/work/notes/meetings" \
+          "${home}/work/notes/projects" \
+          "${home}/work/notes/areas" \
+          "${home}/work/notes/literature" \
+          "${home}/work/notes/resources" \
+          "${home}/work/notes/archive" \
+          "${home}/work/notes/templates" \
+          "${home}/work/notes/docs"
       '';
 
       home.file."docs/FILING.md".source = ./_workspace/FILING.md;

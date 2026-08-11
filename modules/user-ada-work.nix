@@ -23,6 +23,7 @@
       den.aspects.fonts
       den.aspects.imv
       den.aspects.pdf
+      den.aspects.obsidian
       den.aspects.screenshot
       den.aspects.teams
     ];
@@ -36,6 +37,9 @@
         # ddcutil remains available for docked external monitors.
         home.packages = [
           pkgs.brightnessctl
+          pkgs.pandoc
+          pkgs.glow
+          pkgs.zotero
         ];
 
         programs.niri.settings.binds = {
