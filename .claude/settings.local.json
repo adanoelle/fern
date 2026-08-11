@@ -23,7 +23,9 @@
       "Bash(just fmt:*)",
       "Bash(git add:*)",
       "Bash(journalctl:*)",
-      "Bash(deadnix .:*)"
+      "Bash(deadnix .:*)",
+      "WebFetch(domain:docs.obsidian.md)",
+      "Bash(nix fmt:*)"
     ]
   }
 }
