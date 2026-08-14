@@ -57,6 +57,14 @@
               signingKey = "${config.home.homeDirectory}/.ssh/ornl";
               sshCommand = "ssh -i ~/.ssh/ornl -o IdentitiesOnly=yes";
             };
+            # ORNL identity for ~/work (notes vault, non-code repos).
+            work-vault = {
+              name = "adanoelle";
+              email = "tyo@ornl.gov";
+              directory = "${config.home.homeDirectory}/work";
+              signingKey = "${config.home.homeDirectory}/.ssh/ornl";
+              sshCommand = "ssh -i ~/.ssh/ornl -o IdentitiesOnly=yes";
+            };
           };
 
           ssh = {

@@ -18,10 +18,12 @@
       den.aspects.ada-dev
       den.aspects.niri-standalone
       den.aspects.ubuntu-desktop
+      den.aspects.docker-rootless
       garden.shell
       den.aspects.fonts
       den.aspects.imv
       den.aspects.pdf
+      den.aspects.obsidian
       den.aspects.screenshot
       den.aspects.teams
     ];
@@ -35,6 +37,9 @@
         # ddcutil remains available for docked external monitors.
         home.packages = [
           pkgs.brightnessctl
+          pkgs.pandoc
+          pkgs.glow
+          pkgs.zotero
         ];
 
         programs.niri.settings.binds = {
@@ -58,6 +63,12 @@
           # Mod+Alt+L so it can't accidentally fire a broken locker.
           # See book/src/operations/work-laptop-preflight.md (BLOCKER).
           "Mod+Alt+L".action = lib.mkForce { spawn = [ "true" ]; };
+        };
+
+        programs.ssh.settings."code-int code-int.ornl.gov" = {
+          User = "git";
+          IdentityFile = "~/.ssh/code-int";
+          IdentitiesOnly = "yes";
         };
 
         # Disable swayidle entirely. Neither garden lock nor swaylock

@@ -23,8 +23,7 @@ _: {
 
         # Garden palette snippet — mutable, updated by `garden-themes apply`
         home.file."work/notes/.obsidian/snippets/garden.css".source =
-          config.lib.file.mkOutOfStoreSymlink
-            "${themesDir}/obsidian/garden-theme.css";
+          config.lib.file.mkOutOfStoreSymlink "${themesDir}/obsidian/garden-theme.css";
 
         # Route Obsidian to the writing workspace, full-width column
         programs.niri.settings.window-rules = [

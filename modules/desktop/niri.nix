@@ -364,11 +364,11 @@ in
 
             # Full-width apps
             {
-              matches = [{ app-id = "^libreoffice"; }];
+              matches = [ { app-id = "^libreoffice"; } ];
               default-column-width.proportion = 1.0;
             }
             {
-              matches = [{ app-id = "^teams-for-linux$"; }];
+              matches = [ { app-id = "^teams-for-linux$"; } ];
               default-column-width.proportion = 1.0;
             }
 
