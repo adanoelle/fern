@@ -65,6 +65,12 @@
           "Mod+Alt+L".action = lib.mkForce { spawn = [ "true" ]; };
         };
 
+        programs.ssh.settings."code-int code-int.ornl.gov" = {
+          User = "git";
+          IdentityFile = "~/.ssh/code-int";
+          IdentitiesOnly = "yes";
+        };
+
         # Disable swayidle entirely. Neither garden lock nor swaylock
         # can authenticate with ORNL's YubiKey PAM stack.
         # Lock manually with Ctrl+Alt+F1 (VT-switch to GDM greeter).
