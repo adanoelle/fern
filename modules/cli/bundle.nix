@@ -8,6 +8,7 @@
       den.aspects.claude-code
       den.aspects.crypt
       den.aspects.delta
+      den.aspects.eza
       den.aspects.ghostty
       den.aspects.glow
       den.aspects.helix
