@@ -400,7 +400,10 @@ in
             keyboard.xkb = { };
             touchpad = {
               tap = true;
+              dwt = true;
+              dwtp = true;
               natural-scroll = true;
+              click-method = "clickfinger";
             };
             focus-follows-mouse.enable = true;
           };
