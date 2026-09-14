@@ -51,3 +51,12 @@ feature used above; copy it to start a new talk.
   in the theme.
 
 `+exec` blocks are enabled in the config, so only present decks you trust.
+
+## Claude Code skill
+
+The aspect also installs a user-level skill at
+`~/.claude/skills/pc98-deck/SKILL.md` (source:
+`modules/cli/_presenterm/SKILL.md`). Claude Code loads it in any
+repository, so asking for "a deck about X" in another project produces a
+presenterm file that fits this setup: correct slide delimiters, snippet
+flags, palette classes and the `present` commands.

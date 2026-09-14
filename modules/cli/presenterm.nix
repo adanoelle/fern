@@ -78,5 +78,9 @@ _: {
       };
 
       xdg.dataFile."presenterm/pc98-demo.md".source = assets + /pc98-demo.md;
+
+      # User-level Claude Code skill so agents in any repo know how to write
+      # and run a deck against this setup.
+      home.file.".claude/skills/pc98-deck/SKILL.md".source = assets + /SKILL.md;
     };
 }
