@@ -82,6 +82,11 @@
       inputs.home-manager.follows = "home-manager";
     };
 
+    herdr = {
+      url = "github:ogulcancelik/herdr";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # GL/Vulkan wrappers for running Nix-built graphical apps on foreign
     # distros (the ORNL Ubuntu laptop). Unused on NixOS hosts.
     nixgl = {

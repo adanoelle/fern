@@ -8,6 +8,7 @@
       den.aspects.zoxide
       den.aspects.devenv
       den.aspects.fish
+      den.aspects.zsh
     ];
   };
 }

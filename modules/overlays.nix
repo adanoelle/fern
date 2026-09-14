@@ -17,6 +17,9 @@
           inputs.rust-overlay.overlays.default
           inputs.zig-overlay.overlays.default
           inputs.claude-code.overlays.default
+          (final: _prev: {
+            herdr = inputs.herdr.packages.${final.system}.default;
+          })
         ];
       };
     };
