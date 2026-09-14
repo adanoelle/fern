@@ -18,6 +18,7 @@
       den.aspects.hyfetch
       den.aspects.nix-diff
       den.aspects.nix-tree
+      den.aspects.presenterm
       den.aspects.prettier
       den.aspects.procs
       den.aspects.tmux

@@ -1,0 +1,51 @@
+# Ghostty overlay for presenting — PC-98 profile.
+# Layered on top of the normal config by `present`:
+#   ghostty --config-file=~/.config/ghostty/pc98 -e presenterm deck.md
+# Keybinds and everything not listed here come from the main config.
+
+# ── Font: Ark Pixel 16px, a real 16px pixel grid. 24pt = 32px = exact 2x at
+#    96 dpi; ctrl+= / ctrl+- (main config) step it for other displays.
+font-family =
+font-family = Ark Pixel 16px M latin
+font-family = Ark Pixel 16px M ja
+font-size = 24
+bold-is-bright = true
+
+# ── Window: fullscreen, generous margin, nothing else on screen
+fullscreen = true
+window-decoration = none
+window-padding-x = 32
+window-padding-y = 24
+window-padding-balance = true
+confirm-close-surface = false
+mouse-hide-while-typing = true
+title = presenterm
+
+# ── Cursor: blinking amber block
+cursor-style = block
+cursor-style-blink = true
+cursor-color = #ff9900
+cursor-text = #000000
+
+# ── Colours: 12-bit RGB throughout (PC-98 could show 16 of 4096)
+background = #110022
+foreground = #ffeecc
+selection-background = #cc55cc
+selection-foreground = #000000
+
+palette = 0=#000000
+palette = 1=#cc2222
+palette = 2=#22aa22
+palette = 3=#bb5500
+palette = 4=#0033aa
+palette = 5=#880088
+palette = 6=#007788
+palette = 7=#ccbbcc
+palette = 8=#666666
+palette = 9=#ff4444
+palette = 10=#55dd55
+palette = 11=#ffff55
+palette = 12=#1188ff
+palette = 13=#cc55cc
+palette = 14=#55ccdd
+palette = 15=#ffeecc

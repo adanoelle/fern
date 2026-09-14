@@ -1,0 +1,187 @@
+# pc98 — presenterm theme in the spirit of the NEC PC-9801.
+#
+# Rules of the look:
+#   * every colour is 4 bits per channel (doubled hex digits), i.e. one of
+#     the 4096 colours PC-98 hardware could show, sixteen at a time
+#   * flat panels, no rounded anything, box-drawing and block prefixes
+#   * code has no background box and is highlighted with bat's `base16`
+#     theme, which maps tokens onto the terminal's own ANSI palette — so
+#     the ghostty/kitty pc98 profile decides what code looks like
+#   * font_size: 2 is honoured by Kitty and ignored elsewhere
+extends: dark
+
+default:
+  margin:
+    percent: 6
+  colors:
+    foreground: palette:cream
+    background: palette:void
+
+slide_title:
+  alignment: left
+  padding_top: 0
+  padding_bottom: 1
+  separator: true
+  bold: true
+  font_size: 2
+  colors:
+    foreground: palette:pink
+
+code:
+  alignment: left
+  theme_name: base16
+  background: false
+  padding:
+    horizontal: 1
+    vertical: 0
+  minimum_size: 40
+  minimum_margin:
+    percent: 6
+
+inline_code:
+  colors:
+    foreground: palette:yellow
+    background: palette:panel
+
+execution_output:
+  colors:
+    foreground: palette:cream
+    background: palette:panel
+  status:
+    running:
+      foreground: palette:sky
+    success:
+      foreground: palette:green
+    failure:
+      foreground: palette:red
+    not_started:
+      foreground: palette:orange
+  padding:
+    horizontal: 1
+    vertical: 0
+
+intro_slide:
+  title:
+    alignment: center
+    font_size: 2
+    colors:
+      foreground: palette:pink
+  subtitle:
+    alignment: center
+    colors:
+      foreground: palette:sky
+  event:
+    alignment: center
+    colors:
+      foreground: palette:lavender
+  location:
+    alignment: center
+    colors:
+      foreground: palette:lavender
+  date:
+    alignment: center
+    colors:
+      foreground: palette:orange
+  author:
+    alignment: center
+    positioning: page_bottom
+    colors:
+      foreground: palette:cyan
+  footer: false
+
+headings:
+  h1:
+    prefix: "■ "
+    colors:
+      foreground: palette:sky
+  h2:
+    prefix: "▶ "
+    colors:
+      foreground: palette:green
+  h3:
+    prefix: "» "
+    colors:
+      foreground: palette:lavender
+  h4:
+    prefix: "· "
+    colors:
+      foreground: palette:dust
+  h5:
+    prefix: "· "
+    colors:
+      foreground: palette:dust
+  h6:
+    prefix: "· "
+    colors:
+      foreground: palette:dust
+
+block_quote:
+  prefix: "┃ "
+  colors:
+    foreground: palette:lavender
+    background: palette:panel
+    prefix: palette:magenta
+
+alert:
+  prefix: "┃ "
+  base_colors:
+    foreground: palette:cream
+    background: palette:panel
+  styles:
+    note:
+      color: palette:sky
+    tip:
+      color: palette:green
+    important:
+      color: palette:magenta
+    warning:
+      color: palette:orange
+    caution:
+      color: palette:red
+
+typst:
+  colors:
+    foreground: palette:cream
+    background: palette:panel
+
+footer:
+  style: template
+  left: "{title}"
+  right: "{current_slide} / {total_slides}"
+
+modals:
+  selection_colors:
+    foreground: palette:orange
+
+mermaid:
+  background: transparent
+  theme: dark
+
+layout_grid:
+  color: palette:magenta
+
+palette:
+  colors:
+    void: "110022"
+    panel: "221133"
+    cream: "ffeecc"
+    dust: "ccbbcc"
+    gray: "666666"
+    red: "ff4444"
+    green: "55dd55"
+    yellow: "ffff55"
+    orange: "ff9900"
+    blue: "1188ff"
+    sky: "aaddff"
+    lavender: "aaaaff"
+    magenta: "cc55cc"
+    pink: "ffaabb"
+    cyan: "55ccdd"
+  classes:
+    # <span class="hl">…</span> — highlighter pen
+    hl:
+      foreground: "110022"
+      background: "ffff55"
+    # <span class="dim">…</span> — de-emphasised aside
+    dim:
+      foreground: "666666"

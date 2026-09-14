@@ -26,6 +26,7 @@
 - [Nushell](shells/nushell.md)
 - [Starship & Zoxide](shells/starship-and-zoxide.md)
 - [Ghostty](shells/ghostty.md)
+- [Presenting (presenterm)](shells/presenterm.md)
 - [Git: Design & Orchestrator](git/design-and-orchestrator.md)
   - [Core & Aliases](git/core-and-aliases.md)
   - [Identity Management](git/identity-management.md)
