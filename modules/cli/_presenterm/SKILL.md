@@ -31,7 +31,8 @@ Installed pieces:
    For a headless parse check use the HTML export:
    `presenterm --export-html -o /tmp/deck.html <deck>.md`.
 4. Hand over the run command: `present <deck>.md` (fullscreen Ghostty) or
-   `present --kitty <deck>.md` (Kitty, honours 2x headings).
+   `present --kitty <deck>.md` (Kitty, honours 2x headings). Add
+   `--theme graphite` for a professional audience (see Themes below).
 5. To share: `presenterm --export-html <deck>.md` gives one self-contained
    file. `--export-pdf` needs weasyprint on PATH.
 
@@ -120,7 +121,23 @@ Second slide
   column budget.
 - Fifteen to twenty-five slides for a thirty minute talk.
 
-## Colours
+## Themes
+
+Two themes ship. `present` picks the matching terminal overlay and passes
+`--theme` to presenterm, so a deck never needs to name its theme.
+
+| Theme | Look | When |
+|---|---|---|
+| `pc98` (default) | pixel font, sixteen-colour retro palette | internal, playful, demos |
+| `graphite` | IBM Plex Mono, warm near-black, one amber accent | talks to colleagues, leadership, external |
+
+In `graphite` every text colour and every code-highlighting colour clears
+4.5:1 contrast, so it survives projectors. Slide titles, inline code and
+the `hl` class are amber; `h1` is bold body colour, `h2` muted blue, `h3`
+grey; `dim` is a mid grey. Do not add colours with `<span style>` in this
+theme: the restraint is the point.
+
+## Colours (pc98)
 
 The palette is sixteen colours, four bits per channel. Do not invent
 others. If a slide needs its own colour, use `<span style="color: #aaddff">`
