@@ -26,6 +26,13 @@ _: {
       xdg.configFile."herdr/config.toml".text = ''
         onboarding = false
 
+        # $SHELL is still bash on the Ubuntu laptop (fish is not chsh'd), so
+        # name the shell explicitly. Non-login is right: fish sources the
+        # home-manager session variables from config.fish either way.
+        [terminal]
+        default_shell = "${lib.getExe pkgs.fish}"
+        shell_mode = "non_login"
+
         [keys]
         prefix = "ctrl+space"
 
