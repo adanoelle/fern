@@ -20,7 +20,12 @@ _: {
     {
       home.packages = [ pkgs.herdr ];
 
+      # config.toml is a read-only store symlink. herdr writes to it in two
+      # cases: dismissing first-run onboarding (declared off here) and the
+      # in-app theme editor (use the [theme] block below instead).
       xdg.configFile."herdr/config.toml".text = ''
+        onboarding = false
+
         [keys]
         prefix = "ctrl+space"
 

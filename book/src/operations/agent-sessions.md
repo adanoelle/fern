@@ -70,5 +70,9 @@ back through native session restore.
   repo root (not the worktree) with the note path on line 1. Run the hook
   by hand: `echo '{"cwd":"'$PWD'"}' | ~/.claude/hooks/claude-brief`.
 - **herdr shows the wrong state** — `herdr agent explain <pane>`.
+- **"failed to save ... permission denied" inside herdr** — it tried to
+  write `~/.config/herdr/config.toml`, which is a read-only store
+  symlink. Onboarding is declared off in `modules/cli/herdr.nix`; change
+  the theme there too rather than in herdr's settings overlay.
 - **Integration outdated after a bump** — `home-manager switch` re-runs
   the install; or run `herdr integration install claude` directly.
