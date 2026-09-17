@@ -86,6 +86,8 @@ _: {
           fi
 
           echo "Project brief from $note (vault note; read it in full for the log)."
+          echo "Before this session ends, or when asked to wrap up: append a dated Log entry to that note,"
+          echo "rewrite its Current Focus (as-of date, at most six bullets), and record any commitments in people/."
           echo
           awk '
             /^## / {
