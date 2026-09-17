@@ -1,7 +1,7 @@
 # modules/cli/herdr.nix — herdr terminal multiplexer with AI agent awareness
 #
 # Keybindings follow the Niri/Ghostty/tmux/vi-mode stack:
-#   Prefix:  Ctrl+Space  (same as tmux — never nest the two)
+#   Prefix:  Super+Space (tmux keeps Ctrl+Space — never nest the two anyway)
 #   Panes:   h/j/k/l     (navigate), v/s (split), x (close), q (detach)
 # h/j/k/l, v, x and q are herdr's own defaults; only the prefix, the
 # split-down key and the settings key are overridden. Run
@@ -37,7 +37,10 @@ _: {
         shell_mode = "non_login"
 
         [keys]
-        prefix = "ctrl+space"
+        # Super+Space. Niri leaves it unbound and Ghostty passes it through
+        # via the kitty keyboard protocol, which herdr enables. tmux keeps
+        # Ctrl+Space, so the two never collide.
+        prefix = "cmd+space"
         split_horizontal = "prefix+s"   # split down, as in tmux (default: prefix+minus)
         settings = "prefix+shift+s"     # frees prefix+s for the split
 
