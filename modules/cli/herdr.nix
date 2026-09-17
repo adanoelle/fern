@@ -2,7 +2,10 @@
 #
 # Keybindings follow the Niri/Ghostty/tmux/vi-mode stack:
 #   Prefix:  Ctrl+Space  (same as tmux — never nest the two)
-#   Panes:   h/j/k/l     (navigate), v/s (split)
+#   Panes:   h/j/k/l     (navigate), v/s (split), x (close), q (detach)
+# h/j/k/l, v, x and q are herdr's own defaults; only the prefix, the
+# split-down key and the settings key are overridden. Run
+# `herdr config check` after changing anything here.
 #
 # Staying fresh: the package comes straight from upstream's flake
 # (inputs.herdr → overlays.nix). `just bump herdr` pins the newest commit;
@@ -22,7 +25,7 @@ _: {
 
       # config.toml is a read-only store symlink. herdr writes to it in two
       # cases: dismissing first-run onboarding (declared off here) and the
-      # in-app theme editor (use the [theme] block below instead).
+      # in-app theme editor (edit the [theme] block below instead).
       xdg.configFile."herdr/config.toml".text = ''
         onboarding = false
 
@@ -35,18 +38,13 @@ _: {
 
         [keys]
         prefix = "ctrl+space"
+        split_horizontal = "prefix+s"   # split down, as in tmux (default: prefix+minus)
+        settings = "prefix+shift+s"     # frees prefix+s for the split
 
-        [keys.pane]
-        navigate_left = "h"
-        navigate_down = "j"
-        navigate_up = "k"
-        navigate_right = "l"
-        split_vertical = "v"
-        split_horizontal = "s"
-        close = "x"
-
+        # Follow the host terminal's ANSI palette (the garden/fern-shell
+        # theme in Ghostty) instead of a built-in herdr theme.
         [theme]
-        name = "catppuccin-frappe"
+        name = "terminal"
       '';
 
       # Keep the Claude Code integration installed and current.
