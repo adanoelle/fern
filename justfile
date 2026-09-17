@@ -34,6 +34,10 @@ bootstrap:
 update:
     nix flake update
 
+# Update a single flake input (e.g. `just bump herdr`)
+bump input:
+    nix flake update {{input}}
+
 # Garbage-collect old generations (nh smart clean)
 gc:
     nh clean all --keep 5 --keep-since 7d

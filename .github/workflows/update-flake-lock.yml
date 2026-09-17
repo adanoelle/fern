@@ -1,0 +1,37 @@
+name: Update fast-moving flake inputs
+
+# Weekly PR bumping the agent-tooling inputs that move faster than the
+# rest of the lock (herdr ships several releases a month). Everything
+# else is bumped on demand with `just update`.
+#
+# One-time repo setting required, or the PR step fails:
+#   Settings → Actions → General → Workflow permissions →
+#   "Allow GitHub Actions to create and approve pull requests".
+
+on:
+  schedule:
+    - cron: "0 11 * * 1" # Mondays, 11:00 UTC (07:00 Eastern)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+
+      - name: Bump herdr and claude-code
+        uses: DeterminateSystems/update-flake-lock@main
+        with:
+          inputs: herdr claude-code
+          branch: chore/bump-agent-tooling
+          pr-title: "chore(flake): bump herdr and claude-code"
+          pr-labels: dependencies
+          commit-msg: "chore(flake): bump herdr and claude-code inputs"
