@@ -23,8 +23,8 @@ inside Claude Code keeps working.
 
 ```bash
 herdr                      # attach (starts the server on first run)
-# Ctrl+Space is the prefix (matching tmux); Ctrl+Space q detaches,
-# the server and every agent keep running.
+# Super+Space is the prefix (tmux keeps Ctrl+Space). Press it, release,
+# then the key: Super+Space q detaches; the server and agents keep running.
 herdr agent list           # every agent pane and its state
 herdr integration status   # confirm the claude hook is installed/current
 ```
