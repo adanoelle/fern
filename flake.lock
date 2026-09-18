@@ -650,6 +650,7 @@
         "nixpkgs": "nixpkgs",
         "rust-overlay": "rust-overlay_3",
         "sops-nix": "sops-nix",
+        "zen-browser": "zen-browser",
         "zig-overlay": "zig-overlay"
       }
     },
@@ -817,6 +818,29 @@
       "original": {
         "owner": "Supreeeme",
         "repo": "xwayland-satellite",
+        "type": "github"
+      }
+    },
+    "zen-browser": {
+      "inputs": {
+        "home-manager": [
+          "home-manager"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1789702344,
+        "narHash": "sha256-DfevaOxGu6NKUF+q5hUAg7kFscWQvuC9Yd/CgR4qpgc=",
+        "owner": "0xc000022070",
+        "repo": "zen-browser-flake",
+        "rev": "ef5fe624be04120db77c08c5df6f75a6a4201517",
+        "type": "github"
+      },
+      "original": {
+        "owner": "0xc000022070",
+        "repo": "zen-browser-flake",
         "type": "github"
       }
     },

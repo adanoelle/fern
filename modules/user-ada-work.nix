@@ -26,6 +26,10 @@
       den.aspects.obsidian
       den.aspects.screenshot
       den.aspects.teams
+      # Browsers: Zen is the daily driver; Chrome (system apt package,
+      # isolated profile) is for the REPD enclave portal only.
+      den.aspects.zen
+      den.aspects.repd-chrome
     ];
 
     homeManager =

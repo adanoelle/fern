@@ -206,7 +206,7 @@ in
 
               # Spawn & close
               "${mod}+N".action.spawn = [ "kitty" ];
-              "${mod}+B".action.spawn = [ "firefox" ];
+              "${mod}+B".action.spawn = [ "zen-twilight" ];
               "${mod}+Shift+Q".action.close-window = [ ];
 
               # Fullscreen & overview
