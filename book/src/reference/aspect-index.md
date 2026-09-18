@@ -39,7 +39,7 @@ Host role bundles — compose these instead of long per-host include lists.
 |--------|------|----------|
 | `cli` | `modules/cli/bundle.nix` | bat, broot, claude-code, crypt, delta, ghostty, glow, helix, hyfetch, nix-diff, nix-tree, prettier, tree, audio-tools, kitty, kakoune, yazi, lazygit, btop, fzf, fd, ripgrep, rbw, jq |
 | `git-suite` | `modules/git/bundle.nix` | git-core, git-aliases, git-identities, git-github, git-tools, git-safety, git-help |
-| `desktop-apps` | `modules/desktop/bundle.nix` | hyprland, chromium, obs, screenshot, gaming-hm, daw, bitwarden (niri is deliberately NOT here — hosts forward it via provides.to-users) |
+| `desktop-apps` | `modules/desktop/bundle.nix` | hyprland, zen, chromium, obs, screenshot, gaming-hm, daw, bitwarden (niri is deliberately NOT here — hosts forward it via provides.to-users) |
 | `devtools` | `modules/devtools/bundle.nix` | docker, rust, node-ts, c-cpp, python, csharp, ada-lang, zig, gamedev |
 | `shells` | `modules/shells/bundle.nix` | nushell, starship, zoxide, devenv |
 
@@ -125,7 +125,9 @@ Aspects providing Home Manager user-level configuration.
 |--------|------|-------------|
 | `hyprland` | `modules/desktop/hyprland.nix` | Hyprland compositor (fallback session) + sub-modules |
 | `bitwarden` | `modules/desktop/bitwarden.nix` | Bitwarden desktop app |
+| `zen` | `modules/desktop/zen.nix` | Zen browser (daily driver; xdg default) |
 | `chromium` | `modules/desktop/chromium.nix` | Ungoogled Chromium |
+| `repd-chrome` | `modules/foreign/repd-chrome.nix` | `repd` launcher: system Google Chrome, isolated profile, REPD enclave only (work laptop) |
 | `gaming-hm` | `modules/desktop/gaming-hm.nix` | MangoHud, Lutris, ProtonUp |
 | `nyxt` | `modules/desktop/nyxt.nix` | Nyxt browser |
 | `obs` | `modules/desktop/obs.nix` | OBS Studio |

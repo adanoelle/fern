@@ -177,6 +177,48 @@ switch creates).
 
    (New login shells pick up `DOCKER_HOST`; existing ones need
    `export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock`.)
+10. **Google Chrome for the REPD enclave** — the enclave admins want the
+    REPD portal opened in Chrome. Install it from Google's apt repo, not
+    from Nix: Ubuntu 24.04 sets
+    `kernel.apparmor_restrict_unprivileged_userns=1`, so a Chromium-family
+    browser only gets its sandbox with a root-owned SUID helper or an
+    AppArmor profile granting `userns`. Google's `.deb` ships the SUID
+    helper and Ubuntu ships `/etc/apparmor.d/chrome` for
+    `/opt/google/chrome/chrome`; a Nix-store Chrome would have neither
+    and would have to run `--no-sandbox` (acceptable for Teams/Obsidian,
+    not for an enclave browser).
+
+    ```bash
+    wget -qO- https://dl.google.com/linux/linux_signing_key.pub \
+      | sudo gpg --dearmor -o /etc/apt/keyrings/google-chrome.gpg
+    echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/google-chrome.gpg] https://dl.google.com/linux/chrome/deb/ stable main" \
+      | sudo tee /etc/apt/sources.list.d/google-chrome.list
+    sudo apt update && sudo apt install google-chrome-stable
+    ```
+
+    Everything around it is Nix-managed
+    (`modules/foreign/repd-chrome.nix`, included by ada-work): the `repd`
+    launcher runs `/opt/google/chrome/google-chrome` with its own
+    `--user-data-dir` (`~/.local/share/repd-chrome`) and app-id
+    `repd-chrome`, so the enclave profile shares nothing with the daily
+    browser and Chrome is used for nothing else. It checks the
+    GlobalProtect VPN first (`globalprotect show --status`; connects
+    interactively from a terminal, warns from the launcher), strips the
+    session's nixGL `LD_LIBRARY_PATH` so Chrome loads Ubuntu's mesa,
+    and is not registered as an http(s) handler. Login flow inside the
+    browser is unchanged: RSA SecurID PIN+token, then username/password.
+
+    Verify:
+
+    ```bash
+    repd                       # from a terminal: VPN check, then Chrome
+    ls ~/.local/share/repd-chrome/Default    # isolated profile exists
+    ```
+
+    Fallback if IT refuses the apt install: `pkgs.google-chrome` plus a
+    root-installed SUID helper via `CHROME_DEVEL_SANDBOX` (Chromium
+    documents it as a slightly weaker sandbox, and it needs root
+    attention when the helper's API version changes). Not implemented.
 
 ## First-deploy runbook (on the laptop)
 
@@ -244,4 +286,6 @@ switch creates).
   per-app instead).
 - ORNL network: TLS interception can break substituters for the daemon
   (root checklist step 1); check whether IT policy prefers the snap
-  Firefox over the Nix one.
+  Firefox over the Nix one. The daily browser is now Zen (Nix, via
+  `den.aspects.zen`); the Nix Firefox stays installed as a fallback
+  until the migration settles.

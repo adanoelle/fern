@@ -9,6 +9,7 @@
   den.aspects.desktop-apps = {
     includes = [
       den.aspects.hyprland
+      den.aspects.zen
       den.aspects.chromium
       den.aspects.obs
       den.aspects.screenshot

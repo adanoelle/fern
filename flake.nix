@@ -65,6 +65,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Zen browser (Firefox-based; workspaces + nested tab folders). Not in
+    # nixpkgs; the community flake re-hosts upstream release artifacts and
+    # ships a programs.zen-browser home-manager module.
+    zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
+
     # GL/Vulkan wrappers for running Nix-built graphical apps on foreign
     # distros (the ORNL Ubuntu laptop). Unused on NixOS hosts.
     nixgl = {
