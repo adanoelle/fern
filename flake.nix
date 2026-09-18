@@ -65,6 +65,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Fresh nixpkgs for Thunderbird only (modules/desktop/thunderbird.nix):
+    # Microsoft Graph support needs Thunderbird >= 154, newer than the
+    # shared pin carries. Deliberately does NOT follow `nixpkgs`, so it
+    # substitutes from cache.nixos.org instead of dragging every overlay
+    # package into a local rebuild. Drop this input (and the package
+    # override in the aspect) after the next `just update`.
+    nixpkgs-thunderbird.url = "github:NixOS/nixpkgs/nixos-unstable";
+
     # Zen browser (Firefox-based; workspaces + nested tab folders). Not in
     # nixpkgs; the community flake re-hosts upstream release artifacts and
     # ships a programs.zen-browser home-manager module.
