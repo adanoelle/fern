@@ -15,6 +15,7 @@
 - [The Garden Design System](desktop/garden.md)
 - [Niri](desktop/niri.md)
 - [Browsers](desktop/browsers.md)
+- [Mail](desktop/mail.md)
 - [Hyprland (Legacy Fallback)](desktop/hyprland.md)
   - [Fern Shell (Retired)](desktop/fern-shell.md)
   - [Wallpaper (Hyprland)](desktop/wallpaper-and-theming.md)

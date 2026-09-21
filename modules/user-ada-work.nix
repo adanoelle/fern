@@ -30,6 +30,9 @@
       # isolated profile) is for the REPD enclave portal only.
       den.aspects.zen
       den.aspects.repd-chrome
+      # Mail: Thunderbird against the ORNL Exchange Online mailbox via
+      # the Microsoft Graph API. Work-laptop only for now.
+      den.aspects.thunderbird
     ];
 
     homeManager =
