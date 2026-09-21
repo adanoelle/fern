@@ -36,6 +36,7 @@
 - [C / C++](toolchains/c-cpp.md)
 - [TypeScript & Node](toolchains/typescript-node.md)
 - [Python](toolchains/python.md)
+- [DuckDB (data inspection)](toolchains/duckdb.md)
 - [Ada](toolchains/ada.md)
 - [C# / .NET](toolchains/csharp-dotnet.md)
 - [Zig](toolchains/zig.md)
