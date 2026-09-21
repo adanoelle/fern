@@ -96,6 +96,7 @@ Aspects providing Home Manager user-level configuration.
 | `helix` | `modules/cli/helix.nix` | Helix editor, LSP, theme |
 | `hyfetch` | `modules/cli/hyfetch.nix` | System info display (fastfetch) |
 | `jq` | `modules/cli/jq.nix` | JSON processor |
+| `duckdb` | `modules/cli/duckdb.nix` | DuckDB CLI, `dpeek` file inspector, Harlequin TUI (work laptop only) |
 | `kakoune` | `modules/cli/kakoune.nix` | Kakoune editor |
 | `kitty` | `modules/cli/kitty.nix` | Kitty terminal (garden terminal stack) |
 | `lazygit` | `modules/cli/lazygit.nix` | Git TUI |

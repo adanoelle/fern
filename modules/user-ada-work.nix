@@ -33,6 +33,9 @@
       # Mail: Thunderbird against the ORNL Exchange Online mailbox via
       # the Microsoft Graph API. Work-laptop only for now.
       den.aspects.thunderbird
+      # Data: DuckDB + dpeek + harlequin for inspecting the research
+      # group's Parquet files and small datastores outside any project env.
+      den.aspects.duckdb
     ];
 
     homeManager =
