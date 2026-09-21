@@ -8,13 +8,20 @@
       den.aspects.claude-code
       den.aspects.crypt
       den.aspects.delta
+      den.aspects.duf
+      den.aspects.dust
+      den.aspects.eza
+      den.aspects.herdr
       den.aspects.ghostty
       den.aspects.glow
       den.aspects.helix
       den.aspects.hyfetch
       den.aspects.nix-diff
       den.aspects.nix-tree
+      den.aspects.presenterm
       den.aspects.prettier
+      den.aspects.procs
+      den.aspects.tmux
       den.aspects.tree
       den.aspects.audio-tools
 

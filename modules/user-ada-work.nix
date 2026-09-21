@@ -37,6 +37,18 @@
 
     homeManager =
       { pkgs, lib, ... }:
+      let
+        olcfSshDefaults = {
+          User = "adanoelle";
+          ControlMaster = "no";
+          PreferredAuthentications = "keyboard-interactive,password";
+          ServerAliveInterval = "300";
+          ServerAliveCountMax = "3";
+          SetEnv = {
+            TERM = "xterm-256color";
+          };
+        };
+      in
       {
         # Laptop panel brightness. The shared niri aspect binds ddcutil
         # (DDC/CI, external monitors only); on a laptop the internal
@@ -77,6 +89,30 @@
           IdentityFile = "~/.ssh/code-int";
           IdentitiesOnly = "yes";
         };
+
+        programs.ssh.settings."code-ornl code.ornl.gov" = {
+          User = "git";
+          IdentityFile = "~/.ssh/code-ornl";
+          IdentitiesOnly = "yes";
+        };
+
+        # OLCF HPC systems — RSA SecurID two-factor auth, no multiplexing.
+        # After connecting, run `tmux` on home and SSH to internal systems
+        # from there — inner hops don't require another token.
+        # Sync tmux config: scp ~/.tmux.conf olcf-home:.tmux.conf
+        programs.ssh.settings."olcf-home" = olcfSshDefaults // {
+          HostName = "home.ccs.ornl.gov";
+        };
+        programs.ssh.settings."frontier" = olcfSshDefaults // {
+          HostName = "frontier.olcf.ornl.gov";
+        };
+        programs.ssh.settings."andes" = olcfSshDefaults // {
+          HostName = "andes.olcf.ornl.gov";
+        };
+        programs.ssh.settings."olcf-dtn" = olcfSshDefaults // {
+          HostName = "dtn.ccs.ornl.gov";
+        };
+        programs.ssh.settings."*.ccs.ornl.gov *.olcf.ornl.gov" = olcfSshDefaults;
 
         # Disable swayidle entirely. Neither garden lock nor swaylock
         # can authenticate with ORNL's YubiKey PAM stack.

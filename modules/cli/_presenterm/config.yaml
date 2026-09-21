@@ -1,0 +1,18 @@
+# presenterm config — managed by modules/cli/presenterm.nix
+defaults:
+  theme: pc98
+  image_protocol: auto
+
+options:
+  # A setext/`#` title starts a new slide; `---` ends one. Decks read like
+  # ordinary markdown and never need <!-- end_slide -->.
+  implicit_slide_ends: true
+  end_slide_shorthand: true
+  incremental_lists: false
+
+snippet:
+  exec:
+    # Ctrl+E runs `+exec` blocks. This is on because the decks here are
+    # our own; pass `-x`/`-X` semantics in mind before presenting someone
+    # else's file. `+exec_replace` stays opt-in via `-X`.
+    enable: true

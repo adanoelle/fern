@@ -1,0 +1,184 @@
+# graphite — presenterm theme for professional audiences.
+#
+# Rules of the look:
+#   * one accent (amber) for the slide title, inline code and the
+#     highlighter; headings get their hierarchy from weight and prefix,
+#     with h2 in a muted blue as the only second hue
+#   * warm near-black background, warm off-white text; every text colour
+#     clears 4.5:1 against the background, and so does every ANSI slot
+#     the code highlighter uses (see the ghostty/kitty graphite profiles)
+#   * code has no background box and uses bat's `base16` theme, which maps
+#     tokens onto the terminal's ANSI palette — the profile decides code
+#   * flat panels, no decoration beyond the prefixes
+extends: dark
+
+default:
+  margin:
+    percent: 6
+  colors:
+    foreground: palette:text
+    background: palette:bg
+
+slide_title:
+  alignment: left
+  padding_top: 0
+  padding_bottom: 1
+  separator: true
+  bold: true
+  font_size: 2
+  colors:
+    foreground: palette:amber
+
+code:
+  alignment: left
+  theme_name: base16
+  background: false
+  padding:
+    horizontal: 1
+    vertical: 0
+  minimum_size: 40
+  minimum_margin:
+    percent: 6
+
+inline_code:
+  colors:
+    foreground: palette:amber
+    background: palette:panel
+
+execution_output:
+  colors:
+    foreground: palette:text
+    background: palette:panel
+  status:
+    running:
+      foreground: palette:blue
+    success:
+      foreground: palette:green
+    failure:
+      foreground: palette:red
+    not_started:
+      foreground: palette:amber
+  padding:
+    horizontal: 1
+    vertical: 0
+
+intro_slide:
+  title:
+    alignment: center
+    font_size: 2
+    colors:
+      foreground: palette:amber
+  subtitle:
+    alignment: center
+    colors:
+      foreground: palette:text
+  event:
+    alignment: center
+    colors:
+      foreground: palette:muted
+  location:
+    alignment: center
+    colors:
+      foreground: palette:muted
+  date:
+    alignment: center
+    colors:
+      foreground: palette:muted
+  author:
+    alignment: center
+    positioning: page_bottom
+    colors:
+      foreground: palette:blue
+  footer: false
+
+headings:
+  h1:
+    prefix: "■ "
+    colors:
+      foreground: palette:text
+  h2:
+    prefix: "▶ "
+    colors:
+      foreground: palette:blue
+  h3:
+    prefix: "» "
+    colors:
+      foreground: palette:muted
+  h4:
+    prefix: "· "
+    colors:
+      foreground: palette:muted
+  h5:
+    prefix: "· "
+    colors:
+      foreground: palette:muted
+  h6:
+    prefix: "· "
+    colors:
+      foreground: palette:muted
+
+block_quote:
+  prefix: "┃ "
+  colors:
+    foreground: palette:muted
+    background: palette:panel
+    prefix: palette:amber
+
+alert:
+  prefix: "┃ "
+  base_colors:
+    foreground: palette:text
+    background: palette:panel
+  styles:
+    note:
+      color: palette:blue
+    tip:
+      color: palette:green
+    important:
+      color: palette:violet
+    warning:
+      color: palette:amber
+    caution:
+      color: palette:red
+
+typst:
+  colors:
+    foreground: palette:text
+    background: palette:panel
+
+footer:
+  style: template
+  left: "{title}"
+  right: "{current_slide} / {total_slides}"
+
+modals:
+  selection_colors:
+    foreground: palette:amber
+
+mermaid:
+  background: transparent
+  theme: dark
+
+layout_grid:
+  color: palette:violet
+
+palette:
+  colors:
+    bg: "16181d"
+    panel: "1f2228"
+    text: "e6e1d6"
+    muted: "b9b3a8"
+    dim: "8a8f98"
+    amber: "f0b429"
+    blue: "9fc4e8"
+    green: "57ab5a"
+    red: "f47067"
+    violet: "b083f0"
+  classes:
+    # <span class="hl">…</span> — highlighter pen
+    hl:
+      foreground: "16181d"
+      background: "f0b429"
+    # <span class="dim">…</span> — de-emphasised aside
+    dim:
+      foreground: "8a8f98"
