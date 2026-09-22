@@ -54,6 +54,15 @@
       };
     };
 
+    # Desktop apps (Zen's own default-browser prompt, the ORNL VMware
+    # Horizon client registering application/rdp) rewrite
+    # ~/.config/mimeapps.list in place, replacing home-manager's symlink
+    # with a plain file and making the next `home-manager switch` abort
+    # with "would be clobbered". This file is declared here; let
+    # activation overwrite it. App-written entries that should persist
+    # belong in xdg.mimeApps instead.
+    xdg.configFile."mimeapps.list".force = true;
+
     # Route the browser to the research workspace. The Wayland app-id
     # follows the binary name (zen-twilight / zen-beta).
     programs.niri.settings.window-rules = [
