@@ -123,6 +123,14 @@
         # TODO: automate via `sudo chvt 1` if a sudoers rule becomes
         # possible, or find a non-root VT-switch mechanism.
         services.swayidle.enable = lib.mkForce false;
+
+        # ORNL GlobalProtect VPN (Ubuntu's /usr/bin/globalprotect CLI).
+        # The kdi-vpn portal fronts the enclave and OLCF access.
+        programs.fish.shellAbbrs = {
+          vpn = "globalprotect connect -p kdi-vpn.ornl.gov";
+          vpnoff = "globalprotect disconnect";
+          vpns = "globalprotect show --status";
+        };
       };
   };
 
