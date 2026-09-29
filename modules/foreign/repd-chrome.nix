@@ -49,10 +49,10 @@ _: {
             if ! globalprotect show --status 2>/dev/null | grep -q "status: Connected"; then
               if [ -t 0 ]; then
                 echo "repd: GlobalProtect is not connected — connecting." >&2
-                globalprotect connect || true
+                globalprotect connect -p kdi-vpn.ornl.gov || true
               else
                 notify-send -u normal "REPD" \
-                  "GlobalProtect VPN is not connected. Run: globalprotect connect" || true
+                  "GlobalProtect VPN is not connected. Run: vpn" || true
               fi
             fi
           fi
