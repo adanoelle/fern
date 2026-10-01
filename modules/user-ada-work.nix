@@ -64,7 +64,57 @@
           pkgs.zotero
         ];
 
+        # Desk layout: the LG ultrawide on the dock sits behind and above
+        # the laptop, so stack them vertically with the laptop panel
+        # centred under the monitor (x = (3440 - 1920) / 2). Without this
+        # niri appends new outputs to the right at (1920, 0); the two
+        # screens then share only the top 1200 px of one vertical edge
+        # and the cursor gets trapped on the ultrawide.
+        # The monitor is matched by make/model/serial, not "DP-2": dock
+        # connector names change between docks and ports.
+        # Lid-closed docking needs nothing here: logind ignores the lid
+        # while an external display is attached (HandleLidSwitchDocked),
+        # and niri turns eDP-1 off on lid close, leaving the ultrawide
+        # as the only output.
+        programs.niri.settings.outputs = {
+          "LG Electronics LG ULTRAWIDE 602RMJF9M948" = {
+            position = {
+              x = 0;
+              y = 0;
+            };
+            focus-at-startup = true;
+          };
+          "eDP-1".position = {
+            x = 760;
+            y = 1440;
+          };
+        };
+
+        # Docked, the ultrawide is the main screen: pin the five named
+        # channels to it. niri moves a named workspace to its
+        # open-on-output when that output connects and back to a
+        # remaining output when it disconnects, so undocked everything
+        # lands on the laptop panel as before. "laptop" is reserved for
+        # the panel when it's used as a second screen (lid open).
+        programs.niri.settings.workspaces =
+          let
+            ultrawide = "LG Electronics LG ULTRAWIDE 602RMJF9M948";
+          in
+          {
+            "1-studio".open-on-output = ultrawide;
+            "2-research".open-on-output = ultrawide;
+            "3-writing".open-on-output = ultrawide;
+            "4-music".open-on-output = ultrawide;
+            "5-system".open-on-output = ultrawide;
+            "6-laptop" = {
+              name = "laptop";
+              open-on-output = "eDP-1";
+            };
+          };
+
         programs.niri.settings.binds = {
+          "Mod+6".action.focus-workspace = "laptop";
+          "Mod+Shift+6".action.move-window-to-workspace = "laptop";
           "XF86MonBrightnessUp".action = lib.mkForce {
             spawn = [
               "brightnessctl"
