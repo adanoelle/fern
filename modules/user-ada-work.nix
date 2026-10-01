@@ -90,7 +90,31 @@
           };
         };
 
+        # Docked, the ultrawide is the main screen: pin the five named
+        # channels to it. niri moves a named workspace to its
+        # open-on-output when that output connects and back to a
+        # remaining output when it disconnects, so undocked everything
+        # lands on the laptop panel as before. "laptop" is reserved for
+        # the panel when it's used as a second screen (lid open).
+        programs.niri.settings.workspaces =
+          let
+            ultrawide = "LG Electronics LG ULTRAWIDE 602RMJF9M948";
+          in
+          {
+            "1-studio".open-on-output = ultrawide;
+            "2-research".open-on-output = ultrawide;
+            "3-writing".open-on-output = ultrawide;
+            "4-music".open-on-output = ultrawide;
+            "5-system".open-on-output = ultrawide;
+            "6-laptop" = {
+              name = "laptop";
+              open-on-output = "eDP-1";
+            };
+          };
+
         programs.niri.settings.binds = {
+          "Mod+6".action.focus-workspace = "laptop";
+          "Mod+Shift+6".action.move-window-to-workspace = "laptop";
           "XF86MonBrightnessUp".action = lib.mkForce {
             spawn = [
               "brightnessctl"
