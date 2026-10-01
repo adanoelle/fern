@@ -64,6 +64,32 @@
           pkgs.zotero
         ];
 
+        # Desk layout: the LG ultrawide on the dock sits behind and above
+        # the laptop, so stack them vertically with the laptop panel
+        # centred under the monitor (x = (3440 - 1920) / 2). Without this
+        # niri appends new outputs to the right at (1920, 0); the two
+        # screens then share only the top 1200 px of one vertical edge
+        # and the cursor gets trapped on the ultrawide.
+        # The monitor is matched by make/model/serial, not "DP-2": dock
+        # connector names change between docks and ports.
+        # Lid-closed docking needs nothing here: logind ignores the lid
+        # while an external display is attached (HandleLidSwitchDocked),
+        # and niri turns eDP-1 off on lid close, leaving the ultrawide
+        # as the only output.
+        programs.niri.settings.outputs = {
+          "LG Electronics LG ULTRAWIDE 602RMJF9M948" = {
+            position = {
+              x = 0;
+              y = 0;
+            };
+            focus-at-startup = true;
+          };
+          "eDP-1".position = {
+            x = 760;
+            y = 1440;
+          };
+        };
+
         programs.niri.settings.binds = {
           "XF86MonBrightnessUp".action = lib.mkForce {
             spawn = [
