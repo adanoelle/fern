@@ -1,0 +1,55 @@
+# Ghostty overlay for presenting — shitanuri profile.
+# Layered on top of the normal config by `present --theme shitanuri`:
+#   ghostty --config-file=~/.config/ghostty/shitanuri -e presenterm --theme shitanuri deck.md
+# Keybinds and everything not listed here come from the main config.
+
+# ── Font: the garden shell's face, a plain monospace with no ligatures,
+#    so operators on slides read as typed. 20pt fills ~110 columns at
+#    1080p; ctrl+= / ctrl+- step it.
+font-family =
+font-family = IBM Plex Mono
+font-family = FiraCode Nerd Font
+font-size = 20
+font-feature = -calt
+font-feature = -liga
+bold-is-bright = false
+
+# ── Window: fullscreen, generous margin, nothing else on screen
+fullscreen = true
+window-decoration = none
+window-padding-x = 32
+window-padding-y = 24
+window-padding-balance = true
+confirm-close-surface = false
+mouse-hide-while-typing = true
+title = presenterm
+
+# ── Cursor: gilt block, no blink
+cursor-style = block
+cursor-style-blink = false
+cursor-color = #cfab70
+cursor-text = #1f1a13
+
+# ── Colours: raw umber ground, earth pigments at presentation strength
+#    (every slot from 1 up clears 4.5:1 on the ground and on a panel)
+background = #1f1a13
+foreground = #ddd3b4
+selection-background = #4b4433
+selection-foreground = #ddd3b4
+
+palette = 0=#2e271d
+palette = 1=#d0805c
+palette = 2=#94a587
+palette = 3=#cfab70
+palette = 4=#8fa9a5
+palette = 5=#c3958c
+palette = 6=#a2b8ab
+palette = 7=#b8b092
+palette = 8=#999277
+palette = 9=#dc9473
+palette = 10=#a7b69a
+palette = 11=#dabb86
+palette = 12=#a4bcb8
+palette = 13=#d0a79f
+palette = 14=#b6c8bd
+palette = 15=#ddd3b4

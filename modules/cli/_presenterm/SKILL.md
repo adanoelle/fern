@@ -32,7 +32,8 @@ Installed pieces:
    `presenterm --export-html -o /tmp/deck.html <deck>.md`.
 4. Hand over the run command: `present <deck>.md` (fullscreen Ghostty) or
    `present --kitty <deck>.md` (Kitty, honours 2x headings). Add
-   `--theme graphite` for a professional audience (see Themes below).
+   `--theme graphite` for a professional audience, or `--theme shitanuri`
+   to match the garden desktop (see Themes below).
 5. To share: `presenterm --export-html <deck>.md` gives one self-contained
    file. `--export-pdf` needs weasyprint on PATH.
 
@@ -123,19 +124,27 @@ Second slide
 
 ## Themes
 
-Two themes ship. `present` picks the matching terminal overlay and passes
+Three themes ship. `present` picks the matching terminal overlay and passes
 `--theme` to presenterm, so a deck never needs to name its theme.
 
 | Theme | Look | When |
 |---|---|---|
 | `pc98` (default) | pixel font, sixteen-colour retro palette | internal, playful, demos |
 | `graphite` | IBM Plex Mono, warm near-black, one amber accent | talks to colleagues, leadership, external |
+| `shitanuri` | IBM Plex Mono, raw umber ground, gilt accent, earth pigments | matching the garden desktop; any audience |
 
 In `graphite` every text colour and every code-highlighting colour clears
 4.5:1 contrast, so it survives projectors. Slide titles, inline code and
 the `hl` class are amber; `h1` is bold body colour, `h2` muted blue, `h3`
 grey; `dim` is a mid grey. Do not add colours with `<span style>` in this
 theme: the restraint is the point.
+
+`shitanuri` follows the same rules with the garden underpainting palette:
+slide titles, inline code and `hl` are gilt; `h1` is the lead-white body
+colour, `h2` terre verte, `h3` satin grey; `dim` is the olive sofa. Its
+palette names are `ground`, `panel`, `text`, `muted`, `dim`, `gilt`,
+`verte`, `sienna`, `wall` and `madder`. Everything clears 4.5:1, so it is
+safe on a projector; again, no `<span style>` colours.
 
 ## Colours (pc98)
 

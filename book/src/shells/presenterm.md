@@ -25,6 +25,24 @@ palette is the code palette too.
 Kitty implements the text sizing protocol, so headings render at 2x there.
 Ghostty ignores the size hint and shows headings in the normal cell size.
 
+## Other themes
+
+Each theme ships the same three pieces (deck theme, Ghostty overlay, Kitty
+overlay) under its own name; `present --theme NAME` picks all three.
+
+| Theme | Look | Use |
+|---|---|---|
+| `pc98` (default) | Ark Pixel font, sixteen-colour retro palette | internal, playful, demos |
+| `graphite` | IBM Plex Mono, warm near-black, one amber accent | colleagues, leadership, external |
+| `shitanuri` | IBM Plex Mono on raw umber, gilt accent, terre verte and earths | matching the garden desktop; any audience |
+
+`shitanuri` is the garden palette of the same name, mixed as the
+underpainting beneath the Sargent wallpaper, at presentation strength: the
+desktop palette keeps some colours low for a calm screen, so here every
+text colour and every ANSI slot the code highlighter uses is lifted to
+clear 4.5:1 on both the ground and a panel (lowest: 4.73:1), the same rule
+as `graphite`.
+
 ## Commands
 
 ```bash
