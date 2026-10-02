@@ -41,8 +41,76 @@
     ];
 
     homeManager =
-      { pkgs, lib, ... }:
+      {
+        pkgs,
+        lib,
+        config,
+        ...
+      }:
       let
+        # Zen mode toggle (Mod+Z). Moves the focused window to the "zen"
+        # workspace, where it is the only column and sits centred on the
+        # wallpaper; pressing it again sends the window back to the
+        # workspace it came from. One window at a time: zen-ing another
+        # window sends the current occupant home first. Origins live in
+        # $XDG_RUNTIME_DIR/niri-zen/<window id> (workspace ids are stable
+        # for a workspace's lifetime). If the origin workspace is gone
+        # (niri drops an unnamed workspace once its last window leaves),
+        # the window goes to the first workspace on zen's monitor.
+        niri-zen = pkgs.writeShellApplication {
+          name = "niri-zen";
+          runtimeInputs = [
+            config.programs.niri.package
+            pkgs.jq
+            pkgs.coreutils
+          ];
+          text = ''
+            state="''${XDG_RUNTIME_DIR:-/tmp}/niri-zen"
+            mkdir -p "$state"
+
+            workspaces=$(niri msg -j workspaces)
+            zen_id=$(jq -r '.[] | select(.name == "zen") | .id' <<<"$workspaces")
+            [ -n "$zen_id" ] || { echo "niri-zen: no workspace named zen" >&2; exit 1; }
+
+            # Send a window back to where it came from.
+            #   send_home <window id> <focus: true|false>
+            send_home() {
+              local win="$1" focus="$2" origin ref
+              origin=$(cat "$state/$win" 2>/dev/null || true)
+              ref=$(jq -r --argjson id "''${origin:-0}" \
+                '.[] | select(.id == $id) | (.name // (.idx | tostring))' <<<"$workspaces")
+              if [ -n "$ref" ] && [ "$origin" != "$zen_id" ]; then
+                local out
+                out=$(jq -r --argjson id "$origin" '.[] | select(.id == $id) | .output' <<<"$workspaces")
+                niri msg action move-window-to-monitor --id "$win" "$out" 2>/dev/null || true
+                niri msg action move-window-to-workspace --window-id "$win" --focus "$focus" "$ref"
+              else
+                niri msg action move-window-to-workspace --window-id "$win" --focus "$focus" 1
+              fi
+              rm -f "$state/$win"
+            }
+
+            focused=$(niri msg -j focused-window)
+            win=$(jq -r '.id // empty' <<<"$focused")
+            [ -n "$win" ] || exit 0
+            ws=$(jq -r '.workspace_id' <<<"$focused")
+
+            if [ "$ws" = "$zen_id" ]; then
+              send_home "$win" true
+              exit 0
+            fi
+
+            # Evict whatever is already in zen (single pane of glass).
+            for other in $(niri msg -j windows | jq -r --argjson z "$zen_id" \
+                '.[] | select(.workspace_id == $z) | .id'); do
+              send_home "$other" false
+            done
+
+            printf '%s\n' "$ws" > "$state/$win"
+            niri msg action move-window-to-workspace --window-id "$win" --focus true zen
+          '';
+        };
+
         olcfSshDefaults = {
           User = "adanoelle";
           ControlMaster = "no";
@@ -112,6 +180,13 @@
               name = "laptop";
               open-on-output = "eDP-1";
             };
+            # Zen mode's workspace (Mod+Z, niri-zen below): holds at most
+            # one window, which always-center-single-column puts in the
+            # middle of the wallpaper.
+            "7-zen" = {
+              name = "zen";
+              open-on-output = ultrawide;
+            };
           };
 
         # Keep the work in the middle of the screen. On the 3440 px
@@ -128,6 +203,8 @@
         };
 
         programs.niri.settings.binds = {
+          # Zen mode: a single centred pane on the wallpaper.
+          "Mod+Z".action.spawn = [ (lib.getExe niri-zen) ];
           "Mod+6".action.focus-workspace = "laptop";
           "Mod+Shift+6".action.move-window-to-workspace = "laptop";
           "XF86MonBrightnessUp".action = lib.mkForce {
