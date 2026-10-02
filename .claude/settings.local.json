@@ -25,7 +25,9 @@
       "Bash(journalctl:*)",
       "Bash(deadnix .:*)",
       "WebFetch(domain:docs.obsidian.md)",
-      "Bash(nix fmt:*)"
+      "Bash(nix fmt:*)",
+      "WebFetch(domain:docs.olcf.ornl.gov)",
+      "WebFetch(domain:docs.e3sm.org)"
     ]
   }
 }

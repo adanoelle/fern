@@ -31,7 +31,7 @@
             };
           })
           (final: _prev: {
-            herdr = inputs.herdr.packages.${final.system}.default;
+            herdr = inputs.herdr.packages.${final.stdenv.hostPlatform.system}.default;
           })
         ];
       };
