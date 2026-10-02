@@ -41,8 +41,119 @@
     ];
 
     homeManager =
-      { pkgs, lib, ... }:
+      {
+        pkgs,
+        lib,
+        config,
+        ...
+      }:
       let
+        # Zen mode toggle (Mod+Z). Moves the focused window to the "zen"
+        # workspace, where it is the only column and sits centred on the
+        # wallpaper; pressing it again sends the window back to the
+        # workspace it came from. One window at a time: zen-ing another
+        # window sends the current occupant home first. Origins live in
+        # $XDG_RUNTIME_DIR/niri-zen/<window id> (workspace ids are stable
+        # for a workspace's lifetime). If the origin workspace is gone
+        # (niri drops an unnamed workspace once its last window leaves),
+        # the window goes to the first workspace on zen's monitor.
+        niri-zen = pkgs.writeShellApplication {
+          name = "niri-zen";
+          runtimeInputs = [
+            config.programs.niri.package
+            pkgs.jq
+            pkgs.coreutils
+            pkgs.gnused
+          ];
+          text = ''
+            state="''${XDG_RUNTIME_DIR:-/tmp}/niri-zen"
+            mkdir -p "$state"
+
+            workspaces=$(niri msg -j workspaces)
+            zen_id=$(jq -r '.[] | select(.name == "zen") | .id' <<<"$workspaces")
+            [ -n "$zen_id" ] || { echo "niri-zen: no workspace named zen" >&2; exit 1; }
+
+            # Send a window back to where it came from.
+            #   send_home <window id> <focus: true|false>
+            send_home() {
+              local win="$1" focus="$2" origin ref width
+              origin=$(sed -n 1p "$state/$win" 2>/dev/null || true)
+              width=$(sed -n 2p "$state/$win" 2>/dev/null || true)
+              ref=$(jq -r --argjson id "''${origin:-0}" \
+                '.[] | select(.id == $id) | (.name // (.idx | tostring))' <<<"$workspaces")
+              if [ -n "$ref" ] && [ "$origin" != "$zen_id" ]; then
+                local out
+                out=$(jq -r --argjson id "$origin" '.[] | select(.id == $id) | .output' <<<"$workspaces")
+                niri msg action move-window-to-tiling --id "$win" 2>/dev/null || true
+                niri msg action move-window-to-monitor --id "$win" "$out" 2>/dev/null || true
+                niri msg action move-window-to-workspace --window-id "$win" --focus "$focus" "$ref"
+              else
+                niri msg action move-window-to-tiling --id "$win" 2>/dev/null || true
+                niri msg action move-window-to-workspace --window-id "$win" --focus "$focus" 1
+              fi
+              # Restore the column width it had before zen. set-column-width
+              # only acts on the focused column, so this is skipped for a
+              # window evicted by a swap (focus stays on the newcomer).
+              if [ "$focus" = true ] && [ -n "$width" ]; then
+                niri msg action set-column-width "$width"
+              fi
+              rm -f "$state/$win"
+            }
+
+            focused=$(niri msg -j focused-window)
+            win=$(jq -r '.id // empty' <<<"$focused")
+            [ -n "$win" ] || exit 0
+            ws=$(jq -r '.workspace_id' <<<"$focused")
+
+            if [ "$ws" = "$zen_id" ]; then
+              send_home "$win" true
+              exit 0
+            fi
+
+            # Evict whatever is already in zen (single pane of glass).
+            for other in $(niri msg -j windows | jq -r --argjson z "$zen_id" \
+                '.[] | select(.workspace_id == $z) | .id'); do
+              send_home "$other" false
+            done
+
+            # Origin workspace and current column width (px), restored on exit.
+            width=$(jq -r '.layout.tile_size[0] | floor' <<<"$focused")
+            printf '%s\n%s\n' "$ws" "$width" > "$state/$win"
+            niri msg action move-window-to-workspace --window-id "$win" --focus true zen
+            # Float it so it can be shorter than the screen: a tiled
+            # window alone in its column always fills the full height.
+            # 75% tall keeps the gaze near eye level; width carries over
+            # (Mod+R to change it).
+            niri msg action move-window-to-floating --id "$win"
+            niri msg action set-window-height --id "$win" 75%
+            niri msg action center-window --id "$win"
+          '';
+        };
+
+        # Mod+R: cycle the 50/75/100% widths, then re-centre. A floating
+        # (zen) pane otherwise grows to the right and drifts off-centre;
+        # tiled columns are already centred, so it's a no-op for them.
+        niri-cycle-width = pkgs.writeShellApplication {
+          name = "niri-cycle-width";
+          runtimeInputs = [
+            config.programs.niri.package
+            pkgs.jq
+            pkgs.coreutils
+          ];
+          text = ''
+            width() { niri msg -j focused-window | jq -r '.layout.window_size[0] // empty'; }
+            before=$(width)
+            niri msg action switch-preset-column-width
+            # The client commits its new size asynchronously; centring
+            # before it lands centres the old width. Wait up to ~0.5 s.
+            for _ in $(seq 1 20); do
+              [ "$(width)" != "$before" ] && break
+              sleep 0.025
+            done
+            niri msg action center-window
+          '';
+        };
+
         olcfSshDefaults = {
           User = "adanoelle";
           ControlMaster = "no";
@@ -112,9 +223,32 @@
               name = "laptop";
               open-on-output = "eDP-1";
             };
+            # Zen mode's workspace (Mod+Z, niri-zen below): holds at most
+            # one window, which always-center-single-column puts in the
+            # middle of the wallpaper.
+            "7-zen" = {
+              name = "zen";
+              open-on-output = ultrawide;
+            };
           };
 
+        # Keep the work in the middle of the screen. On the 3440 px
+        # ultrawide a left-anchored column means looking off to the left
+        # all day; instead the focused column is always centred (other
+        # columns peek in from the sides and slide to centre when
+        # focused), and a column alone on a workspace sits centred on
+        # the wallpaper. New columns open at 50% (the shared default);
+        # Mod+R still cycles the 50/75/100% presets. Laptop-only: fern's
+        # desktop keeps the shared "on-overflow" behaviour.
+        programs.niri.settings.layout = {
+          center-focused-column = lib.mkForce "always";
+          always-center-single-column = true;
+        };
+
         programs.niri.settings.binds = {
+          # Zen mode: a single centred pane on the wallpaper.
+          "Mod+Z".action.spawn = [ (lib.getExe niri-zen) ];
+          "Mod+R".action = lib.mkForce { spawn = [ (lib.getExe niri-cycle-width) ]; };
           "Mod+6".action.focus-workspace = "laptop";
           "Mod+Shift+6".action.move-window-to-workspace = "laptop";
           "XF86MonBrightnessUp".action = lib.mkForce {
