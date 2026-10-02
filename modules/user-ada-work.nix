@@ -36,7 +36,7 @@
       # Data: DuckDB + dpeek + harlequin for inspecting the research
       # group's Parquet files and small datastores outside any project env.
       den.aspects.duckdb
-      # Sargent's "Madame X" behind the niri session.
+      # Sargent's "Nonchaloir (Repose)" behind the niri session.
       den.aspects.wallpaper
     ];
 
