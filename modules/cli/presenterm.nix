@@ -10,12 +10,12 @@
 #   ~/.config/kitty/<theme>.conf              same for Kitty (has text sizing)
 #
 # and a `present` launcher that opens a deck fullscreen in one of them.
-# Three themes ship: `pc98` (pixel font, sixteen-colour retro look, the
-# default), `graphite` (plain monospace, one amber accent, every colour
-# including the code palette at 4.5:1 contrast — for professional
-# audiences) and `shitanuri` (the garden palette of the same name — the
-# underpainting beneath the Sargent wallpaper — at presentation strength,
-# same 4.5:1 rule). Static assets live in _presenterm/ (underscore: not
+# Three themes ship: `shitanuri` (the default: the garden palette of the
+# same name — the underpainting beneath the Sargent wallpaper — at
+# presentation strength, every colour including the code palette at 4.5:1
+# contrast), `graphite` (plain monospace, one amber accent, same 4.5:1
+# rule — for professional audiences) and `pc98` (pixel font,
+# sixteen-colour retro look). Static assets live in _presenterm/ (underscore: not
 # auto-imported).
 _: {
   den.aspects.presenterm.homeManager =
@@ -33,14 +33,14 @@ _: {
           #   default        open the deck in a fullscreen styled Ghostty
           #   --kitty        same, in Kitty (2x headings via text sizing)
           #   --here         run presenterm in the current terminal, no new window
-          #   --theme NAME   pc98 (default), graphite or shitanuri; picks the terminal
+          #   --theme NAME   shitanuri (default), graphite or pc98; picks the terminal
           #                  overlay and the presenterm theme together
           # With no deck argument the bundled demo deck is shown.
           cfg="''${XDG_CONFIG_HOME:-$HOME/.config}"
           data="''${XDG_DATA_HOME:-$HOME/.local/share}"
 
           term=ghostty
-          theme=pc98
+          theme=shitanuri
           while [ "$#" -gt 0 ]; do
             case "$1" in
               --kitty) term=kitty; shift ;;
