@@ -1,0 +1,186 @@
+# shitanuri — presenterm theme after the garden "shitanuri" palette.
+#
+# The desktop palette is mixed as the underpainting beneath Sargent's
+# Nonchaloir (Repose): raw umber ground, olive half-tones, lead-white
+# text, a gilt accent, terre verte and burnt sienna. This is the same
+# palette at presentation strength:
+#   * same raw umber ground (#1f1a13) and panels (#2e271d)
+#   * text and earths lifted so every text colour and every ANSI slot the
+#     code highlighter uses clears 4.5:1 on both the ground and a panel
+#     (worst case: dim on a panel, 4.73:1), so it survives a projector
+#   * one accent, gilt, for the slide title, inline code and the
+#     highlighter; h2 in terre verte is the only second hue
+#   * code has no background box and uses bat's `base16` theme, which maps
+#     tokens onto the terminal's ANSI palette — the profile decides code
+extends: dark
+
+default:
+  margin:
+    percent: 6
+  colors:
+    foreground: palette:text
+    background: palette:ground
+
+slide_title:
+  alignment: left
+  padding_top: 0
+  padding_bottom: 1
+  separator: true
+  bold: true
+  font_size: 2
+  colors:
+    foreground: palette:gilt
+
+code:
+  alignment: left
+  theme_name: base16
+  background: false
+  padding:
+    horizontal: 1
+    vertical: 0
+  minimum_size: 40
+  minimum_margin:
+    percent: 6
+
+inline_code:
+  colors:
+    foreground: palette:gilt
+    background: palette:panel
+
+execution_output:
+  colors:
+    foreground: palette:text
+    background: palette:panel
+  status:
+    running:
+      foreground: palette:wall
+    success:
+      foreground: palette:verte
+    failure:
+      foreground: palette:sienna
+    not_started:
+      foreground: palette:gilt
+  padding:
+    horizontal: 1
+    vertical: 0
+
+intro_slide:
+  title:
+    alignment: center
+    font_size: 2
+    colors:
+      foreground: palette:gilt
+  subtitle:
+    alignment: center
+    colors:
+      foreground: palette:text
+  event:
+    alignment: center
+    colors:
+      foreground: palette:muted
+  location:
+    alignment: center
+    colors:
+      foreground: palette:muted
+  date:
+    alignment: center
+    colors:
+      foreground: palette:muted
+  author:
+    alignment: center
+    positioning: page_bottom
+    colors:
+      foreground: palette:verte
+  footer: false
+
+headings:
+  h1:
+    prefix: "■ "
+    colors:
+      foreground: palette:text
+  h2:
+    prefix: "▶ "
+    colors:
+      foreground: palette:verte
+  h3:
+    prefix: "» "
+    colors:
+      foreground: palette:muted
+  h4:
+    prefix: "· "
+    colors:
+      foreground: palette:muted
+  h5:
+    prefix: "· "
+    colors:
+      foreground: palette:muted
+  h6:
+    prefix: "· "
+    colors:
+      foreground: palette:muted
+
+block_quote:
+  prefix: "┃ "
+  colors:
+    foreground: palette:muted
+    background: palette:panel
+    prefix: palette:gilt
+
+alert:
+  prefix: "┃ "
+  base_colors:
+    foreground: palette:text
+    background: palette:panel
+  styles:
+    note:
+      color: palette:wall
+    tip:
+      color: palette:verte
+    important:
+      color: palette:madder
+    warning:
+      color: palette:gilt
+    caution:
+      color: palette:sienna
+
+typst:
+  colors:
+    foreground: palette:text
+    background: palette:panel
+
+footer:
+  style: template
+  left: "{title}"
+  right: "{current_slide} / {total_slides}"
+
+modals:
+  selection_colors:
+    foreground: palette:gilt
+
+mermaid:
+  background: transparent
+  theme: dark
+
+layout_grid:
+  color: palette:madder
+
+palette:
+  colors:
+    ground: "1f1a13" # raw umber lay-in
+    panel: "2e271d"  # second umber wash
+    text: "ddd3b4"   # lead white in the shawl
+    muted: "aea688"  # silver-grey satin
+    dim: "999277"    # olive sofa in light
+    gilt: "cfab70"   # gilded frame and table
+    verte: "94a587"  # terre verte
+    sienna: "d0805c" # burnt sienna
+    wall: "8fa9a5"   # the pale turquoise wall
+    madder: "c3958c" # rose earth
+  classes:
+    # <span class="hl">…</span> — highlighter pen
+    hl:
+      foreground: "1f1a13"
+      background: "cfab70"
+    # <span class="dim">…</span> — de-emphasised aside
+    dim:
+      foreground: "999277"
