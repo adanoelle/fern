@@ -10,10 +10,12 @@
 #   ~/.config/kitty/<theme>.conf              same for Kitty (has text sizing)
 #
 # and a `present` launcher that opens a deck fullscreen in one of them.
-# Two themes ship: `pc98` (pixel font, sixteen-colour retro look, the
-# default) and `graphite` (plain monospace, one amber accent, every colour
-# including the code palette at 4.5:1 contrast — for professional
-# audiences). Static assets live in _presenterm/ (underscore: not
+# Three themes ship: `shitanuri` (the default: the garden palette of the
+# same name — the underpainting beneath the Sargent wallpaper — at
+# presentation strength, every colour including the code palette at 4.5:1
+# contrast), `graphite` (plain monospace, one amber accent, same 4.5:1
+# rule — for professional audiences) and `pc98` (pixel font,
+# sixteen-colour retro look). Static assets live in _presenterm/ (underscore: not
 # auto-imported).
 _: {
   den.aspects.presenterm.homeManager =
@@ -31,14 +33,14 @@ _: {
           #   default        open the deck in a fullscreen styled Ghostty
           #   --kitty        same, in Kitty (2x headings via text sizing)
           #   --here         run presenterm in the current terminal, no new window
-          #   --theme NAME   pc98 (default) or graphite; picks the terminal
+          #   --theme NAME   shitanuri (default), graphite or pc98; picks the terminal
           #                  overlay and the presenterm theme together
           # With no deck argument the bundled demo deck is shown.
           cfg="''${XDG_CONFIG_HOME:-$HOME/.config}"
           data="''${XDG_DATA_HOME:-$HOME/.local/share}"
 
           term=ghostty
-          theme=pc98
+          theme=shitanuri
           while [ "$#" -gt 0 ]; do
             case "$1" in
               --kitty) term=kitty; shift ;;
@@ -76,7 +78,7 @@ _: {
         pkgs.presenterm
         present
         pkgs.ark-pixel-font # "Ark Pixel 16px M latin/ja" — 16px pixel font, PC-98 JIS feel
-        pkgs.ibm-plex # "IBM Plex Mono" — the graphite theme's face, no ligatures
+        pkgs.ibm-plex # "IBM Plex Mono" — the graphite and shitanuri face, no ligatures
       ];
 
       # Fonts installed via home.packages are only visible to fontconfig
@@ -88,10 +90,13 @@ _: {
         "presenterm/config.yaml".source = assets + /config.yaml;
         "presenterm/themes/pc98.yaml".source = assets + /pc98.yaml;
         "presenterm/themes/graphite.yaml".source = assets + /graphite.yaml;
+        "presenterm/themes/shitanuri.yaml".source = assets + /shitanuri.yaml;
         "ghostty/pc98".source = assets + /ghostty-pc98;
         "ghostty/graphite".source = assets + /ghostty-graphite;
+        "ghostty/shitanuri".source = assets + /ghostty-shitanuri;
         "kitty/pc98.conf".source = assets + /kitty-pc98.conf;
         "kitty/graphite.conf".source = assets + /kitty-graphite.conf;
+        "kitty/shitanuri.conf".source = assets + /kitty-shitanuri.conf;
       };
 
       xdg.dataFile."presenterm/pc98-demo.md".source = assets + /pc98-demo.md;

@@ -1,11 +1,12 @@
 ---
 name: pc98-deck
-description: Write, run, and export terminal slide decks with presenterm using the PC-98 setup installed on this machine (pc98 theme, `present` launcher). Use when asked for slides, a talk, a deck, or a presentation, especially one about code.
+description: Write, run, and export terminal slide decks with presenterm using the setup installed on this machine (shitanuri theme by default, also graphite and pc98; `present` launcher). Use when asked for slides, a talk, a deck, or a presentation, especially one about code.
 ---
 
 # PC-98 decks with presenterm
 
-This machine has presenterm installed with a PC-98 look. The look is
+This machine has presenterm installed with three looks: `shitanuri` (the
+default, matching the garden desktop), `graphite` and `pc98`. The look is
 fixed by the terminal profile and theme, so a deck only needs to be a
 plain markdown file. Managed by the fern repo, `modules/cli/presenterm.nix`.
 
@@ -13,7 +14,7 @@ Installed pieces:
 
 | Path | Role |
 |---|---|
-| `~/.config/presenterm/config.yaml` | default theme `pc98`, `implicit_slide_ends`, `end_slide_shorthand`, `+exec` enabled |
+| `~/.config/presenterm/config.yaml` | default theme `shitanuri`, `implicit_slide_ends`, `end_slide_shorthand`, `+exec` enabled |
 | `~/.config/presenterm/themes/pc98.yaml` | colours, prefixes, footer, palette classes |
 | `~/.config/ghostty/pc98`, `~/.config/kitty/pc98.conf` | pixel font and 16-colour palette |
 | `~/.local/share/presenterm/pc98-demo.md` | reference deck that uses every feature below |
@@ -32,7 +33,8 @@ Installed pieces:
    `presenterm --export-html -o /tmp/deck.html <deck>.md`.
 4. Hand over the run command: `present <deck>.md` (fullscreen Ghostty) or
    `present --kitty <deck>.md` (Kitty, honours 2x headings). Add
-   `--theme graphite` for a professional audience (see Themes below).
+   `--theme graphite` for a professional audience, or `--theme shitanuri`
+   to match the garden desktop (see Themes below).
 5. To share: `presenterm --export-html <deck>.md` gives one self-contained
    file. `--export-pdf` needs weasyprint on PATH.
 
@@ -123,19 +125,27 @@ Second slide
 
 ## Themes
 
-Two themes ship. `present` picks the matching terminal overlay and passes
+Three themes ship. `present` picks the matching terminal overlay and passes
 `--theme` to presenterm, so a deck never needs to name its theme.
 
 | Theme | Look | When |
 |---|---|---|
-| `pc98` (default) | pixel font, sixteen-colour retro palette | internal, playful, demos |
+| `pc98` | pixel font, sixteen-colour retro palette | internal, playful, demos |
 | `graphite` | IBM Plex Mono, warm near-black, one amber accent | talks to colleagues, leadership, external |
+| `shitanuri` (default) | IBM Plex Mono, raw umber ground, gilt accent, earth pigments | matching the garden desktop; any audience |
 
 In `graphite` every text colour and every code-highlighting colour clears
 4.5:1 contrast, so it survives projectors. Slide titles, inline code and
 the `hl` class are amber; `h1` is bold body colour, `h2` muted blue, `h3`
 grey; `dim` is a mid grey. Do not add colours with `<span style>` in this
 theme: the restraint is the point.
+
+`shitanuri` follows the same rules with the garden underpainting palette:
+slide titles, inline code and `hl` are gilt; `h1` is the lead-white body
+colour, `h2` terre verte, `h3` satin grey; `dim` is the olive sofa. Its
+palette names are `ground`, `panel`, `text`, `muted`, `dim`, `gilt`,
+`verte`, `sienna`, `wall` and `madder`. Everything clears 4.5:1, so it is
+safe on a projector; again, no `<span style>` colours.
 
 ## Colours (pc98)
 

@@ -1,6 +1,6 @@
 # presenterm config — managed by modules/cli/presenterm.nix
 defaults:
-  theme: pc98
+  theme: shitanuri
   image_protocol: auto
 
 options:
