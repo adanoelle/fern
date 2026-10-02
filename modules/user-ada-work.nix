@@ -114,6 +114,19 @@
             };
           };
 
+        # Keep the work in the middle of the screen. On the 3440 px
+        # ultrawide a left-anchored column means looking off to the left
+        # all day; instead the focused column is always centred (other
+        # columns peek in from the sides and slide to centre when
+        # focused), and a column alone on a workspace sits centred on
+        # the wallpaper. New columns open at 50% (the shared default);
+        # Mod+R still cycles the 50/75/100% presets. Laptop-only: fern's
+        # desktop keeps the shared "on-overflow" behaviour.
+        programs.niri.settings.layout = {
+          center-focused-column = lib.mkForce "always";
+          always-center-single-column = true;
+        };
+
         programs.niri.settings.binds = {
           "Mod+6".action.focus-workspace = "laptop";
           "Mod+Shift+6".action.move-window-to-workspace = "laptop";
