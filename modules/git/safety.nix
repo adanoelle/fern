@@ -76,25 +76,43 @@ _: {
           (mkIf cfg.enablePrePushHook {
             ".config/git/hooks/pre-push" = {
               executable = true;
+              # git feeds one line per pushed ref on stdin:
+              #   <local ref> <local sha> <remote ref> <remote sha>
+              # Check the destination (remote ref), not the checked-out
+              # branch: `git push origin feature` while on main is not a
+              # push to main, and `git push origin HEAD:main` from a
+              # feature branch is. With no terminal to ask (agents, CI,
+              # GUI clients), refuse instead of failing on /dev/tty.
               text = ''
                 #!/usr/bin/env bash
 
-                protected_branches="${concatStringsSep " " cfg.protectedBranches}"
-                current_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
+                protected_branches=" ${concatStringsSep " " cfg.protectedBranches} "
+                remote_name="$1"
 
-                for branch in $protected_branches; do
-                  if [ "$branch" = "$current_branch" ]; then
-                    echo "⚠️  You're pushing to protected branch: $current_branch"
-                    echo "   This branch is typically protected in production."
-                    read -p "   Are you sure you want to push? (y/n): " -n 1 -r < /dev/tty
-                    echo
-                    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-                      echo "Push cancelled."
-                      exit 1
-                    fi
-                  fi
+                hits=()
+                while read -r _local_ref _local_sha remote_ref _remote_sha; do
+                  [ -n "$remote_ref" ] || continue
+                  branch="''${remote_ref#refs/heads/}"
+                  [ "$branch" != "$remote_ref" ] || continue   # tags, notes, ...
+                  case "$protected_branches" in
+                    *" $branch "*) hits+=("$branch") ;;
+                  esac
                 done
 
+                [ ''${#hits[@]} -eq 0 ] && exit 0
+
+                echo "⚠️  Pushing to protected branch(es) on $remote_name: ''${hits[*]}"
+                if ! { : </dev/tty; } 2>/dev/null; then
+                  echo "   No terminal to confirm on; push refused."
+                  echo "   Push a feature branch and merge a PR, or rerun with --no-verify."
+                  exit 1
+                fi
+                read -p "   Are you sure you want to push? (y/n): " -n 1 -r </dev/tty
+                echo
+                if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+                  echo "Push cancelled."
+                  exit 1
+                fi
                 exit 0
               '';
             };
