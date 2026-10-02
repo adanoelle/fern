@@ -63,6 +63,7 @@
             config.programs.niri.package
             pkgs.jq
             pkgs.coreutils
+            pkgs.gnused
           ];
           text = ''
             state="''${XDG_RUNTIME_DIR:-/tmp}/niri-zen"
@@ -75,17 +76,26 @@
             # Send a window back to where it came from.
             #   send_home <window id> <focus: true|false>
             send_home() {
-              local win="$1" focus="$2" origin ref
-              origin=$(cat "$state/$win" 2>/dev/null || true)
+              local win="$1" focus="$2" origin ref width
+              origin=$(sed -n 1p "$state/$win" 2>/dev/null || true)
+              width=$(sed -n 2p "$state/$win" 2>/dev/null || true)
               ref=$(jq -r --argjson id "''${origin:-0}" \
                 '.[] | select(.id == $id) | (.name // (.idx | tostring))' <<<"$workspaces")
               if [ -n "$ref" ] && [ "$origin" != "$zen_id" ]; then
                 local out
                 out=$(jq -r --argjson id "$origin" '.[] | select(.id == $id) | .output' <<<"$workspaces")
+                niri msg action move-window-to-tiling --id "$win" 2>/dev/null || true
                 niri msg action move-window-to-monitor --id "$win" "$out" 2>/dev/null || true
                 niri msg action move-window-to-workspace --window-id "$win" --focus "$focus" "$ref"
               else
+                niri msg action move-window-to-tiling --id "$win" 2>/dev/null || true
                 niri msg action move-window-to-workspace --window-id "$win" --focus "$focus" 1
+              fi
+              # Restore the column width it had before zen. set-column-width
+              # only acts on the focused column, so this is skipped for a
+              # window evicted by a swap (focus stays on the newcomer).
+              if [ "$focus" = true ] && [ -n "$width" ]; then
+                niri msg action set-column-width "$width"
               fi
               rm -f "$state/$win"
             }
@@ -106,8 +116,41 @@
               send_home "$other" false
             done
 
-            printf '%s\n' "$ws" > "$state/$win"
+            # Origin workspace and current column width (px), restored on exit.
+            width=$(jq -r '.layout.tile_size[0] | floor' <<<"$focused")
+            printf '%s\n%s\n' "$ws" "$width" > "$state/$win"
             niri msg action move-window-to-workspace --window-id "$win" --focus true zen
+            # Float it so it can be shorter than the screen: a tiled
+            # window alone in its column always fills the full height.
+            # 75% tall keeps the gaze near eye level; width carries over
+            # (Mod+R to change it).
+            niri msg action move-window-to-floating --id "$win"
+            niri msg action set-window-height --id "$win" 75%
+            niri msg action center-window --id "$win"
+          '';
+        };
+
+        # Mod+R: cycle the 50/75/100% widths, then re-centre. A floating
+        # (zen) pane otherwise grows to the right and drifts off-centre;
+        # tiled columns are already centred, so it's a no-op for them.
+        niri-cycle-width = pkgs.writeShellApplication {
+          name = "niri-cycle-width";
+          runtimeInputs = [
+            config.programs.niri.package
+            pkgs.jq
+            pkgs.coreutils
+          ];
+          text = ''
+            width() { niri msg -j focused-window | jq -r '.layout.window_size[0] // empty'; }
+            before=$(width)
+            niri msg action switch-preset-column-width
+            # The client commits its new size asynchronously; centring
+            # before it lands centres the old width. Wait up to ~0.5 s.
+            for _ in $(seq 1 20); do
+              [ "$(width)" != "$before" ] && break
+              sleep 0.025
+            done
+            niri msg action center-window
           '';
         };
 
@@ -205,6 +248,7 @@
         programs.niri.settings.binds = {
           # Zen mode: a single centred pane on the wallpaper.
           "Mod+Z".action.spawn = [ (lib.getExe niri-zen) ];
+          "Mod+R".action = lib.mkForce { spawn = [ (lib.getExe niri-cycle-width) ]; };
           "Mod+6".action.focus-workspace = "laptop";
           "Mod+Shift+6".action.move-window-to-workspace = "laptop";
           "XF86MonBrightnessUp".action = lib.mkForce {
