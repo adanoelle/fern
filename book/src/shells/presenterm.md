@@ -25,16 +25,16 @@ palette is the code palette too.
 Kitty implements the text sizing protocol, so headings render at 2x there.
 Ghostty ignores the size hint and shows headings in the normal cell size.
 
-## Other themes
+## Themes
 
 Each theme ships the same three pieces (deck theme, Ghostty overlay, Kitty
 overlay) under its own name; `present --theme NAME` picks all three.
 
 | Theme | Look | Use |
 |---|---|---|
-| `pc98` (default) | Ark Pixel font, sixteen-colour retro palette | internal, playful, demos |
+| `pc98` | Ark Pixel font, sixteen-colour retro palette | internal, playful, demos |
 | `graphite` | IBM Plex Mono, warm near-black, one amber accent | colleagues, leadership, external |
-| `shitanuri` | IBM Plex Mono on raw umber, gilt accent, terre verte and earths | matching the garden desktop; any audience |
+| `shitanuri` (default) | IBM Plex Mono on raw umber, gilt accent, terre verte and earths | matching the garden desktop; any audience |
 
 `shitanuri` is the garden palette of the same name, mixed as the
 underpainting beneath the Sargent wallpaper, at presentation strength: the
@@ -46,9 +46,10 @@ as `graphite`.
 ## Commands
 
 ```bash
-present deck.md            # fullscreen PC-98 Ghostty running presenterm
+present deck.md            # fullscreen Ghostty, shitanuri theme (the default)
 present --kitty deck.md    # same in Kitty (2x headings)
 present --here deck.md     # current terminal, no new window
+present --theme pc98 deck.md   # another theme: pc98, graphite
 present                    # the bundled demo deck
 presenterm --export-html deck.md   # self-contained HTML
 presenterm --export-pdf deck.md    # needs weasyprint on PATH
