@@ -7,3 +7,6 @@ result-*
 
 # Ignore mdBook build output
 book/build/
+
+# Claude Code worktrees (created per task, removed after merge)
+.claude/worktrees/

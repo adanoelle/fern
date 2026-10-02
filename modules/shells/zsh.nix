@@ -11,10 +11,14 @@
 {
   den.aspects.zsh = {
     homeManager =
-      { ... }:
+      { config, ... }:
       {
         programs.zsh = {
           enable = true;
+          # Keep ~/.zshrc in $HOME (the pre-26.05 default) rather than
+          # moving to ~/.config/zsh: the header's `scp ~/.zshrc
+          # olcf-home:.zshrc` workflow depends on that path.
+          dotDir = config.home.homeDirectory;
           enableCompletion = true;
           autosuggestion.enable = false;
           syntaxHighlighting.enable = false;
@@ -29,7 +33,7 @@
             extended = true;
           };
 
-          initExtra = ''
+          initContent = ''
             # Vi mode
             bindkey -v
             export KEYTIMEOUT=1
