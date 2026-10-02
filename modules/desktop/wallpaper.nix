@@ -61,8 +61,12 @@ _: {
         Install.WantedBy = [ "graphical-session.target" ];
       };
 
-      # Draw the wallpaper behind the overview too, instead of niri's
-      # flat backdrop colour. swaybg's layer namespace is "wallpaper".
+      # Put the wallpaper in niri's backdrop (swaybg's layer namespace is
+      # "wallpaper") so it also shows behind the overview, and make the
+      # workspace background transparent: each workspace otherwise
+      # paints its own solid grey over the backdrop, hiding the painting
+      # everywhere except the overview.
+      programs.niri.settings.layout.background-color = "transparent";
       programs.niri.settings.layer-rules = [
         {
           matches = [ { namespace = "^wallpaper$"; } ];
