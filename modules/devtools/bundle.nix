@@ -16,6 +16,7 @@
       # (docker then fails binding 4566 against itself).
       den.aspects.zig
       den.aspects.gamedev
+      den.aspects.vm-host
     ];
   };
 }
