@@ -273,6 +273,30 @@
           "Mod+Alt+L".action = lib.mkForce { spawn = [ "true" ]; };
         };
 
+        # GitHub over HTTPS on this laptop. ORNL's network lets TCP to
+        # external SSH servers open but never delivers the SSH greeting
+        # (GitHub, GitLab and Bitbucket alike, port 22 and ssh.github.com
+        # :443; ORNL's own SSH hosts answer in <0.1 s), so git over SSH to
+        # GitHub hangs or times out "during banner exchange". HTTPS to the
+        # same addresses passes. Replace the shared https->ssh rewrite
+        # (git/core.nix) with the reverse, so existing clones with
+        # git@github.com: / ssh:// remotes go over HTTPS unchanged, and
+        # gh (already git's credential helper for github.com) supplies
+        # the token. Commit signing is SSH-key based and local, so it is
+        # unaffected; code.ornl.gov / code-int stay on SSH below.
+        # Pushing .github/workflows/* needs the token's `workflow` scope:
+        #   gh auth refresh -s workflow
+        programs.git.settings.url = lib.mkForce {
+          "https://github.com/".insteadOf = [
+            "ssh://git@github.com/"
+            "git@github.com:"
+          ];
+          "https://gist.github.com/".insteadOf = [
+            "ssh://git@gist.github.com/"
+            "git@gist.github.com:"
+          ];
+        };
+
         programs.ssh.settings."code-int code-int.ornl.gov" = {
           User = "git";
           IdentityFile = "~/.ssh/code-int";
