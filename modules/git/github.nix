@@ -74,6 +74,30 @@ _: {
           };
         };
 
+        # gh rewrites config.yml whenever it saves state (auth login,
+        # auth refresh, gh config set), and it saves config.yml before
+        # hosts.yml. home-manager links config.yml read-only from the
+        # store, so every such save failed with "permission denied" and a
+        # refreshed token was silently never written to hosts.yml.
+        # Install the same generated settings as an ordinary writable
+        # file instead, rewritten on each switch so the declared settings
+        # above stay authoritative (a `gh config set` lasts until then).
+        # hosts.yml (the token) is untouched.
+        xdg.configFile."gh/config.yml".enable = lib.mkForce false;
+        home.activation.ghWritableConfig =
+          let
+            generated = (pkgs.formats.yaml { }).generate "gh-config.yml" (
+              { version = "1"; } // config.programs.gh.settings
+            );
+            target = "${config.xdg.configHome}/gh/config.yml";
+          in
+          lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+            if [ -L "${target}" ] || ! ${pkgs.diffutils}/bin/cmp -s "${generated}" "${target}"; then
+              run rm -f "${target}"
+              run install -D -m 600 "${generated}" "${target}"
+            fi
+          '';
+
         # Git configuration for GitHub
         # Note: The gh module already sets up credential helpers, so we don't need to duplicate
 
