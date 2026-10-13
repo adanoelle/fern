@@ -10,8 +10,10 @@ let
   fontPackages =
     pkgs: with pkgs; [
       # Garden typography
-      mplus-outline-fonts.githubRelease # M PLUS 1p (UI sans-serif)
-      ibm-plex # IBM Plex Mono (terminal, data)
+      mplus-outline-fonts.githubRelease # M PLUS 1 (UI sans-serif)
+      ibm-plex # IBM Plex Mono (terminal, data), IBM Plex Sans
+      commit-mono # Commit Mono — neutral, minimal mono (commitmono.com)
+      liberation_ttf # Liberation Sans — open, metric-compatible with Arial
 
       # Nerd Font fallbacks (icons)
       nerd-fonts.fira-code
@@ -25,12 +27,15 @@ let
       "JetBrainsMono Nerd Font"
       "DejaVu Sans Mono"
     ];
+    # "M PLUS 1", not "M PLUS 1p": the github release of
+    # mplus-outline-fonts ships the newer M PLUS 1 family; "1p" was the
+    # older OSDN family and matched nothing.
     sansSerif = [
-      "M PLUS 1p"
+      "M PLUS 1"
       "DejaVu Sans"
     ];
     serif = [
-      "M PLUS 1p"
+      "M PLUS 1"
       "DejaVu Serif"
     ];
   };
