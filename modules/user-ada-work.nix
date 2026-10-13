@@ -225,8 +225,10 @@
         # friends point at the wrong slots. When the last external output
         # goes away, put "laptop" back after the named channels and
         # refocus the channel that was showing on the ultrawide (zen
-        # included). niri's event stream has no output events, so watch
-        # which outputs the workspaces sit on.
+        # included). niri doesn't keep workspace order when they move
+        # between outputs, so zen is also put back first on every dock
+        # and undock (and at service start). niri's event stream has no
+        # output events, so watch which outputs the workspaces sit on.
         garden-undock = pkgs.writeShellApplication {
           name = "garden-undock";
           runtimeInputs = [
@@ -247,7 +249,8 @@
                   if [ "$external" -gt 0 ]; then
                     if [ "$docked" = false ]; then
                       # Just docked (or service start): zen is back on the
-                      # ultrawide; size its pane for it.
+                      # ultrawide; put it first and size its pane for it.
+                      niri msg action move-workspace-to-index --reference zen 1 || true
                       sleep 0.3
                       niri-zen-fit || true
                     fi
@@ -257,6 +260,7 @@
                   elif [ "$docked" = true ]; then
                     docked=false
                     named=$(jq --arg p "$panel" '[.[] | select(.output == $p and .name != null)] | length' <<<"$ws")
+                    niri msg action move-workspace-to-index --reference zen 1 || true
                     niri msg action move-workspace-to-index --reference laptop "$named" || true
                     niri msg action focus-workspace "$last" || true
                     # Zen moved to the panel: shrink its pane to fit.
@@ -338,8 +342,9 @@
             };
             # Zen mode's workspace (Mod+Z, niri-zen below): holds at most
             # one window, which always-center-single-column puts in the
-            # middle of the wallpaper.
-            "7-zen" = {
+            # middle of the wallpaper. First in the list ("channel 0",
+            # Mod+0); garden-undock keeps it there across docking.
+            "0-zen" = {
               name = "zen";
               open-on-output = ultrawide;
             };
@@ -378,6 +383,8 @@
         programs.niri.settings.binds = {
           # Zen mode: a single centred pane on the wallpaper.
           "Mod+Z".action.spawn = [ (lib.getExe niri-zen) ];
+          # Go to zen without bringing a window along.
+          "Mod+0".action.focus-workspace = "zen";
           "Mod+R".action = lib.mkForce { spawn = [ (lib.getExe niri-cycle-width) ]; };
           "Mod+6".action.focus-workspace = "laptop";
           "Mod+Shift+6".action.move-window-to-workspace = "laptop";
