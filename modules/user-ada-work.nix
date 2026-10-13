@@ -48,15 +48,6 @@
         ...
       }:
       let
-        # Zen mode toggle (Mod+Z). Moves the focused window to the "zen"
-        # workspace, where it is the only column and sits centred on the
-        # wallpaper; pressing it again sends the window back to the
-        # workspace it came from. One window at a time: zen-ing another
-        # window sends the current occupant home first. Origins live in
-        # $XDG_RUNTIME_DIR/niri-zen/<window id> (workspace ids are stable
-        # for a workspace's lifetime). If the origin workspace is gone
-        # (niri drops an unnamed workspace once its last window leaves),
-        # the window goes to the first workspace on zen's monitor.
         # Size and centre zen panes for whatever output zen is on: width
         # from the window's recorded pane %, height 75%. Floating windows
         # are sized in pixels and niri does not rescale them when a
@@ -88,6 +79,15 @@
           '';
         };
 
+        # Zen mode toggle (Mod+Z). Moves the focused window to the "zen"
+        # workspace, where it is the only column and sits centred on the
+        # wallpaper; pressing it again sends the window back to the
+        # workspace it came from. One window at a time: zen-ing another
+        # window sends the current occupant home first. Origins live in
+        # $XDG_RUNTIME_DIR/niri-zen/<window id> (workspace ids are stable
+        # for a workspace's lifetime). If the origin workspace is gone
+        # (niri drops an unnamed workspace once its last window leaves),
+        # the window goes to the first workspace on zen's monitor.
         niri-zen = pkgs.writeShellApplication {
           name = "niri-zen";
           runtimeInputs = [
