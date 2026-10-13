@@ -54,12 +54,7 @@
 
       # mailto: links from Zen open here.
       xdg.mimeApps.defaultApplications."x-scheme-handler/mailto" = [ "thunderbird.desktop" ];
-
-      programs.niri.settings.window-rules = [
-        {
-          matches = [ { app-id = "^thunderbird$"; } ];
-          open-on-workspace = "research";
-        }
-      ];
+      # Which channel it opens on is up to the host: the work laptop pins
+      # it to "comms" in its channel table (modules/user-ada-work.nix).
     };
 }

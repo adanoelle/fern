@@ -91,12 +91,7 @@ _: {
         ];
         settings.StartupWMClass = "repd-chrome";
       };
-
-      programs.niri.settings.window-rules = [
-        {
-          matches = [ { app-id = "^repd-chrome$"; } ];
-          open-on-workspace = "research";
-        }
-      ];
+      # Which channel it opens on is up to the host: the work laptop pins
+      # it to "browser" in its channel table (modules/user-ada-work.nix).
     };
 }

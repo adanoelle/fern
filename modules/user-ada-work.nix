@@ -48,15 +48,130 @@
         ...
       }:
       let
-        # Zen mode toggle (Mod+Z). Moves the focused window to the "zen"
-        # workspace, where it is the only column and sits centred on the
-        # wallpaper; pressing it again sends the window back to the
-        # workspace it came from. One window at a time: zen-ing another
-        # window sends the current occupant home first. Origins live in
-        # $XDG_RUNTIME_DIR/niri-zen/<window id> (workspace ids are stable
-        # for a workspace's lifetime). If the origin workspace is gone
-        # (niri drops an unnamed workspace once its last window leaves),
-        # the window goes to the first workspace on zen's monitor.
+        # The laptop's channels, in order: Mod+<key> goes to the channel
+        # and Mod+Shift+<key> sends the focused window there. An app
+        # listed under a channel always opens on it (a window rule;
+        # windows can still be moved away), and going to the channel
+        # while it's empty starts each of its apps that has a `run`
+        # command and no window anywhere yet (garden-channel below).
+        # Terminals aren't pinned: they open wherever you are. 1-5 match
+        # fern's shared channels; zen (Mod+0, first) and laptop (Mod+6,
+        # the panel) are set up separately below.
+        channels = [
+          {
+            key = "1";
+            name = "studio";
+          }
+          {
+            key = "2";
+            name = "research";
+          }
+          {
+            key = "3";
+            name = "writing";
+            apps = [
+              {
+                app-id = "^obsidian$";
+                run = [ "obsidian" ];
+              }
+              {
+                app-id = "^Zotero$";
+                run = [ "zotero" ];
+              }
+            ];
+          }
+          {
+            key = "4";
+            name = "music";
+          }
+          {
+            key = "5";
+            name = "system";
+            apps = [
+              {
+                app-id = "^kitty$";
+                title = "^btop";
+                run = [
+                  "kitty"
+                  "-e"
+                  "btop"
+                ];
+              }
+            ];
+          }
+          {
+            key = "7";
+            name = "browser";
+            apps = [
+              {
+                app-id = "^zen(-twilight|-beta)?$";
+                run = [ "zen-twilight" ];
+              }
+              # REPD needs the VPN and the enclave login: pinned, never
+              # started on its own.
+              { app-id = "^repd-chrome$"; }
+              { app-id = "^(google-chrome|Google-chrome)$"; }
+              { app-id = "^chromium(-browser)?$"; }
+              { app-id = "^firefox$"; }
+            ];
+          }
+          {
+            key = "8";
+            name = "comms";
+            apps = [
+              {
+                app-id = "^teams-for-linux$";
+                run = [ "teams-for-linux" ];
+              }
+              {
+                app-id = "^thunderbird$";
+                run = [ "thunderbird" ];
+              }
+            ];
+          }
+        ];
+        startsApps = c: lib.any (a: a ? run) (c.apps or [ ]);
+        ultrawide = "LG Electronics LG ULTRAWIDE 602RMJF9M948";
+
+        # Go to a channel; if it's empty, start its apps that aren't
+        # running anywhere (each opens on the channel through its pin).
+        # An app already running elsewhere (moved away, or in zen) is
+        # left where it is rather than started twice.
+        garden-channel = pkgs.writeShellApplication {
+          name = "garden-channel";
+          runtimeInputs = [
+            config.programs.niri.package
+            pkgs.jq
+            pkgs.coreutils
+          ];
+          text = ''
+            name="$1"
+            table=${pkgs.writeText "garden-channels.json" (builtins.toJSON channels)}
+            niri msg action focus-workspace "$name"
+            empty=$(niri msg -j workspaces | jq --arg n "$name" '.[] | select(.name == $n) | .active_window_id == null')
+            [ "$empty" = true ] || exit 0
+
+            # A second press before the app's window appears shouldn't
+            # start it again.
+            stamp="''${XDG_RUNTIME_DIR:-/tmp}/garden-channel-$name"
+            if [ -f "$stamp" ] && [ $(($(date +%s) - $(stat -c %Y "$stamp"))) -lt 10 ]; then
+              exit 0
+            fi
+            touch "$stamp"
+
+            windows=$(niri msg -j windows)
+            jq -c --arg n "$name" '.[] | select(.name == $n) | .apps // [] | .[] | select(.run != null)' "$table" |
+              while read -r app; do
+                running=$(jq --argjson a "$app" \
+                  'any(.[]; (.app_id // "" | test($a."app-id")) and ($a.title == null or (.title // "" | test($a.title))))' \
+                  <<<"$windows")
+                [ "$running" = true ] && continue
+                mapfile -t cmd < <(jq -r '.run[]' <<<"$app")
+                niri msg action spawn -- "''${cmd[@]}"
+              done
+          '';
+        };
+
         # Size and centre zen panes for whatever output zen is on: width
         # from the window's recorded pane %, height 75%. Floating windows
         # are sized in pixels and niri does not rescale them when a
@@ -88,6 +203,15 @@
           '';
         };
 
+        # Zen mode toggle (Mod+Z). Moves the focused window to the "zen"
+        # workspace, where it is the only column and sits centred on the
+        # wallpaper; pressing it again sends the window back to the
+        # workspace it came from. One window at a time: zen-ing another
+        # window sends the current occupant home first. Origins live in
+        # $XDG_RUNTIME_DIR/niri-zen/<window id> (workspace ids are stable
+        # for a workspace's lifetime). If the origin workspace is gone
+        # (niri drops an unnamed workspace once its last window leaves),
+        # the window goes to the first workspace on zen's monitor.
         niri-zen = pkgs.writeShellApplication {
           name = "niri-zen";
           runtimeInputs = [
@@ -226,9 +350,10 @@
         # goes away, put "laptop" back after the named channels and
         # refocus the channel that was showing on the ultrawide (zen
         # included). niri doesn't keep workspace order when they move
-        # between outputs, so zen is also put back first on every dock
-        # and undock (and at service start). niri's event stream has no
-        # output events, so watch which outputs the workspaces sit on.
+        # between outputs, so the channels are also put back in order
+        # (zen first, then the table above) on every dock and undock,
+        # and at service start. niri's event stream has no output
+        # events, so watch which outputs the workspaces sit on.
         garden-undock = pkgs.writeShellApplication {
           name = "garden-undock";
           runtimeInputs = [
@@ -241,6 +366,13 @@
             panel=eDP-1
             docked=false
             last=studio
+            reorder() {
+              local i=1 name
+              for name in ${lib.escapeShellArgs ([ "zen" ] ++ map (c: c.name) channels)}; do
+                niri msg action move-workspace-to-index --reference "$name" "$i" || true
+                i=$((i + 1))
+              done
+            }
             niri msg -j event-stream \
               | jq --unbuffered -r 'keys[0] | select(. == "WorkspacesChanged" or . == "WorkspaceActivated")' \
               | while read -r _; do
@@ -248,9 +380,10 @@
                   external=$(jq -r --arg p "$panel" '[.[] | select(.output != null and .output != $p)] | length' <<<"$ws")
                   if [ "$external" -gt 0 ]; then
                     if [ "$docked" = false ]; then
-                      # Just docked (or service start): zen is back on the
-                      # ultrawide; put it first and size its pane for it.
-                      niri msg action move-workspace-to-index --reference zen 1 || true
+                      # Just docked (or service start): the channels are
+                      # back on the ultrawide; put them in order and size
+                      # the zen pane for it.
+                      reorder
                       sleep 0.3
                       niri-zen-fit || true
                     fi
@@ -260,7 +393,7 @@
                   elif [ "$docked" = true ]; then
                     docked=false
                     named=$(jq --arg p "$panel" '[.[] | select(.output == $p and .name != null)] | length' <<<"$ws")
-                    niri msg action move-workspace-to-index --reference zen 1 || true
+                    reorder
                     niri msg action move-workspace-to-index --reference laptop "$named" || true
                     niri msg action focus-workspace "$last" || true
                     # Zen moved to the panel: shrink its pane to fit.
@@ -320,22 +453,23 @@
           };
         };
 
-        # Docked, the ultrawide is the main screen: pin the five named
-        # channels to it. niri moves a named workspace to its
-        # open-on-output when that output connects and back to a
-        # remaining output when it disconnects, so undocked everything
-        # lands on the laptop panel as before. "laptop" is reserved for
-        # the panel when it's used as a second screen (lid open).
+        # Docked, the ultrawide is the main screen: pin the channels to
+        # it. niri moves a named workspace to its open-on-output when
+        # that output connects and back to a remaining output when it
+        # disconnects, so undocked everything lands on the laptop panel
+        # as before. "laptop" is reserved for the panel when it's used
+        # as a second screen (lid open).
         programs.niri.settings.workspaces =
-          let
-            ultrawide = "LG Electronics LG ULTRAWIDE 602RMJF9M948";
-          in
-          {
-            "1-studio".open-on-output = ultrawide;
-            "2-research".open-on-output = ultrawide;
-            "3-writing".open-on-output = ultrawide;
-            "4-music".open-on-output = ultrawide;
-            "5-system".open-on-output = ultrawide;
+          lib.listToAttrs (
+            map (c: {
+              name = "${c.key}-${c.name}";
+              value = {
+                inherit (c) name;
+                open-on-output = ultrawide;
+              };
+            }) channels
+          )
+          // {
             "6-laptop" = {
               name = "laptop";
               open-on-output = "eDP-1";
@@ -408,7 +542,52 @@
           # Mod+Alt+L so it can't accidentally fire a broken locker.
           # See book/src/operations/work-laptop-preflight.md (BLOCKER).
           "Mod+Alt+L".action = lib.mkForce { spawn = [ "true" ]; };
-        };
+          # B for browser: go to the browser channel (starting Zen if it
+          # isn't running) instead of opening a new Zen window each time.
+          "Mod+B".action = lib.mkForce {
+            spawn = [
+              (lib.getExe garden-channel)
+              "browser"
+            ];
+          };
+        }
+        # Channel keys from the table. A channel that starts apps goes
+        # through garden-channel; the rest are plain niri actions.
+        // lib.listToAttrs (
+          lib.concatMap (c: [
+            {
+              name = "Mod+${c.key}";
+              value.action = lib.mkForce (
+                if startsApps c then
+                  {
+                    spawn = [
+                      (lib.getExe garden-channel)
+                      c.name
+                    ];
+                  }
+                else
+                  { focus-workspace = c.name; }
+              );
+            }
+            {
+              name = "Mod+Shift+${c.key}";
+              value.action = lib.mkForce { move-window-to-workspace = c.name; };
+            }
+          ]) channels
+        );
+
+        # Pins from the channel table. mkAfter puts these after the
+        # shared rules (zen.nix sends Zen to research on every machine),
+        # and in niri the later rule wins.
+        programs.niri.settings.window-rules = lib.mkAfter (
+          lib.concatMap (
+            c:
+            map (a: {
+              matches = [ (removeAttrs a [ "run" ]) ];
+              open-on-workspace = c.name;
+            }) (c.apps or [ ])
+          ) channels
+        );
 
         # GitHub over HTTPS on this laptop. ORNL's network lets TCP to
         # external SSH servers open but never delivers the SSH greeting
