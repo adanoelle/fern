@@ -154,6 +154,43 @@
           '';
         };
 
+        # Undocking: niri moves the ultrawide's channels back to the
+        # panel, but focus stays on the panel's own "laptop" workspace
+        # (usually empty) and the channels land after it, so Mod+1 and
+        # friends point at the wrong slots. When the last external output
+        # goes away, put "laptop" back after the named channels and
+        # refocus the channel that was showing on the ultrawide (zen
+        # included). niri's event stream has no output events, so watch
+        # which outputs the workspaces sit on.
+        garden-undock = pkgs.writeShellApplication {
+          name = "garden-undock";
+          runtimeInputs = [
+            config.programs.niri.package
+            pkgs.jq
+          ];
+          text = ''
+            panel=eDP-1
+            docked=false
+            last=studio
+            niri msg -j event-stream \
+              | jq --unbuffered -r 'keys[0] | select(. == "WorkspacesChanged" or . == "WorkspaceActivated")' \
+              | while read -r _; do
+                  ws=$(niri msg -j workspaces) || continue
+                  external=$(jq -r --arg p "$panel" '[.[] | select(.output != null and .output != $p)] | length' <<<"$ws")
+                  if [ "$external" -gt 0 ]; then
+                    docked=true
+                    active=$(jq -r --arg p "$panel" 'first(.[] | select(.output != $p and .is_active and .name != null) | .name) // empty' <<<"$ws")
+                    if [ -n "$active" ]; then last=$active; fi
+                  elif [ "$docked" = true ]; then
+                    docked=false
+                    named=$(jq --arg p "$panel" '[.[] | select(.output == $p and .name != null)] | length' <<<"$ws")
+                    niri msg action move-workspace-to-index --reference laptop "$named" || true
+                    niri msg action focus-workspace "$last" || true
+                  fi
+                done
+          '';
+        };
+
         olcfSshDefaults = {
           User = "adanoelle";
           ControlMaster = "no";
@@ -231,6 +268,23 @@
               open-on-output = ultrawide;
             };
           };
+
+        # garden-undock (let block above) as a user service: restarted if
+        # it dies, and updated on a switch rather than at the next login.
+        systemd.user.services.garden-undock = {
+          Unit = {
+            Description = "Refocus the right channel after undocking (niri)";
+            PartOf = [ "graphical-session.target" ];
+            After = [ "graphical-session.target" ];
+            X-Restart-Triggers = [ "${garden-undock}" ];
+          };
+          Service = {
+            ExecStart = lib.getExe garden-undock;
+            Restart = "on-failure";
+            RestartSec = 2;
+          };
+          Install.WantedBy = [ "graphical-session.target" ];
+        };
 
         # Keep the work in the middle of the screen. On the 3440 px
         # ultrawide a left-anchored column means looking off to the left
