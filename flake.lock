@@ -40,11 +40,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1789971805,
-        "narHash": "sha256-K64NgHsoa7k/Ami6+LIOo+RhbxnFn82UYp/4LHW7IIM=",
+        "lastModified": 1791576129,
+        "narHash": "sha256-/h/GeWMLZ/6I+bN+110/LmtMDm+v6fheMJOPnuCTREg=",
         "owner": "ryoppippi",
         "repo": "claude-code-overlay",
-        "rev": "9996f1346f0f990131ab60c486f124f6f18c6fcf",
+        "rev": "81be531ae2e78817d59152162d45140409076fe5",
         "type": "github"
       },
       "original": {
@@ -293,11 +293,11 @@
         "rust-overlay": "rust-overlay_2"
       },
       "locked": {
-        "lastModified": 1791906370,
-        "narHash": "sha256-IwASX48aIFMsOJtMMCTP6qFZ9HWZq7ZGHhzg9TILS6Y=",
+        "lastModified": 1791912901,
+        "narHash": "sha256-geNHu846AtMFgNsa9wD9a9RtbxrAQ96Od11EcKSjRsQ=",
         "owner": "adanoelle",
         "repo": "garden-shell",
-        "rev": "06d19deed947803cae2a4737fbd53da1d5c718e1",
+        "rev": "bd0e8d8845c5c987ff0f28ffe69c426b22eb8d5c",
         "type": "github"
       },
       "original": {
@@ -355,11 +355,11 @@
         "rust-overlay": "rust-overlay_3"
       },
       "locked": {
-        "lastModified": 1789651984,
-        "narHash": "sha256-CZoebdfs1eQt9PUSEuD9OknT8pneuvQ8QtIWo9jPxXc=",
+        "lastModified": 1791907254,
+        "narHash": "sha256-SanKDq/8nGyTJaFy2ujNdPJ0+gQFXwpFIvXgAKoIxew=",
         "owner": "herdrdev",
         "repo": "herdr",
-        "rev": "5c61d8ec2eeb296bd5e31bdd4e8f14ebadd5b7e1",
+        "rev": "ee731a221e12d6d2e3358dfd487b2d87171640de",
         "type": "github"
       },
       "original": {
