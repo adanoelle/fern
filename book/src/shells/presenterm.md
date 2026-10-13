@@ -43,6 +43,14 @@ text colour and every ANSI slot the code highlighter uses is lifted to
 clear 4.5:1 on both the ground and a panel (lowest: 4.73:1), the same rule
 as `graphite`.
 
+`shitanuri` and `graphite` follow the garden mono face chosen in the
+garden-shell settings (Settings → palette → typography: IBM Plex Mono,
+CommitMono or Liberation Mono). The shell writes
+`~/.config/garden/fonts/{kitty.conf,ghostty}`; both overlays include them
+after their own font lines, so the choice wins, and fall back to IBM Plex
+Mono when the files do not exist. `pc98` keeps its pixel font. The same
+files set the font of everyday kitty and Ghostty windows.
+
 ## Commands
 
 ```bash
