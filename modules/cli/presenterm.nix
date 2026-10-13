@@ -19,9 +19,30 @@
 # auto-imported).
 _: {
   den.aspects.presenterm.homeManager =
-    { pkgs, lib, ... }:
+    {
+      pkgs,
+      lib,
+      config,
+      ...
+    }:
     let
       assets = ./_presenterm;
+
+      # Ghostty overlays for the plain-mono themes follow the garden mono
+      # face (garden-shell Settings → palette → typography) when one is
+      # set: the include is appended here with an absolute path, because
+      # a relative one would resolve against the overlay's real location
+      # in the store. Loaded after the overlay, it overrides its
+      # font-family lines; `?` makes it optional, so IBM Plex Mono stays
+      # when garden has not written the file. pc98 keeps its pixel font.
+      followGardenMono =
+        file:
+        builtins.readFile file
+        + ''
+
+          # Font: follow the garden mono face when set (see presenterm.nix).
+          config-file = ?${config.xdg.configHome}/garden/fonts/ghostty
+        '';
 
       present = pkgs.writeShellApplication {
         name = "present";
@@ -92,8 +113,8 @@ _: {
         "presenterm/themes/graphite.yaml".source = assets + /graphite.yaml;
         "presenterm/themes/shitanuri.yaml".source = assets + /shitanuri.yaml;
         "ghostty/pc98".source = assets + /ghostty-pc98;
-        "ghostty/graphite".source = assets + /ghostty-graphite;
-        "ghostty/shitanuri".source = assets + /ghostty-shitanuri;
+        "ghostty/graphite".text = followGardenMono (assets + /ghostty-graphite);
+        "ghostty/shitanuri".text = followGardenMono (assets + /ghostty-shitanuri);
         "kitty/pc98.conf".source = assets + /kitty-pc98.conf;
         "kitty/graphite.conf".source = assets + /kitty-graphite.conf;
         "kitty/shitanuri.conf".source = assets + /kitty-shitanuri.conf;
