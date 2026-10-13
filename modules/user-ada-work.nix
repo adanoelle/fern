@@ -57,6 +57,37 @@
         # for a workspace's lifetime). If the origin workspace is gone
         # (niri drops an unnamed workspace once its last window leaves),
         # the window goes to the first workspace on zen's monitor.
+        # Size and centre zen panes for whatever output zen is on: width
+        # from the window's recorded pane %, height 75%. Floating windows
+        # are sized in pixels and niri does not rescale them when a
+        # workspace changes output, so garden-undock calls this on every
+        # dock/undock (no argument: every floating window on zen).
+        niri-zen-fit = pkgs.writeShellApplication {
+          name = "niri-zen-fit";
+          runtimeInputs = [
+            config.programs.niri.package
+            pkgs.jq
+            pkgs.gnused
+          ];
+          text = ''
+            state="''${XDG_RUNTIME_DIR:-/tmp}/niri-zen"
+            zen_id=$(niri msg -j workspaces | jq -r '.[] | select(.name == "zen") | .id')
+            [ -n "$zen_id" ] || exit 0
+            if [ $# -gt 0 ]; then
+              wins="$*"
+            else
+              wins=$(niri msg -j windows | jq -r --argjson z "$zen_id" \
+                '.[] | select(.workspace_id == $z and .is_floating) | .id')
+            fi
+            for w in $wins; do
+              pane=$(sed -n 's/^pane=//p' "$state/$w" 2>/dev/null || true)
+              niri msg action set-window-width --id "$w" "''${pane:-50}%" || true
+              niri msg action set-window-height --id "$w" 75% || true
+              niri msg action center-window --id "$w" || true
+            done
+          '';
+        };
+
         niri-zen = pkgs.writeShellApplication {
           name = "niri-zen";
           runtimeInputs = [
@@ -64,6 +95,8 @@
             pkgs.jq
             pkgs.coreutils
             pkgs.gnused
+            pkgs.gnugrep
+            niri-zen-fit
           ];
           text = ''
             state="''${XDG_RUNTIME_DIR:-/tmp}/niri-zen"
@@ -73,12 +106,28 @@
             zen_id=$(jq -r '.[] | select(.name == "zen") | .id' <<<"$workspaces")
             [ -n "$zen_id" ] || { echo "niri-zen: no workspace named zen" >&2; exit 1; }
 
+            # State per window: origin=<workspace id>, col=<column width %
+            # to restore>, pane=<zen pane width %>. Percentages, never
+            # pixels: niri rescales percentage widths when a workspace
+            # changes output (docking) but keeps pixel widths, which then
+            # overflow the 1920 px panel. Files from before this used two
+            # bare lines (origin, px); their px width is ignored.
+            field() {
+              local f="$state/$1"
+              [ -f "$f" ] || return 0
+              if grep -q '^origin=' "$f"; then
+                sed -n "s/^$2=//p" "$f"
+              elif [ "$2" = origin ]; then
+                sed -n 1p "$f"
+              fi
+            }
+
             # Send a window back to where it came from.
             #   send_home <window id> <focus: true|false>
             send_home() {
               local win="$1" focus="$2" origin ref width
-              origin=$(sed -n 1p "$state/$win" 2>/dev/null || true)
-              width=$(sed -n 2p "$state/$win" 2>/dev/null || true)
+              origin=$(field "$win" origin)
+              width=$(field "$win" col)
               ref=$(jq -r --argjson id "''${origin:-0}" \
                 '.[] | select(.id == $id) | (.name // (.idx | tostring))' <<<"$workspaces")
               if [ -n "$ref" ] && [ "$origin" != "$zen_id" ]; then
@@ -91,11 +140,12 @@
                 niri msg action move-window-to-tiling --id "$win" 2>/dev/null || true
                 niri msg action move-window-to-workspace --window-id "$win" --focus "$focus" 1
               fi
-              # Restore the column width it had before zen. set-column-width
+              # Restore the column width it had before zen, as a percentage
+              # so it stays proportional across docking. set-column-width
               # only acts on the focused column, so this is skipped for a
               # window evicted by a swap (focus stays on the newcomer).
               if [ "$focus" = true ] && [ -n "$width" ]; then
-                niri msg action set-column-width "$width"
+                niri msg action set-column-width "$width%"
               fi
               rm -f "$state/$win"
             }
@@ -116,17 +166,19 @@
               send_home "$other" false
             done
 
-            # Origin workspace and current column width (px), restored on exit.
-            width=$(jq -r '.layout.tile_size[0] | floor' <<<"$focused")
-            printf '%s\n%s\n' "$ws" "$width" > "$state/$win"
+            # Origin workspace and the column's width as a % of its output,
+            # restored on exit; the zen pane starts at the same width.
+            out_w=$(niri msg -j focused-output | jq -r '.logical.width')
+            pct=$(jq -r --argjson w "$out_w" \
+              '[[(.layout.tile_size[0] * 100 / $w | round), 100] | min, 10] | max' <<<"$focused")
+            printf 'origin=%s\ncol=%s\npane=%s\n' "$ws" "$pct" "$pct" > "$state/$win"
             niri msg action move-window-to-workspace --window-id "$win" --focus true zen
             # Float it so it can be shorter than the screen: a tiled
             # window alone in its column always fills the full height.
             # 75% tall keeps the gaze near eye level; width carries over
             # (Mod+R to change it).
             niri msg action move-window-to-floating --id "$win"
-            niri msg action set-window-height --id "$win" 75%
-            niri msg action center-window --id "$win"
+            niri-zen-fit "$win"
           '';
         };
 
@@ -139,6 +191,8 @@
             config.programs.niri.package
             pkgs.jq
             pkgs.coreutils
+            pkgs.gnused
+            pkgs.gnugrep
           ];
           text = ''
             width() { niri msg -j focused-window | jq -r '.layout.window_size[0] // empty'; }
@@ -151,6 +205,65 @@
               sleep 0.025
             done
             niri msg action center-window
+
+            # A zen pane: remember its new width as a % of the output, so
+            # niri-zen-fit can restore it after docking or undocking.
+            state="''${XDG_RUNTIME_DIR:-/tmp}/niri-zen"
+            win=$(niri msg -j focused-window | jq -r 'select(.is_floating) | .id // empty')
+            if [ -n "$win" ] && [ -f "$state/$win" ] && grep -q '^origin=' "$state/$win"; then
+              out_w=$(niri msg -j focused-output | jq -r '.logical.width')
+              pct=$(niri msg -j focused-window | jq -r --argjson w "$out_w" \
+                '.layout.window_size[0] * 100 / $w | round')
+              sed -i "s/^pane=.*/pane=$pct/" "$state/$win"
+            fi
+          '';
+        };
+
+        # Undocking: niri moves the ultrawide's channels back to the
+        # panel, but focus stays on the panel's own "laptop" workspace
+        # (usually empty) and the channels land after it, so Mod+1 and
+        # friends point at the wrong slots. When the last external output
+        # goes away, put "laptop" back after the named channels and
+        # refocus the channel that was showing on the ultrawide (zen
+        # included). niri's event stream has no output events, so watch
+        # which outputs the workspaces sit on.
+        garden-undock = pkgs.writeShellApplication {
+          name = "garden-undock";
+          runtimeInputs = [
+            config.programs.niri.package
+            pkgs.jq
+            pkgs.coreutils
+            niri-zen-fit
+          ];
+          text = ''
+            panel=eDP-1
+            docked=false
+            last=studio
+            niri msg -j event-stream \
+              | jq --unbuffered -r 'keys[0] | select(. == "WorkspacesChanged" or . == "WorkspaceActivated")' \
+              | while read -r _; do
+                  ws=$(niri msg -j workspaces) || continue
+                  external=$(jq -r --arg p "$panel" '[.[] | select(.output != null and .output != $p)] | length' <<<"$ws")
+                  if [ "$external" -gt 0 ]; then
+                    if [ "$docked" = false ]; then
+                      # Just docked (or service start): zen is back on the
+                      # ultrawide; size its pane for it.
+                      sleep 0.3
+                      niri-zen-fit || true
+                    fi
+                    docked=true
+                    active=$(jq -r --arg p "$panel" 'first(.[] | select(.output != $p and .is_active and .name != null) | .name) // empty' <<<"$ws")
+                    if [ -n "$active" ]; then last=$active; fi
+                  elif [ "$docked" = true ]; then
+                    docked=false
+                    named=$(jq --arg p "$panel" '[.[] | select(.output == $p and .name != null)] | length' <<<"$ws")
+                    niri msg action move-workspace-to-index --reference laptop "$named" || true
+                    niri msg action focus-workspace "$last" || true
+                    # Zen moved to the panel: shrink its pane to fit.
+                    sleep 0.3
+                    niri-zen-fit || true
+                  fi
+                done
           '';
         };
 
@@ -231,6 +344,23 @@
               open-on-output = ultrawide;
             };
           };
+
+        # garden-undock (let block above) as a user service: restarted if
+        # it dies, and updated on a switch rather than at the next login.
+        systemd.user.services.garden-undock = {
+          Unit = {
+            Description = "Refocus the right channel after undocking (niri)";
+            PartOf = [ "graphical-session.target" ];
+            After = [ "graphical-session.target" ];
+            X-Restart-Triggers = [ "${garden-undock}" ];
+          };
+          Service = {
+            ExecStart = lib.getExe garden-undock;
+            Restart = "on-failure";
+            RestartSec = 2;
+          };
+          Install.WantedBy = [ "graphical-session.target" ];
+        };
 
         # Keep the work in the middle of the screen. On the 3440 px
         # ultrawide a left-anchored column means looking off to the left
