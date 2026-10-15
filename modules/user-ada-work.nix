@@ -632,8 +632,12 @@
         programs.ssh.settings."olcf-home" = olcfSshDefaults // {
           HostName = "home.ccs.ornl.gov";
         };
+        # Frontier uses the csc725 project account. Only via the alias:
+        # `ssh frontier.olcf.ornl.gov` hits the wildcard block below first
+        # (blocks are sorted) and logs in as adanoelle.
         programs.ssh.settings."frontier" = olcfSshDefaults // {
           HostName = "frontier.olcf.ornl.gov";
+          User = "adanoelle_csc725_mde";
         };
         programs.ssh.settings."andes" = olcfSshDefaults // {
           HostName = "andes.olcf.ornl.gov";
