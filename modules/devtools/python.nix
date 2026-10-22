@@ -1,4 +1,12 @@
-_: {
+# TEMPORARY: uv comes from inputs.nixpkgs-uv (a fresh nixos-unstable pin)
+# because the shared nixpkgs pin still carries 0.11, older than projects
+# require. Once `just update` moves the shared pin to uv >= 0.13.1, go back
+# to `pkgs.uv` and delete the input in flake.nix.
+{ inputs, ... }:
+let
+  freshUv = pkgs: inputs.nixpkgs-uv.legacyPackages.${pkgs.stdenv.hostPlatform.system}.uv;
+in
+{
   den.aspects.python = {
     nixos =
       { pkgs, ... }:
@@ -6,9 +14,9 @@ _: {
         python = pkgs.python313;
       in
       {
-        environment.systemPackages = with pkgs; [
+        environment.systemPackages = [
           python
-          uv
+          (freshUv pkgs)
         ];
       };
 
@@ -16,7 +24,7 @@ _: {
       { pkgs, ... }:
       {
         home.packages = with pkgs; [
-          uv
+          (freshUv pkgs)
           rye
           ruff
           black
