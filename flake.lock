@@ -669,6 +669,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-uv": {
+      "locked": {
+        "lastModified": 1792502884,
+        "narHash": "sha256-IoNisKcGbUjdd45qCqywGMCYmZ5EnkxezvLII0FWwNA=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "02c087f3fe673c9e317f206a627cb6b910336dbe",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "claude-code": "claude-code",
@@ -687,6 +703,7 @@
         "nixos-apple-silicon": "nixos-apple-silicon",
         "nixpkgs": "nixpkgs",
         "nixpkgs-thunderbird": "nixpkgs-thunderbird",
+        "nixpkgs-uv": "nixpkgs-uv",
         "rust-overlay": "rust-overlay_4",
         "sops-nix": "sops-nix",
         "zen-browser": "zen-browser",

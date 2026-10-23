@@ -73,6 +73,14 @@
     # override in the aspect) after the next `just update`.
     nixpkgs-thunderbird.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+    # Fresh nixpkgs for uv only (modules/devtools/python.nix): projects such
+    # as wildfire require uv >= 0.13.1, which knows the Python 3.15 release;
+    # the shared pin carries 0.11. Like the Thunderbird pin, it deliberately
+    # does NOT follow `nixpkgs`, so uv substitutes from cache.nixos.org.
+    # Drop this input (and the override in the aspect) after the next
+    # `just update`.
+    nixpkgs-uv.url = "github:NixOS/nixpkgs/nixos-unstable";
+
     # Zen browser (Firefox-based; workspaces + nested tab folders). Not in
     # nixpkgs; the community flake re-hosts upstream release artifacts and
     # ships a programs.zen-browser home-manager module.
