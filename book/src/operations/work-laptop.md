@@ -237,6 +237,17 @@ switch creates).
    # register with ORNL git hosting; optionally provision ~/.ssh/github
    ```
 
+   Database connections are manual too, and stay out of this public repo
+   (`modules/cli/postgres.nix` installs only the client). Name each one in
+   `~/.pg_service.conf` (host, port, dbname, user) and give its password in
+   `~/.pgpass`, using the same host string in both:
+
+   ```bash
+   $EDITOR ~/.pg_service.conf ~/.pgpass
+   chmod 600 ~/.pgpass   # libpq ignores a .pgpass others can read
+   psql service=<name> -c 'select current_user'
+   ```
+
 4. Bootstrap the home (no `home-manager` on PATH yet):
 
    ```bash

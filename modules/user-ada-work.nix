@@ -34,8 +34,10 @@
       # the Microsoft Graph API. Work-laptop only for now.
       den.aspects.thunderbird
       # Data: DuckDB + dpeek + harlequin for inspecting the research
-      # group's Parquet files and small datastores outside any project env.
+      # group's Parquet files and small datastores outside any project env,
+      # and psql for its Postgres databases (connections kept off-repo).
       den.aspects.duckdb
+      den.aspects.postgres
       # Sargent's "Nonchaloir (Repose)" behind the niri session.
       den.aspects.wallpaper
     ];
