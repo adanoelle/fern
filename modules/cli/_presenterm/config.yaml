@@ -4,8 +4,10 @@ defaults:
   image_protocol: auto
 
 options:
-  # A setext/`#` title starts a new slide; `---` ends one. Decks read like
-  # ordinary markdown and never need <!-- end_slide -->.
+  # A slide title starts a new slide and ends the one before it, so decks
+  # need neither <!-- end_slide --> nor `---` between titled slides: a `---`
+  # there ends the slide twice and leaves an empty one. `---` still ends a
+  # slide that has no title.
   implicit_slide_ends: true
   end_slide_shorthand: true
   incremental_lists: false
