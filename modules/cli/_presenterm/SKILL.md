@@ -26,11 +26,12 @@ Installed pieces:
    One file, no assets needed; images are optional.
 2. Write slides using the rules below. Copy structure from the demo deck
    when unsure.
-3. Check it parses without opening a window:
-   `present --here <deck>.md` runs presenterm in the current terminal
-   (needs a real terminal; it will not work from a non-interactive shell).
-   For a headless parse check use the HTML export:
-   `presenterm --export-html -o /tmp/deck.html <deck>.md`.
+3. Check it in a real terminal: `present --here <deck>.md` runs presenterm
+   in the current terminal. Neither that nor `presenterm --export-html`
+   works from a non-interactive shell: both query the terminal, and the
+   export fails with "Inappropriate ioctl for device". From such a shell,
+   check the rules below by reading the file, and ask the user to click
+   through the deck once.
 4. Hand over the run command: `present <deck>.md` (fullscreen Ghostty) or
    `present --kitty <deck>.md` (Kitty, honours 2x headings). Add
    `--theme graphite` for a professional audience, or `--theme shitanuri`
@@ -47,10 +48,12 @@ sub_title: one line
 author: name
 event: Conference 2026
 date: 2026-10-01
+options:
+  implicit_slide_ends: true
+  h1_slide_titles: true
 ---
 
-First slide title
-===
+# First slide title
 
 - bullets
 - more
@@ -59,23 +62,26 @@ First slide title
 
 Content that appears on the next keypress.
 
----
-
-Second slide
-===
+# Second slide
 
 ```rust {1-3|5-9} +line_numbers
 // highlight lines 1-3 first, then 5-9
 ```
-
----
 ````
 
 - Front matter makes the intro slide. `title` is required for the footer.
-- A setext title (`Text` over `===`) starts a slide. `---` ends it.
-  Never write `<!-- end_slide -->`; the config handles slide ends.
-- `#`, `##`, `###` inside a slide are section headings with prefixes
-  `■`, `▶`, `»`, not slide titles.
+  Its `options` make the deck read the same under any config.
+- `# Title` starts a slide and ends the one before it. Never put `---`
+  between slides: the title has already ended the slide, so a `---`
+  before it leaves a blank one. (`---` only ends a slide with no title.)
+  Never write `<!-- end_slide -->` either.
+- Write titles as `# Title`, not setext (`Title` over `===`). Helix runs
+  prettier on Markdown when saving, and prettier rewrites setext titles
+  as `#`, which are slide titles only with `h1_slide_titles`.
+- `##` and `###` inside a slide are section headings with prefixes
+  `▶` and `»`.
+- Each `<!-- ... -->` command is read as YAML, so a speaker note must
+  not contain a second `: `. Reword it, or quote the whole note.
 
 ## Code
 

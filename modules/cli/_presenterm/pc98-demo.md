@@ -4,10 +4,15 @@ sub_title: a terminal deck for talks about code
 author: ada
 event: demo deck
 date: 2026-09-13
+options:
+  # Each slide ends where the next title starts, so there is no `---`
+  # between slides, and a `#` heading is a slide title. Both hold under
+  # prettier, which Helix runs on save.
+  implicit_slide_ends: true
+  h1_slide_titles: true
 ---
 
-Why present from a terminal
-===
+# Why present from a terminal
 
 <!-- speaker_note: This deck lives at ~/.local/share/presenterm/pc98-demo.md. Copy it as a starting point. -->
 
@@ -20,10 +25,7 @@ Why present from a terminal
 > [!tip]
 > Press `?` for keybindings, `Ctrl+P` for the slide index.
 
----
-
-Walk through a function
-===
+# Walk through a function
 
 Highlight groups step with the arrow keys.
 
@@ -46,10 +48,7 @@ fn main() -> io::Result<()> {
 }
 ```
 
----
-
-Run it live
-===
+# Run it live
 
 `+exec` blocks run on `Ctrl+E`; output lands below the block.
 
@@ -58,10 +57,7 @@ nix --version
 uname -m
 ```
 
----
-
-Two columns
-===
+# Two columns
 
 <!-- column_layout: [3, 2] -->
 
@@ -90,10 +86,7 @@ Two columns
 
 <!-- reset_layout -->
 
----
-
-Text and emphasis
-===
+# Text and emphasis
 
 Body text is <span class="hl">highlighted</span> with a palette class,
 **bold** goes bright, and `inline code` sits on a panel.
@@ -103,12 +96,9 @@ Body text is <span class="hl">highlighted</span> with a palette class,
 > [!warning]
 > Alerts use the GitHub `[!note]` / `[!tip]` / `[!warning]` syntax.
 
----
-
 <!-- font_size: 2 -->
 
-Thanks
-===
+# Thanks
 
 <!-- font_size: 1 -->
 
