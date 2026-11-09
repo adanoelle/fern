@@ -308,9 +308,10 @@
           '';
         };
 
-        # Mod+R: cycle the 50/75/100% widths, then re-centre. A floating
-        # (zen) pane otherwise grows to the right and drifts off-centre;
-        # tiled columns are already centred, so it's a no-op for them.
+        # Mod+R: cycle the 50/75/100% widths, then re-centre a floating
+        # (zen) pane, which otherwise grows to the right and drifts
+        # off-centre. Tiled columns are left to niri's own scrolling:
+        # centring one would pull side-by-side columns off the edges.
         niri-cycle-width = pkgs.writeShellApplication {
           name = "niri-cycle-width";
           runtimeInputs = [
@@ -323,7 +324,9 @@
           text = ''
             width() { niri msg -j focused-window | jq -r '.layout.window_size[0] // empty'; }
             before=$(width)
+            win=$(niri msg -j focused-window | jq -r 'select(.is_floating) | .id // empty')
             niri msg action switch-preset-column-width
+            [ -n "$win" ] || exit 0
             # The client commits its new size asynchronously; centring
             # before it lands centres the old width. Wait up to ~0.5 s.
             for _ in $(seq 1 20); do
@@ -335,8 +338,7 @@
             # A zen pane: remember its new width as a % of the output, so
             # niri-zen-fit can restore it after docking or undocking.
             state="''${XDG_RUNTIME_DIR:-/tmp}/niri-zen"
-            win=$(niri msg -j focused-window | jq -r 'select(.is_floating) | .id // empty')
-            if [ -n "$win" ] && [ -f "$state/$win" ] && grep -q '^origin=' "$state/$win"; then
+            if [ -f "$state/$win" ] && grep -q '^origin=' "$state/$win"; then
               out_w=$(niri msg -j focused-output | jq -r '.logical.width')
               pct=$(niri msg -j focused-window | jq -r --argjson w "$out_w" \
                 '.layout.window_size[0] * 100 / $w | round')
@@ -477,8 +479,8 @@
               open-on-output = "eDP-1";
             };
             # Zen mode's workspace (Mod+Z, niri-zen below): holds at most
-            # one window, which always-center-single-column puts in the
-            # middle of the wallpaper. First in the list ("channel 0",
+            # one floating window, which niri-zen-fit centres on the
+            # wallpaper. First in the list ("channel 0",
             # Mod+0); garden-undock keeps it there across docking.
             "0-zen" = {
               name = "zen";
@@ -503,18 +505,15 @@
           Install.WantedBy = [ "graphical-session.target" ];
         };
 
-        # Keep the work in the middle of the screen. On the 3440 px
-        # ultrawide a left-anchored column means looking off to the left
-        # all day; instead the focused column is always centred (other
-        # columns peek in from the sides and slide to centre when
-        # focused), and a column alone on a workspace sits centred on
-        # the wallpaper. New columns open at 50% (the shared default);
-        # Mod+R still cycles the 50/75/100% presets. Laptop-only: fern's
-        # desktop keeps the shared "on-overflow" behaviour.
-        programs.niri.settings.layout = {
-          center-focused-column = lib.mkForce "always";
-          always-center-single-column = true;
-        };
+        # A column alone on a workspace sits centred on the wallpaper: on
+        # the 3440 px ultrawide a left-anchored lone window means looking
+        # off to the left all day. Two or more columns use the shared
+        # "on-overflow" scrolling, so two 50% columns fill the screen
+        # edge to edge and switching focus between them doesn't move
+        # anything. Centring every focused column ("always") left the
+        # pair offset from the screen edges and slid them back and forth
+        # on each focus change.
+        programs.niri.settings.layout.always-center-single-column = true;
 
         programs.niri.settings.binds = {
           # Zen mode: a single centred pane on the wallpaper.
