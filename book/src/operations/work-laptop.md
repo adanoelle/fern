@@ -208,6 +208,16 @@ switch creates).
     and is not registered as an http(s) handler. Login flow inside the
     browser is unchanged: RSA SecurID PIN+token, then username/password.
 
+    KDI's Horizon portal (`kdivdi.ornl.gov`) sends only its leaf
+    certificate, which Chrome rejects with `ERR_CERT_AUTHORITY_INVALID`
+    (curl and openssl are fine: they use Ubuntu's store, where ORNL IT
+    installs the intermediates). The aspect's activation step adds the
+    two missing intermediates to `~/.pki/nssdb`, Chrome's own
+    certificate db, as untrusted (`,,`) so Chrome can complete the
+    chain to a root it already trusts. Check with
+    `certutil -L -d sql:$HOME/.pki/nssdb` (certutil is in
+    `nixpkgs#nss.tools`).
+
     Verify:
 
     ```bash

@@ -20,10 +20,27 @@
 # then username/password) come after that.
 _: {
   den.aspects.repd-chrome.homeManager =
-    { pkgs, config, ... }:
+    {
+      pkgs,
+      lib,
+      config,
+      ...
+    }:
     let
       chrome = "/opt/google/chrome/google-chrome";
       dataDir = "${config.xdg.dataHome}/repd-chrome";
+
+      # Intermediates for the KDI Horizon portal (kdivdi.ornl.gov), as
+      # nickname -> PEM. Same certs ORNL IT puts in Ubuntu's store
+      # (/usr/local/share/ca-certificates); fingerprints checked against
+      # eMudhra's AIA copies (repository.emsign.com/certs/).
+      kdiIntermediates = {
+        # sha256 83:09:05:81:...:07:0D:A6:49, expires 2029-04-07
+        "InCommon DVG2C" = ./_repd-certs/incommon-dvg2c.pem;
+        # emSign Root TLS CA - G1 cross-signed by emSign Root CA - G1,
+        # sha256 9B:91:34:76:...:80:7E:BF:68, expires 2039-07-09
+        "emSign Root TLS CA G1 cross" = ./_repd-certs/emsign-root-tls-g1-cross.pem;
+      };
 
       repd = pkgs.writeShellApplication {
         name = "repd";
@@ -93,5 +110,29 @@ _: {
       };
       # Which channel it opens on is up to the host: the work laptop pins
       # it to "browser" in its channel table (modules/user-ada-work.nix).
+
+      # Since its renewal on 2026-11-07, kdivdi.ornl.gov sends only its
+      # leaf certificate. Chrome fetches the InCommon intermediate itself
+      # (AIA) but not the cross-signed emSign cert behind it, so the
+      # chain never reaches emSign Root CA - G1 in Chrome's root store:
+      # ERR_CERT_AUTHORITY_INVALID. Ubuntu's store has both, but Chrome on
+      # Linux reads only its own roots and ~/.pki/nssdb. Add them to the
+      # NSS db with empty trust flags (",,"): they only fill the gap, and
+      # the chain still has to end at a root Chrome already trusts. Can
+      # go once the server sends its full chain.
+      home.activation.repd-kdi-intermediates = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        db="$HOME/.pki/nssdb"
+        certutil=${pkgs.nss.tools}/bin/certutil
+        if [ -z "''${DRY_RUN:-}" ]; then
+          mkdir -p "$db"
+          [ -f "$db/cert9.db" ] || "$certutil" -N -d "sql:$db" --empty-password
+          ${lib.concatStrings (
+            lib.mapAttrsToList (nick: pem: ''
+              "$certutil" -L -d "sql:$db" -n ${lib.escapeShellArg nick} >/dev/null 2>&1 \
+                || "$certutil" -A -d "sql:$db" -n ${lib.escapeShellArg nick} -t ",," -i ${pem}
+            '') kdiIntermediates
+          )}
+        fi
+      '';
     };
 }
