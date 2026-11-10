@@ -78,13 +78,53 @@ tools read from that mutable directory:
   (`modules/cli/ghostty.nix`); reloaded on SIGUSR2
 
 Switching palettes is `garden-themes apply --name <palette>` (or the shell's
-settings overlay). Eight palettes ship in `palettes.toml`:
+settings overlay). Eleven palettes ship in `palettes.toml`:
 
-`sumi` · `mokume` · `fuji` · `sugi` · `yoru` · `tsuchi` · `kinu` · `ishi`
+`sumi` · `mokume` · `fuji` · `sugi` · `yoru` · `tsuchi` · `kinu` · `ishi` ·
+`shitanuri` · `nocturne` · `tenebroso`
 
 The active choice is written back into the mutable
 `~/.config/garden/palettes.toml` — deliberately **not** a Home
 Manager-managed symlink, so runtime selection survives `just switch`.
+
+### Studies: a palette and its paintings
+
+Three palettes are built from a painter's working colours, and each is
+paired with that painter's paintings as the niri wallpaper. The pair is
+a *study*:
+
+| Palette | Painter | Paintings |
+|---------|---------|-----------|
+| `shitanuri` | Sargent | *Nonchaloir (Repose)* |
+| `nocturne` | Whistler | *Nocturne: Blue and Gold — Southampton Water* |
+| `tenebroso` | Caravaggio | *The Denial of Saint Peter*, *The Musicians*, *Bacchus* (two crops), *Judith* (detail) |
+
+The wallpaper service follows the active palette, so switching palette
+switches the study; any other palette shows the default study (Sargent).
+
+```bash
+garden-study                    # list studies and paintings, with attributions
+garden-study next               # the next study
+garden-study painting           # the next painting in this study
+garden-study tenebroso judith   # a study, and optionally a painting
+```
+
+The painting chosen for each study is remembered in
+`~/.local/state/garden-study/`. niri's window borders take the palette
+at build time, so they keep their colour until the next switch of the
+system or home configuration.
+
+**Where things live.** `modules/desktop/wallpaper.nix` is only the
+mechanism. Each study is one data file,
+`modules/desktop/_studies/<palette>.nix`, found automatically: the
+painter, and a list of paintings with attribution, a pinned open-access
+source image, and crops (in thousandths of the source: `top`, and
+optionally `left`/`right`) for the ultrawide band and the laptop panel.
+The palette's colours live in garden-shell's `palettes.toml`.
+
+- **Another painting for a painter:** add an entry to that study's list.
+- **A new painter:** add the palette to garden-shell, then a new file in
+  `_studies/` named after it.
 
 ## The shell (QuickShell)
 
