@@ -95,7 +95,7 @@ a *study*:
 
 | Palette | Painter | Paintings |
 |---------|---------|-----------|
-| `shitanuri` | Sargent | *Nonchaloir (Repose)* |
+| `shitanuri` | Sargent | *Nonchaloir (Repose)*, *El Jaleo*, *A Dinner Table at Night*, *Carnation, Lily, Lily, Rose* |
 | `nocturne` | Whistler | *Nocturne: Blue and Gold — Southampton Water* |
 | `tenebroso` | Caravaggio | *The Denial of Saint Peter*, *The Musicians*, *Bacchus* (two crops), *Judith* (detail) |
 
