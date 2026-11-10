@@ -78,13 +78,37 @@ tools read from that mutable directory:
   (`modules/cli/ghostty.nix`); reloaded on SIGUSR2
 
 Switching palettes is `garden-themes apply --name <palette>` (or the shell's
-settings overlay). Eight palettes ship in `palettes.toml`:
+settings overlay). Eleven palettes ship in `palettes.toml`:
 
-`sumi` · `mokume` · `fuji` · `sugi` · `yoru` · `tsuchi` · `kinu` · `ishi`
+`sumi` · `mokume` · `fuji` · `sugi` · `yoru` · `tsuchi` · `kinu` · `ishi` ·
+`shitanuri` · `nocturne` · `tenebroso`
 
 The active choice is written back into the mutable
 `~/.config/garden/palettes.toml` — deliberately **not** a Home
 Manager-managed symlink, so runtime selection survives `just switch`.
+
+### Studies: a palette and its painting
+
+Three palettes are built from a painter's working colours, and each is
+paired with one of that painter's paintings as the niri wallpaper
+(`modules/desktop/wallpaper.nix`). The pair is a *study*:
+
+| Palette | Painter | Painting |
+|---------|---------|----------|
+| `shitanuri` | Sargent | *Nonchaloir (Repose)*, 1911 (National Gallery of Art) |
+| `nocturne` | Whistler | *Nocturne: Blue and Gold — Southampton Water*, 1872 (Art Institute of Chicago) |
+| `tenebroso` | Caravaggio | *The Denial of Saint Peter*, 1610 (The Met) |
+
+The wallpaper service watches the active palette and swaps the painting
+when it changes; any other palette shows the default study (Sargent).
+`garden-study` lists the studies, `garden-study next` steps to the next
+one, and `garden-study <name>` picks one. niri's window borders take the
+palette at build time, so they keep their colour until the next switch
+of the system or home configuration.
+
+To add a study: add the palette to garden-shell's `palettes.toml`, then
+an entry in `studies` in `wallpaper.nix` with a pinned open-access image
+and the height at which the ultrawide band starts.
 
 ## The shell (QuickShell)
 
