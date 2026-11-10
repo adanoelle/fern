@@ -1,33 +1,33 @@
 # modules/desktop/wallpaper.nix — painted wallpapers for the niri session
 #
 # A "study" pairs a garden palette built from a painter's working
-# colours with one of their paintings. Whichever palette is active
-# decides the painting on the wall, so switching palette (garden
-# Settings, or `garden-study`) changes both together. A palette without
-# a study shows the default one.
+# colours with that painter's paintings. Whichever palette is active
+# decides the study on the wall, so switching palette (garden Settings,
+# or `garden-study`) changes both together; within a study,
+# `garden-study painting` steps through its paintings. A palette
+# without a study shows the default one.
 #
-#   shitanuri  John Singer Sargent, "Nonchaloir (Repose)" (1911).
-#              National Gallery of Art, Washington, object 35080.
-#   nocturne   James McNeill Whistler, "Nocturne: Blue and Gold —
-#              Southampton Water" (1872). Art Institute of Chicago,
-#              artwork 56905.
-#   tenebroso  Caravaggio, "The Denial of Saint Peter" (1610).
-#              The Metropolitan Museum of Art, object 437986.
+# This file is only the mechanism. The studies themselves are data,
+# one file per palette in ./_studies/<palette>.nix (picked up
+# automatically): the painter and a list of paintings, each with its
+# attribution, a pinned open-access source image and where to crop it.
+# The palette's colours live in garden-shell's palettes.toml.
 #
-# All three are open access (public domain / CC0), fetched from the
-# museums and pinned by hash. Each study has two renditions:
+# Each painting gets two renditions:
 #   - ultrawide.jpg: a 3440x1440 band of the canvas, chosen by hand so
 #     heads stay clear of the bar. A plain centre crop usually doesn't.
-#   - panel.jpg: the whole painting at 2400 px wide, filled (lightly
-#     cropped) onto the 16:10 laptop panel and any other output.
-# The Sargent comes ready-cropped from the NGA's IIIF server. The Art
-# Institute only serves a few fixed sizes and the Met has no IIIF, so
-# those two are cropped here from one pinned source image.
+#   - panel.jpg: for the 16:10 laptop panel and any other output.
+#     Either a chosen 2400x1500 crop, or (no `panel` given) the whole
+#     painting at 2400 px wide, which swaybg fills and lightly crops.
+# Crops are given in thousandths of the source: `top` is where the crop
+# starts, `left`/`right` its sides (default the full width); the height
+# follows from the output's shape. A painting can instead bring `ready`
+# images, already cropped by the museum's IIIF server.
 #
 # swaybg picks per output. It can only match the ultrawide by connector
 # name ("DP-2"): its make/model matching parses a "(name)" suffix niri's
 # wl_output description doesn't have. On another dock/port the monitor
-# just gets the full painting centre-cropped.
+# just gets the panel rendition centre-cropped.
 #
 # swaybg draws with wl_shm (no GL), so no nixGL wrapping on Ubuntu. It
 # runs as a user service bound to graphical-session.target, which
@@ -45,74 +45,117 @@ _: {
       # The study shown when the active palette has none of its own.
       defaultStudy = "shitanuri";
 
-      # A study from one source image. `top` is where the ultrawide band
-      # starts, as a percentage of the canvas height.
-      cropped =
-        {
-          name,
-          src,
-          top,
-        }:
-        pkgs.runCommand "study-${name}" { nativeBuildInputs = [ pkgs.imagemagick ]; } ''
-          mkdir -p $out
-          w=$(magick identify -format %w ${src})
-          h=$(magick identify -format %h ${src})
-          magick ${src} -crop "''${w}x$((w * 1440 / 3440))+0+$((h * ${toString top} / 100))" \
-            +repage -resize '3440x1440!' -quality 92 $out/ultrawide.jpg
-          magick ${src} -resize '2400x>' -quality 92 $out/panel.jpg
-        '';
+      studies = lib.mapAttrs' (
+        file: _:
+        lib.nameValuePair (lib.removeSuffix ".nix" file) (pkgs.callPackage (./_studies + "/${file}") { })
+      ) (builtins.readDir ./_studies);
 
-      nga = "https://api.nga.gov/iiif/718e014f-fb5f-4702-a95a-db496abefeb7";
+      # crop <out> <width> <height> <left> <right> <top>
+      render =
+        study: painting:
+        let
+          region =
+            r:
+            toString [
+              (r.left or 0)
+              (r.right or 1000)
+              r.top
+            ];
+          caption = "${studies.${study}.painter}, ${painting.title} (${painting.year}). ${painting.collection}";
+        in
+        pkgs.runCommand "study-${study}-${painting.name}" { nativeBuildInputs = [ pkgs.imagemagick ]; } (
+          ''
+            mkdir -p $out
+            printf '%s\n' ${lib.escapeShellArg caption} > $out/caption
+          ''
+          + (
+            if painting ? ready then
+              ''
+                ln -s ${painting.ready.ultrawide} $out/ultrawide.jpg
+                ln -s ${painting.ready.panel} $out/panel.jpg
+              ''
+            else
+              ''
+                src=${painting.src}
+                w=$(magick identify -format %w "$src")
+                h=$(magick identify -format %h "$src")
+                crop() {
+                  local l=$((w * $4 / 1000)) r=$((w * $5 / 1000)) t=$((h * $6 / 1000))
+                  local cw=$((r - l))
+                  local ch=$((cw * $3 / $2))
+                  if [ $((t + ch)) -gt "$h" ]; then
+                    echo "$1: crop runs past the bottom of the image" >&2
+                    exit 1
+                  fi
+                  magick "$src" -crop "''${cw}x''${ch}+''${l}+''${t}" +repage \
+                    -resize "$2x$3!" -quality 92 "$1"
+                }
+                crop $out/ultrawide.jpg 3440 1440 ${region painting.ultrawide}
+              ''
+              + (
+                if painting ? panel then
+                  ''
+                    crop $out/panel.jpg 2400 1500 ${region painting.panel}
+                  ''
+                else
+                  ''
+                    magick "$src" -resize '2400x>' -quality 92 $out/panel.jpg
+                  ''
+              )
+          )
+        );
 
-      studies = {
-        # Ultrawide: a 2.4:1 band from ~18% to ~68% of the canvas height
-        # (master is 18332x15338). It keeps her head clear of the bar
-        # plus the clasped hands, shawl and gilt table.
-        shitanuri = pkgs.linkFarm "study-shitanuri" {
-          "ultrawide.jpg" = pkgs.fetchurl {
-            name = "sargent-nonchaloir-ultrawide.jpg";
-            url = "${nga}/0,2760,18332,7673/3440,1440/0/default.jpg";
-            hash = "sha256-KkYKXQip0BPY4Lej3MS6u1jNZbnihJRNCbd6d6B1iyQ=";
-          };
-          "panel.jpg" = pkgs.fetchurl {
-            name = "sargent-nonchaloir-panel.jpg";
-            url = "${nga}/full/2400,/0/default.jpg";
-            hash = "sha256-Ib87L3l9H1H/dttAcSuk7MCFlOpc7+d5XYnWu2B0HeU=";
-          };
-        };
+      # <study>/<painting>/{ultrawide.jpg,panel.jpg,caption}, plus
+      # <study>/order listing the paintings, first one the default.
+      studiesDir = pkgs.linkFarm "garden-studies" (
+        lib.mapAttrs (
+          study: s:
+          pkgs.linkFarm "study-${study}" (
+            lib.listToAttrs (map (p: lib.nameValuePair p.name (render study p)) s.paintings)
+            // {
+              order = pkgs.writeText "order" (lib.concatMapStrings (p: "${p.name}\n") s.paintings);
+            }
+          )
+        ) studies
+      );
 
-        # 3000 px is the largest size the Art Institute serves. The band
-        # keeps the moon in the upper third and the boats below it.
-        nocturne = cropped {
-          name = "nocturne";
-          src = pkgs.fetchurl {
-            name = "whistler-nocturne-southampton-water.jpg";
-            url = "https://www.artic.edu/iiif/2/50034c7f-ce51-00f1-430e-a6f7efc233fc/full/3000,/0/default.jpg";
-            hash = "sha256-aoIr5lgw917p32b1kMv3MY0vFCJ7uZVsBZ3hGKx0+M4=";
-          };
-          top = 8;
-        };
-
-        # The band holds the three heads and the pointing hands.
-        tenebroso = cropped {
-          name = "tenebroso";
-          src = pkgs.fetchurl {
-            name = "caravaggio-denial-of-saint-peter.jpg";
-            url = "https://images.metmuseum.org/CRDImages/ep/original/DP-12413-001.jpg";
-            hash = "sha256-VmYWhyymiqkwGpH06OvXYxQzzEI1j5Y+MjDL5t2RPeo=";
-          };
-          top = 10;
-        };
-      };
-
-      studiesDir = pkgs.linkFarm "garden-studies" studies;
       themesDir = "${config.xdg.configHome}/garden/themes";
+      # One file per study, holding the name of the painting chosen
+      # for it (written by garden-study).
+      stateDir = "${config.xdg.stateHome}/garden-study";
 
-      # Shows the active palette's study and follows palette switches.
+      # Shared by both scripts: the active study and its chosen painting.
+      resolve = ''
+        studies=${studiesDir}
+        state=${stateDir}
+
+        active_study() {
+          local palette
+          palette=$(jq -r '.palette // empty' ${themesDir}/.manifest.json 2>/dev/null || true)
+          if [ -n "$palette" ] && [ -d "$studies/$palette" ]; then
+            echo "$palette"
+          else
+            echo ${defaultStudy}
+          fi
+        }
+
+        # chosen_painting <study>
+        chosen_painting() {
+          local painting
+          painting=$(cat "$state/$1" 2>/dev/null || true)
+          if [ -z "$painting" ] || [ ! -d "$studies/$1/$painting" ]; then
+            painting=$(head -n 1 "$studies/$1/order")
+          fi
+          echo "$painting"
+        }
+      '';
+
+      # Shows the active study's chosen painting and follows changes.
       # garden-themes renames a new .manifest.json into the themes
-      # directory on every apply, which is what inotifywait wakes on.
-      # On a switch the new swaybg is started before the old one is
-      # stopped, so the screen never falls back to the bare backdrop.
+      # directory on every apply, and garden-study writes the state
+      # directory; inotifywait wakes on either. On a change the new
+      # swaybg is started before the old one is stopped, so the screen
+      # never falls back to the bare backdrop.
       garden-wallpaper = pkgs.writeShellApplication {
         name = "garden-wallpaper";
         runtimeInputs = [
@@ -122,18 +165,16 @@ _: {
           pkgs.coreutils
         ];
         text = ''
+          ${resolve}
           themes=${themesDir}
-          studies=${studiesDir}
           current=""
           pid=""
+          mkdir -p "$state"
 
           show() {
-            local palette dir old
-            palette=$(jq -r '.palette // empty' "$themes/.manifest.json" 2>/dev/null || true)
-            dir="$studies/$palette"
-            if [ -z "$palette" ] || [ ! -d "$dir" ]; then
-              dir="$studies/${defaultStudy}"
-            fi
+            local study dir old
+            study=$(active_study)
+            dir="$studies/$study/$(chosen_painting "$study")"
             if [ "$dir" = "$current" ] && kill -0 "$pid" 2>/dev/null; then
               return
             fi
@@ -151,22 +192,24 @@ _: {
 
           while true; do
             show
-            # The timeout also restarts a swaybg that died.
+            watch=("$state")
             if [ -d "$themes" ]; then
-              inotifywait -qq -t 60 -e moved_to -e close_write "$themes" || true
-            else
-              sleep 5
+              watch+=("$themes")
             fi
+            # The timeout also restarts a swaybg that died, and picks up
+            # a themes directory created after startup.
+            inotifywait -qq -t 60 -e moved_to -e close_write "''${watch[@]}" || true
           done
         '';
       };
 
-      # garden-study: switch study from a terminal or a keybind.
-      #   garden-study            list studies, marking the active one
-      #   garden-study next       the next study, wrapping around
-      #   garden-study <name>     that study
-      # Goes through the garden shell when it is running, so its
-      # switcher and bar follow; otherwise straight to garden-themes.
+      # garden-study: switch study or painting from a terminal or keybind.
+      #   garden-study                     list studies and their paintings
+      #   garden-study next                the next study, wrapping around
+      #   garden-study painting            the next painting in this study
+      #   garden-study <study> [painting]  that study (and painting)
+      # Studies switch through the garden shell when it is running, so
+      # its switcher and bar follow; otherwise straight to garden-themes.
       garden-study = pkgs.writeShellApplication {
         name = "garden-study";
         runtimeInputs = [
@@ -174,32 +217,72 @@ _: {
           pkgs.coreutils
         ];
         text = ''
-          studies=(${lib.concatStringsSep " " (lib.attrNames studies)})
-          active=$(jq -r '.palette // empty' ${themesDir}/.manifest.json 2>/dev/null || true)
+          ${resolve}
+          names=(${lib.concatStringsSep " " (lib.attrNames studies)})
+          active=$(active_study)
+
+          # next_after <current> <item>...
+          next_after() {
+            local cur=$1 first=$2 take=0 item
+            shift
+            for item in "$@"; do
+              if [ "$take" = 1 ]; then
+                echo "$item"
+                return
+              fi
+              if [ "$item" = "$cur" ]; then take=1; fi
+            done
+            echo "$first"
+          }
+
+          set_painting() {
+            if [ ! -d "$studies/$1/$2" ]; then
+              echo "garden-study: no painting '$2' in study '$1'" >&2
+              exit 1
+            fi
+            mkdir -p "$state"
+            echo "$2" > "$state/$1.tmp"
+            mv "$state/$1.tmp" "$state/$1"
+          }
+
+          switch_study() {
+            if ! qs -c garden ipc call garden switchPalette "$1" 2>/dev/null; then
+              garden-themes apply --name "$1"
+            fi
+          }
 
           case "''${1:-}" in
             "")
-              for s in "''${studies[@]}"; do
+              for s in "''${names[@]}"; do
                 if [ "$s" = "$active" ]; then echo "* $s"; else echo "  $s"; fi
+                chosen=$(chosen_painting "$s")
+                while read -r p; do
+                  if [ "$p" = "$chosen" ]; then mark="*"; else mark=" "; fi
+                  printf '    %s %-18s %s\n' "$mark" "$p" "$(cat "$studies/$s/$p/caption")"
+                done < "$studies/$s/order"
               done
-              exit 0
               ;;
             next)
-              target=''${studies[0]}
-              for i in "''${!studies[@]}"; do
-                if [ "''${studies[$i]}" = "$active" ]; then
-                  target=''${studies[$(((i + 1) % ''${#studies[@]}))]}
-                fi
-              done
+              switch_study "$(next_after "$active" "''${names[@]}")"
+              ;;
+            painting)
+              mapfile -t paintings < "$studies/$active/order"
+              set_painting "$active" \
+                "$(next_after "$(chosen_painting "$active")" "''${paintings[@]}")"
               ;;
             *)
-              target=$1
+              if [ ! -d "$studies/$1" ]; then
+                echo "garden-study: no study '$1' (try: ''${names[*]})" >&2
+                exit 1
+              fi
+              if [ -n "''${2:-}" ]; then
+                set_painting "$1" "$2"
+              fi
+              if [ "$1" != "$active" ]; then
+                switch_study "$1"
+              fi
               ;;
           esac
-
-          if ! qs -c garden ipc call garden switchPalette "$target" 2>/dev/null; then
-            garden-themes apply --name "$target"
-          fi
         '';
       };
     in
