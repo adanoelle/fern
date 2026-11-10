@@ -1,14 +1,23 @@
 _: {
   den.aspects.helix.homeManager =
-    { pkgs, ... }:
+    { pkgs, config, ... }:
     {
       home.packages = with pkgs; [ helix ];
+
+      # The garden palette as a Helix theme: garden-themes writes
+      # ~/.config/garden/themes/helix/garden.toml on every palette switch
+      # and signals running editors to reload (SIGUSR1). The link points
+      # at that mutable file, not the store, so switches show up live.
+      # On a host without garden.terminal the link dangles and Helix
+      # falls back to its default theme.
+      xdg.configFile."helix/themes/garden.toml".source =
+        config.lib.file.mkOutOfStoreSymlink "${config.xdg.configHome}/garden/themes/helix/garden.toml";
 
       programs.helix = {
         enable = true;
         defaultEditor = true;
         settings = {
-          theme = "catppuccin_frappe";
+          theme = "garden";
           editor = {
             true-color = true;
             line-number = "relative";
