@@ -7,12 +7,17 @@ _: {
         settings = {
           font-family = "FiraCode Nerd Font";
           font-size = 11;
-          # The garden mono face (garden-shell Settings → palette →
-          # typography), written by the shell and reloaded via SIGUSR2.
-          # `?` makes the include optional; being loaded after this file,
-          # it overrides font-family above when present.
-          config-file = "?${config.xdg.configHome}/garden/fonts/ghostty";
-          theme = "catppuccin-frappe";
+          # Garden includes, both written outside the store and reloaded
+          # via SIGUSR2; `?` makes each optional. Colours: the active
+          # palette, from garden-themes (no `theme` is set, so without
+          # the file Ghostty uses its built-in colours). Font: the garden
+          # mono face (garden-shell Settings → palette → typography);
+          # being loaded after this file, it overrides font-family above
+          # when present.
+          config-file = [
+            "?${config.xdg.configHome}/garden/themes/ghostty/garden-theme"
+            "?${config.xdg.configHome}/garden/fonts/ghostty"
+          ];
 
           keybind = [
             "shift+enter=text:\\n"

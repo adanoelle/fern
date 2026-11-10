@@ -2,8 +2,8 @@
 
 > Ghostty is the secondary terminal emulator: kitty is the primary,
 > garden-themed terminal, while Ghostty is kept as a fast, batteries-included
-> alternative. It deliberately still uses the Catppuccin Frappé theme — it is
-> not wired into the garden run-time theming (see
+> alternative. It follows the garden palette and mono face at run time
+> through two optional includes (see
 > [The Garden Design System](../desktop/garden.md)).
 
 ## Overview
@@ -16,13 +16,16 @@ correctness.
 ## Configuration
 
 ```nix
-den.aspects.ghostty.homeManager = _: {
+den.aspects.ghostty.homeManager = { config, ... }: {
   programs.ghostty = {
     enable = true;
     settings = {
       font-family = "FiraCode Nerd Font";
       font-size = 11;
-      theme = "catppuccin-frappe";
+      config-file = [
+        "?${config.xdg.configHome}/garden/themes/ghostty/garden-theme"
+        "?${config.xdg.configHome}/garden/fonts/ghostty"
+      ];
       keybind = [ /* tabs, splits, font size — see below */ ];
     };
   };
@@ -35,7 +38,7 @@ den.aspects.ghostty.homeManager = _: {
 |---------|-------|---------|
 | `font-family` | FiraCode Nerd Font | Ligatures + icon glyphs |
 | `font-size` | 11 | Default font size |
-| `theme` | catppuccin-frappe | Frozen pre-garden theme (kitty carries the garden palette) |
+| `config-file` | garden theme + font | Active garden palette (written by `garden-themes`) and mono face (written by the shell); both optional, reloaded on SIGUSR2 |
 
 ### Keybindings
 

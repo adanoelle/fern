@@ -72,6 +72,10 @@ tools read from that mutable directory:
 - **bat** — symlinked tmTheme + cache rebuild when the theme changes
 - **btop**, **yazi**, **kakoune**, **zathura** — symlinked/sourced theme files
 - **lazygit** — garden overlay merged via `LG_CONFIG_FILE`
+- **helix** — `theme = "garden"`, a link from `~/.config/helix/themes/` to the
+  generated theme (`modules/cli/helix.nix`); reloaded on SIGUSR1
+- **ghostty** — optional `config-file` include of the generated colours
+  (`modules/cli/ghostty.nix`); reloaded on SIGUSR2
 
 Switching palettes is `garden-themes apply --name <palette>` (or the shell's
 settings overlay). Eight palettes ship in `palettes.toml`:

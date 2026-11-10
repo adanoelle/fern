@@ -293,11 +293,11 @@
         "rust-overlay": "rust-overlay_2"
       },
       "locked": {
-        "lastModified": 1791912901,
-        "narHash": "sha256-geNHu846AtMFgNsa9wD9a9RtbxrAQ96Od11EcKSjRsQ=",
+        "lastModified": 1794325588,
+        "narHash": "sha256-I3RKzLhPgT8oirzoPG8/axbTclSy/THS9bM20Bxz8+M=",
         "owner": "adanoelle",
         "repo": "garden-shell",
-        "rev": "bd0e8d8845c5c987ff0f28ffe69c426b22eb8d5c",
+        "rev": "f84c38d215d4c967073d852301e2e4ff7f3c164c",
         "type": "github"
       },
       "original": {
