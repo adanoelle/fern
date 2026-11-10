@@ -109,6 +109,9 @@ garden-study painting           # the next painting in this study
 garden-study tenebroso judith   # a study, and optionally a painting
 ```
 
+In niri, `Mod+G` is `garden-study next` and `Mod+Shift+G` is
+`garden-study painting`.
+
 The painting chosen for each study is remembered in
 `~/.local/state/garden-study/`. niri's window borders take the palette
 at build time, so they keep their colour until the next switch of the

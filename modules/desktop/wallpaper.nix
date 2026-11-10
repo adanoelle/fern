@@ -289,6 +289,19 @@ _: {
     {
       home.packages = [ garden-study ];
 
+      # G for gallery: the next study, and with Shift the next painting
+      # in the current one.
+      programs.niri.settings.binds = {
+        "Mod+G".action.spawn = [
+          (lib.getExe garden-study)
+          "next"
+        ];
+        "Mod+Shift+G".action.spawn = [
+          (lib.getExe garden-study)
+          "painting"
+        ];
+      };
+
       systemd.user.services.wallpaper = {
         Unit = {
           Description = "Desktop wallpaper (swaybg): the active garden study";
