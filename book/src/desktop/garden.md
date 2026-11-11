@@ -89,7 +89,7 @@ Manager-managed symlink, so runtime selection survives `just switch`.
 
 ### Studies: a palette and its paintings
 
-Three palettes are built from a painter's working colours, and each is
+Six palettes are built from a painter's working colours, and each is
 paired with that painter's paintings as the niri wallpaper. The pair is
 a *study*:
 
@@ -98,6 +98,9 @@ a *study*:
 | `shitanuri` | Sargent | *Nonchaloir (Repose)*, *El Jaleo*, *A Dinner Table at Night*, *Carnation, Lily, Lily, Rose* |
 | `nocturne` | Whistler | *Nocturne: Blue and Gold — Southampton Water* |
 | `tenebroso` | Caravaggio | *The Denial of Saint Peter*, *The Musicians*, *Bacchus* (two crops), *Judith* (detail) |
+| `poesia` | Titian | *Bacchus and Ariadne*, *The Rape of Europa*, *The Death of Actaeon* |
+| `impasto` | Rembrandt | *Philemon and Baucis*, *The Abduction of Europa* |
+| `brabant` | Bruegel | *Landscape with the Fall of Icarus* |
 
 The wallpaper service follows the active palette, so switching palette
 switches the study; any other palette shows the default study (Sargent).
