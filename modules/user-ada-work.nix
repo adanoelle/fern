@@ -40,6 +40,8 @@
       den.aspects.duckdb
       den.aspects.postgres
       den.aspects.rustfs
+      # theodolite, the group's geocoder: where its data lives.
+      den.aspects.theodolite
       # Sargent's "Nonchaloir (Repose)" behind the niri session.
       den.aspects.wallpaper
     ];
