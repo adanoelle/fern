@@ -26,6 +26,7 @@ in
     }
     {
       name = "musicians";
+      palette = "chiaro";
       title = "The Musicians";
       year = "1597";
       collection = "The Metropolitan Museum of Art, object 435844";
@@ -49,6 +50,7 @@ in
     }
     {
       name = "bacchus";
+      palette = "chiaro";
       title = "Bacchus";
       year = "c. 1596";
       collection = "Gallerie degli Uffizi, Florence (reproduction: Wikimedia Commons)";
@@ -60,6 +62,7 @@ in
     }
     {
       name = "bacchus-fruit";
+      palette = "chiaro";
       title = "Bacchus (detail: hands, glass and fruit)";
       year = "c. 1596";
       collection = "Gallerie degli Uffizi, Florence (reproduction: Wikimedia Commons)";

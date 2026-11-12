@@ -45,6 +45,7 @@ in
     }
     {
       name = "dinner-table";
+      palette = "lampshade";
       title = "A Dinner Table at Night";
       year = "1884";
       collection = "Fine Arts Museums of San Francisco (reproduction: Wikimedia Commons)";
@@ -59,6 +60,7 @@ in
     }
     {
       name = "carnation-lily";
+      palette = "lantern";
       title = "Carnation, Lily, Lily, Rose";
       year = "1885-86";
       collection = "Tate Britain, London (reproduction: Wikimedia Commons)";

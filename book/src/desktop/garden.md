@@ -91,13 +91,14 @@ Manager-managed symlink, so runtime selection survives `just switch`.
 
 Six palettes are built from a painter's working colours, and each is
 paired with that painter's paintings as the niri wallpaper. The pair is
-a *study*:
+a *study*. A painting whose colour departs from its painter's has a
+palette of its own, shown in brackets:
 
 | Palette | Painter | Paintings |
 |---------|---------|-----------|
-| `shitanuri` | Sargent | *Nonchaloir (Repose)*, *El Jaleo*, *A Dinner Table at Night*, *Carnation, Lily, Lily, Rose* |
+| `shitanuri` | Sargent | *Nonchaloir (Repose)*, *El Jaleo*, *A Dinner Table at Night* [`lampshade`], *Carnation, Lily, Lily, Rose* [`lantern`] |
 | `nocturne` | Whistler | *Nocturne: Blue and Gold — Southampton Water* |
-| `tenebroso` | Caravaggio | *The Denial of Saint Peter*, *The Musicians*, *Bacchus* (two crops), *Judith* (detail) |
+| `tenebroso` | Caravaggio | *The Denial of Saint Peter*, *The Musicians* and *Bacchus* (two crops) [`chiaro`], *Judith* (detail) |
 | `poesia` | Titian | *Bacchus and Ariadne*, *The Rape of Europa*, *The Death of Actaeon* |
 | `impasto` | Rembrandt | *Philemon and Baucis*, *The Abduction of Europa* |
 | `brabant` | Bruegel | *Landscape with the Fall of Icarus* |
@@ -110,10 +111,16 @@ garden-study                    # list studies and paintings, with attributions
 garden-study next               # the next study
 garden-study painting           # the next painting in this study
 garden-study tenebroso judith   # a study, and optionally a painting
+garden-study placard            # the label of what is on the wall
 ```
 
-In niri, `Mod+G` is `garden-study next` and `Mod+Shift+G` is
-`garden-study painting`.
+In niri, `Mod+G` is `garden-study next`, `Mod+Shift+G` is
+`garden-study painting` and `Mod+Ctrl+G` is `garden-study placard`.
+
+Painting and palette move together: choosing a painting applies its
+palette, and choosing a palette (in garden Settings, say) puts its
+painting on the wall. Each new painting is announced by its placard, a
+notification with the title, painter, year and collection.
 
 The painting chosen for each study is remembered in
 `~/.local/state/garden-study/`. niri's window borders take the palette
@@ -124,8 +131,9 @@ system or home configuration.
 mechanism. Each study is one data file,
 `modules/desktop/_studies/<palette>.nix`, found automatically: the
 painter, and a list of paintings with attribution, a pinned open-access
-source image, and crops (in thousandths of the source: `top`, and
-optionally `left`/`right`) for the ultrawide band and the laptop panel.
+source image, crops (in thousandths of the source: `top`, and
+optionally `left`/`right`) for the ultrawide band and the laptop panel,
+and optionally a `palette` of its own.
 The palette's colours live in garden-shell's `palettes.toml`.
 
 - **Another painting for a painter:** add an entry to that study's list.
