@@ -7,11 +7,17 @@
 # `garden-study painting` steps through its paintings. A palette
 # without a study shows the default one.
 #
+# A painting whose colour departs from its painter's can name its own
+# `palette`; choosing that painting applies it, and choosing that
+# palette puts the painting on the wall. When the painting changes, its
+# placard (title, painter, year, collection) is shown as a notification.
+#
 # This file is only the mechanism. The studies themselves are data,
 # one file per palette in ./_studies/<palette>.nix (picked up
 # automatically): the painter and a list of paintings, each with its
-# attribution, a pinned open-access source image and where to crop it.
-# The palette's colours live in garden-shell's palettes.toml.
+# attribution, a pinned open-access source image, where to crop it and
+# optionally its own palette. The palettes' colours live in
+# garden-shell's palettes.toml.
 #
 # Each painting gets two renditions:
 #   - ultrawide.jpg: a 3440x1440 band of the canvas, chosen by hand so
@@ -50,6 +56,21 @@ _: {
         lib.nameValuePair (lib.removeSuffix ".nix" file) (pkgs.callPackage (./_studies + "/${file}") { })
       ) (builtins.readDir ./_studies);
 
+      # The palette a painting is shown with: its own, or its study's.
+      paletteOf = study: painting: painting.palette or study;
+
+      # palette -> study. A palette can only belong to one study.
+      paletteStudy = lib.foldl' (
+        acc: study:
+        lib.foldl' (
+          acc: palette:
+          if (acc.${palette} or study) != study then
+            throw "wallpaper: palette '${palette}' is used by studies '${acc.${palette}}' and '${study}'"
+          else
+            acc // { ${palette} = study; }
+        ) acc ([ study ] ++ map (paletteOf study) studies.${study}.paintings)
+      ) { } (lib.attrNames studies);
+
       # crop <out> <width> <height> <left> <right> <top>
       render =
         study: painting:
@@ -61,12 +82,17 @@ _: {
               (r.right or 1000)
               r.top
             ];
-          caption = "${studies.${study}.painter}, ${painting.title} (${painting.year}). ${painting.collection}";
+          inherit (studies.${study}) painter;
+          caption = "${painter}, ${painting.title} (${painting.year}). ${painting.collection}";
+          # Three lines, as on a museum label.
+          placard = "${painting.title}\n${painter}, ${painting.year}\n${painting.collection}\n";
         in
         pkgs.runCommand "study-${study}-${painting.name}" { nativeBuildInputs = [ pkgs.imagemagick ]; } (
           ''
             mkdir -p $out
             printf '%s\n' ${lib.escapeShellArg caption} > $out/caption
+            printf ${lib.escapeShellArg placard} > $out/placard
+            printf '%s\n' ${lib.escapeShellArg (paletteOf study painting)} > $out/palette
           ''
           + (
             if painting ? ready then
@@ -105,7 +131,7 @@ _: {
           )
         );
 
-      # <study>/<painting>/{ultrawide.jpg,panel.jpg,caption}, plus
+      # <study>/<painting>/{ultrawide.jpg,panel.jpg,caption,placard,palette}, plus
       # <study>/order listing the paintings, first one the default.
       studiesDir = pkgs.linkFarm "garden-studies" (
         lib.mapAttrs (
@@ -124,22 +150,34 @@ _: {
       # for it (written by garden-study).
       stateDir = "${config.xdg.stateHome}/garden-study";
 
-      # Shared by both scripts: the active study and its chosen painting.
+      # Shared by both scripts: which study and painting are on the wall.
       resolve = ''
         studies=${studiesDir}
         state=${stateDir}
+        manifest=${themesDir}/.manifest.json
 
-        active_study() {
-          local palette
-          palette=$(jq -r '.palette // empty' ${themesDir}/.manifest.json 2>/dev/null || true)
-          if [ -n "$palette" ] && [ -d "$studies/$palette" ]; then
-            echo "$palette"
-          else
-            echo ${defaultStudy}
-          fi
+        active_palette() {
+          jq -r '.palette // empty' "$manifest" 2>/dev/null || true
         }
 
-        # chosen_painting <study>
+        study_of_palette() {
+          case "$1" in
+            ${lib.concatStrings (
+              lib.mapAttrsToList (palette: study: ''
+                ${palette}) echo ${study} ;;
+              '') paletteStudy
+            )}
+            *) ;;
+          esac
+        }
+
+        active_study() {
+          local study
+          study=$(study_of_palette "$(active_palette)")
+          echo "''${study:-${defaultStudy}}"
+        }
+
+        # chosen_painting <study>: the painting last picked for it.
         chosen_painting() {
           local painting
           painting=$(cat "$state/$1" 2>/dev/null || true)
@@ -148,12 +186,46 @@ _: {
           fi
           echo "$painting"
         }
+
+        # current_painting <study>: the painting on the wall for it.
+        # Normally the chosen one. But when the active palette belongs
+        # to this study and is not the chosen painting's, the palette
+        # was picked elsewhere (garden Settings), so the first painting
+        # with that palette is shown. Unless the choice is newer than
+        # the palette: then garden-study has just picked the painting
+        # and the palette switch is still on its way.
+        current_painting() {
+          local chosen palette p
+          chosen=$(chosen_painting "$1")
+          palette=$(active_palette)
+          if [ "$(study_of_palette "$palette")" = "$1" ] \
+            && [ "$(cat "$studies/$1/$chosen/palette")" != "$palette" ] \
+            && ! [ "$state/$1" -nt "$manifest" ]; then
+            while read -r p; do
+              if [ "$(cat "$studies/$1/$p/palette")" = "$palette" ]; then
+                echo "$p"
+                return
+              fi
+            done < "$studies/$1/order"
+          fi
+          echo "$chosen"
+        }
+
+        # placard <study> <painting>: the painting's label, as a
+        # notification that leaves no trace in the history.
+        placard() {
+          local lines
+          mapfile -t lines < "$studies/$1/$2/placard"
+          notify-send --app-name "Study" --expire-time 8000 --transient \
+            "''${lines[0]}" "''${lines[1]}"$'\n'"''${lines[2]}" || true
+        }
       '';
 
-      # Shows the active study's chosen painting and follows changes.
+      # Shows the active study's painting and follows changes, with a
+      # placard for each new painting (not at startup).
       # garden-themes renames a new .manifest.json into the themes
       # directory on every apply, and garden-study writes the state
-      # directory; inotifywait wakes on either. On a change the new
+      # directory; inotifywait reports either. On a change the new
       # swaybg is started before the old one is stopped, so the screen
       # never falls back to the bare backdrop.
       garden-wallpaper = pkgs.writeShellApplication {
@@ -163,6 +235,7 @@ _: {
           pkgs.jq
           pkgs.inotify-tools
           pkgs.coreutils
+          pkgs.libnotify
         ];
         text = ''
           ${resolve}
@@ -172,9 +245,10 @@ _: {
           mkdir -p "$state"
 
           show() {
-            local study dir old
+            local study painting dir old
             study=$(active_study)
-            dir="$studies/$study/$(chosen_painting "$study")"
+            painting=$(current_painting "$study")
+            dir="$studies/$study/$painting"
             if [ "$dir" = "$current" ] && kill -0 "$pid" 2>/dev/null; then
               return
             fi
@@ -185,20 +259,46 @@ _: {
             pid=$!
             current=$dir
             if [ -n "$old" ]; then
+              placard "$study" "$painting"
               sleep 0.5
               kill "$old" 2>/dev/null || true
             fi
           }
 
           while true; do
-            show
             watch=("$state")
+            watching_themes=0
             if [ -d "$themes" ]; then
               watch+=("$themes")
+              watching_themes=1
             fi
-            # The timeout also restarts a swaybg that died, and picks up
-            # a themes directory created after startup.
-            inotifywait -qq -t 60 -e moved_to -e close_write "''${watch[@]}" || true
+            # One long-lived monitor, read line by line: waiting afresh
+            # for each event would miss a palette change that lands
+            # while the previous event is being handled.
+            exec {events}< <(exec inotifywait -m -q -e moved_to -e close_write "''${watch[@]}")
+            monitor=$!
+            show
+            while true; do
+              rc=0
+              read -r -t 60 -u "$events" _ || rc=$?
+              if [ "$rc" -gt 128 ]; then
+                # Quiet for a minute: restart a swaybg that died, and
+                # start watching a themes directory created since.
+                show
+                if [ "$watching_themes" = 0 ] && [ -d "$themes" ]; then
+                  break
+                fi
+              elif [ "$rc" -ne 0 ]; then
+                break
+              else
+                # An apply writes many files: take the burst as one.
+                while read -r -t 0.1 -u "$events" _; do :; done
+                show
+              fi
+            done
+            kill "$monitor" 2>/dev/null || true
+            exec {events}<&-
+            sleep 1
           done
         '';
       };
@@ -207,14 +307,16 @@ _: {
       #   garden-study                     list studies and their paintings
       #   garden-study next                the next study, wrapping around
       #   garden-study painting            the next painting in this study
+      #   garden-study placard             show the current painting's label
       #   garden-study <study> [painting]  that study (and painting)
-      # Studies switch through the garden shell when it is running, so
+      # Palettes switch through the garden shell when it is running, so
       # its switcher and bar follow; otherwise straight to garden-themes.
       garden-study = pkgs.writeShellApplication {
         name = "garden-study";
         runtimeInputs = [
           pkgs.jq
           pkgs.coreutils
+          pkgs.libnotify
         ];
         text = ''
           ${resolve}
@@ -235,7 +337,12 @@ _: {
             echo "$first"
           }
 
-          set_painting() {
+          # choose <study> <painting>: record the choice, then apply the
+          # painting's palette if it is not the active one. The choice
+          # is written first (and always rewritten) so that it is newer
+          # than the palette: see current_painting.
+          choose() {
+            local palette
             if [ ! -d "$studies/$1/$2" ]; then
               echo "garden-study: no painting '$2' in study '$1'" >&2
               exit 1
@@ -243,44 +350,50 @@ _: {
             mkdir -p "$state"
             echo "$2" > "$state/$1.tmp"
             mv "$state/$1.tmp" "$state/$1"
-          }
-
-          switch_study() {
-            if ! qs -c garden ipc call garden switchPalette "$1" 2>/dev/null; then
-              garden-themes apply --name "$1"
+            palette=$(cat "$studies/$1/$2/palette")
+            if [ "$palette" != "$(active_palette)" ]; then
+              if ! qs -c garden ipc call garden switchPalette "$palette" 2>/dev/null; then
+                garden-themes apply --name "$palette"
+              fi
             fi
           }
 
           case "''${1:-}" in
             "")
               for s in "''${names[@]}"; do
-                if [ "$s" = "$active" ]; then echo "* $s"; else echo "  $s"; fi
-                chosen=$(chosen_painting "$s")
+                if [ "$s" = "$active" ]; then
+                  echo "* $s"
+                  shown=$(current_painting "$s")
+                else
+                  echo "  $s"
+                  shown=$(chosen_painting "$s")
+                fi
                 while read -r p; do
-                  if [ "$p" = "$chosen" ]; then mark="*"; else mark=" "; fi
-                  printf '    %s %-18s %s\n' "$mark" "$p" "$(cat "$studies/$s/$p/caption")"
+                  if [ "$p" = "$shown" ]; then mark="*"; else mark=" "; fi
+                  palette=$(cat "$studies/$s/$p/palette")
+                  if [ "$palette" = "$s" ]; then palette=""; else palette=" [$palette]"; fi
+                  printf '    %s %-18s %s%s\n' "$mark" "$p" "$(cat "$studies/$s/$p/caption")" "$palette"
                 done < "$studies/$s/order"
               done
               ;;
             next)
-              switch_study "$(next_after "$active" "''${names[@]}")"
+              s=$(next_after "$active" "''${names[@]}")
+              choose "$s" "$(chosen_painting "$s")"
               ;;
             painting)
               mapfile -t paintings < "$studies/$active/order"
-              set_painting "$active" \
-                "$(next_after "$(chosen_painting "$active")" "''${paintings[@]}")"
+              choose "$active" \
+                "$(next_after "$(current_painting "$active")" "''${paintings[@]}")"
+              ;;
+            placard)
+              placard "$active" "$(current_painting "$active")"
               ;;
             *)
               if [ ! -d "$studies/$1" ]; then
                 echo "garden-study: no study '$1' (try: ''${names[*]})" >&2
                 exit 1
               fi
-              if [ -n "''${2:-}" ]; then
-                set_painting "$1" "$2"
-              fi
-              if [ "$1" != "$active" ]; then
-                switch_study "$1"
-              fi
+              choose "$1" "''${2:-$(chosen_painting "$1")}"
               ;;
           esac
         '';
@@ -288,6 +401,23 @@ _: {
     in
     {
       home.packages = [ garden-study ];
+
+      # G for gallery: the next study, with Shift the next painting in
+      # the current one, and with Ctrl the placard of what is showing.
+      programs.niri.settings.binds = {
+        "Mod+G".action.spawn = [
+          (lib.getExe garden-study)
+          "next"
+        ];
+        "Mod+Shift+G".action.spawn = [
+          (lib.getExe garden-study)
+          "painting"
+        ];
+        "Mod+Ctrl+G".action.spawn = [
+          (lib.getExe garden-study)
+          "placard"
+        ];
+      };
 
       systemd.user.services.wallpaper = {
         Unit = {
