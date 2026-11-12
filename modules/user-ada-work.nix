@@ -35,9 +35,13 @@
       den.aspects.thunderbird
       # Data: DuckDB + dpeek + harlequin for inspecting the research
       # group's Parquet files and small datastores outside any project env,
-      # and psql for its Postgres databases (connections kept off-repo).
+      # psql for its Postgres databases, and rc for its S3 object stores
+      # (connections and keys kept off-repo).
       den.aspects.duckdb
       den.aspects.postgres
+      den.aspects.rustfs
+      # theodolite, the group's geocoder: where its data lives.
+      den.aspects.theodolite
       # Sargent's "Nonchaloir (Repose)" behind the niri session.
       den.aspects.wallpaper
     ];

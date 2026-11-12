@@ -258,6 +258,18 @@ switch creates).
    psql service=<name> -c 'select current_user'
    ```
 
+   Object stores are the same (`modules/cli/rustfs.nix` installs only
+   `rc`). Give each one an alias, which may not start with a digit. The
+   first alias creates `~/.config/rc/config.toml`, readable by its owner
+   only. Start the line with a space so the keys stay out of fish's
+   history:
+
+   ```bash
+    rc alias set <alias> <endpoint-url> <access-key> <secret-key>
+   rc alias list
+   rc ls <alias>
+   ```
+
 4. Bootstrap the home (no `home-manager` on PATH yet):
 
    ```bash
