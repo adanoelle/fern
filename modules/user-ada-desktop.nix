@@ -18,15 +18,8 @@
       {
         desktop.hyprland = {
           enable = true;
-          bar.enable = false;
           idle.enable = true;
           lock.enable = true;
-
-          fern = {
-            enable = false;
-            obs.enable = false;
-            themeWatcher.enable = false;
-          };
 
           wallpaper = {
             enable = true;

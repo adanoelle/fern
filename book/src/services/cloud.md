@@ -30,12 +30,8 @@ toolkit:
 AWS_SDK_LOAD_CONFIG=1
 ```
 
-The `awsdev` alias launches a shell with dev credentials via aws-vault:
-`aws-vault exec dev -- zsh`.
-
 ## Key files
 
 | File                                  | Purpose                                        |
 | ------------------------------------- | ---------------------------------------------- |
 | `modules/cloud/aws-cli.nix`       | AWS CLI, vault, SAM, Terraform, security tools (`den.aspects.aws-cli`)   |
-| `modules/devtools/localstack.nix` | Local AWS emulation (`den.aspects.localstack`; see [Docker](docker.md))  |

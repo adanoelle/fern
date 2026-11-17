@@ -21,14 +21,6 @@ Set by `modules/devtools/c-cpp.nix`:
 | `CFLAGS`   | `-fstack-protector-strong -Wl,-z,relro,-z,now` | C compiler hardening flags   |
 | `CXXFLAGS` | `-fstack-protector-strong -Wl,-z,relro,-z,now` | C++ compiler hardening flags |
 
-## .NET
-
-Set by `modules/devtools/csharp.nix`:
-
-| Variable      | Value                        | Purpose                     |
-| ------------- | ---------------------------- | --------------------------- |
-| `DOTNET_ROOT` | `<nix-store>/dotnet-sdk-8.0` | .NET SDK location for tools |
-
 ## Ada
 
 Set by `modules/devtools/ada.nix`:
@@ -54,14 +46,6 @@ Set by `modules/desktop/chromium.nix`:
 | ---------------- | ----- | ------------------------------------ |
 | `NIXOS_OZONE_WL` | `1`   | Signal Wayland mode to Electron apps |
 
-Set by `modules/desktop/nyxt.nix` (wrapper):
-
-| Variable                          | Value | Purpose                     |
-| --------------------------------- | ----- | --------------------------- |
-| `WEBKIT_DISABLE_COMPOSITING_MODE` | `1`   | WebKitGTK NVIDIA workaround |
-| `WEBKIT_DISABLE_DMABUF_RENDERER`  | `1`   | Disable DMA-BUF rendering   |
-| `__GL_THREADED_OPTIMIZATIONS`     | `0`   | Disable threaded GL         |
-
 ## AWS / Cloud
 
 Set by `modules/cloud/aws-cli.nix`:
@@ -69,16 +53,6 @@ Set by `modules/cloud/aws-cli.nix`:
 | Variable              | Value | Purpose                          |
 | --------------------- | ----- | -------------------------------- |
 | `AWS_SDK_LOAD_CONFIG` | `1`   | Load config from `~/.aws/config` |
-
-Set by `modules/devtools/localstack.nix`:
-
-| Variable                | Value                   | Purpose                     |
-| ----------------------- | ----------------------- | --------------------------- |
-| `AWS_ENDPOINT_URL`      | `http://localhost:4566` | LocalStack endpoint         |
-| `AWS_ACCESS_KEY_ID`     | `test`                  | LocalStack test credentials |
-| `AWS_SECRET_ACCESS_KEY` | `test`                  | LocalStack test credentials |
-| `AWS_DEFAULT_REGION`    | `us-east-1`             | LocalStack default region   |
-| `LOCALSTACK_HOST`       | `localhost`             | LocalStack hostname         |
 
 ## Shell
 

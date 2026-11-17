@@ -7,8 +7,7 @@
 #
 # Tool integrations (eza, bat, zoxide, fzf, direnv) are guarded with
 # command -v so they gracefully degrade when not installed.
-{ den, ... }:
-{
+_: {
   den.aspects.zsh = {
     homeManager =
       { config, ... }:

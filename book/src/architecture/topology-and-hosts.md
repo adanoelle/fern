@@ -62,10 +62,9 @@ which other aspects it includes.
     includes = [
       den.aspects.boot         # systemd-boot (UEFI x86 default)
       den.aspects.workstation  # role: core, nh, users, greetd, fonts, audio, docker, ...
-      den.aspects.dev-machine  # role: localstack, aws-cli
+      den.aspects.dev-machine  # role: aws-cli
       den.aspects.monitoring
       den.aspects.niri
-      den.aspects.lmstudio
       den.aspects.teams
     ];
 
@@ -145,7 +144,7 @@ Both hosts include `core`, `audio`, `users`, `docker`, `greetd`, and
 - **GPU**: fern enables Mesa/AMDGPU inline; moss uses the `graphics-asahi`
   aspect
 - **Dev tools**: only fern includes `rust`, `c-cpp`, `node-ts`, cloud CLIs
-- **Desktop apps**: only fern includes `lmstudio`, `teams`
+- **Desktop apps**: only fern includes `teams`
 
 User-level configuration is layered: the base aspect (`modules/user-ada.nix` —
 cli, git, shells) applies to `ada` on every machine, while each host forwards

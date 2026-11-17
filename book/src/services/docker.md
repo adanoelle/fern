@@ -35,43 +35,8 @@ builds, and Dockerfile frontend features. The `ada` user is added to the
 | `trivy`          | Container image vulnerability scanner |
 | `stern`          | Multi-pod log tailing for Kubernetes  |
 
-## LocalStack
-
-LocalStack (`den.aspects.localstack` in `modules/devtools/localstack.nix`)
-provides a local AWS cloud stack running in Docker. It is configured as an OCI
-container:
-
-```nix
-virtualisation.oci-containers.containers.localstack = {
-  image = "localstack/localstack:3";
-  ports = [ "4566:4566" ];
-  environment = {
-    SERVICES = "cloudformation,sts,iam,s3,sqs,sns,dynamodb,lambda,...";
-  };
-};
-```
-
-### awslocal
-
-A wrapper script (`awslocal`) calls `aws` CLI with the LocalStack endpoint:
-
-```bash
-awslocal s3 ls        # Lists S3 buckets on LocalStack
-awslocal sqs list-queues  # Lists SQS queues on LocalStack
-```
-
-Environment variables are set for SDK auto-detection:
-
-```bash
-AWS_ENDPOINT_URL=http://localhost:4566
-AWS_ACCESS_KEY_ID=test
-AWS_SECRET_ACCESS_KEY=test
-AWS_DEFAULT_REGION=us-east-1
-```
-
 ## Key files
 
 | File                                  | Purpose                        |
 | ------------------------------------- | ------------------------------ |
 | `modules/devtools/docker.nix`     | Docker Engine, BuildKit, tools (`den.aspects.docker`)     |
-| `modules/devtools/localstack.nix` | LocalStack container, awslocal (`den.aspects.localstack`) |

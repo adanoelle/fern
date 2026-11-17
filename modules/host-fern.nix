@@ -15,7 +15,6 @@
       den.aspects.monitoring
       den.aspects.gaming
       den.aspects.niri
-      den.aspects.lmstudio
       den.aspects.teams
     ];
 
@@ -107,10 +106,6 @@
 
         # Hyprland (fallback session during Niri transition)
         programs.hyprland.enable = true;
-
-        # Disable LightDM (auto-enabled when xserver is on);
-        # use greetd from the greet module instead.
-        services.xserver.displayManager.lightdm.enable = false;
 
         environment.systemPackages = with pkgs; [
           mesa-demos

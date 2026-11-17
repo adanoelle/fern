@@ -54,7 +54,6 @@ fern/
 │   │   ├── bundle.nix     # Desktop apps bundle
 │   │   ├── hyprland.nix   # Hyprland compositor
 │   │   ├── _hyprland/     # Hyprland sub-modules (not auto-imported)
-│   │   │   ├── bar.nix
 │   │   │   ├── fern.nix
 │   │   │   ├── idlelock.nix
 │   │   │   └── wallpaper.nix

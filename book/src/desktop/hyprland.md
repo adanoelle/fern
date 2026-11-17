@@ -82,18 +82,6 @@ Window animations use the `easeOutQuint` bezier curve:
 - **Fade** -- 150ms opacity transition
 - **Workspace switch** -- slide over 400ms
 
-## Layer rules
-
-Waybar (when enabled) and QuickShell get blur and transparency via Hyprland
-layer rules:
-
-```
-layerrule = blur, waybar
-layerrule = ignorealpha 0.3, waybar
-layerrule = blur, quickshell
-layerrule = ignorealpha 0.3, quickshell
-```
-
 ## Monitor configuration
 
 Fern uses `HDMI-A-1` as the primary monitor. Moss uses auto-detection (empty
@@ -105,8 +93,6 @@ monitor string). Per-host monitor setup is configured in the user aspect
 | File                                       | Purpose                                         |
 | ------------------------------------------ | ----------------------------------------------- |
 | `modules/desktop/hyprland.nix`             | Main den aspect: compositor config, keybindings, animations |
-| `modules/desktop/_hyprland/bar.nix`        | Waybar configuration (disabled by default)      |
-| `modules/desktop/_hyprland/fern.nix`       | Fern Shell integration                          |
 | `modules/desktop/_hyprland/wallpaper.nix`  | awww wallpaper management                       |
 | `modules/desktop/_hyprland/idlelock.nix`   | hypridle + hyprlock                             |
 | `modules/desktop/screenshot.nix`           | Screenshot scripts and bindings                 |

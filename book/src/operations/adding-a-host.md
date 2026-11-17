@@ -132,7 +132,7 @@ The two existing hosts show the pattern:
 den.aspects.fern.includes = [
   den.aspects.boot  den.aspects.workstation  den.aspects.dev-machine
   den.aspects.monitoring  den.aspects.niri
-  den.aspects.lmstudio  den.aspects.teams
+  den.aspects.teams
 ];
 ```
 

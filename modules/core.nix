@@ -10,7 +10,6 @@
       nixpkgs.config.allowUnfree = true;
       nixpkgs.overlays = [
         inputs.rust-overlay.overlays.default
-        inputs.zig-overlay.overlays.default
         inputs.claude-code.overlays.default
       ];
       nix.settings.experimental-features = [

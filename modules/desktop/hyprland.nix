@@ -27,8 +27,6 @@ _: {
     in
     {
       imports = [
-        ./_hyprland/bar.nix
-        ./_hyprland/fern.nix
         ./_hyprland/idlelock.nix
         ./_hyprland/wallpaper.nix
       ];
@@ -53,22 +51,8 @@ _: {
           default = "hyprctl reload";
         };
 
-        bar.enable = lib.mkEnableOption "Waybar status bar";
         idle.enable = lib.mkEnableOption "hypridle idle timer";
         lock.enable = lib.mkEnableOption "hyprlock screen locker";
-
-        # Fern shell options (alternative to Waybar)
-        fern = {
-          enable = lib.mkEnableOption "Fern shell (QuickShell-based bar)";
-
-          obs = {
-            enable = lib.mkEnableOption "Fern OBS bridge daemon";
-          };
-
-          themeWatcher = {
-            enable = lib.mkEnableOption "Fern theme file watcher";
-          };
-        };
 
         wallpaper = {
           enable = lib.mkEnableOption "wallpaper management with awww";
@@ -245,12 +229,6 @@ _: {
                 "workspaces, 1, 5, easeOutQuint"
               ];
             };
-
-            # Blur Waybar (layer surface) and let alpha show
-            layerrule = [
-              "blur, waybar"
-              "ignorealpha 0.2, waybar"
-            ];
 
             # Keybinds
             bind = [
