@@ -99,8 +99,6 @@ block. The Hyprland aspect is the largest example:
     let cfg = config.desktop.hyprland;
     in {
       imports = [
-        ./_hyprland/bar.nix
-        ./_hyprland/fern.nix
         ./_hyprland/idlelock.nix
         ./_hyprland/wallpaper.nix
       ];
@@ -109,10 +107,8 @@ block. The Hyprland aspect is the largest example:
         enable = lib.mkEnableOption "Hyprland Wayland compositor";
         modKey = lib.mkOption { type = lib.types.str; default = "SUPER"; };
         terminal = lib.mkOption { type = lib.types.str; default = "ghostty"; };
-        bar.enable = lib.mkEnableOption "Waybar status bar";
         idle.enable = lib.mkEnableOption "hypridle idle timer";
         lock.enable = lib.mkEnableOption "hyprlock screen locker";
-        fern.enable = lib.mkEnableOption "Fern shell (QuickShell-based bar)";
         wallpaper = {
           enable = lib.mkEnableOption "wallpaper management with swww";
           path = lib.mkOption { type = lib.types.str; /* ... */ };
@@ -157,7 +153,6 @@ The Hyprland aspect imports files from `_hyprland/`:
 modules/desktop/
 ├── hyprland.nix          # Main aspect
 └── _hyprland/            # Internal sub-modules
-    ├── bar.nix           # Waybar
     ├── fern.nix          # Fern Shell (QuickShell)
     ├── idlelock.nix      # hypridle + hyprlock
     └── wallpaper.nix     # swww wallpaper

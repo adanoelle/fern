@@ -29,7 +29,7 @@ Host role bundles — compose these instead of long per-host include lists.
 | Aspect | File | Includes |
 |--------|------|----------|
 | `workstation` | `modules/roles/workstation.nix` | core, nh, users, secrets-guard, secrets, greetd, fonts, audio, docker |
-| `dev-machine` | `modules/roles/dev-machine.nix` | localstack, aws-cli |
+| `dev-machine` | `modules/roles/dev-machine.nix` | aws-cli |
 | `homelab` | `modules/roles/homelab.nix` | tailscale, radicale + routing features (see [Homelab](../services/homelab.md)) |
 | `server` | `modules/roles/server.nix` | core, nh, users, secrets-guard (skeleton — hardening TODOs in file) |
 
@@ -40,7 +40,7 @@ Host role bundles — compose these instead of long per-host include lists.
 | `cli` | `modules/cli/bundle.nix` | bat, broot, claude-code, crypt, delta, ghostty, glow, helix, hyfetch, nix-diff, nix-tree, prettier, tree, audio-tools, kitty, kakoune, yazi, lazygit, btop, fzf, fd, ripgrep, rbw, jq |
 | `git-suite` | `modules/git/bundle.nix` | git-core, git-aliases, git-identities, git-github, git-tools, git-safety, git-help |
 | `desktop-apps` | `modules/desktop/bundle.nix` | hyprland, zen, chromium, obs, screenshot, gaming-hm, daw, bitwarden (niri is deliberately NOT here — hosts forward it via provides.to-users) |
-| `devtools` | `modules/devtools/bundle.nix` | docker, rust, node-ts, c-cpp, python, csharp, ada-lang, zig, gamedev |
+| `devtools` | `modules/devtools/bundle.nix` | docker, rust, node-ts, c-cpp, python, ada-lang, zig, gamedev |
 | `shells` | `modules/shells/bundle.nix` | nushell, starship, zoxide, devenv |
 
 ## System aspects (nixos)
@@ -60,8 +60,6 @@ Aspects providing NixOS system-level configuration.
 | `gaming` | `modules/gaming.nix` | Steam, Gamescope, GameMode, controllers | fern |
 | `graphics-asahi` | `modules/asahi/graphics.nix` | Asahi experimental GPU driver | moss |
 | `greetd` | `modules/desktop/greetd.nix` | greetd, tuigreet (sessions offered per enabled compositor), seatd, XDG portals, Polkit | fern, moss |
-| `lmstudio` | `modules/desktop/lmstudio.nix` | LM Studio AppImage wrapper | fern |
-| `localstack` | `modules/devtools/localstack.nix` | LocalStack container, awslocal wrapper | fern |
 | `monitoring` | `modules/monitoring.nix` | Hardware sensors (lm_sensors) | fern |
 | `nh` | `modules/cli/nh.nix` | nh rebuild helper + scheduled clean | fern |
 | `niri` | `modules/desktop/niri.nix` | Niri compositor (nixos enable + HM settings) | fern (also forwarded to users via host provides.to-users) |
@@ -131,7 +129,6 @@ Aspects providing Home Manager user-level configuration.
 | `repd-chrome` | `modules/foreign/repd-chrome.nix` | `repd` launcher: system Google Chrome, isolated profile, REPD enclave only (work laptop) |
 | `thunderbird` | `modules/desktop/thunderbird.nix` | Thunderbird mail (Exchange Online via Microsoft Graph; work laptop only) |
 | `gaming-hm` | `modules/desktop/gaming-hm.nix` | MangoHud, Lutris, ProtonUp |
-| `nyxt` | `modules/desktop/nyxt.nix` | Nyxt browser |
 | `obs` | `modules/desktop/obs.nix` | OBS Studio |
 | `screenshot` | `modules/desktop/screenshot.nix` | grim, slurp, satty |
 
@@ -149,7 +146,6 @@ Aspects providing Home Manager user-level configuration.
 | Aspect | File | Description |
 |--------|------|-------------|
 | `ada-lang` | `modules/devtools/ada.nix` | GNAT, GPRBuild, Alire (renamed from `ada-dev`; that name is now the user dev layer) |
-| `csharp` | `modules/devtools/csharp.nix` | .NET SDK, OmniSharp |
 | `gamedev` | `modules/devtools/gamedev.nix` | SDL2, GLM, Box2D, Tracy, ImGui |
 | `python` | `modules/devtools/python.nix` | Python 3.12, uv, ruff, pyright |
 | `zig` | `modules/devtools/zig.nix` | Zig programming language |

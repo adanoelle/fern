@@ -83,5 +83,4 @@ palette, with live palette switching at run time. See
 | ------------------------------------------ | -------------------------------------- |
 | `modules/desktop/_hyprland/wallpaper.nix`  | awww wallpaper management module       |
 | `modules/desktop/hyprland.nix`             | Style options (gaps, border, rounding) |
-| `modules/desktop/_hyprland/bar.nix`        | Waybar theme (fallback session)        |
 | `modules/desktop/_hyprland/idlelock.nix`   | Lock screen colors (fallback session)  |

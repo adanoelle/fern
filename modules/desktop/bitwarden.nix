@@ -2,8 +2,7 @@
 _: {
   den.aspects.bitwarden = {
     # bitwarden-desktop currently ships an EOL electron in nixpkgs; scope
-    # the insecure-package exception to hosts carrying this aspect (same
-    # pattern as csharp.nix's dotnet 6 exception).
+    # the insecure-package exception to hosts carrying this aspect.
     nixos = {
       nixpkgs.config.permittedInsecurePackages = [
         "electron-39.8.10"

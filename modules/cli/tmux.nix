@@ -8,8 +8,7 @@
 #
 # Splits use v/s (vertical/horizontal) matching Ghostty's Alt+Shift+v/s.
 # Window numbering starts at 1 to match Niri workspace numbering.
-{ den, ... }:
-{
+_: {
   den.aspects.tmux = {
     homeManager =
       { ... }:

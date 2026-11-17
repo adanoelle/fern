@@ -5,7 +5,7 @@
 # including a headless server. Desktop and dev-toolchain layers live in
 # user-ada-desktop.nix / user-ada-dev.nix and are forwarded per-host
 # via provides.to-users (see host-fern.nix).
-{ den, garden, ... }:
+{ den, ... }:
 {
   den.aspects.ada = {
     # garden.terminal is NOT here: it's included by the desktop layer

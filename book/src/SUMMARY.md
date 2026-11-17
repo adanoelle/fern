@@ -17,7 +17,6 @@
 - [Browsers](desktop/browsers.md)
 - [Mail](desktop/mail.md)
 - [Hyprland (Legacy Fallback)](desktop/hyprland.md)
-  - [Fern Shell (Retired)](desktop/fern-shell.md)
   - [Wallpaper (Hyprland)](desktop/wallpaper-and-theming.md)
   - [Idle & Lock (Hyprland)](desktop/idle-and-lock.md)
 
@@ -38,7 +37,6 @@
 - [Python](toolchains/python.md)
 - [DuckDB (data inspection)](toolchains/duckdb.md)
 - [Ada](toolchains/ada.md)
-- [C# / .NET](toolchains/csharp-dotnet.md)
 - [Zig](toolchains/zig.md)
 - [Game Dev: Stack Overview](gamedev/stack-overview.md)
   - [Debug Overlays](gamedev/debug-overlays.md)

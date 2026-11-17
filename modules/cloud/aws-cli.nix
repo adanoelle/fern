@@ -18,7 +18,5 @@ _: {
       environment.variables = {
         AWS_SDK_LOAD_CONFIG = "1";
       };
-
-      programs.zsh.shellAliases."awsdev" = "aws-vault exec dev -- zsh";
     };
 }

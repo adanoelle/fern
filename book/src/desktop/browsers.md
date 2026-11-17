@@ -81,14 +81,6 @@ for web apps that misbehave in Gecko. Wayland via Ozone, VAAPI decode,
 sync disabled, basic password store, FedCM and cohort features off. Not
 on the laptop (same sandbox reasoning as above).
 
-## Nyxt (`den.aspects.nyxt`)
-
-Keyboard-driven, Lisp-configured browser with Super-based bindings and
-NVIDIA/Wayland WebKit workarounds. The aspect exists but is not included
-by any bundle or host; include it explicitly if wanted. Note it also
-claims the http(s) xdg handlers, which would conflict with Zen's
-`setAsDefaultBrowser`.
-
 ## Key files
 
 | File | Purpose |
@@ -96,4 +88,3 @@ claims the http(s) xdg handlers, which would conflict with Zen's
 | `modules/desktop/zen.nix` | Zen browser: policies, prefs, xdg default, niri rule |
 | `modules/foreign/repd-chrome.nix` | `repd` launcher around the system Chrome (laptop) |
 | `modules/desktop/chromium.nix` | Ungoogled Chromium with Wayland/privacy flags |
-| `modules/desktop/nyxt.nix` | Nyxt browser with NVIDIA wrapper and Lisp config |

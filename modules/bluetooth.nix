@@ -3,8 +3,7 @@
 # Enables the bluetooth stack with experimental features (battery
 # reporting for AirPods) and configures WirePlumber to prefer AAC
 # codec over SBC for bluetooth audio quality.
-{ ... }:
-{
+_: {
   den.aspects.bluetooth.nixos =
     { pkgs, ... }:
     {

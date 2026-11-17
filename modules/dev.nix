@@ -3,13 +3,13 @@ _: {
   perSystem =
     { pkgs, ... }:
     {
-      formatter = pkgs.nixfmt-rfc-style;
+      formatter = pkgs.nixfmt;
 
       devShells.default = pkgs.mkShell {
         packages = with pkgs; [
           just
           mdbook
-          nixfmt-rfc-style
+          nixfmt
           statix
           deadnix
           flake-checker

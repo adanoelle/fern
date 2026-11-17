@@ -18,21 +18,12 @@
     };
     den.url = "github:vic/den";
     import-tree.url = "github:vic/import-tree";
-    fern.url = "github:adanoelle/fern-shell";
     devenv = {
       url = "github:cachix/devenv";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    claude-desktop = {
-      url = "github:k3d3/claude-desktop-linux-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    zig-overlay = {
-      url = "github:mitchellh/zig-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     sops-nix = {
@@ -67,11 +58,8 @@ Every external dependency follows nixpkgs where possible
 | `home-manager` | User-space configuration |
 | `den` | Aspect framework (topology, includes, dual-side modules) |
 | `import-tree` | Automatic recursive import of `modules/` |
-| `fern` | Custom QuickShell bar and fonts |
 | `devenv` | Development environment framework |
-| `claude-desktop` | Claude desktop application for Linux |
 | `rust-overlay` | Rust toolchain management |
-| `zig-overlay` | Zig toolchain management |
 | `sops-nix` | Encrypted secrets with age |
 | `nixos-apple-silicon` | Apple Silicon hardware support |
 | `claude-code` | Claude Code CLI overlay |
