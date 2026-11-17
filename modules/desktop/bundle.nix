@@ -16,7 +16,6 @@
       den.aspects.imv
       den.aspects.pdf
       den.aspects.gaming-hm
-      den.aspects.daw
       den.aspects.bitwarden
     ];
   };

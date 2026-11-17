@@ -21,7 +21,7 @@ An aspect is the den equivalent of a NixOS module, but with two key differences:
 A minimal aspect looks like this:
 
 ```nix
-# modules/audio.nix
+# modules/audio/audio.nix
 { den, ... }:
 {
   den.aspects.audio.nixos = { pkgs, ... }: {
@@ -214,5 +214,5 @@ enable flags needed.
 | `modules/defaults.nix` | Global defaults applied to all hosts |
 | `modules/cli/bundle.nix` | Example pure bundle (no extra logic) |
 | `modules/git/bundle.nix` | Example orchestrator bundle |
-| `modules/audio.nix` | Example single-side aspect (nixos only) |
+| `modules/audio/audio.nix` | Example single-side aspect (nixos only) |
 | `modules/cli/bat.nix` | Example single-side aspect (homeManager only) |

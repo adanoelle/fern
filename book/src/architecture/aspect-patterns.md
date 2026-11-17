@@ -12,7 +12,7 @@ declaring custom options.
 **NixOS-only** (system packages, services):
 
 ```nix
-# modules/audio.nix
+# modules/audio/audio.nix
 { den, ... }:
 {
   den.aspects.audio.nixos = { pkgs, ... }: {
@@ -214,7 +214,7 @@ Users never reference `den.aspects.git-core` directly -- they include
 
 | File | Purpose |
 |------|---------|
-| `modules/audio.nix` | Config-only (nixos) |
+| `modules/audio/audio.nix` | Config-only (nixos) |
 | `modules/cli/bat.nix` | Config-only (homeManager) |
 | `modules/devtools/rust.nix` | Dual-side potential (currently nixos) |
 | `modules/desktop/hyprland.nix` | Option tree with underscore sub-modules |

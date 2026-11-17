@@ -9,6 +9,7 @@
     includes = [
       den.aspects.boot
       den.aspects.workstation
+      den.aspects.audio-studio
       den.aspects.dev-machine
       den.aspects.homelab
       den.aspects.monitoring
@@ -72,11 +73,33 @@
             ATTR{power/autosuspend}="-1"
         '';
 
-        # USB audio interrupt priority tuning (requires den.aspects.audio for musnix import)
+        # USB audio interrupt priority tuning (musnix is imported by den.aspects.audio-studio)
         musnix.rtirq = {
           enable = true;
           nameList = "usb snd";
           prioHigh = 90;
+        };
+
+        # Prefer the studio interfaces as default devices
+        services.pipewire.wireplumber.extraConfig."10-default-nodes" = {
+          "monitor.alsa.rules" = [
+            {
+              matches = [
+                { "node.nick" = "~Audient iD24*"; }
+              ];
+              actions.update-props = {
+                "priority.session" = 2000;
+              };
+            }
+            {
+              matches = [
+                { "node.nick" = "~USB-Audio - Topping*"; }
+              ];
+              actions.update-props = {
+                "priority.session" = 2000;
+              };
+            }
+          ];
         };
 
         # AMD GPU (uses Mesa/AMDGPU, no proprietary driver needed)
