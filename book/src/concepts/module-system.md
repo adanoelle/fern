@@ -70,11 +70,11 @@ both add systemd services, and they coexist.
 
 ## Example from this repo
 
-The audio aspect (`modules/audio.nix`) is a simple config-only module -- it does
+The audio aspect (`modules/audio/audio.nix`) is a simple config-only module -- it does
 not declare its own options, just provides configuration directly:
 
 ```nix
-# modules/audio.nix
+# modules/audio/audio.nix
 { den, ... }:
 {
   den.aspects.audio.nixos = { pkgs, ... }: {

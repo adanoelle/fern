@@ -1,4 +1,4 @@
-# modules/cli/audio-tools.nix — audio plugins and production tools
+# modules/audio/audio-tools.nix — audio plugins and production tools
 _: {
   den.aspects.audio-tools.homeManager =
     { pkgs, ... }:
