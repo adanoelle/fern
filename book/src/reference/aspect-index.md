@@ -37,9 +37,9 @@ Host role bundles — compose these instead of long per-host include lists.
 
 | Aspect | File | Includes |
 |--------|------|----------|
-| `cli` | `modules/cli/bundle.nix` | bat, broot, claude-code, crypt, delta, ghostty, glow, helix, hyfetch, nix-diff, nix-tree, prettier, tree, audio-tools, kitty, kakoune, yazi, lazygit, btop, fzf, fd, ripgrep, rbw, jq |
+| `cli` | `modules/cli/bundle.nix` | bat, broot, claude-code, crypt, delta, ghostty, glow, helix, hyfetch, nix-diff, nix-tree, prettier, tree, kitty, kakoune, yazi, lazygit, btop, fzf, fd, ripgrep, rbw, jq |
 | `git-suite` | `modules/git/bundle.nix` | git-core, git-aliases, git-identities, git-github, git-tools, git-safety, git-help |
-| `desktop-apps` | `modules/desktop/bundle.nix` | hyprland, zen, chromium, obs, screenshot, gaming-hm, daw, bitwarden (niri is deliberately NOT here — hosts forward it via provides.to-users) |
+| `desktop-apps` | `modules/desktop/bundle.nix` | hyprland, zen, chromium, obs, screenshot, gaming-hm, bitwarden (niri is deliberately NOT here — hosts forward it via provides.to-users) |
 | `devtools` | `modules/devtools/bundle.nix` | docker, rust, node-ts, c-cpp, python, ada-lang, zig, gamedev |
 | `shells` | `modules/shells/bundle.nix` | nushell, starship, zoxide, devenv |
 
@@ -49,7 +49,8 @@ Aspects providing NixOS system-level configuration.
 
 | Aspect | File | Description | Included by |
 |--------|------|-------------|-------------|
-| `audio` | `modules/audio.nix` | PipeWire, low-latency, Audient iD24, tools | fern, moss |
+| `audio` | `modules/audio/audio.nix` | PipeWire base stack, rtkit, tools | fern, moss |
+| `audio-studio` | `modules/audio/audio-studio.nix` | musnix, low-latency quantum, no-suspend | fern |
 | `aws-cli` | `modules/cloud/aws-cli.nix` | AWS CLI, vault, SAM, Terraform, security tools | fern |
 | `boot` | `modules/boot.nix` | systemd-boot (UEFI x86 default; kernel chosen per host) | fern |
 | `boot-asahi` | `modules/asahi/boot.nix` | systemd-boot (Apple Silicon) | moss |
@@ -80,7 +81,9 @@ Aspects providing Home Manager user-level configuration.
 
 | Aspect | File | Description |
 |--------|------|-------------|
-| `audio-tools` | `modules/cli/audio-tools.nix` | LSP audio plugins |
+| `audio-tools` | `modules/audio/audio-tools.nix` | Audio plugins, synths, samplers |
+| `music` | `modules/audio/music.nix` | daw + audio-tools bundle |
+| `daw` | `modules/audio/daw.nix` | Ardour, REAPER |
 | `bat` | `modules/cli/bat.nix` | Bat syntax highlighter, man pager |
 | `broot` | `modules/cli/broot.nix` | File explorer with Nushell integration |
 | `btop` | `modules/cli/btop.nix` | System monitor |

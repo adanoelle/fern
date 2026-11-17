@@ -23,7 +23,6 @@
       den.aspects.procs
       den.aspects.tmux
       den.aspects.tree
-      den.aspects.audio-tools
 
       # Garden terminal stack
       den.aspects.kitty

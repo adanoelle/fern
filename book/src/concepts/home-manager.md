@@ -16,7 +16,7 @@ and per-user package installation.
 
 | Concern                 | NixOS side                     | Home Manager side              |
 | ----------------------- | ------------------------------ | ------------------------------ |
-| PipeWire audio service  | `modules/audio.nix`            | --                             |
+| PipeWire audio service  | `modules/audio/audio.nix`            | --                             |
 | GPU driver              | `modules/asahi/graphics.nix`   | --                             |
 | Ghostty terminal config | --                             | `modules/cli/ghostty.nix`      |
 | Helix editor settings   | --                             | `modules/cli/helix.nix`        |

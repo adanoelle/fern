@@ -9,6 +9,7 @@
   den.aspects.ada-desktop = {
     includes = [
       den.aspects.desktop-apps
+      den.aspects.music
       garden.terminal
     ];
 
