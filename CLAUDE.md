@@ -11,6 +11,9 @@ Configuration is expressed as **den aspects** composed onto hosts and users.
 Current machines:
 
 - **fern** — x86_64 desktop workstation (AMD, Niri/Hyprland, pro audio, dev)
+- **yarrow** — Framework Laptop 13 Pro (Intel): art, game dev and
+  playtesting. hardware.nix is a placeholder until the machine is
+  installed; see book/src/operations/installing-yarrow.md
 - **moss** — Apple Silicon laptop (Asahi) — parked: hardware.nix is still
   the installer placeholder and some aspects pull x86_64-only packages;
   see the comment in modules/hosts.nix
@@ -51,7 +54,8 @@ fern/
 ├── justfile             # Command recipes (primary interface)
 ├── hosts/               # ONLY hardware-configuration files
 │   ├── fern/hardware.nix
-│   └── moss/hardware.nix
+│   ├── moss/hardware.nix
+│   └── yarrow/hardware.nix
 ├── modules/             # Everything else — every .nix here is auto-imported
 │   ├── dendritic.nix    # den bootstrap (mutual-provider, hm bridge, schema)
 │   ├── hosts.nix        # Topology: den.hosts.<system>.<name>.users.<user>
@@ -59,11 +63,12 @@ fern/
 │   ├── core.nix         # Nix settings + fleet-wide defaults (mkDefault)
 │   ├── host-fern.nix    # Host aspect: roles + user layers + hardware quirks
 │   ├── host-moss.nix    # Host aspect for the Asahi laptop
+│   ├── host-yarrow.nix  # Host aspect for the Framework laptop
 │   ├── user-ada.nix     # User BASE layer (safe on any host, even headless)
 │   ├── user-ada-desktop.nix  # User desktop CORE layer (forwarded by GUI hosts)
 │   ├── user-ada-hyprland.nix # Hyprland fallback session layer (opt-in per host)
 │   ├── user-ada-dev.nix      # User dev-toolchain layer
-│   ├── roles/           # Host role bundles: workstation, server, dev-machine
+│   ├── roles/           # Host role bundles: workstation, laptop, server, dev-machine
 │   ├── boot.nix         # systemd-boot (UEFI x86 default); asahi/ has its own
 │   ├── cli/ desktop/ devtools/ git/ shells/ ...  # aspect modules by category
 │   └── */bundle.nix     # Category bundles (den.aspects.cli, devtools, …)

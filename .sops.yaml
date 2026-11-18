@@ -11,6 +11,7 @@ keys:
   # hosts (ssh-to-age of /etc/ssh/ssh_host_ed25519_key.pub)
   - &host_fern age1gqxz9qd4a245e4c5ruaka9e325un0zu74rrs5mugach32f7y3fyskakr4u
   # - &host_moss age1...   # register when moss rejoins the fleet
+  # - &host_yarrow age1... # register during install (book: installing-yarrow)
 
 creation_rules:
   - path_regex: ^secrets/main\.yaml$

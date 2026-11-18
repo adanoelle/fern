@@ -73,6 +73,7 @@
 - [Garbage Collection & Maintenance](operations/maintenance.md)
 - [Adding an Aspect](operations/adding-an-aspect.md)
 - [Adding a Host](operations/adding-a-host.md)
+- [Installing yarrow (Framework 13 Pro)](operations/installing-yarrow.md)
 - [Work Laptop (Ubuntu + Standalone Home)](operations/work-laptop.md)
   - [Pre-Flight Checklist](operations/work-laptop-preflight.md)
 - [Agent Sessions (herdr + Claude Code hooks)](operations/agent-sessions.md)

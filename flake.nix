@@ -44,6 +44,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Per-model hardware quirks (the Framework laptop, yarrow). Only its
+    # NixOS modules are used; `follows` keeps its test-only nixpkgs out
+    # of the lock.
+    nixos-hardware = {
+      url = "github:NixOS/nixos-hardware";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     niri = {
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";

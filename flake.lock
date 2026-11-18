@@ -549,6 +549,26 @@
         "type": "github"
       }
     },
+    "nixos-hardware": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1794906521,
+        "narHash": "sha256-B3ox9O5jQ7/RU2IECjP6MtA0BRqL9+yunGJRow0c1gA=",
+        "owner": "NixOS",
+        "repo": "nixos-hardware",
+        "rev": "d9da8426d86bd7e937226f5ecef1df1504ead2e8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "nixos-hardware",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1784120854,
@@ -643,6 +663,7 @@
         "niri": "niri",
         "nixgl": "nixgl",
         "nixos-apple-silicon": "nixos-apple-silicon",
+        "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
         "nixpkgs-thunderbird": "nixpkgs-thunderbird",
         "nixpkgs-uv": "nixpkgs-uv",

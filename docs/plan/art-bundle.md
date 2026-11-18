@@ -1,6 +1,7 @@
 # Art bundle — design note
 
-Status: **planning** (not yet implemented). Companion to the garden
+Status: **implemented** as `den.aspects.art` (modules/desktop/art.nix),
+forwarded per host rather than through `desktop-apps`. Companion to the garden
 screenshot flow (2026-07): satty covers annotation, imv covers viewing;
 this bundle covers actual art and image *creation*.
 
