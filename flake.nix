@@ -62,11 +62,15 @@
     # override in the aspect) after the next `just update`.
     nixpkgs-thunderbird.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    # Fresh nixpkgs for uv only (modules/devtools/python.nix): projects such
-    # as wildfire require uv >= 0.13.1, which knows the Python 3.15 release;
-    # the shared pin carries 0.11. Like the Thunderbird pin, it deliberately
-    # does NOT follow `nixpkgs`, so uv substitutes from cache.nixos.org.
-    # Drop this input (and the override in the aspect) after the next
+    # Fresh nixpkgs for individual packages the shared pin carries too old.
+    # Deliberately does NOT follow `nixpkgs`, so those packages substitute
+    # from cache.nixos.org instead of forcing a full local rebuild. Used by:
+    #   - uv (modules/devtools/python.nix): projects such as wildfire need
+    #     uv >= 0.13.1, which knows the Python 3.15 release; the shared pin
+    #     carries 0.11
+    #   - postgresql (modules/cli/postgres.nix): 18.6 security fixes; the
+    #     shared pin carries 18.4
+    # Drop this input (and the overrides in those aspects) after the next
     # `just update`.
     nixpkgs-uv.url = "github:NixOS/nixpkgs/nixos-unstable";
 
