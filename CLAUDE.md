@@ -17,8 +17,8 @@ Current machines:
 - **moss** — Apple Silicon laptop (Asahi) — parked: hardware.nix is still
   the installer placeholder and some aspects pull x86_64-only packages;
   see the comment in modules/hosts.nix
-- **ORNL work laptop** (LAP155464) — Ubuntu 24.04, standalone
-  home-manager only (`den.homes."tyo@LAP155464"` in modules/hosts.nix).
+- **work laptop** — Ubuntu 24.04, standalone home-manager only (the
+  `den.homes` entry in modules/hosts.nix).
   Niri + garden desktop via nixGL; see book/src/operations/work-laptop.md
 
 Planned: homelab server, dedicated gaming machine. The `modules/roles/`

@@ -35,7 +35,7 @@ sees `tmux` as the foreground process and loses agent state.
 To give a repo a brief:
 
 ```bash
-echo '~/work/notes/projects/theodolite.md' > ~/work/src/theodolite/.claude/brief
+echo '~/work/notes/projects/<project>.md' > ~/work/src/<repo>/.claude/brief
 ```
 
 The next `claude` or `claude --resume` in that repo starts with the

@@ -7,7 +7,6 @@
 # Image mime defaults stay with modules/desktop/imv.nix: these tools all
 # register image/* handlers, and the pins there keep xdg-open on the
 # viewer. App configs are left unmanaged (mutable application state).
-# Design note: docs/plan/art-bundle.md.
 _: {
   den.aspects.art.homeManager =
     { pkgs, ... }:
