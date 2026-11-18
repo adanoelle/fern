@@ -26,7 +26,8 @@ separately because the duplicate would collide in the profile.
 ## Where `rust-bin` comes from
 
 `pkgs.rust-bin` is provided by the `rust-overlay` flake input. The
-overlay is applied in two places, because there are two package sets:
+overlay is listed once, in `modules/_lib/overlays.nix`, and applied to
+both package sets:
 
 | File                   | Package set                                         |
 | ---------------------- | --------------------------------------------------- |

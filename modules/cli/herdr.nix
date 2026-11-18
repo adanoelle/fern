@@ -8,7 +8,7 @@
 # `herdr config check` after changing anything here.
 #
 # Staying fresh: the package comes straight from upstream's flake
-# (inputs.herdr → overlays.nix). `just bump herdr` pins the newest commit;
+# (inputs.herdr → modules/_lib/overlays.nix, shared by every machine). `just bump herdr` pins the newest commit;
 # .github/workflows/update-flake-lock.yml opens a weekly PR doing the same.
 #
 # Claude Code integration: `herdr integration install claude` drops a

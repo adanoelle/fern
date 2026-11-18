@@ -125,5 +125,5 @@ brought in step with the new binary by the same switch.
 |---|---|
 | `modules/cli/herdr.nix` | herdr package, config, Claude integration install |
 | `modules/cli/claude-code.nix` | Claude Code package, the two hooks, their registration |
-| `modules/overlays.nix` | where the `herdr` and `claude-code` packages come from |
+| `modules/_lib/overlays.nix` | where the `herdr` and `claude-code` packages come from, on every machine |
 | `.github/workflows/update-flake-lock.yml` | weekly bump of both inputs |

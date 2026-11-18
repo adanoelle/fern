@@ -44,7 +44,7 @@ One more helper, `den._.mutual-provider`, is used in
 | Setting | Value | Overridable |
 | ------- | ----- | ----------- |
 | `nixpkgs.config.allowUnfree` | `true` | |
-| `nixpkgs.overlays` | rust-overlay, claude-code | see [overlays](flake-and-bootstrap.md#overlays-declared-in-two-places) |
+| `nixpkgs.overlays` | the shared list in `modules/_lib/overlays.nix` | see [overlays](flake-and-bootstrap.md#overlays-one-list-two-package-sets) |
 | `nix.settings.experimental-features` | `nix-command`, `flakes` | |
 | `nix.settings.trusted-users` | `root` plus every topology user of the host | appends; see below |
 | `programs.nix-ld.enable` | `true` | `mkDefault` |
