@@ -3,6 +3,11 @@
 {
   den.hosts.x86_64-linux.fern.users.ada = { };
 
+  # yarrow — Framework Laptop 13 Pro. hosts/yarrow/hardware.nix is a
+  # placeholder until the machine is installed (see
+  # book/src/operations/installing-yarrow.md).
+  den.hosts.x86_64-linux.yarrow.users.ada = { };
+
   # ORNL work laptop — Ubuntu 24.04, standalone home-manager only (no
   # nixosConfiguration). The "<user>@<host>" key makes the flake attr
   # match `whoami@hostname` so the home-manager CLI auto-selects it,
@@ -30,6 +35,6 @@
   # installer placeholder and several aspects pull x86_64-only packages
   # (gnat13, ldtk, renderdoc), so the config cannot evaluate on
   # aarch64-linux. Re-enable after generating the real hardware.nix and
-  # platform-gating those packages — or retire it for the Framework 13.
+  # platform-gating those packages.
   # den.hosts.aarch64-linux.moss.users.ada = { };
 }

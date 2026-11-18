@@ -9,6 +9,7 @@
 |--------|------|------|-------|
 | `fern` | `modules/host-fern.nix` | nixos | fern |
 | `moss` | `modules/host-moss.nix` | nixos | moss |
+| `yarrow` | `modules/host-yarrow.nix` | nixos | yarrow (Framework 13 Pro; see [Installing yarrow](../operations/installing-yarrow.md)) |
 
 ## User aspects
 
@@ -30,6 +31,7 @@ Host role bundles — compose these instead of long per-host include lists.
 | Aspect | File | Includes |
 |--------|------|----------|
 | `workstation` | `modules/roles/workstation.nix` | core, nh, users, secrets-guard, secrets, greetd, fonts, audio, docker |
+| `laptop` | `modules/roles/laptop.nix` | power-profiles-daemon, zram swap, fwupd (on top of `workstation`) |
 | `dev-machine` | `modules/roles/dev-machine.nix` | aws-cli |
 | `homelab` | `modules/roles/homelab.nix` | tailscale, radicale + routing features (see [Homelab](../services/homelab.md)) |
 | `server` | `modules/roles/server.nix` | core, nh, users, secrets-guard (skeleton — hardening TODOs in file) |
@@ -52,6 +54,7 @@ Aspects providing NixOS system-level configuration.
 |--------|------|-------------|-------------|
 | `audio` | `modules/audio/audio.nix` | PipeWire base stack, rtkit, tools | fern, moss |
 | `audio-studio` | `modules/audio/audio-studio.nix` | musnix, low-latency quantum, no-suspend | fern |
+| `audio-laptop` | `modules/audio/audio-laptop.nix` | Noise-suppressed virtual mic (RNNoise), `studio-mode` buffer toggle | yarrow |
 | `aws-cli` | `modules/cloud/aws-cli.nix` | AWS CLI, vault, SAM, Terraform, security tools | fern |
 | `boot` | `modules/boot.nix` | systemd-boot (UEFI x86 default; kernel chosen per host) | fern |
 | `boot-asahi` | `modules/asahi/boot.nix` | systemd-boot (Apple Silicon) | moss |
@@ -134,6 +137,10 @@ Aspects providing Home Manager user-level configuration.
 | `thunderbird` | `modules/desktop/thunderbird.nix` | Thunderbird mail (Exchange Online via Microsoft Graph; work laptop only) |
 | `gaming-hm` | `modules/desktop/gaming-hm.nix` | MangoHud, Lutris, ProtonUp |
 | `obs` | `modules/desktop/obs.nix` | OBS Studio |
+| `art` | `modules/desktop/art.nix` | Krita, Aseprite, Inkscape, GIMP (forwarded by yarrow) |
+| `game-audio` | `modules/audio/game-audio.nix` | FamiStudio, Furnace, sfxr-qt, REAPER, ffmpeg/sox (forwarded by yarrow) |
+| `brightness-backlight` | `modules/desktop/brightness-backlight.nix` | Brightness keys for a laptop panel (brightnessctl) |
+| `idle-suspend` | `modules/desktop/idle-suspend.nix` | Suspend after 20 idle minutes, on battery only |
 | `screenshot` | `modules/desktop/screenshot.nix` | grim, slurp, satty |
 
 ### Shells

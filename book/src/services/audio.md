@@ -10,11 +10,15 @@
 | -------------- | -------------------------------- | ---- | ------------------------------- |
 | `audio`        | `modules/audio/audio.nix`        | nixos | every graphical host (via the `workstation` role) |
 | `audio-studio` | `modules/audio/audio-studio.nix` | nixos | mains-powered recording machines (fern) |
+| `audio-laptop` | `modules/audio/audio-laptop.nix` | nixos | laptops (yarrow): noise-suppressed mic, `studio-mode` |
 | `music`        | `modules/audio/music.nix`        | home  | hosts where music is made (fern forwards it to its users) |
+| `game-audio`   | `modules/audio/game-audio.nix`   | home  | the light tracker and sound-effect set (yarrow) |
 | device rules   | `modules/host-*.nix`             | nixos | the host that owns the hardware |
 
-A laptop takes `audio` only. Adding `audio-studio` or `music` later is a
-one-line include on that host.
+A laptop takes `audio` plus `audio-laptop`, which adds no latency
+tuning: `studio-mode on` forces a small buffer only while an interface
+is plugged in for recording. Adding `music` later is a one-line include
+on that host.
 
 ## Base: `audio`
 
@@ -90,5 +94,7 @@ user-layer list in `host-fern.nix`; other hosts opt in the same way.
 | `modules/audio/music.nix`        | DAWs + plugins bundle                                |
 | `modules/audio/daw.nix`          | Ardour, REAPER                                       |
 | `modules/audio/audio-tools.nix`  | Plugins, synths, samplers, sox/ffmpeg                |
+| `modules/audio/audio-laptop.nix` | RNNoise virtual mic, `studio-mode`                   |
+| `modules/audio/game-audio.nix`   | FamiStudio, Furnace, sfxr-qt, REAPER                 |
 | `modules/host-fern.nix`          | fern's interface rules and IRQ priorities            |
 | `modules/bluetooth.nix`          | BlueZ and Bluetooth codec preference                 |

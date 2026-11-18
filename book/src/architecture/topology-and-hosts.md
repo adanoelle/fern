@@ -47,6 +47,15 @@ this to:
 | Shells | Nushell, Starship, Zoxide | Nushell, Starship, Zoxide |
 | Git suite | Full suite | Full suite |
 
+### yarrow
+
+A third host, `yarrow` (Framework Laptop 13 Pro, x86_64-linux), is
+declared the same way: `den.hosts.x86_64-linux.yarrow.users.ada` and
+`modules/host-yarrow.nix`. It takes the `workstation` and `laptop`
+roles, Niri, Steam and the art, gamedev and game-audio user layers, and
+leaves out fern's studio audio, Hyprland fallback and homelab services.
+See [Installing yarrow](../operations/installing-yarrow.md).
+
 ## Host aspects
 
 Each host has an aspect that defines its system-level configuration and declares
