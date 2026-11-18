@@ -3,9 +3,11 @@
 {
   den.default = {
     # Fallbacks for hosts/users that haven't pinned their own. Each host
-    # must pin system.stateVersion at whatever release it was installed
-    # with (see host-*.nix); a fleet-wide value only happens to be
-    # correct while every machine was installed on the same release.
+    # must pin system.stateVersion AND its users' home.stateVersion at
+    # whatever release it was installed with (see host-*.nix; the
+    # standalone home pins its own in user-ada-work.nix). A fleet-wide
+    # value only happens to be correct while every machine was installed
+    # on the same release.
     nixos =
       { lib, ... }:
       {

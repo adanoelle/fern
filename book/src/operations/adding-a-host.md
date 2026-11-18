@@ -69,6 +69,7 @@ below; the comments say what breaks without each.
         ];
 
         system.stateVersion = "<release>";
+        home-manager.sharedModules = [ { home.stateVersion = "<release>"; } ];
 
         # nixpkgs niri rather than the niri-flake build
         programs.niri.package = pkgs.niri;
@@ -90,8 +91,9 @@ this configuration's bindings, workspaces or idle handling. Both
 existing hosts also set `programs.niri.package = pkgs.niri;`; the
 reason is in the comment beside it in `modules/host-yarrow.nix`.
 
-**`system.stateVersion` is per host.** Set it to the NixOS release the
-machine is installed with, and never change it afterwards. Do not copy
+**The state versions are per host.** Set `system.stateVersion` and the
+users' `home.stateVersion` to the NixOS release the machine is
+installed with, and never change them afterwards. Do not copy
 the value from another host. To find the current release of the
 flake's nixpkgs pin:
 

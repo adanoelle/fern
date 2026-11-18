@@ -58,6 +58,10 @@
         # it gates stateful data migrations, not features.
         system.stateVersion = "26.11";
 
+        # The users' Home Manager state version, frozen like the system
+        # one at the release this machine was installed with.
+        home-manager.sharedModules = [ { home.stateVersion = "26.11"; } ];
+
         # Use nixpkgs niri (avoids niri-flake fetchGit evaluation issue with Smithay)
         programs.niri.package = pkgs.niri;
 

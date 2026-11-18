@@ -22,6 +22,9 @@ _: {
         pictures = "${home}/media/pictures";
         videos = "${home}/media/video";
         music = "${home}/media/music";
+        # Code lives in ~/src. Left unset, xdg-user-dirs' default applies
+        # and createDirectories makes a capitalised ~/Projects.
+        projects = "${home}/src";
         # "disabled" idiom: a user dir equal to $HOME is off per spec
         desktop = home;
         publicShare = home;

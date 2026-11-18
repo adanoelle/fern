@@ -67,7 +67,7 @@ hosts, including ones that do not expect linker flags in `CFLAGS`.
 | `XDG_DOCUMENTS_DIR` | `~/docs` | same | every machine |
 | `XDG_PICTURES_DIR`, `XDG_VIDEOS_DIR`, `XDG_MUSIC_DIR` | `~/media/pictures`, `~/media/video`, `~/media/music` | same | every machine |
 | `XDG_DESKTOP_DIR`, `XDG_PUBLICSHARE_DIR`, `XDG_TEMPLATES_DIR` | `~` (the "disabled" value) | same | every machine |
-| `XDG_PROJECTS_DIR` | `~/Projects` | Home Manager's default for `xdg.userDirs`; `modules/workspace.nix` does not override it | every machine |
+| `XDG_PROJECTS_DIR` | `~/src` | `modules/workspace.nix` | every machine |
 | `BAT_THEME` | `garden` | The garden terminal stack (garden-shell flake) | every machine |
 | `LG_CONFIG_FILE` | lazygit's config plus the garden theme file | The garden terminal stack (garden-shell flake) | every machine |
 | `DOCKER_HOST` | `unix://$XDG_RUNTIME_DIR/docker.sock` | `modules/foreign/docker-rootless.nix` | work laptop |

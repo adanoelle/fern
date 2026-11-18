@@ -19,9 +19,12 @@ the repo.
 │   ├── pictures/       photos and images kept for their own sake
 │   ├── screenshots/    tool-written captures (niri, garden shell, satty)
 │   ├── wallpapers/     wallpaper images you keep by hand
-│   ├── video/          recordings (OBS default output)
+│   ├── video/          recordings and clips
 │   └── music/          audio library
 ├── src/              code — one subdir per repo/project
+├── work/
+│   └── notes/          the work vault: daily/ meetings/ projects/ areas/
+│                       literature/ resources/ archive/ templates/ docs/
 └── archive/          cold storage, by year: archive/2026/…
 ```
 
@@ -67,6 +70,12 @@ filing date. Example: `2026-03-14-acme-offer-letter.pdf`.
   thinking itself.** A signed lease → `docs/`. Your analysis of
   whether to sign it → `notes/<vault>/`.
 
+## work/notes/ — the work vault
+
+- One Obsidian vault, kept apart from `notes/` so work material has its
+  own git identity and never mixes with personal vaults.
+- Its top-level folders are created for you; file inside them.
+
 ## archive/ — by year, Johnny.Decimal-ready
 
 - Layout today: `archive/<year>/<whatever-made-sense>/`.
@@ -84,7 +93,8 @@ filing date. Example: `2026-03-14-acme-offer-letter.pdf`.
 - `wallpapers/` is yours to arrange: nothing in the Nix config refers
   to a file in it. The niri session's wallpaper is generated (see the
   `wallpaper` aspect).
-- `video/` is the XDG videos dir and OBS's output target.
+- `video/` is the XDG videos dir. No tool is configured to record
+  into it; point a recorder there yourself.
 - `music/` is the XDG music dir.
 
 ## Invariants (the archivist's oath)
