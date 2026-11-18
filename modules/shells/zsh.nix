@@ -70,12 +70,8 @@ _: {
             }
 
             # Conditional tool integrations — graceful when unavailable
-            command -v eza &>/dev/null && {
-              alias l='eza -l'
-              alias la='eza -la'
-              alias lt='eza -lT --level=2'
-              alias ll='eza -l --sort=modified --reverse'
-            }
+            # (eza's listing aliases are added, guarded the same way, by
+            # modules/cli/eza.nix)
             command -v bat &>/dev/null && \
               export MANPAGER="sh -c 'col -bx | bat -l man -p'"
             command -v zoxide &>/dev/null && eval "$(zoxide init zsh)"

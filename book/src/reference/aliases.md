@@ -20,34 +20,31 @@ Several mechanisms define short names, and they overlap:
 | Mechanism | Set in | Reaches |
 | --- | --- | --- |
 | `home.shellAliases` | `modules/git/*.nix` | fish, zsh and Nushell |
-| eza integration aliases | `programs.eza` in `modules/cli/eza.nix` | fish and zsh; Nushell gets only the `eza` alias |
+| eza listing aliases | `modules/cli/eza.nix`, one definition for all shells | fish, bash and zsh; Nushell gets only the `eza` alias |
 | fish abbreviations | `programs.fish.shellAbbrs` in several modules | fish only |
-| Nushell's own aliases | `extraConfig` in `modules/shells/nushell.nix` | Nushell only |
-| zsh's own aliases | `initContent` in `modules/shells/zsh.nix` | zsh only |
 
 When a name is defined twice:
 
 - **fish:** an abbreviation expands as it is typed, so at an
   interactive prompt the abbreviation wins over an alias of the same
   name. The alias still applies in scripts and `fish -c`.
-- **zsh:** the Home Manager aliases are written after `initContent`,
-  so they replace the zsh-only aliases of the same name.
-- **Nushell:** the Home Manager aliases are written after
-  `extraConfig`, so they replace the Nushell-only aliases of the same
-  name.
+- **zsh:** eza's listing aliases are written inside a `command -v eza`
+  guard, because `~/.zshrc` is copied to machines without Nix; Home
+  Manager's own eza integration is off for zsh.
 
 ## Names that differ between shells
 
-The git shortcuts are not among them: they have one definition, in
-`modules/git/aliases.nix`, used by every shell.
+The git shortcuts and the eza listings are not among them: each has
+one definition (`modules/git/aliases.nix`, `modules/cli/eza.nix`) used
+by every shell that has them.
 
 | Name | fish (interactive) | zsh | Nushell |
 | --- | --- | --- | --- |
-| `l` | `eza -l` | `eza -l` | not defined |
-| `ll` | `eza -l --sort=modified --reverse` | `eza -l` | not defined |
-| `la` | `eza -la` | `eza -a` | not defined |
-| `lt` | `eza -lT --level=2` | `eza --tree` | not defined |
-| `ls`, `lla` | `eza`, `eza -la` | `eza`, `eza -la` | not defined (`ls` is the Nushell builtin) |
+| `l` | `eza -l` | same | not defined |
+| `ll` | `eza -l --sort=modified --reverse` | same | not defined |
+| `la` | `eza -la` | same | not defined |
+| `lt` | `eza -lT --level=2` | same | not defined |
+| `ls`, `lla` | `eza`, `eza -la` | same | not defined (`ls` is the Nushell builtin) |
 | `mdfmt` | not defined | not defined | `prettier --write` |
 | `y` | Yazi wrapper function | Yazi wrapper function | not defined |
 
