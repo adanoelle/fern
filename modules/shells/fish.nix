@@ -2,7 +2,12 @@
 { inputs, ... }:
 {
   den.aspects.fish.homeManager =
-    { pkgs, ... }:
+    {
+      pkgs,
+      lib,
+      config,
+      ...
+    }:
     let
       palette = inputs.garden-shell.lib.palette.colors;
       # Strip leading # for fish's bare-hex format
@@ -90,13 +95,19 @@
 
         # ── Garden channel detection ─────────────────────────
         interactiveShellInit = ''
-          # Detect Niri workspace for GARDEN_CHANNEL
+          # GARDEN_CHANNEL is the name of the focused Niri workspace,
+          # shown in the right prompt. Windows only carry a workspace id,
+          # so the name comes from the workspace list. Cleared when the
+          # workspace is unnamed or there is no Niri session (SSH, TTY).
           function __garden_update_channel --on-event fish_prompt
-            if command -q niri
-              set -l ws (niri msg -j focused-window 2>/dev/null | ${pkgs.jq}/bin/jq -r '.workspace_name // empty' 2>/dev/null)
-              if test -n "$ws"
-                set -gx GARDEN_CHANNEL $ws
-              end
+            set -l ws
+            if set -q NIRI_SOCKET; and command -q niri
+              set ws (niri msg -j workspaces 2>/dev/null | ${pkgs.jq}/bin/jq -r '.[] | select(.is_focused) | .name // empty' 2>/dev/null)
+            end
+            if test -n "$ws"
+              set -gx GARDEN_CHANNEL $ws
+            else
+              set -e GARDEN_CHANNEL
             end
           end
 
@@ -117,21 +128,27 @@
         '';
 
         # ── Abbreviations ────────────────────────────────────
-        shellAbbrs = {
-          g = "git status -sb";
-          ga = "git add";
-          gaa = "git add --all";
-          gc = "git commit";
-          gcm = "git commit -m";
-          gco = "git checkout";
-          gp = "git push";
-          gl = "git pull";
-          gd = "git diff";
-          gds = "git diff --staged";
-          gg = "git log --graph --decorate --oneline --all";
-          gst = "git stash";
-          gstp = "git stash pop";
-        };
+        # The git shortcuts are defined once, as shell aliases, in
+        # modules/git/aliases.nix. Here the common ones also become
+        # abbreviations, so they expand in place as you type.
+        shellAbbrs = lib.filterAttrs (
+          name: _:
+          builtins.elem name [
+            "g"
+            "ga"
+            "gaa"
+            "gc"
+            "gcm"
+            "gco"
+            "gp"
+            "gl"
+            "gd"
+            "gds"
+            "gg"
+            "gst"
+            "gstp"
+          ]
+        ) config.home.shellAliases;
       };
 
       # Packages needed by fish integration

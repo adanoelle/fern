@@ -61,10 +61,14 @@ colours, the global ignore list).
 
 Tags are not signed automatically; only `commit.gpgsign` is set.
 
-`identities.nix` creates `~/.config/git/allowed_signers` containing
-comments only, and as a Home Manager file it is a read-only link into
-the store. Signing works, but local verification
-(`git log --show-signature`) has no trusted keys to check against.
+`~/.config/git/allowed_signers` is written at Home Manager activation
+by `identities.nix`: one line per identity, pairing its email with the
+public half of its signing key (`<signingKey>.pub`). The key material
+stays on the machine and out of this repository. An identity whose
+`.pub` file is absent on a machine is skipped. With it,
+`git log --show-signature` and `git verify-commit` report your own
+commits as good signatures; commits signed by keys not in the file
+show as unverified.
 
 ### URL rewrites
 
