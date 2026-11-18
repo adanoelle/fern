@@ -1,84 +1,82 @@
 # Secret guard
 
-> The `secrets-guard` aspect installs two scanners for credentials in
-> Git repositories, git-secrets and trufflehog. As configured, neither
-> runs automatically: they are commands to run by hand. The aspect also
-> sets a Git template directory intended to install commit hooks, which
-> has no effect.
+> Every commit is scanned for credentials before it is created. A
+> user-level Git `pre-commit` hook runs gitleaks over the staged
+> changes and refuses the commit when it finds one. trufflehog is
+> available on the NixOS hosts for deeper scans by hand.
 
-**Goes on:** fern and yarrow, through the `workstation` role (the
-`server` role includes it too). It is a NixOS-side aspect, so the work
-laptop has neither tool.
+**Goes on:** the commit hook is part of the `git-safety` aspect, on
+every machine. The `secrets-guard` aspect (trufflehog, system-wide Git)
+is NixOS-side and comes with the `workstation` role; see the
+[machine pages](../machines/fern.md).
 
-## What the aspect sets
+## The commit hook
 
-`modules/secrets-guard.nix`:
-
-- `git-secrets` and `trufflehog` in `environment.systemPackages`
-- `programs.git.enable`, which installs Git system-wide
-- `init.templateDir` in the system Git configuration, pointing at
-  `share/git-secrets` inside the git-secrets package
-
-## No hooks are installed
-
-The template directory is meant to give every `git init` and
-`git clone` the git-secrets commit hooks. It does not, for two
-independent reasons.
-
-1. **The directory does not exist.** The nixpkgs git-secrets package
-   contains only `bin/git-secrets` and its man page; there is no
-   `share/git-secrets`. Git therefore copies nothing into new
-   repositories, and prints
-   `warning: templates not found in /nix/store/…/share/git-secrets` on
-   each `git init` and `git clone`.
-2. **Per-repository hooks are bypassed for this user anyway.** The
-   `git-safety` aspect sets a global `core.hooksPath` of
-   `~/.config/git/hooks`, and Git then ignores each repository's own
-   `.git/hooks`. That directory holds one hook, the protected-branch
-   `pre-push` check; see [Git](../git/git.md). Hooks written by
-   `git secrets --install` into a repository would not run either.
-
-Separately, this configuration registers no patterns, and git-secrets
-only matches patterns that have been added to it.
-
-So nothing in this configuration blocks a commit that contains a
-secret. Protection against committing one rests on the manual scans
-below and on secrets living in sops
-([SOPS-nix](sops-nix.md)) instead of in files.
-
-## Manual scans
-
-git-secrets needs patterns first. They are stored in Git configuration:
+`modules/git/safety.nix` installs `~/.config/git/hooks/pre-commit`. On
+each `git commit` it runs:
 
 ```bash
-git secrets --register-aws --global   # the bundled AWS patterns
-git secrets --add --global '<regex>'  # a pattern of your own
-git secrets --list --global           # what is registered
+gitleaks git --pre-commit --staged --redact --verbose
 ```
 
-Then, in a repository:
+- Only the staged changes are scanned, so it is fast and does not
+  re-report history.
+- gitleaks ships rules for common credential formats (cloud keys,
+  tokens, private keys). Nothing has to be registered.
+- A finding is printed with the secret redacted, and the commit is
+  refused.
+- If the scan passes, the repository's own `pre-commit` hook runs next,
+  if it has one; see
+  [Git](../git/git.md#repository-hooks-still-run).
+
+`programs.gitSafety.enableSecretScanHook` (default on) turns it off.
+
+### False positives
+
+| To | Do |
+| --- | --- |
+| Allow one line | End the line with a `gitleaks:allow` comment |
+| Allow one finding permanently | Add its `Fingerprint:` line from the output to `.gitleaksignore` at the repository root |
+| Change rules for a repository | Add a `.gitleaks.toml` at the repository root |
+| Skip the scan for one commit | `git commit --no-verify` |
+
+`--no-verify` skips every hook for that commit, not only this one.
+
+### What it does not cover
+
+- Commits made before the hook existed. Scan history by hand (below).
+- A repository whose local configuration sets its own `core.hooksPath`:
+  that replaces the global hooks directory entirely.
+- Secrets that match no rule, such as a password in prose.
+
+The first line of defence is still that secrets live in sops
+([SOPS-nix](sops-nix.md)) and not in files.
+
+## Scanning by hand
+
+gitleaks is on `PATH` on every machine:
 
 ```bash
-git secrets --scan            # all tracked files
-git secrets --scan-history    # every revision
+gitleaks git                  # this repository's whole history
+gitleaks dir .                # the working tree as files
 ```
 
-trufflehog carries its own detectors and needs no setup:
+trufflehog, on the NixOS hosts, can also check whether a credential it
+finds is live:
 
 ```bash
 trufflehog git file://.       # this repository's history
 trufflehog filesystem .       # the working tree as files
 ```
 
-`git secrets --scan` prints each match and exits non-zero when it finds
-one. Upstream documentation:
-[git-secrets](https://github.com/awslabs/git-secrets),
+Upstream documentation:
+[gitleaks](https://github.com/gitleaks/gitleaks),
 [trufflehog](https://github.com/trufflesecurity/trufflehog).
 
 ## Key files
 
-| File                        | Purpose                                         |
-| --------------------------- | ----------------------------------------------- |
-| `modules/secrets-guard.nix` | The two packages and the template directory     |
-| `modules/git/safety.nix`    | Sets the global `core.hooksPath` and its `pre-push` hook |
-| `modules/roles/workstation.nix`, `modules/roles/server.nix` | Where the aspect is included |
+| File | Purpose |
+| --- | --- |
+| `modules/git/safety.nix` | The `pre-commit` hook, the gitleaks package, the hooks directory |
+| `modules/secrets-guard.nix` | trufflehog and system-wide Git on NixOS hosts |
+| `modules/roles/workstation.nix`, `modules/roles/server.nix` | Where `secrets-guard` is included |

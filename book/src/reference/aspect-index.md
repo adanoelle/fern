@@ -82,7 +82,7 @@ and is not counted; aspects that only it uses are marked.
 | `boot` | `modules/boot.nix` | nixos | systemd-boot on UEFI | fern, yarrow |
 | `nh` | `modules/cli/nh.nix` | nixos | `nh` rebuild helper, default flake path, weekly clean | fern, yarrow |
 | `secrets` | `modules/secrets.nix` | nixos | sops-nix with the SSH host key as identity; the user's GitHub SSH key | fern, yarrow |
-| `secrets-guard` | `modules/secrets-guard.nix` | nixos | git-secrets and trufflehog, system git template directory | fern, yarrow |
+| `secrets-guard` | `modules/secrets-guard.nix` | nixos | trufflehog and system-wide Git | fern, yarrow |
 | `greetd` | `modules/desktop/greetd.nix` | nixos | greetd with tuigreet, session list from enabled compositors, portals, polkit | fern, yarrow |
 | `fonts` | `modules/fonts.nix` | both | Garden typography and fontconfig defaults | fern, yarrow (nixos side); work laptop (home side) |
 | `audio` | `modules/audio/audio.nix` | nixos | PipeWire base stack, rtkit, mixer and patchbay tools | fern, yarrow |
@@ -172,7 +172,7 @@ All in the `git-suite` bundle.
 | `git-identities` | `modules/git/identities.nix` | home | Per-directory identities through `includeIf` | every machine |
 | `git-github` | `modules/git/github.nix` | home | GitHub CLI, its aliases and credential helper | every machine |
 | `git-tools` | `modules/git/tools.nix` | home | lazygit, tig, git-absorb, git-lfs | every machine |
-| `git-safety` | `modules/git/safety.nix` | home | Safety aliases and git hooks | every machine |
+| `git-safety` | `modules/git/safety.nix` | home | Safety aliases; hooks for secret scanning (gitleaks) and protected-branch pushes | every machine |
 | `git-help` | `modules/git/help.nix` | home | tldr, a quick-reference file, help aliases | every machine |
 
 ## User aspects: desktop
