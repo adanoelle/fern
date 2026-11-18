@@ -91,6 +91,7 @@ and is not counted; aspects that only it uses are marked.
 | `docker` | `modules/devtools/docker.nix` | nixos | Docker daemon with BuildKit and container tools | fern, yarrow |
 | `tailscale` | `modules/tailscale.nix` | nixos | Tailscale client, trusted `tailscale0`, user as operator | fern, yarrow |
 | `radicale` | `modules/radicale.nix` | nixos + includes | CalDAV/CardDAV server reachable only over the tailnet | fern |
+| `knot` | `modules/knot.nix` | nixos + includes | Tangled knot (git, issues and pull requests), tailnet-only behind a public edge; a draft | no host yet |
 | `monitoring` | `modules/monitoring.nix` | nixos | lm_sensors, stress tools, sensor logging service | fern |
 | `gaming` | `modules/gaming.nix` | nixos | Steam, GameScope, GameMode, controller support | fern, yarrow |
 | `aws-cli` | `modules/cloud/aws-cli.nix` | nixos | AWS CLI and infrastructure tooling | fern, yarrow |

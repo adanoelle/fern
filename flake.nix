@@ -96,6 +96,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Tangled's monorepo, for the knot-rs NixOS module and package
+    # (modules/knot.nix). The URL names the repository by its owner's
+    # DID, the form Tangled's own docs use; it survives a handle change.
+    # Deliberately does NOT follow `nixpkgs`: the knot is built from a
+    # generated Cargo.nix against Tangled's own stable pin, and it is a
+    # network-facing service better run on the toolchain it is tested
+    # with.
+    tangled.url = "git+https://tangled.org/did:plc:j5hmlfdrwkvtxm7cjmu7j2is";
+
     # GL/Vulkan wrappers for running Nix-built graphical apps on foreign
     # distros (the ORNL Ubuntu laptop). Unused on NixOS hosts.
     nixgl = {
