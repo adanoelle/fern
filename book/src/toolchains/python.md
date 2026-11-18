@@ -1,54 +1,60 @@
 # Python
 
-> Python 3.12 with uv for fast package management, pyright LSP, and Jupyter for
-> interactive development.
+> Python 3.13 on the NixOS hosts, `uv` from a separate fresh nixpkgs
+> input, plus rye, ruff, black, pyright, IPython and JupyterLab for the
+> user. Helix uses pyright.
 
-## Overview
+**Goes on:** fern, yarrow, work laptop (through the `devtools` bundle in
+the `ada-dev` user layer). The work laptop gets the home-manager side
+only.
 
-The Python setup uses `uv` (a fast Rust-based package installer and venv
-manager) instead of pip. It is provided as a single unified aspect
-(`modules/devtools/python.nix`) covering the interpreter, development tooling,
-and editor integration.
+## What the aspect installs
 
-## Interpreter and package management
+`den.aspects.python` (`modules/devtools/python.nix`):
 
-The aspect (`modules/devtools/python.nix`) installs:
+| Side         | Packages |
+| ------------ | -------- |
+| NixOS        | `python313`, `uv` |
+| home-manager | `uv`, `rye`, `ruff`, `black`, `pyright`, `python313Packages.ipython`, `python313Packages.jupyterlab` |
 
-| Package     | Purpose                                 |
-| ----------- | --------------------------------------- |
-| `python312` | Python 3.12 interpreter                 |
-| `uv`        | Fast package installer and venv manager |
+The bare interpreter is on the NixOS side only. On the work laptop this
+aspect provides `uv` and the tools, and `uv` manages interpreters per
+project.
 
-`nix-ld` is enabled at the host level (`programs.nix-ld.enable = true`) to
-support Python packages with native extensions.
+## Why `uv` has its own nixpkgs input
 
-## Development tooling
+`uv` is not taken from the shared `nixpkgs` pin. It comes from
+`inputs.nixpkgs-uv`, a second `nixos-unstable` input declared in
+`flake.nix`:
 
-The aspect also includes:
+- **Why:** the shared pin carries a `uv` older than some projects
+  require (they need 0.13.1 or later, the first release that knows the
+  Python 3.15 release).
+- **Why a separate input:** `nixpkgs-uv` deliberately does not follow
+  `nixpkgs`, so the package substitutes from the binary cache instead
+  of forcing a local rebuild.
+- **When to drop it:** once `just update` moves the shared pin to
+  `uv` 0.13.1 or later, go back to `pkgs.uv` in the aspect and delete
+  the input from `flake.nix` (after checking its other user, the
+  [PostgreSQL client](data-tools.md)).
 
-| Package   | Purpose                                      |
-| --------- | -------------------------------------------- |
-| `uv`      | Also in home scope                           |
-| `rye`     | Python project manager                       |
-| `ruff`    | Ultra-fast linter and formatter (Rust-based) |
-| `black`   | Code formatter                               |
-| `pyright` | Type checker and LSP                         |
-| `ipython` | Enhanced interactive shell                   |
-| `jupyter` | Jupyter Lab for notebooks                    |
+## Helix
 
-### Helix LSP
+| Setting          | Value |
+| ---------------- | ----- |
+| Server `pyright` | `pyright-langserver --stdio` (from the `pyright` package) |
+| `python`         | servers `[ "pyright" ]`; formatter `blackd -` |
 
-```nix
-programs.helix.languages.language-server.pyright = {
-  command = "${pkgs.pyright}/bin/pyright-langserver";
-  args = [ "--stdio" ];
-};
-```
+The configured formatter does not format: `blackd` is black's HTTP
+daemon, takes no file argument, and the `black` package here is built
+without the `aiohttp` dependency `blackd` needs, so the command exits
+with an import error. `black` and `ruff format` work from the shell.
 
-Pyright provides type checking, completions, and diagnostics for Python files.
+The aspect also sets `programs.zsh.enableCompletion = true`.
 
 ## Key files
 
-| File                          | Purpose                                      |
-| ----------------------------- | -------------------------------------------- |
-| `modules/devtools/python.nix` | Python 3.12, uv, ruff, black, pyright, Jupyter |
+| File                          | Purpose                                   |
+| ----------------------------- | ----------------------------------------- |
+| `modules/devtools/python.nix` | Packages, `uv` override, Helix config     |
+| `flake.nix`                   | `nixpkgs-uv` input and its removal note   |

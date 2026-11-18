@@ -1,76 +1,75 @@
-# Gaming (Steam & Gamescope)
+# Gaming
 
-> Steam with Gamescope micro-compositor, GameMode CPU/GPU optimization, and
-> controller support for Xbox, PlayStation, and Nintendo controllers.
+> Steam with a Gamescope session, GameMode, and controller support on
+> the system side; an overlay, launcher and Proton helpers on the user
+> side. Two aspects, taken together by the machines that play games.
 
-The gaming configuration spans a system aspect (`den.aspects.gaming` in
-`modules/gaming.nix`) for Steam, Gamescope, and hardware support, and a home
-aspect (`modules/desktop/gaming-hm.nix`) for user-facing gaming utilities.
+**Goes on:** fern, yarrow. Each includes `gaming` in its host aspect
+and forwards `gaming-hm` to its users. Not on the work laptop.
 
-## System aspect
+## System side: `gaming`
 
-### Steam
+`modules/gaming.nix`, NixOS only.
 
-Steam is enabled with:
+| Setting                               | Value                              |
+| ------------------------------------- | ---------------------------------- |
+| `programs.steam`                      | enabled, with a Gamescope session  |
+| Steam extra packages                  | `gamescope`, `mangohud`            |
+| `programs.gamescope`                  | enabled, `capSysNice = true`       |
+| `programs.gamemode`                   | enabled; `renice = 10`; GPU optimisations accepted for device 0 |
+| `hardware.steam-hardware`             | enabled (udev rules for Steam-supported controllers) |
+| `services.joycond`                    | enabled                            |
 
-- Remote Play firewall ports open
-- Dedicated server ports closed
-- Gamescope session support
-- MangoHud and Gamescope as extra packages
+Membership of the `gamemode` group is granted in `modules/users.nix`
+whenever GameMode is enabled; see
+[Defaults, core and users](../architecture/defaults-core-users.md).
 
-### Gamescope
+On yarrow the `laptop` role enables power-profiles-daemon, which
+GameMode can switch while a game runs (`modules/roles/laptop.nix`).
 
-Gamescope is Valve's micro-compositor that provides:
+### Firewall
 
-- Frame limiting and upscaling
-- HDR support
-- Per-game display settings
-- `capSysNice = true` for real-time scheduling priority
+| Option                                   | Value   | Effect                    |
+| ---------------------------------------- | ------- | ------------------------- |
+| `steam.remotePlay.openFirewall`          | `true`  | Remote Play ports opened on every interface |
+| `steam.dedicatedServer.openFirewall`     | `false` | server ports stay closed  |
 
-### GameMode
+Remote Play is the only thing in this configuration that opens ports
+for games. As evaluated, it adds TCP 27036 and 27037, UDP 27036, 10400
+and 10401, and UDP 27031 to 27035; the list comes from the nixpkgs
+Steam module and can change with a nixpkgs update.
 
-GameMode temporarily applies CPU and GPU optimizations while games are running:
+### Controllers
 
-```nix
-programs.gamemode = {
-  enable = true;
-  settings = {
-    general.renice = 10;
-    gpu = {
-      apply_gpu_optimisations = "accept-responsibility";
-      gpu_device = 0;
-    };
-  };
-};
-```
+Three kernel modules are loaded at boot:
 
-### Controller support
+| Module            | Controllers                 |
+| ----------------- | --------------------------- |
+| `xpad`            | Xbox                        |
+| `hid_playstation` | DualShock 4, DualSense      |
+| `hid_nintendo`    | Switch Pro, Joy-Con         |
 
-Kernel modules loaded for controller input:
+`joycond` handles Joy-Con pairing and combining.
 
-| Module            | Controllers           |
-| ----------------- | --------------------- |
-| `xpad`            | Xbox controllers      |
-| `hid_playstation` | DualShock / DualSense |
-| `hid_nintendo`    | Switch Pro / Joy-Con  |
+## User side: `gaming-hm`
 
-The `joycond` service is enabled for Nintendo controller pairing and management.
-`steam-hardware` udev rules are enabled for broad controller compatibility.
+`modules/desktop/gaming-hm.nix`, home-manager only. Installs
+`mangohud`, `protonup-qt`, `lutris` and `protontricks`.
 
-## Home aspect
+It is forwarded from each host's `provides.to-users` list, not from
+the shared desktop bundle: gaming is an opt-in layer per host
+(`modules/desktop/bundle.nix`).
 
-The home aspect (`modules/desktop/gaming-hm.nix`) adds user-facing tools:
+## Related
 
-| Package        | Purpose                         |
-| -------------- | ------------------------------- |
-| `mangohud`     | FPS/frametime/GPU overlay       |
-| `protonup-qt`  | Proton version manager (GUI)    |
-| `lutris`       | Game launcher (GOG, Epic, etc.) |
-| `protontricks` | Winetricks for Proton prefixes  |
+Tools for making games, as opposed to playing them, are on
+[Game development and art](../gamedev/gamedev-and-art.md).
 
 ## Key files
 
-| File                          | Purpose                                  |
-| ----------------------------- | ---------------------------------------- |
-| `modules/gaming.nix`              | Steam, Gamescope, GameMode, controllers (`den.aspects.gaming`)  |
-| `modules/desktop/gaming-hm.nix`  | MangoHud, Lutris, ProtonUp, Protontricks (home aspect)          |
+| File                            | Purpose                                     |
+| ------------------------------- | ------------------------------------------- |
+| `modules/gaming.nix`            | Steam, Gamescope, GameMode, controllers     |
+| `modules/desktop/gaming-hm.nix` | MangoHud, ProtonUp-Qt, Lutris, Protontricks |
+| `modules/users.nix`             | `gamemode` group membership                 |
+| `modules/host-fern.nix`, `modules/host-yarrow.nix` | where both aspects are included |

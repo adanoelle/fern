@@ -1,164 +1,182 @@
 # Adding an Aspect
 
-> Step-by-step guide for adding a new aspect to the configuration. No
-> registration step is needed -- `import-tree` discovers new files
-> automatically.
+> How to add a unit of configuration: create one file under `modules/`,
+> stage it, and include it from the bundle, role, host or user layer
+> where it belongs. import-tree picks the file up; there is no import
+> list to edit.
 
-## Adding a simple aspect
+The vocabulary used here (aspect, side, bundle, role, layer) is defined
+in [Aspects & Composition](../architecture/aspects.md).
 
-### 1. Create the aspect file
+## 1. Start a worktree
 
-Choose the appropriate directory:
+Work on a branch in its own git worktree, never on `main`. The full
+loop is in [Day to Day](day-to-day.md#the-working-loop).
+
+## 2. Create the file
+
+One aspect per file, dash-separated, with the aspect name matching the
+file name. Pick the directory by what the thing is:
+
+| Directory | Holds |
+| --- | --- |
+| `modules/` | Host aspects, user layers, and system concerns with no category (`core`, `users`, `secrets`, `tailscale`, `fonts`, ...) |
+| `modules/roles/` | Host role bundles |
+| `modules/audio/` | PipeWire layers and music software |
+| `modules/cli/` | Terminal tools, editors, terminal emulators |
+| `modules/cloud/` | Cloud platform tooling |
+| `modules/desktop/` | Compositors, greeter, graphical applications |
+| `modules/devtools/` | Language toolchains and development services |
+| `modules/git/` | The git suite |
+| `modules/shells/` | Shells and prompt |
+| `modules/foreign/` | Aspects only for a non-NixOS (standalone home) machine |
+| `modules/asahi/` | Apple Silicon support for the parked host |
+
+A path with a `_`-prefixed component (`modules/cli/_presenterm/`,
+`modules/desktop/_studies/`) is not auto-imported. Use one for data
+files and helpers that the aspect's own file reads or imports.
+
+The names `ada-*` are reserved for user layers.
+
+### Templates
+
+A leaf aspect does not use `den`, so its module takes `_:`. Writing
+`{ den, ... }:` and not using it fails `just deadnix`.
+
+Home side only, the common case for a tool:
+
+```nix
+# modules/cli/my-tool.nix — one line saying what this is
+_: {
+  den.aspects.my-tool.homeManager =
+    { pkgs, ... }:
+    {
+      home.packages = [ pkgs.my-tool ];
+    };
+}
+```
+
+System side only:
+
+```nix
+# modules/my-service.nix — one line saying what this is
+_: {
+  den.aspects.my-service.nixos = {
+    services.my-service.enable = true;
+  };
+}
+```
+
+Both sides:
+
+```nix
+# modules/devtools/my-lang.nix — one line saying what this is
+_: {
+  den.aspects.my-lang = {
+    nixos =
+      { pkgs, ... }:
+      {
+        environment.systemPackages = [ pkgs.my-lang ];
+      };
+
+    homeManager =
+      { pkgs, ... }:
+      {
+        home.packages = [ pkgs.my-lang-lsp ];
+      };
+  };
+}
+```
+
+Take `{ den, ... }:` only when the aspect has `includes` that name
+other aspects, and `{ inputs, ... }:` when it needs a flake input.
+
+## 3. Stage it
 
 ```bash
-modules/           # Top-level system concerns (audio, secrets, etc.)
-modules/cli/       # CLI tools (bat, helix, ghostty, etc.)
-modules/desktop/   # Desktop applications (browsers, greetd, etc.)
-modules/devtools/  # Language toolchains and dev tools
-modules/shells/    # Shell configuration
-modules/git/       # Git suite extensions
-modules/cloud/     # Cloud platform tools
+git add modules/cli/my-tool.nix
 ```
 
-Write the aspect. For a **homeManager-only** tool:
+A flake only sees tracked files. Until the file is staged, the aspect
+does not exist and any reference to `den.aspects.my-tool` fails with
+an attribute-missing error.
 
-```nix
-# modules/cli/my-tool.nix
-{ den, ... }:
-{
-  den.aspects.my-tool.homeManager = { pkgs, ... }: {
-    home.packages = [ pkgs.my-tool ];
+## 4. Include it
 
-    # Or use a Home Manager program module:
-    programs.my-tool = {
-      enable = true;
-      settings = { /* ... */ };
-    };
-  };
-}
+Defining an aspect does nothing until something includes it. Choose
+the most shared place where it is still correct:
+
+| The aspect is | Include it from | Example |
+| --- | --- | --- |
+| A tool every machine should have | Its category bundle (`*/bundle.nix`) | `bat` in `modules/cli/bundle.nix` |
+| A system concern every machine of a kind needs | A role in `modules/roles/` | `greetd` in `workstation` |
+| A system concern for one machine | The host aspect's `includes` | `monitoring` in `modules/host-fern.nix` |
+| User configuration that only some machines want | The host aspect's `provides.to-users.includes` | `obs` on fern, `art` on yarrow |
+| For the work laptop only | `modules/user-ada-work.nix` | `thunderbird` |
+
+Three things decide between `includes` and `provides.to-users`:
+
+- An aspect in a host's `includes` contributes only its `nixos` side.
+  Its `homeManager` side reaches a user only when the aspect is
+  forwarded through `provides.to-users.includes` (or included by a user
+  layer). An aspect with both sides that is forwarded has both applied.
+- A home side that sets options from a module imported at host level
+  must be forwarded by the host that does the import. Niri is the case
+  here: `programs.niri.*` exists in Home Manager only on hosts that
+  import the niri-flake NixOS module, so `niri` is forwarded from each
+  host aspect rather than from the `desktop-apps` bundle.
+- The base user layer (`modules/user-ada.nix`) must stay safe on a
+  headless machine. GUI and toolchain aspects do not go there.
+
+Before including an aspect in a second place, read the composition
+patterns in [Aspects & Composition](../architecture/aspects.md):
+
+- [Diamond includes](../architecture/aspects.md#diamond-includes-den-does-not-dedupe):
+  den does not dedupe, so an aspect reachable by two paths needs a
+  module `key`, or its list options are set twice.
+- [Upstream modules are imported once, at host level](../architecture/aspects.md#upstream-modules-are-imported-once-at-host-level):
+  an aspect that would `imports` a third-party NixOS module should
+  leave the import to the host aspect.
+- [Parametric includes](../architecture/aspects.md#parametric-includes):
+  how an aspect reads the host's users instead of naming one.
+
+## 5. Check, test, commit
+
+```bash
+just fmt
+just check
+just test
 ```
 
-For a **nixos-only** service:
+Then add a row for the new aspect to the
+[Aspect Index](../reference/aspect-index.md), and commit with a
+conventional-commit message (`feat: add my-tool aspect`).
+
+## Adding a bundle
+
+A bundle is an aspect whose job is its `includes`. To start a new
+category, create `modules/<category>/bundle.nix` defining
+`den.aspects.<category>` and include it from a user layer or role:
 
 ```nix
-# modules/my-service.nix
+# modules/mycat/bundle.nix — what the category is
 { den, ... }:
 {
-  den.aspects.my-service.nixos = { pkgs, ... }: {
-    environment.systemPackages = [ pkgs.my-service ];
-    systemd.services.my-service = {
-      wantedBy = [ "multi-user.target" ];
-      script = "${pkgs.my-service}/bin/my-service";
-    };
-  };
-}
-```
-
-For a **dual-side** aspect (system packages + user configuration):
-
-```nix
-# modules/devtools/my-lang.nix
-{ den, ... }:
-{
-  den.aspects.my-lang = {
-    nixos = { pkgs, ... }: {
-      environment.systemPackages = [ pkgs.my-lang pkgs.my-lang-lsp ];
-    };
-
-    homeManager = { pkgs, ... }: {
-      programs.helix.languages.language-server.my-lang-lsp = {
-        command = "${pkgs.my-lang-lsp}/bin/my-lang-lsp";
-        args = [ "--stdio" ];
-      };
-    };
-  };
-}
-```
-
-### 2. Add to a bundle (if applicable)
-
-If the aspect belongs to a group, add it to the bundle's includes:
-
-```nix
-# modules/cli/bundle.nix
-{ den, ... }:
-{
-  den.aspects.cli = {
+  den.aspects.mycat = {
     includes = [
-      # ... existing aspects ...
-      den.aspects.my-tool    # Add here
+      den.aspects.tool-a
+      den.aspects.tool-b
     ];
   };
 }
 ```
 
-If the bundle is already included by the user or host aspect, you are done --
-the new aspect activates automatically through the bundle.
+## Key files
 
-### 3. Or include directly in a host/user aspect
-
-If the aspect does not belong to a bundle, include it directly:
-
-```nix
-# For system-level aspects, add to the host:
-# modules/host-fern.nix
-den.aspects.fern.includes = [
-  # ... existing includes ...
-  den.aspects.my-service
-];
-
-# For user-level aspects, add to the right user LAYER:
-#   modules/user-ada.nix          — base (safe on any host, even headless)
-#   modules/user-ada-desktop.nix  — GUI-only tools
-#   modules/user-ada-dev.nix      — dev toolchains
-den.aspects.ada.includes = [
-  # ... existing includes ...
-  den.aspects.my-tool
-];
-```
-
-### 4. Test and commit
-
-```bash
-just fmt          # Format Nix files
-just check        # Flake check
-just test         # Test build
-# If test succeeds:
-just switch       # Apply
-```
-
-## Adding Helix LSP integration
-
-If the new aspect is a language toolchain, add LSP configuration on the
-`homeManager` side:
-
-```nix
-den.aspects.my-lang.homeManager = { pkgs, ... }: {
-  programs.helix.languages.language-server.my-lang-lsp = {
-    command = "${pkgs.my-lang-lsp}/bin/my-lang-lsp";
-    args = [ "--stdio" ];
-  };
-};
-```
-
-This follows the pattern used by all existing toolchains -- LSP config is
-co-located with the toolchain aspect rather than centralized in the Helix
-aspect.
-
-## What you do NOT need to do
-
-- ~~Register in `flake.parts/20-nixos-mods.nix`~~ -- `import-tree` discovers
-  the file automatically
-- ~~Register in `flake.parts/30-home-mods.nix`~~ -- same
-- ~~Import in `hosts/*/configuration.nix`~~ -- includes handle this
-- ~~Choose a number for file ordering~~ -- Nix evaluation is lazy
-
-## Checklist
-
-- [ ] Aspect file created in the correct directory
-- [ ] Added to bundle includes (if part of a group)
-- [ ] Or included directly in host/user aspect
-- [ ] `just fmt` passes
-- [ ] `just check` passes
-- [ ] `just test` succeeds
-- [ ] Changes committed
+| File | Purpose |
+| --- | --- |
+| `modules/*/bundle.nix` | Category bundles |
+| `modules/roles/*.nix` | Host roles |
+| `modules/host-*.nix` | Host aspects: `includes` and `provides.to-users` |
+| `modules/user-ada*.nix` | User layers |
+| `justfile` | `fmt`, `check`, `deadnix`, `test` |

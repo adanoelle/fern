@@ -1,183 +1,259 @@
 # Aspect Index
 
-> Complete list of all aspects with their type, source file, and which hosts or
-> users include them.
+> Every `den.aspects.<name>` defined under `modules/`, with its file,
+> which sides it has, what it does and which machines carry it. Use it
+> to find where something lives or to see what a new host could
+> include.
 
-## Host aspects
+## Reading the tables
 
-| Aspect | File | Type | Hosts |
-|--------|------|------|-------|
-| `fern` | `modules/host-fern.nix` | nixos | fern |
-| `moss` | `modules/host-moss.nix` | nixos | moss |
-| `yarrow` | `modules/host-yarrow.nix` | nixos | yarrow (Framework 13 Pro; see [Installing yarrow](../operations/installing-yarrow.md)) |
+**Side(s)** is what the aspect defines:
 
-## User aspects
+| Value | Meaning |
+| --- | --- |
+| nixos | A `nixos` (system) side only |
+| home | A `homeManager` (user) side only |
+| both | Both sides |
+| includes-only | No side of its own; it only includes other aspects |
+| `+ includes` | A side of its own and an `includes` list |
 
-The user is layered: the base aspect applies everywhere, and hosts forward
-extra layers via `provides.to-users` (so a headless host's `ada` stays
-minimal).
+**Goes on** is worked out from the include graph (`modules/hosts.nix`,
+`modules/host-*.nix`, `modules/roles/`, the bundles and
+`modules/user-ada*.nix`). Which sides take effect depends on the route:
 
-| Aspect | File | Type | Applied |
-|--------|------|------|---------|
-| `ada` | `modules/user-ada.nix` | homeManager | ada, every host (base: shells, cli, git, ssh, `garden.terminal`) |
-| `ada-desktop` | `modules/user-ada-desktop.nix` | homeManager | forwarded by fern, moss (parked) (core desktop-apps + garden terminal) |
-| `ada-hyprland` | `modules/user-ada-hyprland.nix` | homeManager | forwarded by fern, moss (parked) (Hyprland fallback session + its settings) |
-| `ada-dev` | `modules/user-ada-dev.nix` | homeManager | forwarded by fern, moss (parked) (devtools bundle) |
+- An aspect in a host's `includes` contributes its `nixos` side only.
+- An aspect forwarded through `provides.to-users`, or included by a
+  user layer, contributes both sides on a NixOS host.
+- On the work laptop (a standalone home) only `homeManager` sides
+  apply; every `nixos` side is ignored.
 
-## Role aspects
+Where that makes a difference the cell says which side applies. The
+mechanics are in [Aspects & Composition](../architecture/aspects.md);
+what each machine is for is under [Machines](../machines/fern.md).
 
-Host role bundles — compose these instead of long per-host include lists.
+"Every machine" means fern, yarrow and the work laptop. moss is parked
+and is not counted; aspects that only it uses are marked.
 
-| Aspect | File | Includes |
-|--------|------|----------|
-| `workstation` | `modules/roles/workstation.nix` | core, nh, users, secrets-guard, secrets, greetd, fonts, audio, docker |
-| `laptop` | `modules/roles/laptop.nix` | power-profiles-daemon, zram swap, fwupd (on top of `workstation`) |
-| `dev-machine` | `modules/roles/dev-machine.nix` | aws-cli |
-| `homelab` | `modules/roles/homelab.nix` | tailscale, radicale + routing features (see [Homelab](../services/homelab.md)) |
-| `server` | `modules/roles/server.nix` | core, nh, users, secrets-guard (skeleton — hardening TODOs in file) |
+## Hosts
 
-## Bundle aspects
+| Aspect | File | Side(s) | Description | Goes on |
+| --- | --- | --- | --- | --- |
+| `fern` | `modules/host-fern.nix` | nixos + includes | Desktop workstation: roles, forwarded user layers, zen kernel, studio-interface udev rules, Hyprland enablement | fern |
+| `yarrow` | `modules/host-yarrow.nix` | nixos + includes | Framework laptop: roles, forwarded user layers, nixos-hardware module, latest kernel | yarrow |
+| `moss` | `modules/host-moss.nix` | nixos + includes | Apple Silicon laptop, composed by hand without the workstation role | moss (parked) |
 
-| Aspect | File | Includes |
-|--------|------|----------|
-| `cli` | `modules/cli/bundle.nix` | bat, broot, claude-code, crypt, delta, ghostty, glow, helix, hyfetch, nix-diff, nix-tree, prettier, tree, kitty, kakoune, yazi, lazygit, btop, fzf, fd, ripgrep, rbw, jq |
-| `git-suite` | `modules/git/bundle.nix` | git-core, git-aliases, git-identities, git-github, git-tools, git-safety, git-help |
-| `desktop-apps` | `modules/desktop/bundle.nix` | zen, chromium, screenshot, imv, pdf, bitwarden (core only — compositors, obs, gaming-hm, music are forwarded per host via provides.to-users) |
-| `devtools` | `modules/devtools/bundle.nix` | docker, rust, node-ts, c-cpp, python, ada-lang, zig, vm-host (gamedev is opt-in per host) |
-| `shells` | `modules/shells/bundle.nix` | nushell, starship, zoxide, devenv |
+## User layers
 
-## System aspects (nixos)
+| Aspect | File | Side(s) | Description | Goes on |
+| --- | --- | --- | --- | --- |
+| `ada` | `modules/user-ada.nix` | home + includes | Base layer: the `cli`, `git-suite`, `shells` and `workspace` aspects, git identities, SSH client and agent | every machine |
+| `ada-desktop` | `modules/user-ada-desktop.nix` | includes-only | Desktop layer: `desktop-apps` and the garden terminal stack | fern (yarrow takes `desktop-apps` and `garden.shell` directly) |
+| `ada-dev` | `modules/user-ada-dev.nix` | includes-only | Development layer: the `devtools` bundle | every machine |
+| `ada-hyprland` | `modules/user-ada-hyprland.nix` | home + includes | Hyprland fallback session and its settings | fern |
+| `ada-work` | `modules/user-ada-work.nix` | home + includes | Work-laptop layer: standalone niri and garden desktop, work applications and data tools, output layout, channel bindings | work laptop |
 
-Aspects providing NixOS system-level configuration.
+## Roles
 
-| Aspect | File | Description | Included by |
-|--------|------|-------------|-------------|
-| `audio` | `modules/audio/audio.nix` | PipeWire base stack, rtkit, tools | fern, moss |
-| `audio-studio` | `modules/audio/audio-studio.nix` | musnix, low-latency quantum, no-suspend | fern |
-| `audio-laptop` | `modules/audio/audio-laptop.nix` | Noise-suppressed virtual mic (RNNoise), `studio-mode` buffer toggle | yarrow |
-| `aws-cli` | `modules/cloud/aws-cli.nix` | AWS CLI, vault, SAM, Terraform, security tools | fern |
-| `boot` | `modules/boot.nix` | systemd-boot (UEFI x86 default; kernel chosen per host) | fern |
-| `boot-asahi` | `modules/asahi/boot.nix` | systemd-boot (Apple Silicon) | moss |
-| `c-cpp` | `modules/devtools/c-cpp.nix` | GCC, Clang, CMake, hardening flags | fern |
-| `core` | `modules/core.nix` | Nix settings, overlays, fleet defaults (trusted-users, nix-ld, timezone via mkDefault) | fern, moss |
-| `docker` | `modules/devtools/docker.nix` | Docker Engine, BuildKit, Compose, utilities | fern, moss |
-| `fonts` | `modules/fonts.nix` | Nerd Fonts, fontconfig | fern |
-| `gaming` | `modules/gaming.nix` | Steam, Gamescope, GameMode, controllers | fern |
-| `graphics-asahi` | `modules/asahi/graphics.nix` | Asahi experimental GPU driver | moss |
-| `greetd` | `modules/desktop/greetd.nix` | greetd, tuigreet (sessions offered per enabled compositor), seatd, XDG portals, Polkit | fern, moss |
-| `monitoring` | `modules/monitoring.nix` | Hardware sensors (lm_sensors) | fern |
-| `nh` | `modules/cli/nh.nix` | nh rebuild helper + scheduled clean | fern |
-| `niri` | `modules/desktop/niri.nix` | Niri compositor (nixos enable + HM settings) | fern (also forwarded to users via host provides.to-users) |
-| `node-ts` | `modules/devtools/node-ts.nix` | Node.js, pnpm, Deno, CDK, nix-ld | fern |
-| `radicale` | `modules/radicale.nix` | Radicale CalDAV/CardDAV, tailnet-only, sops htpasswd (see [Homelab](../services/homelab.md)) | fern (via homelab role) |
-| `rust` | `modules/devtools/rust.nix` | Stable Rust, rust-analyzer, cargo tools, hardening | fern |
-| `secrets` | `modules/secrets.nix` | SOPS-nix, age key, SSH key decryption | fern (via workstation role), moss (parked) |
-| `secrets-guard` | `modules/secrets-guard.nix` | git-secrets, trufflehog | fern, moss |
-| `tailscale` | `modules/tailscale.nix` | Tailscale client, trusted interface, operator (see [Homelab](../services/homelab.md)) | fern (via homelab role + radicale) |
-| `teams` | `modules/desktop/teams.nix` | Microsoft Teams | fern |
-| `users` | `modules/users.nix` | User account, NetworkManager, SSH | fern, moss |
+| Aspect | File | Side(s) | Description | Goes on |
+| --- | --- | --- | --- | --- |
+| `workstation` | `modules/roles/workstation.nix` | includes-only | What every graphical x86 host shares: `core`, `nh`, `users`, `secrets-guard`, `secrets`, `greetd`, `fonts`, `audio`, `bluetooth`, `docker` | fern, yarrow |
+| `laptop` | `modules/roles/laptop.nix` | nixos | Power profiles, zram swap, firmware updates | yarrow |
+| `dev-machine` | `modules/roles/dev-machine.nix` | includes-only | Host-level development services (`aws-cli`) | fern, yarrow |
+| `homelab` | `modules/roles/homelab.nix` | nixos + includes | Always-on services: `tailscale` with routing features, `radicale` | fern |
+| `server` | `modules/roles/server.nix` | includes-only | Headless role: `core`, `nh`, `users`, `secrets-guard` | no host yet |
 
-## User aspects (homeManager)
+## Bundles
 
-Aspects providing Home Manager user-level configuration.
+| Aspect | File | Side(s) | Description | Goes on |
+| --- | --- | --- | --- | --- |
+| `cli` | `modules/cli/bundle.nix` | includes-only | Terminal tools, editors, terminal emulators | every machine |
+| `shells` | `modules/shells/bundle.nix` | includes-only | Fish, Nushell, zsh, prompt, zoxide, devenv | every machine |
+| `git-suite` | `modules/git/bundle.nix` | home + includes | The `git-*` aspects, plus the `programs.gitSuite` options that switch them on | every machine |
+| `devtools` | `modules/devtools/bundle.nix` | includes-only | Language toolchains, Docker, VM tools | every machine |
+| `desktop-apps` | `modules/desktop/bundle.nix` | includes-only | Applications every graphical NixOS host gets | fern, yarrow |
+| `music` | `modules/audio/music.nix` | includes-only | Music production: `daw` and `audio-tools` | fern |
 
-### CLI tools
+## System aspects
 
-| Aspect | File | Description |
-|--------|------|-------------|
-| `audio-tools` | `modules/audio/audio-tools.nix` | Audio plugins, synths, samplers |
-| `music` | `modules/audio/music.nix` | daw + audio-tools bundle |
-| `daw` | `modules/audio/daw.nix` | Ardour, REAPER |
-| `bat` | `modules/cli/bat.nix` | Bat syntax highlighter, man pager |
-| `broot` | `modules/cli/broot.nix` | File explorer with Nushell integration |
-| `btop` | `modules/cli/btop.nix` | System monitor |
-| `claude-code` | `modules/cli/claude-code.nix` | Claude Code CLI package |
-| `crypt` | `modules/cli/crypt.nix` | Age encryption tool |
-| `delta` | `modules/cli/delta.nix` | Delta diff tool, garden palette theme |
-| `fd` | `modules/cli/fd.nix` | Fast file finder |
-| `fzf` | `modules/cli/fzf.nix` | Fuzzy finder |
-| `ghostty` | `modules/cli/ghostty.nix` | Ghostty terminal emulator |
-| `glow` | `modules/cli/glow.nix` | Markdown viewer |
-| `helix` | `modules/cli/helix.nix` | Helix editor, LSP, theme |
-| `hyfetch` | `modules/cli/hyfetch.nix` | System info display (fastfetch) |
-| `jq` | `modules/cli/jq.nix` | JSON processor |
-| `duckdb` | `modules/cli/duckdb.nix` | DuckDB CLI, `dpeek` file inspector, Harlequin TUI (work laptop only) |
-| `kakoune` | `modules/cli/kakoune.nix` | Kakoune editor |
-| `kitty` | `modules/cli/kitty.nix` | Kitty terminal (garden terminal stack) |
-| `lazygit` | `modules/cli/lazygit.nix` | Git TUI |
-| `nix-diff` | `modules/cli/nix-diff.nix` | Derivation diff tool |
-| `nix-tree` | `modules/cli/nix-tree.nix` | Nix dependency visualizer |
-| `prettier` | `modules/cli/prettier.nix` | Code formatter |
-| `rbw` | `modules/cli/rbw.nix` | Bitwarden CLI client (see [Password Manager](../security/password-manager.md)) |
-| `ripgrep` | `modules/cli/ripgrep.nix` | Fast grep |
-| `tree` | `modules/cli/tree.nix` | Directory tree viewer |
-| `yazi` | `modules/cli/yazi.nix` | Terminal file manager |
+| Aspect | File | Side(s) | Description | Goes on |
+| --- | --- | --- | --- | --- |
+| `core` | `modules/core.nix` | nixos | Nix settings, overlays, unfree, trusted users, nix-ld, default timezone | fern, yarrow |
+| `users` | `modules/users.nix` | nixos | Accounts from the topology, all group membership, NetworkManager, key-only sshd | fern, yarrow |
+| `boot` | `modules/boot.nix` | nixos | systemd-boot on UEFI | fern, yarrow |
+| `nh` | `modules/cli/nh.nix` | nixos | `nh` rebuild helper, default flake path, weekly clean | fern, yarrow |
+| `secrets` | `modules/secrets.nix` | nixos | sops-nix with the SSH host key as identity; the user's GitHub SSH key | fern, yarrow |
+| `secrets-guard` | `modules/secrets-guard.nix` | nixos | git-secrets and trufflehog, system git template directory | fern, yarrow |
+| `greetd` | `modules/desktop/greetd.nix` | nixos | greetd with tuigreet, session list from enabled compositors, portals, polkit | fern, yarrow |
+| `fonts` | `modules/fonts.nix` | both | Garden typography and fontconfig defaults | fern, yarrow (nixos side); work laptop (home side) |
+| `audio` | `modules/audio/audio.nix` | nixos | PipeWire base stack, rtkit, mixer and patchbay tools | fern, yarrow |
+| `audio-studio` | `modules/audio/audio-studio.nix` | nixos + includes | Low-latency tuning with musnix for a recording machine | fern |
+| `audio-laptop` | `modules/audio/audio-laptop.nix` | nixos | Noise-suppressed virtual microphone and the `studio-mode` command | yarrow |
+| `bluetooth` | `modules/bluetooth.nix` | nixos | BlueZ, bluetooth audio codec preference | fern, yarrow |
+| `docker` | `modules/devtools/docker.nix` | nixos | Docker daemon with BuildKit and container tools | fern, yarrow |
+| `tailscale` | `modules/tailscale.nix` | nixos | Tailscale client, trusted `tailscale0`, user as operator | fern, yarrow |
+| `radicale` | `modules/radicale.nix` | nixos + includes | CalDAV/CardDAV server reachable only over the tailnet | fern |
+| `monitoring` | `modules/monitoring.nix` | nixos | lm_sensors, stress tools, sensor logging service | fern |
+| `gaming` | `modules/gaming.nix` | nixos | Steam, GameScope, GameMode, controller support | fern, yarrow |
+| `aws-cli` | `modules/cloud/aws-cli.nix` | nixos | AWS CLI and infrastructure tooling | fern, yarrow |
+| `boot-asahi` | `modules/asahi/boot.nix` | nixos | Apple Silicon bootloader settings | moss (parked) |
+| `graphics-asahi` | `modules/asahi/graphics.nix` | nixos | Apple Silicon graphics; enables Hyprland | moss (parked) |
 
-### Git suite
+## User aspects: home layout
 
-| Aspect | File | Description |
-|--------|------|-------------|
-| `git-core` | `modules/git/core.nix` | SSH signing, delta, performance |
-| `git-aliases` | `modules/git/aliases.nix` | 100+ Git and shell aliases |
-| `git-identities` | `modules/git/identities.nix` | Multi-identity with includeIf |
-| `git-github` | `modules/git/github.nix` | GitHub CLI integration |
-| `git-tools` | `modules/git/tools.nix` | Lazygit, tig, git-absorb, git-lfs |
-| `git-safety` | `modules/git/safety.nix` | Protected branches, hooks |
-| `git-help` | `modules/git/help.nix` | tldr, quick-reference sheet |
+Included directly by the base `ada` layer.
 
-### Desktop
+| Aspect | File | Side(s) | Description | Goes on |
+| --- | --- | --- | --- | --- |
+| `workspace` | `modules/workspace.nix` | home | Home directory taxonomy and XDG user directories; see [Home Directory](home-directory.md) | every machine |
 
-| Aspect | File | Description |
-|--------|------|-------------|
-| `hyprland` | `modules/desktop/hyprland.nix` | Hyprland compositor (fallback session) + sub-modules |
-| `bitwarden` | `modules/desktop/bitwarden.nix` | Bitwarden desktop app |
-| `zen` | `modules/desktop/zen.nix` | Zen browser (daily driver; xdg default) |
-| `chromium` | `modules/desktop/chromium.nix` | Ungoogled Chromium |
-| `repd-chrome` | `modules/foreign/repd-chrome.nix` | Isolated launcher for the system Google Chrome, one site only (work laptop) |
-| `thunderbird` | `modules/desktop/thunderbird.nix` | Thunderbird mail (Exchange Online via Microsoft Graph; work laptop only) |
-| `gaming-hm` | `modules/desktop/gaming-hm.nix` | MangoHud, Lutris, ProtonUp |
-| `obs` | `modules/desktop/obs.nix` | OBS Studio |
-| `art` | `modules/desktop/art.nix` | Krita, Aseprite, Inkscape, GIMP (forwarded by yarrow) |
-| `game-audio` | `modules/audio/game-audio.nix` | FamiStudio, Furnace, sfxr-qt, REAPER, ffmpeg/sox (forwarded by yarrow) |
-| `brightness-backlight` | `modules/desktop/brightness-backlight.nix` | Brightness keys for a laptop panel (brightnessctl) |
-| `idle-suspend` | `modules/desktop/idle-suspend.nix` | Suspend after 20 idle minutes, on battery only |
-| `screenshot` | `modules/desktop/screenshot.nix` | grim, slurp, satty |
+## User aspects: CLI
 
-### Shells
+All of these are in the `cli` bundle unless the last column says
+otherwise.
 
-| Aspect | File | Description |
-|--------|------|-------------|
-| `nushell` | `modules/shells/nushell.nix` | Nushell shell configuration |
-| `starship` | `modules/shells/starship.nix` | Starship prompt |
-| `zoxide` | `modules/shells/zoxide.nix` | Zoxide directory jumper |
-| `devenv` | `modules/shells/devenv.nix` | Devenv development environments |
+| Aspect | File | Side(s) | Description | Goes on |
+| --- | --- | --- | --- | --- |
+| `bat` | `modules/cli/bat.nix` | home | bat, and bat as the man pager | every machine |
+| `broot` | `modules/cli/broot.nix` | home | broot tree navigator | every machine |
+| `btop` | `modules/cli/btop.nix` | home | btop system monitor | every machine |
+| `claude-code` | `modules/cli/claude-code.nix` | home | Claude Code CLI and its session hooks | every machine |
+| `crypt` | `modules/cli/crypt.nix` | home | age encryption tool | every machine |
+| `delta` | `modules/cli/delta.nix` | home | Garden theme for the delta diff viewer | every machine |
+| `duf` | `modules/cli/duf.nix` | home | duf disk usage | every machine |
+| `dust` | `modules/cli/dust.nix` | home | dust directory sizes | every machine |
+| `eza` | `modules/cli/eza.nix` | home | eza with its `ls` aliases and fish abbreviations | every machine |
+| `fd` | `modules/cli/fd.nix` | home | fd file finder | every machine |
+| `fzf` | `modules/cli/fzf.nix` | home | fzf fuzzy finder | every machine |
+| `ghostty` | `modules/cli/ghostty.nix` | home | Ghostty terminal with garden colour and font includes | every machine |
+| `glow` | `modules/cli/glow.nix` | home | glow Markdown renderer | every machine |
+| `helix` | `modules/cli/helix.nix` | home | Helix editor, garden theme link, language servers | every machine |
+| `herdr` | `modules/cli/herdr.nix` | home | herdr agent-aware terminal multiplexer | every machine |
+| `hyfetch` | `modules/cli/hyfetch.nix` | home | hyfetch system summary | every machine |
+| `jq` | `modules/cli/jq.nix` | home | jq JSON processor | every machine |
+| `kakoune` | `modules/cli/kakoune.nix` | home | Kakoune editor with garden colours | every machine |
+| `kitty` | `modules/cli/kitty.nix` | home | Kitty terminal | every machine |
+| `lazygit` | `modules/cli/lazygit.nix` | home | Garden theme overlay for lazygit | every machine |
+| `nix-diff` | `modules/cli/nix-diff.nix` | home | nix-diff derivation comparison | every machine |
+| `nix-tree` | `modules/cli/nix-tree.nix` | home | nix-tree closure browser | every machine |
+| `presenterm` | `modules/cli/presenterm.nix` | home | presenterm slide decks, themes and the `present` launcher | every machine |
+| `prettier` | `modules/cli/prettier.nix` | home | prettier and its default configuration | every machine |
+| `procs` | `modules/cli/procs.nix` | home | procs process viewer | every machine |
+| `rbw` | `modules/cli/rbw.nix` | home | rbw Bitwarden command-line client | every machine |
+| `ripgrep` | `modules/cli/ripgrep.nix` | home | ripgrep | every machine |
+| `tmux` | `modules/cli/tmux.nix` | home | tmux with vi-style bindings | every machine |
+| `tree` | `modules/cli/tree.nix` | home | tree | every machine |
+| `yazi` | `modules/cli/yazi.nix` | home | Yazi file manager and its `yy` shell wrapper | every machine |
+| `duckdb` | `modules/cli/duckdb.nix` | home | DuckDB CLI, harlequin, the `dpeek` helper | work laptop (not in the bundle) |
+| `postgres` | `modules/cli/postgres.nix` | home | psql client and its startup settings | work laptop (not in the bundle) |
+| `rustfs` | `modules/cli/rustfs.nix` | home | `rc`, an S3-compatible object store client | work laptop (not in the bundle) |
+| `theodolite` | `modules/cli/theodolite.nix` | home | Data directory variable for a geocoding tool | work laptop (not in the bundle) |
 
-### Dev toolchains
+## User aspects: shells
 
-| Aspect | File | Description |
-|--------|------|-------------|
-| `ada-lang` | `modules/devtools/ada.nix` | GNAT, GPRBuild, Alire (renamed from `ada-dev`; that name is now the user dev layer) |
-| `gamedev` | `modules/devtools/gamedev.nix` | SDL2, GLM, Box2D, Tracy, ImGui |
-| `python` | `modules/devtools/python.nix` | Python 3.12, uv, ruff, pyright |
-| `zig` | `modules/devtools/zig.nix` | Zig programming language |
+All in the `shells` bundle.
 
-### Other
+| Aspect | File | Side(s) | Description | Goes on |
+| --- | --- | --- | --- | --- |
+| `fish` | `modules/shells/fish.nix` | home | Fish: garden prompt, vi mode, abbreviations | every machine |
+| `nushell` | `modules/shells/nushell.nix` | home | Nushell with its own aliases and environment | every machine |
+| `zsh` | `modules/shells/zsh.nix` | home | zsh mirroring the fish setup in a portable `~/.zshrc` | every machine |
+| `starship` | `modules/shells/starship.nix` | home | Starship prompt | every machine |
+| `zoxide` | `modules/shells/zoxide.nix` | home | zoxide directory jumper | every machine |
+| `devenv` | `modules/shells/devenv.nix` | home | devenv from its flake input | every machine |
 
-| Aspect | File | Description |
-|--------|------|-------------|
-| `workspace` | `modules/workspace.nix` | Archivist home taxonomy: XDG user dirs (inbox/docs/media), notes + archive tree, `~/docs/FILING.md` manual |
+## User aspects: git
 
-## Infrastructure aspects
+All in the `git-suite` bundle.
 
-These aspects configure the den framework and flake infrastructure rather than
-providing NixOS/HM configuration for the end user.
+| Aspect | File | Side(s) | Description | Goes on |
+| --- | --- | --- | --- | --- |
+| `git-core` | `modules/git/core.nix` | home | Core git settings, SSH commit signing, delta | every machine |
+| `git-aliases` | `modules/git/aliases.nix` | home | Git aliases and shell aliases for them | every machine |
+| `git-identities` | `modules/git/identities.nix` | home | Per-directory identities through `includeIf` | every machine |
+| `git-github` | `modules/git/github.nix` | home | GitHub CLI, its aliases and credential helper | every machine |
+| `git-tools` | `modules/git/tools.nix` | home | lazygit, tig, git-absorb, git-lfs | every machine |
+| `git-safety` | `modules/git/safety.nix` | home | Safety aliases and git hooks | every machine |
+| `git-help` | `modules/git/help.nix` | home | tldr, a quick-reference file, help aliases | every machine |
 
-| File | Purpose |
-|------|---------|
-| `modules/dendritic.nix` | Den bootstrap, HM bridge, mutual provider |
-| `modules/garden.nix` | Mounts the `garden.*` den namespace from garden-shell (see [The Garden Design System](../desktop/garden.md)) |
-| `modules/hosts.nix` | Topology declaration |
-| `modules/defaults.nix` | Global defaults (stateVersion, helpers) |
-| `modules/overlays.nix` | Nixpkgs config and overlays |
-| `modules/dev.nix` | Development shell (just, mdbook, nixpkgs-fmt) |
-| `modules/docs.nix` | mdBook documentation build |
+## User aspects: desktop
+
+| Aspect | File | Side(s) | Description | Goes on |
+| --- | --- | --- | --- | --- |
+| `niri` | `modules/desktop/niri.nix` | both | Niri: system enablement and portals; bindings, channels, idle and lock on the home side | fern, yarrow (both sides); work laptop (home side, through `niri-standalone`) |
+| `hyprland` | `modules/desktop/hyprland.nix` | home | Hyprland session, declared as `desktop.hyprland` options | fern (through `ada-hyprland`) |
+| `brightness-ddc` | `modules/desktop/brightness-ddc.nix` | both | Brightness keys over DDC/CI for external monitors | fern |
+| `brightness-backlight` | `modules/desktop/brightness-backlight.nix` | home | Brightness keys for a built-in panel | yarrow |
+| `idle-suspend` | `modules/desktop/idle-suspend.nix` | home | Suspend when idle on battery | yarrow |
+| `wallpaper` | `modules/desktop/wallpaper.nix` | home | Painted wallpapers tied to the active palette; `garden-study` | work laptop |
+| `zen` | `modules/desktop/zen.nix` | home | Zen browser as the default browser | every machine |
+| `chromium` | `modules/desktop/chromium.nix` | home | ungoogled-chromium with Wayland flags | fern, yarrow |
+| `bitwarden` | `modules/desktop/bitwarden.nix` | both | Bitwarden desktop; permits its end-of-life electron | fern, yarrow |
+| `screenshot` | `modules/desktop/screenshot.nix` | home | Screenshot tools and capture scripts for the Hyprland session | included on every machine; has an effect only on fern, where the Hyprland layer is enabled |
+| `imv` | `modules/desktop/imv.nix` | home | imv as the default image viewer | every machine |
+| `pdf` | `modules/desktop/pdf.nix` | home | PDF viewer, manipulation and signing tools | every machine |
+| `obsidian` | `modules/desktop/obsidian.nix` | home | Obsidian with the garden CSS snippet | work laptop |
+| `obs` | `modules/desktop/obs.nix` | home | OBS Studio with capture plugins | fern |
+| `teams` | `modules/desktop/teams.nix` | both | teams-for-linux | fern (nixos side); work laptop (home side) |
+| `thunderbird` | `modules/desktop/thunderbird.nix` | home | Thunderbird from a newer nixpkgs input | work laptop |
+| `art` | `modules/desktop/art.nix` | home | Painting, pixel art, vector and photo tools | yarrow |
+| `gaming-hm` | `modules/desktop/gaming-hm.nix` | home | MangoHud, Lutris, Proton helpers | fern, yarrow |
+
+`desktop-apps` holds `zen`, `chromium`, `screenshot`, `imv`, `pdf` and
+`bitwarden`. The rest are forwarded per host or included by the work
+layer.
+
+## User aspects: development
+
+All in the `devtools` bundle except `gamedev`, which hosts forward
+separately. The bundle also includes the system aspect `docker`.
+
+| Aspect | File | Side(s) | Description | Goes on |
+| --- | --- | --- | --- | --- |
+| `rust` | `modules/devtools/rust.nix` | both | Stable Rust through rust-overlay, rust-analyzer, cargo tools | fern, yarrow (both sides); work laptop (home side) |
+| `c-cpp` | `modules/devtools/c-cpp.nix` | both | GCC, Clang, CMake, debuggers, hardening flags | fern, yarrow (both sides); work laptop (home side) |
+| `node-ts` | `modules/devtools/node-ts.nix` | both | Node.js, package managers, TypeScript tooling | fern, yarrow (both sides); work laptop (home side) |
+| `python` | `modules/devtools/python.nix` | both | Python, uv from a newer nixpkgs input, linters, Jupyter | fern, yarrow (both sides); work laptop (home side) |
+| `ada-lang` | `modules/devtools/ada.nix` | both | Ada toolchain: GNAT, gprbuild, Alire | fern, yarrow (both sides); work laptop (home side) |
+| `zig` | `modules/devtools/zig.nix` | home | Zig compiler | every machine |
+| `vm-host` | `modules/devtools/vm-host.nix` | home | quickemu for desktop test VMs | every machine |
+| `gamedev` | `modules/devtools/gamedev.nix` | home | Game libraries, level and sprite editors, profilers | every machine |
+
+## User aspects: audio
+
+| Aspect | File | Side(s) | Description | Goes on |
+| --- | --- | --- | --- | --- |
+| `daw` | `modules/audio/daw.nix` | home | Ardour and REAPER | fern (through `music`) |
+| `audio-tools` | `modules/audio/audio-tools.nix` | home | Plugins, synthesizers, samplers | fern (through `music`); work laptop |
+| `game-audio` | `modules/audio/game-audio.nix` | home | Chiptune trackers and sound-effect tools | yarrow |
+
+## Work laptop and foreign distributions
+
+Aspects that exist only for a standalone home on another distribution.
+The work layer that includes them is `ada-work`, under
+[User layers](#user-layers).
+
+| Aspect | File | Side(s) | Description | Goes on |
+| --- | --- | --- | --- | --- |
+| `niri-standalone` | `modules/desktop/niri-standalone.nix` | home + includes | Imports niri-flake's Home Manager module and reuses `niri`'s home side | work laptop |
+| `ubuntu-desktop` | `modules/foreign/ubuntu-desktop.nix` | home | nixGL wrapping, session packages and systemd user units for the niri session on Ubuntu | work laptop |
+| `docker-rootless` | `modules/foreign/docker-rootless.nix` | home | Rootless Docker as a systemd user service | work laptop |
+| `repd-chrome` | `modules/foreign/repd-chrome.nix` | home | Launcher for the system Chrome with an isolated profile, for one work web portal | work laptop |
+
+## Not `den.aspects`
+
+Two names that appear in `includes` lists are not defined here.
+`garden.terminal` and `garden.shell` come from the `garden` namespace
+imported from the garden-shell flake in `modules/garden.nix`; see
+[Garden](../desktop/garden.md). `den._.*` entries are den's own
+batteries; see
+[Defaults, Core & Users](../architecture/defaults-core-users.md).
+
+## Regenerating this page
+
+List every aspect name defined in the tree and compare with the tables:
+
+```bash
+grep -rhoE "den\.aspects\.[a-zA-Z0-9_-]+ *(=|\.(nixos|homeManager|includes))" \
+  modules --include='*.nix' --exclude-dir='_*' \
+  | sed -E 's/den\.aspects\.([a-zA-Z0-9_-]+).*/\1/' | sort -u
+```

@@ -1,84 +1,64 @@
 # Summary
 
 [Introduction](introduction.md)
+[Design & Layering](start/design-and-layering.md)
 
-# Part I: Understanding Fern
+# Machines
 
-- [Design Philosophy](concepts/design-philosophy.md)
-- [NixOS & Flakes](concepts/nixos-and-flakes.md)
-- [Module System](concepts/module-system.md)
-- [Home Manager](concepts/home-manager.md)
-- [Aspects, Bundles & Topology](concepts/aspects-bundles-topology.md)
+- [fern (desktop workstation)](machines/fern.md)
+- [yarrow (Framework laptop)](machines/yarrow.md)
+  - [Installing yarrow](machines/installing-yarrow.md)
+- [Work laptop (standalone home on Ubuntu)](machines/work-laptop.md)
+- [moss (parked)](machines/moss.md)
 
-# Part II: The Desktop (Garden)
+# How It's Built
 
-- [The Garden Design System](desktop/garden.md)
+- [Aspects & Composition](architecture/aspects.md)
+- [The Flake & Bootstrap](architecture/flake-and-bootstrap.md)
+- [Defaults, Core & Users](architecture/defaults-core-users.md)
+
+# What's Configured
+
+- [The Garden Shell](desktop/garden.md)
 - [Niri](desktop/niri.md)
+- [Wallpaper & Studies](desktop/wallpaper.md)
+- [Hyprland (fallback session)](desktop/hyprland.md)
 - [Browsers](desktop/browsers.md)
 - [Mail](desktop/mail.md)
-- [Hyprland (Legacy Fallback)](desktop/hyprland.md)
-  - [Wallpaper (Hyprland)](desktop/wallpaper-and-theming.md)
-  - [Idle & Lock (Hyprland)](desktop/idle-and-lock.md)
-
-# Part III: Daily Life
-
-- [Nushell](shells/nushell.md)
-- [Starship & Zoxide](shells/starship-and-zoxide.md)
-- [Ghostty](shells/ghostty.md)
-- [Presenting (presenterm)](shells/presenterm.md)
-- [Git: Design & Orchestrator](git/design-and-orchestrator.md)
-  - [Core & Aliases](git/core-and-aliases.md)
-  - [Identity Management](git/identity-management.md)
-  - [Safety & Secrets](git/safety-and-secrets.md)
-  - [GitHub & Tools](git/github-and-tools.md)
+- [Shells](terminal/shells.md)
+- [Terminals & CLI Tools](terminal/terminals.md)
+- [Presenting (presenterm)](terminal/presenterm.md)
+- [Agent Sessions](terminal/agent-sessions.md)
+- [Git](git/git.md)
 - [Rust](toolchains/rust.md)
 - [C / C++](toolchains/c-cpp.md)
 - [TypeScript & Node](toolchains/typescript-node.md)
 - [Python](toolchains/python.md)
-- [DuckDB (data inspection)](toolchains/duckdb.md)
-- [Ada](toolchains/ada.md)
-- [Zig](toolchains/zig.md)
-- [Game Dev Stack](gamedev/stack-overview.md)
-
-# Part IV: The Machine
-
+- [Ada, Zig & VMs](toolchains/other.md)
+- [Data Tools](toolchains/data-tools.md)
+- [Game Dev, Art & Game Audio](gamedev/gamedev-and-art.md)
+- [Audio](services/audio.md)
+- [Gaming](services/gaming.md)
 - [Homelab (Tailscale & Radicale)](services/homelab.md)
-- [Audio & PipeWire](services/audio.md)
-- [Graphics & GPU](services/graphics.md)
-- [Gaming (Steam & Gamescope)](services/gaming.md)
-- [Docker & Containers](services/docker.md)
-- [Cloud Platforms](services/cloud.md)
-- [SOPS-nix](security/sops-nix.md)
-- [Secret Guard](security/secret-guard.md)
+- [Containers & Cloud](services/containers-and-cloud.md)
+- [Secrets (sops-nix)](security/sops-nix.md)
+- [Secret Scanning](security/secret-guard.md)
 - [Password Manager](security/password-manager.md)
 
-# Part V: Architecture Internals
+# Operating
 
-- [Repository Layout](architecture/repository-layout.md)
-- [The Flake Entry Point](architecture/flake-entry-point.md)
-- [Dendritic Bootstrap](architecture/dendritic-bootstrap.md)
-- [Topology & Hosts](architecture/topology-and-hosts.md)
-- [Aspect Patterns](architecture/aspect-patterns.md)
-- [Bundle Composition](architecture/bundle-composition.md)
-- [Defaults & Batteries](architecture/defaults-and-batteries.md)
-- [Home Directory Taxonomy](architecture/home-directory-taxonomy.md)
-
-# Part VI: Operations & Reference
-
-- [Rebuilding & Testing](operations/rebuilding.md)
-- [Garbage Collection & Maintenance](operations/maintenance.md)
+- [Day to Day](operations/day-to-day.md)
 - [Adding an Aspect](operations/adding-an-aspect.md)
 - [Adding a Host](operations/adding-a-host.md)
-- [Installing yarrow (Framework 13 Pro)](operations/installing-yarrow.md)
-- [Standalone Home on Ubuntu (Work Laptop)](operations/work-laptop.md)
-- [Agent Sessions (herdr + Claude Code hooks)](operations/agent-sessions.md)
 - [Troubleshooting](operations/troubleshooting.md)
+
+# Reference
+
 - [Aspect Index](reference/aspect-index.md)
-- [Shell Aliases & Commands](reference/aliases.md)
+- [Aliases & Commands](reference/aliases.md)
 - [Environment Variables](reference/environment-variables.md)
+- [Home Directory Layout](reference/home-directory.md)
 
-# Appendix: Migration (Historical)
+# History
 
-- [Why Den](migration/why-den.md)
-- [What Changed](migration/what-changed.md)
-- [Before & After](migration/before-and-after.md)
+- [The Move to den](history/migration.md)

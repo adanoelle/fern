@@ -1,132 +1,177 @@
 # Niri
 
-> Niri is the primary compositor. Windows live in columns on an infinite
-> horizontal strip — new windows never resize existing ones, they extend the
-> strip. Paired with the [garden shell](garden.md) for bar, overlays, and
-> lock, it forms the whole desktop. Hyprland is retained only as a
-> [fallback session](hyprland.md).
+> Niri is the compositor on every graphical machine: a scrollable-tiling
+> Wayland compositor where windows sit in columns on a horizontal strip.
+> One aspect, `den.aspects.niri`, holds the shared settings (named
+> workspaces, binds, window rules, idle lock); small per-machine aspects
+> add brightness keys and laptop suspend. The bar, overlays and lock
+> screen are the [garden shell](garden.md), driven from niri binds.
 
-## Why scrollable tiling, why channels
+**Goes on:** fern, yarrow, and the work laptop (through
+`niri-standalone`).
 
-Classic tiling forces a zero-sum fight over screen area: every new window
-shrinks the others. Niri's scrollable strip removes that pressure — a column
-takes the width it wants (half, three-quarters, full) and the strip simply
-grows. This suits a workflow of a few focused columns per activity rather
-than a mosaic of tiny tiles.
+## System side and the host-level import
 
-Activities map to five **named workspaces used as channels** — *studio*,
-*research*, *writing*, *music*, *system* — instead of anonymous numbers.
-`Super+1-5` focuses a channel, `Super+Shift+1-5` moves the focused window to
-one. Naming makes window rules stable (`open-on-workspace = "research"`) and
-keeps muscle memory tied to intent, not position.
+The aspect's `nixos` side enables `programs.niri`, turns on upower (the
+shell's battery indicator reads it), installs `xwayland-satellite` and
+`quickshell`, and adds the GNOME and GTK desktop portals.
 
-The configuration is a den aspect (`den.aspects.niri`,
-`modules/desktop/niri.nix`) with both a `nixos` and a `homeManager` side.
+`programs.niri.*` options come from
+[niri-flake](https://github.com/sodiboo/niri-flake), and its NixOS
+module must be imported exactly once per host. An aspect can be
+included more than once, so the import lives in the host aspect
+instead:
 
-## System side (nixos)
+- `modules/host-fern.nix` and `modules/host-yarrow.nix` each import
+  `inputs.niri.nixosModules.niri`, include `den.aspects.niri`, forward
+  it to their users through `provides.to-users.includes`, and set
+  `programs.niri.package = pkgs.niri` (the nixpkgs build).
+- For that reason niri is in neither the `workstation` role nor the
+  `desktop-apps` bundle. A new host that wants niri needs the import
+  and the include; see [Adding a host](../operations/adding-a-host.md).
+- A standalone home has no NixOS module to bridge the options.
+  `modules/desktop/niri-standalone.nix` imports niri-flake's Home
+  Manager module directly and includes the same `den.aspects.niri`, so
+  the work laptop gets identical settings.
 
-- `programs.niri.enable = true` — option provided by
-  [niri-flake](https://github.com/sodiboo/niri-flake); the package is pinned
-  to nixpkgs' `niri` in `host-fern.nix` (avoids a niri-flake fetchGit
-  evaluation issue).
-- `services.upower.enable` — battery/power state on D-Bus for the garden bar.
-- System packages: `xwayland-satellite` (XWayland) and
-  `quickshell` — quickshell lives here (not in greetd) because the garden
-  shell and its IPC binds belong to the niri session.
-- XDG portals: `xdg-desktop-portal-gnome` + `xdg-desktop-portal-gtk`.
+## Workspaces and startup
 
-### The host-level import gotcha
+Five named workspaces act as channels: `studio`, `research`, `writing`,
+`music`, `system`. Binds and window rules refer to them by name.
 
-The niri-flake NixOS module is imported **once at the host level**
-(`modules/host-fern.nix`), not inside the aspect — an upstream module
-imported from an aspect that gets included twice causes duplicate option
-declarations. Consequences:
+At startup niri spawns `xwayland-satellite`, the garden shell
+(`qs -c garden`), a kitty (placed on `research` by a window rule) and
+`kitty -e btop` (placed on `system`).
 
-- `den.aspects.niri` is deliberately **not** in the `desktop-apps` bundle or
-  the workstation role; its `homeManager` side sets `programs.niri.*`
-  options that only exist on hosts importing the niri-flake module.
-- Hosts opt in by importing the module *and* including the aspect; users get
-  it via the host's `provides.to-users` forwarding.
-- A new host that wants Niri needs both (see the troubleshooting note in
-  CLAUDE.md).
+## Layout
 
-## Session startup
+Gaps of 2 px, a 1 px border in the palette's `border` /
+`border-sub` colours, no focus ring. New columns take half the output;
+`Mod+R` cycles 50 %, 75 % and 100 %. The view centres the focused
+column only when it would otherwise overflow. Client-side decorations
+are declined, focus follows the mouse, and the touchpad uses tap,
+natural scroll and clickfinger.
 
-`spawn-at-startup` launches:
+## Keybinds
 
-- `xwayland-satellite` — X11 app support
-- `qs -c garden` — the **garden shell**; the IPC keybinds silently do
-  nothing without it (see [The Garden Design System](garden.md))
-- `kitty` (opens on *research*) and `kitty -e btop` (opens on *system*), via
-  `at-startup` window rules
+`Mod` is Super. All binds are in `modules/desktop/niri.nix` unless a
+row says otherwise.
 
-## Layout & keybinds
+| Bind | Action |
+| ---- | ------ |
+| `Mod+1` … `Mod+5` | focus channel studio / research / writing / music / system |
+| `Mod+Shift+1` … `Mod+Shift+5` | move the window to that channel |
+| `Mod+Shift+Tab` | focus the workspace above |
+| `Mod+H` / `Mod+L` | focus column left / right |
+| `Mod+J` / `Mod+K` | focus window down / up |
+| `Mod+Shift+H` / `L` | move column left / right |
+| `Mod+Shift+J` / `K` | move window down / up |
+| `Mod+WheelScrollUp` / `Down` | focus column left / right |
+| `Mod+BracketLeft` / `BracketRight` | consume or expel the window left / right |
+| `Mod+N` | spawn `kitty` |
+| `Mod+B` | spawn `zen-twilight` |
+| `Mod+Shift+Q` | close window |
+| `Mod+F` | maximize column |
+| `Mod+Shift+F` | fullscreen window |
+| `Mod+A` | toggle overview |
+| `Mod+R` | cycle preset column widths |
+| `Mod+Minus` / `Mod+Equal` | column width −10 % / +10 % |
+| `Mod+V` | toggle floating |
+| `XF86AudioRaiseVolume` / `LowerVolume` / `Mute` | `wpctl` on the default sink, ±5 %, capped at 100 % |
+| `XF86MonBrightnessUp` / `Down` | per machine, see [below](#per-machine) |
+| `Mod+Shift+E` | quit niri |
+| `Mod+Shift+Slash` | niri's hotkey overlay |
 
-Layout: 2px gaps, 1px borders in garden palette colors
-(`inputs.garden-shell.lib.palette.colors`), focus ring off, preset column
-widths of 50/75/100%, spring animations for workspace and view movement.
+These call the garden shell over QuickShell IPC
+(`qs -c garden ipc call garden <call>`). They do nothing when the shell
+is not running.
 
-| Binding | Action |
-|---------|--------|
-| `Super+H/L`, `Super+J/K` | Focus column left/right, window down/up |
-| `Super+Shift+H/L/J/K` | Move column/window |
-| `Super+WheelScroll` | Focus column left/right (25ms cooldown) |
-| `Super+N` / `Super+B` | Spawn kitty / firefox |
-| `Super+Shift+Q` | Close window |
-| `Super+F` / `Super+A` | Maximize column / toggle overview |
-| `Super+R`, `Super+Minus/Equal` | Preset / relative column widths |
-| `Super+V` | Toggle floating |
-| `Super+BracketLeft/Right` | Consume/expel window (tabbed columns) |
-| `Super+S` / `+Shift` / `+Ctrl` | Garden screenshot: region / window / output |
-| `XF86Audio*` | Volume via `wpctl` |
-| `XF86MonBrightness*` | Bound per host, not by the niri aspect. fern: `den.aspects.brightness-ddc` (garden OSD, then `ddcutil setvcp 10`) |
+| Bind | IPC call | Surface |
+| ---- | -------- | ------- |
+| `Mod+Slash` | `toggleLauncher` | launcher |
+| `Mod+Tab` | `toggleSwitcher` | switcher |
+| `Mod+Comma` | `toggleSettings` | settings, including the palette picker |
+| `Mod+Shift+N` | `toggleNotifications` | notification popups |
+| `Mod+Shift+M` | `toggleNotificationCenter` | notification centre |
+| `Mod+Escape` | `togglePowerMenu` | power menu |
+| `Mod+Alt+L` | `lock` | lock screen |
+| `Mod+S` | `screenshot region` | screenshot of a region |
+| `Mod+Shift+S` | `screenshot window` | screenshot of a window |
+| `Mod+Ctrl+S` | `screenshot output` | screenshot of an output |
 
-Screenshots land in `~/media/screenshots/` — `screenshot-path` is set
-explicitly because garden's window-mode screenshot
-(`niri msg action screenshot-window`) depends on it; the default would
-resurrect `~/Pictures/Screenshots`.
-
-The launcher, switcher, settings, notifications, power menu, and lock binds
-all drive the garden shell over QuickShell IPC — the full table is in
-[Garden § The shell](garden.md#the-shell-quickshell).
+Machines with the [wallpaper](wallpaper.md) aspect add `Mod+G`,
+`Mod+Shift+G` and `Mod+Ctrl+G`.
 
 ## Window rules
 
-- **Scratchpads float**: `garden` app-id, `scratchpad-terminal` title,
-  `lazygit` app-id.
-- **SSH host-tier borders**: terminal windows are color-coded by title so a
-  remote shell is identifiable at a glance — HPC login hosts get the urgent
-  red border, `dgx-*` GPU boxes get accent gold,
-  *homelab* gets ok green. Colors come from the garden palette, so tiers
-  stay consistent with the rest of the system.
+- Startup placement: the two startup kitty windows go to `research`
+  and `system`; Zen opens on `research` (the rule is in
+  `modules/desktop/zen.nix`).
+- Floating: app-id `garden`, title `scratchpad-terminal`, app-id
+  `lazygit`.
+- Full width: LibreOffice and Teams.
+- Terminal windows are colour-coded by remote host tier: a window whose
+  title matches a known host name gets an `urgent`, `accent` or `ok`
+  border from the palette.
 
-## Idle & Lock
+## Idle lock
 
-Locking is delegated to the garden shell rather than a standalone locker —
-one lock implementation (WlSessionLock + PAM, in garden-shell) serves the
-keybind, the idle timeout, and suspend:
+Locking belongs to the garden shell. The aspect enables `swayidle`,
+which calls the shell's `lock` IPC after 600 seconds idle and again on
+`before-sleep`, so the session is locked before the machine suspends.
+`Mod+Alt+L` makes the same call.
 
-- niri implements `ext-idle-notify-v1`; **swayidle** listens and, after
-  **600s** idle, calls `qs -c garden ipc call garden lock`.
-- swayidle's `before-sleep` event fires the same lock call while holding a
-  logind inhibitor, so the screen is locked *before* the machine suspends —
-  no unlocked-frame flash on resume.
-- Manual lock is `Super+Alt+L` (same IPC call).
+## Screenshots
 
-The old Hyprland-era hypridle/hyprlock setup survives only for the fallback
-session — see [Idle & Lock (Hyprland)](idle-and-lock.md).
+The `Mod+S` family hands off to the shell, which saves the image,
+copies it to the clipboard and shows a notification card. The shell
+calls `grim`, `slurp`, `satty` and `wl-clipboard`; `garden.shell`
+installs them, which covers yarrow and the work laptop. On fern they
+are installed by the `screenshot` aspect instead (see below).
 
-## Hyprland fallback
+`screenshot-path` is set to `~/media/screenshots/` for niri's built-in
+screenshot actions; the shell's window mode depends on it.
 
-Hyprland remains installed as a secondary greetd session for regression
-testing and as a safety net — see [Hyprland (Legacy Fallback)](hyprland.md).
+`den.aspects.screenshot` (`modules/desktop/screenshot.nix`) is Hyprland
+tooling only. It is in the `desktop-apps` bundle and the work layer,
+but everything in it is conditional on `desktop.hyprland.enable`, so it
+is active on fern alone; its binds are listed under
+[Hyprland](hyprland.md).
+
+## Greeter
+
+`den.aspects.greetd` (`modules/desktop/greetd.nix`, part of the
+`workstation` role) runs greetd with tuigreet, a text-mode greeter. It
+enables no compositor itself: the session list is built from whichever
+of `programs.niri.enable` and `programs.hyprland.enable` the host has
+set, Niri first. fern therefore offers Niri and Hyprland, yarrow only
+Niri. The work laptop does not use greetd.
+
+## Per machine
+
+| Machine | Additions |
+| ------- | --------- |
+| fern | `brightness-ddc`: brightness keys show the shell's OSD, then set the external monitors over DDC/CI with `ddcutil`. Its system side enables `hardware.i2c`. |
+| yarrow | `brightness-backlight`: brightness keys call `brightnessctl` on the panel backlight (never below 1 %); the shell shows its OSD by watching sysfs. `idle-suspend`: a second swayidle timeout suspends after 1200 seconds idle, only when no mains supply is online. |
+| work laptop | see below |
+
+The work laptop reuses the shared aspect and overrides it in its own
+layer: a longer channel table with applications pinned to channels and
+started on first visit, a fixed output arrangement for its dock, its
+own brightness keys, a `Mod+B` that goes to the browser channel, and
+both the lock bind and swayidle turned off. The session is started from
+the distribution's display manager. Details are in
+[Work laptop](../machines/work-laptop.md).
 
 ## Key files
 
 | File | Purpose |
-|------|---------|
-| `modules/desktop/niri.nix` | The niri aspect (nixos + homeManager sides) |
-| `modules/host-fern.nix` | niri-flake module import + aspect include + package pin |
-| `modules/desktop/greetd.nix` | Login sessions (Niri primary, Hyprland fallback) |
-| `modules/desktop/brightness-ddc.nix` | DDC/CI brightness keys, `hardware.i2c`, `ddcutil` (external monitors) |
-| `modules/users.nix` | `i2c` group membership when `hardware.i2c` is enabled |
+| ---- | ------- |
+| `modules/desktop/niri.nix` | the shared aspect: system side, settings, binds, swayidle |
+| `modules/desktop/niri-standalone.nix` | the same settings for a standalone home |
+| `modules/host-fern.nix`, `modules/host-yarrow.nix` | niri-flake import, include, forwarding, package |
+| `modules/desktop/brightness-ddc.nix` | DDC/CI brightness keys |
+| `modules/desktop/brightness-backlight.nix` | backlight brightness keys |
+| `modules/desktop/idle-suspend.nix` | suspend when idle on battery |
+| `modules/desktop/greetd.nix` | greeter and session list |
+| `modules/desktop/screenshot.nix` | Hyprland screenshot scripts |

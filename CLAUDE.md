@@ -13,13 +13,13 @@ Current machines:
 - **fern** — x86_64 desktop workstation (AMD, Niri/Hyprland, pro audio, dev)
 - **yarrow** — Framework Laptop 13 Pro (Intel): art, game dev and
   playtesting. hardware.nix is a placeholder until the machine is
-  installed; see book/src/operations/installing-yarrow.md
+  installed; see book/src/machines/installing-yarrow.md
 - **moss** — Apple Silicon laptop (Asahi) — parked: hardware.nix is still
   the installer placeholder and some aspects pull x86_64-only packages;
   see the comment in modules/hosts.nix
 - **work laptop** — Ubuntu 24.04, standalone home-manager only (the
   `den.homes` entry in modules/hosts.nix).
-  Niri + garden desktop via nixGL; see book/src/operations/work-laptop.md
+  Niri + garden desktop via nixGL; see book/src/machines/work-laptop.md
 
 Planned: homelab server, dedicated gaming machine. The `modules/roles/`
 layer exists so those become "hardware file + role + quirks".
@@ -68,7 +68,7 @@ fern/
 │   ├── user-ada-desktop.nix  # User desktop CORE layer (forwarded by GUI hosts)
 │   ├── user-ada-hyprland.nix # Hyprland fallback session layer (opt-in per host)
 │   ├── user-ada-dev.nix      # User dev-toolchain layer
-│   ├── roles/           # Host role bundles: workstation, laptop, server, dev-machine
+│   ├── roles/           # Host role bundles: workstation, laptop, dev-machine, homelab, server
 │   ├── boot.nix         # systemd-boot (UEFI x86 default); asahi/ has its own
 │   ├── cli/ desktop/ devtools/ git/ shells/ ...  # aspect modules by category
 │   └── */bundle.nix     # Category bundles (den.aspects.cli, devtools, …)
@@ -198,6 +198,20 @@ Common gotchas:
    hardware facts in host aspects, preferences in user layers
 3. Test incrementally; keep commits atomic; conventional commits
    (feat, fix, docs, refactor, …)
+
+### Keeping the book true
+
+The book (`book/src`) is organised so every fact has one home:
+
+- What a machine carries lives on its page in `book/src/machines/`.
+  Topic pages state `**Goes on:**` and link there; they do not list
+  hosts themselves.
+- Link to the code instead of pasting it. Quote only short, stable
+  fragments, copied exactly.
+- A new aspect gets a row in `book/src/reference/aspect-index.md`, and a
+  mention on the topic page it belongs to.
+- No employer or site-specific detail in the book: the work laptop is
+  described generically.
 
 ---
 

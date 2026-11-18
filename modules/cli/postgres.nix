@@ -3,7 +3,7 @@
 # psql, and the settings it reads at startup. Which databases to reach,
 # and the password for each, are NOT here: this repository is public, so
 # connection details live in two hand-made files on the machine that
-# needs them (see book/src/operations/work-laptop.md):
+# needs them (see book/src/machines/work-laptop.md):
 #
 #   ~/.pg_service.conf   named connections: host, port, dbname, user
 #   ~/.pgpass            passwords, mode 600

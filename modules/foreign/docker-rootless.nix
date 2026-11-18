@@ -9,7 +9,7 @@
 # (rootlesskit + slirp4netns already on its PATH).
 #
 # What must stay on the Ubuntu root side (see the one-time root checklist
-# in book/src/operations/work-laptop.md):
+# in book/src/machines/work-laptop.md):
 #   - setuid newuidmap/newgidmap — the Nix store cannot hold setuid
 #     binaries, so the service PATH falls through to the host: apt
 #     uidmap in /usr/bin, or (apt unreachable off the lab network)

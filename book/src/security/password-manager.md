@@ -1,53 +1,62 @@
-# Password Manager
+# Password manager
 
-> Bitwarden is the password manager: the desktop app for graphical use and
-> `rbw` for the terminal. The vault also plays a role in the sops age-key
-> recovery story.
+> Bitwarden is the password manager: the desktop application on the
+> graphical NixOS machines, and `rbw`, a command-line client with a
+> background agent, on every machine.
 
-## Desktop app
+**Goes on:** `rbw` on every host (fern, yarrow, the work laptop);
+`bitwarden` on fern and yarrow only.
 
-`den.aspects.bitwarden` (`modules/desktop/bitwarden.nix`) installs
-`bitwarden-desktop` as a Home Manager package. It is part of the
-`desktop-apps` bundle, so it arrives with the `ada-desktop` layer on
-graphical hosts only — headless hosts never pull a GUI vault.
+| Aspect      | File                            | Arrives through                      | Machines             |
+| ----------- | ------------------------------- | ------------------------------------ | -------------------- |
+| `rbw`       | `modules/cli/rbw.nix`           | the `cli` bundle, in the base user layer | all              |
+| `bitwarden` | `modules/desktop/bitwarden.nix` | the `desktop-apps` bundle, in `ada-desktop` | fern, yarrow  |
 
-## rbw (CLI)
+The work laptop does not take `ada-desktop`, so it has `rbw` and no
+desktop application.
 
-`den.aspects.rbw` (`modules/cli/rbw.nix`) configures
-[rbw](https://github.com/doy/rbw), an unofficial Bitwarden CLI client with a
-background agent (no re-typing the master password for every lookup). It is
-part of the `cli` bundle, so it is available on every host via the base user
-layer.
+## Desktop application: `bitwarden`
 
-Configuration notes:
+The home-manager side installs `bitwarden-desktop`.
 
-- `pinentry` is `pinentry-curses` — headless-safe, since rbw is invoked from
-  a terminal anyway
-- `base_url` is intentionally unset, which means the official
-  `vault.bitwarden.com`. When the homelab vaultwarden exists, pointing the
-  whole setup at it is a one-line change in `modules/cli/rbw.nix`
+The aspect also has a NixOS side: it adds one specific Electron version
+to `nixpkgs.config.permittedInsecurePackages`. The nixpkgs
+`bitwarden-desktop` package currently depends on an Electron release
+that is marked end-of-life, and evaluation refuses such packages unless
+they are permitted by name. Keeping the exception inside the aspect
+limits it to hosts that carry the application. The version string is
+pinned, so a nixpkgs update that moves the package to another Electron
+release needs the entry updated or removed.
 
-Typical usage:
+## Command line: `rbw`
+
+`programs.rbw` is enabled with these settings:
+
+| Setting    | Value             | Note                                          |
+| ---------- | ----------------- | --------------------------------------------- |
+| `email`    | the account email | set in the module                             |
+| `pinentry` | `pinentry-curses` | works without a graphical session; `rbw` is used from a terminal |
+| `base_url` | unset             | the official Bitwarden service; pointing at a self-hosted server later is one line here |
+
+Typical use:
 
 ```bash
-rbw login        # once per machine
-rbw unlock       # start an agent session
-rbw get <entry>  # print a password
-rbw generate 32  # generate and store a new password
+rbw login                  # once per machine
+rbw unlock                 # unlock the local database (starts the agent)
+rbw sync                   # refresh the local copy
+rbw get <entry>            # print an entry's password
+rbw generate 32            # print a new 32-character password
+rbw generate 32 <entry>    # the same, and save it as a new entry
 ```
 
-## Role in age-key recovery
-
-The sops [recovery procedures](sops-nix.md#recovery-procedures) depend on the
-admin age key (`~/.config/sops/age/keys.txt`) never being lost together with
-all registered hosts. The vault holds a copy of the admin age key as a secure
-note, giving an off-machine backup that survives full hardware loss: restore
-the key from Bitwarden, and every sops-encrypted secret is editable again.
+`rbw generate` only stores the password when it is given an entry name.
+See [rbw](https://github.com/doy/rbw) for the rest.
 
 ## Key files
 
-| File | Purpose |
-|------|---------|
-| `modules/desktop/bitwarden.nix` | Bitwarden desktop app (desktop-apps bundle) |
-| `modules/cli/rbw.nix` | rbw CLI client + agent (cli bundle) |
-| `book/src/security/sops-nix.md` | The recovery story the vault backs up |
+| File                            | Purpose                                      |
+| ------------------------------- | -------------------------------------------- |
+| `modules/desktop/bitwarden.nix` | Desktop application and the Electron permit  |
+| `modules/cli/rbw.nix`           | `rbw` client and agent settings              |
+| `modules/desktop/bundle.nix`    | Includes `bitwarden`                         |
+| `modules/cli/bundle.nix`        | Includes `rbw`                               |

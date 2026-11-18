@@ -9,7 +9,7 @@
 # /opt/google/chrome/chrome; a Nix-store Chrome would have neither and
 # would have to run --no-sandbox — fine for Teams, not for an enclave.
 # Install Chrome from Google's apt repo (root checklist in
-# book/src/operations/work-laptop.md); this aspect owns everything
+# book/src/machines/work-laptop.md); this aspect owns everything
 # around it.
 #
 # `repd` launches the system Chrome with its own user-data-dir and
