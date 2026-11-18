@@ -15,7 +15,7 @@
 | home | A `homeManager` (user) side only |
 | both | Both sides |
 | includes-only | No side of its own; it only includes other aspects |
-| `+ includes` | A side of its own and an `includes` list |
+| … + includes | A side of its own and an `includes` list |
 
 **Goes on** is worked out from the include graph (`modules/hosts.nix`,
 `modules/host-*.nix`, `modules/roles/`, the bundles and
@@ -248,12 +248,19 @@ imported from the garden-shell flake in `modules/garden.nix`; see
 batteries; see
 [Defaults, Core & Users](../architecture/defaults-core-users.md).
 
-## Regenerating this page
+## Keeping this page in step
 
-List every aspect name defined in the tree and compare with the tables:
+The `aspect-index` flake check (defined in `modules/docs.nix`, run by
+`just check`) compares this page with the evaluated `den.aspects`. It
+fails when an aspect has no row here, when a row names an aspect that
+no longer exists, or when an aspect has two rows. A row counts when its
+first cell is the aspect name alone, in backticks.
+
+To run only this check:
 
 ```bash
-grep -rhoE "den\.aspects\.[a-zA-Z0-9_-]+ *(=|\.(nixos|homeManager|includes))" \
-  modules --include='*.nix' --exclude-dir='_*' \
-  | sed -E 's/den\.aspects\.([a-zA-Z0-9_-]+).*/\1/' | sort -u
+nix build .#checks.x86_64-linux.aspect-index -L
 ```
+
+The check covers names only. Descriptions and the "Goes on" column are
+still maintained by hand.

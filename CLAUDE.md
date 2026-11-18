@@ -209,7 +209,9 @@ The book (`book/src`) is organised so every fact has one home:
 - Link to the code instead of pasting it. Quote only short, stable
   fragments, copied exactly.
 - A new aspect gets a row in `book/src/reference/aspect-index.md`, and a
-  mention on the topic page it belongs to.
+  mention on the topic page it belongs to. `just check` fails without
+  the row (the `aspect-index` check in modules/docs.nix); removing or
+  renaming an aspect needs its row updated too.
 - No employer or site-specific detail in the book: the work laptop is
   described generically.
 

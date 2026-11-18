@@ -142,15 +142,19 @@ patterns in [Aspects & Composition](../architecture/aspects.md):
 
 ## 5. Check, test, commit
 
+First add a row for the new aspect to the
+[Aspect Index](../reference/aspect-index.md). `just check` fails
+without it: the `aspect-index` check compares that page with the
+aspects the flake defines.
+
 ```bash
 just fmt
 just check
 just test
 ```
 
-Then add a row for the new aspect to the
-[Aspect Index](../reference/aspect-index.md), and commit with a
-conventional-commit message (`feat: add my-tool aspect`).
+Then commit with a conventional-commit message
+(`feat: add my-tool aspect`).
 
 ## Adding a bundle
 

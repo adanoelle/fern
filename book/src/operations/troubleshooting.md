@@ -18,6 +18,7 @@
 | The greeter shows no session to pick | [greetd has no sessions](#greetd-offers-no-session) |
 | `Package 'electron-...' is marked as insecure, refusing to evaluate` | [Insecure electron](#insecure-electron-refuses-to-evaluate) |
 | `just deadnix` flags an unused `den` | [Lint failures](#lint-failures) |
+| `just check` fails in `aspect-index-check` | [Lint failures](#lint-failures) |
 | The system is broken after a switch | [Getting back](#getting-back-to-a-working-system) |
 
 ## Start here
@@ -163,6 +164,7 @@ the entry removed, delete the permit.
 | Message | Cause | Fix |
 | --- | --- | --- |
 | deadnix: unused lambda pattern `den` | Module header `{ den, ... }:` on an aspect with no `includes` | Use `_:` |
+| `aspect-index-check`: "Aspects with no row…" or "Rows … that name no existing aspect" | An aspect was added, removed or renamed without updating the book | Edit the rows in `book/src/reference/aspect-index.md`; see [Aspect Index](../reference/aspect-index.md#keeping-this-page-in-step) |
 | deadnix reports a `hosts/*/hardware.nix` | New host's generated file is not excluded | Add it to the `deadnix` recipe's `--exclude` list in the `justfile` |
 
 ## Finding what sets something
