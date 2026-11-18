@@ -13,9 +13,6 @@ host is one line: put `den.aspects.wallpaper` in that host's
 needs a host that carries the niri module, like the other
 [niri add-ons](niri.md#per-machine)).
 
-The Hyprland fallback session has its own, unrelated wallpaper
-mechanism; see [Hyprland](hyprland.md).
-
 ## Studies and palettes
 
 `modules/desktop/wallpaper.nix` is only the mechanism. Each study is one

@@ -10,7 +10,7 @@ Configuration is expressed as **den aspects** composed onto hosts and users.
 
 Current machines:
 
-- **fern** — x86_64 desktop workstation (AMD, Niri/Hyprland, pro audio, dev)
+- **fern** — x86_64 desktop workstation (AMD, Niri, pro audio, dev)
 - **yarrow** — Framework Laptop 13 Pro (Intel): art, game dev and
   playtesting. hardware.nix is a placeholder until the machine is
   installed; see book/src/machines/installing-yarrow.md
@@ -66,7 +66,6 @@ fern/
 │   ├── host-yarrow.nix  # Host aspect for the Framework laptop
 │   ├── user-ada.nix     # User BASE layer (safe on any host, even headless)
 │   ├── user-ada-desktop.nix  # User desktop CORE layer (forwarded by GUI hosts)
-│   ├── user-ada-hyprland.nix # Hyprland fallback session layer (opt-in per host)
 │   ├── user-ada-dev.nix      # User dev-toolchain layer
 │   ├── roles/           # Host role bundles: workstation, laptop, dev-machine, homelab, server
 │   ├── boot.nix         # systemd-boot (UEFI x86 default); asahi/ has its own
@@ -96,7 +95,7 @@ Every unit of configuration is an aspect with optional per-class sides:
 
 New module = new file under `modules/` — import-tree picks it up
 automatically. Paths with a `_`-prefixed component (e.g.
-`desktop/_hyprland/`) are NOT auto-imported; they're helpers imported
+`cli/_presenterm/`) are NOT auto-imported; they're helpers imported
 explicitly by a parent module.
 
 ### Topology and layering
@@ -112,7 +111,7 @@ explicitly by a parent module.
   `ada-desktop`, `ada-dev` (forwarded per-host). Keep it that way:
   never add GUI or toolchain config to the base layer.
 - `ada-desktop` is the desktop CORE only. Anything a laptop might not
-  want is its own layer that a host forwards explicitly: `ada-hyprland`,
+  want is its own layer that a host forwards explicitly:
   `music`, `obs`, `gaming-hm`, `gamedev`, `brightness-ddc` (see
   host-fern.nix). New optional desktop features follow that pattern
   rather than joining `desktop-apps`.
@@ -163,7 +162,7 @@ explicitly by a parent module.
 
 ## Key Technologies
 
-- **Compositor**: Niri (primary), Hyprland (fallback session)
+- **Compositor**: Niri
 - **Greeter**: greetd + tuigreet (regreet removed — GPU corruption)
 - **Shell**: Fish (system) / Nushell; **Editor**: Helix; **Terminal**: Ghostty/Kitty
 - **Theming**: garden-shell palette (`garden.terminal` aspect namespace)

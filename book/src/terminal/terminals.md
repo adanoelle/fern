@@ -2,8 +2,8 @@
 
 > Kitty is the everyday terminal: the Niri session opens it, it starts
 > fish, and its colours follow the garden palette at run time. Ghostty is
-> installed alongside it with its own keybindings; it is the terminal of
-> the Hyprland fallback session and the default window for presentations.
+> installed alongside it with its own keybindings; it is the default
+> window for presentations.
 > Both come from the `cli` bundle, which also installs the editors and
 > command-line tools listed at the end of this page.
 
@@ -39,9 +39,8 @@ directories together, so programs find either terminal's entry.
 
 ## Ghostty
 
-`modules/cli/ghostty.nix`. It is the `Super+Return` terminal of the
-[Hyprland fallback session](../desktop/hyprland.md) and what
-[`present`](presenterm.md) opens by default.
+`modules/cli/ghostty.nix`. It is what [`present`](presenterm.md) opens
+by default.
 
 | Setting | Value |
 |---|---|
@@ -123,4 +122,3 @@ in this bundle; they are included by the layers that need them.
 | `modules/cli/tmux.nix` | tmux prefix and bindings |
 | `modules/cli/helix.nix`, `modules/cli/kakoune.nix` | editors |
 | `modules/desktop/niri.nix` | spawns kitty |
-| `modules/desktop/hyprland.nix` | Ghostty as the fallback session's terminal |

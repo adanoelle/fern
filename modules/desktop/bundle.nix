@@ -1,8 +1,9 @@
 # modules/desktop/bundle.nix — core desktop applications bundle
 #
-# What every graphical machine wants. Compositor sessions, streaming,
-# gaming and music are separate opt-in layers that hosts forward to
-# their users (see host-fern.nix).
+# What every graphical machine wants. Streaming, gaming and music are
+# separate opt-in layers that hosts forward to their users (see
+# host-fern.nix). The screenshot tools are not here either: garden.shell
+# brings them, and fern forwards the screenshot aspect instead.
 #
 # NOTE: den.aspects.niri is deliberately NOT in this bundle. Its
 # homeManager side defines programs.niri.* options that only exist on
@@ -14,7 +15,6 @@
     includes = [
       den.aspects.zen
       den.aspects.chromium
-      den.aspects.screenshot
       den.aspects.imv
       den.aspects.pdf
       den.aspects.bitwarden

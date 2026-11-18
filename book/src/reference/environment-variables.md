@@ -56,7 +56,7 @@ hosts, including ones that do not expect linker flags in `CFLAGS`.
 | --- | --- | --- | --- |
 | `EDITOR`, `VISUAL` | `hx` | `programs.helix.defaultEditor` in `modules/cli/helix.nix` | every machine |
 | `MANPAGER` | `sh -c 'col -bx \| bat -l man -p'` | `modules/cli/bat.nix` | every machine |
-| `TERMINFO_DIRS` | Kitty's and Ghostty's terminfo directories | `modules/cli/kitty.nix` (forced; overrides the value in `modules/desktop/hyprland.nix`) | every machine |
+| `TERMINFO_DIRS` | Kitty's and Ghostty's terminfo directories | `modules/cli/kitty.nix` (forced) | every machine |
 | `SOPS_AGE_KEY_FILE` | `$HOME/.config/sops/age/keys.txt` | `modules/shells/nushell.nix` (a session variable, not a Nushell one) | every machine |
 | `RUST_SRC_PATH` | Standard library source of the stable toolchain | `modules/devtools/rust.nix` | every machine |
 | `CMAKE_PREFIX_PATH`, `PKG_CONFIG_PATH` | Store paths of the game libraries | `modules/devtools/gamedev.nix` | every machine |

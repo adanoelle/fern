@@ -130,15 +130,12 @@ On a fresh install the host key has to be created before the first
 
 ## greetd offers no session
 
-**Cause.** `modules/desktop/greetd.nix` builds tuigreet's session list
-from the compositors the host has enabled (`programs.niri.enable`,
-`programs.hyprland.enable`). With neither enabled the list is empty.
-The `workstation` role does not enable a compositor.
+**Cause.** `modules/desktop/greetd.nix` offers the Niri session only
+when the host has set `programs.niri.enable`. Without it the list is
+empty. The `workstation` role does not enable a compositor.
 
 **Fix.** The host aspect must include `den.aspects.niri` (and import
-the niri-flake module). For the Hyprland fallback the host sets
-`programs.hyprland.enable = true;` and forwards
-`den.aspects.ada-hyprland`. Check what the greeter was given:
+the niri-flake module). Check what the greeter was given:
 
 ```bash
 nix eval --raw .#nixosConfigurations.yarrow.config.services.greetd.settings.default_session.command

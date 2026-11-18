@@ -22,7 +22,6 @@
 - [The Garden Shell](desktop/garden.md)
 - [Niri](desktop/niri.md)
 - [Wallpaper & Studies](desktop/wallpaper.md)
-- [Hyprland (fallback session)](desktop/hyprland.md)
 - [Browsers](desktop/browsers.md)
 - [Mail](desktop/mail.md)
 - [Shells](terminal/shells.md)

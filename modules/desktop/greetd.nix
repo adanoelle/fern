@@ -1,9 +1,8 @@
 # modules/desktop/greetd.nix — greetd + tuigreet session launcher
 #
 # tuigreet is a TTY greeter, so it can't hit GPU-specific rendering bugs
-# (regreet corrupted on fern's Granite Ridge iGPU). Session entries are
-# offered only for compositors the host actually enables; Niri is listed
-# first so it is the default choice.
+# (regreet corrupted on fern's Granite Ridge iGPU). The Niri session
+# entry is offered only when the host enables Niri.
 _: {
   den.aspects.greetd.nixos =
     {
@@ -19,16 +18,7 @@ _: {
         Exec=niri-session
         Type=Application
       '';
-      hyprlandSession = pkgs.writeTextDir "share/wayland-sessions/hyprland.desktop" ''
-        [Desktop Entry]
-        Name=Hyprland
-        Exec=Hyprland
-        Type=Application
-      '';
-      sessionDirs = lib.concatStringsSep ":" (
-        lib.optional config.programs.niri.enable "${niriSession}/share/wayland-sessions"
-        ++ lib.optional config.programs.hyprland.enable "${hyprlandSession}/share/wayland-sessions"
-      );
+      sessionDirs = lib.optionalString config.programs.niri.enable "${niriSession}/share/wayland-sessions";
     in
     {
       services.greetd = {
@@ -55,10 +45,7 @@ _: {
       # host-fern.nix) and the session list above follows what they chose.
       xdg.portal = {
         enable = true;
-        extraPortals = [
-          pkgs.xdg-desktop-portal-gtk
-        ]
-        ++ lib.optional config.programs.hyprland.enable pkgs.xdg-desktop-portal-hyprland;
+        extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
       };
 
       security.polkit.enable = true;

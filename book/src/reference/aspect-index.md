@@ -38,7 +38,7 @@ and is not counted; aspects that only it uses are marked.
 
 | Aspect | File | Side(s) | Description | Goes on |
 | --- | --- | --- | --- | --- |
-| `fern` | `modules/host-fern.nix` | nixos + includes | Desktop workstation: roles, forwarded user layers, zen kernel, studio-interface udev rules, Hyprland enablement | fern |
+| `fern` | `modules/host-fern.nix` | nixos + includes | Desktop workstation: roles, forwarded user layers, zen kernel, studio-interface udev rules | fern |
 | `yarrow` | `modules/host-yarrow.nix` | nixos + includes | Framework laptop: roles, forwarded user layers, nixos-hardware module, latest kernel | yarrow |
 | `moss` | `modules/host-moss.nix` | nixos + includes | Apple Silicon laptop, composed by hand without the workstation role | moss (parked) |
 
@@ -49,7 +49,6 @@ and is not counted; aspects that only it uses are marked.
 | `ada` | `modules/user-ada.nix` | home + includes | Base layer: the `cli`, `git-suite`, `shells` and `workspace` aspects, git identities, SSH client and agent | every machine |
 | `ada-desktop` | `modules/user-ada-desktop.nix` | includes-only | Desktop layer: `desktop-apps` and the garden terminal stack | fern (yarrow takes `desktop-apps` and `garden.shell` directly) |
 | `ada-dev` | `modules/user-ada-dev.nix` | includes-only | Development layer: the `devtools` bundle | every machine |
-| `ada-hyprland` | `modules/user-ada-hyprland.nix` | home + includes | Hyprland fallback session and its settings | fern |
 | `ada-work` | `modules/user-ada-work.nix` | home + includes | Work-laptop layer: standalone niri and garden desktop, work applications and data tools, output layout, channel bindings | work laptop |
 
 ## Roles
@@ -96,7 +95,7 @@ and is not counted; aspects that only it uses are marked.
 | `gaming` | `modules/gaming.nix` | nixos | Steam, GameScope, GameMode, controller support | fern, yarrow |
 | `aws-cli` | `modules/cloud/aws-cli.nix` | nixos | AWS CLI and infrastructure tooling | fern, yarrow |
 | `boot-asahi` | `modules/asahi/boot.nix` | nixos | Apple Silicon bootloader settings | moss (parked) |
-| `graphics-asahi` | `modules/asahi/graphics.nix` | nixos | Apple Silicon graphics; enables Hyprland | moss (parked) |
+| `graphics-asahi` | `modules/asahi/graphics.nix` | nixos | Apple Silicon graphics diagnostics (`mesa-demos`, `vulkan-tools`) | moss (parked) |
 
 ## User aspects: home layout
 
@@ -180,7 +179,6 @@ All in the `git-suite` bundle.
 | Aspect | File | Side(s) | Description | Goes on |
 | --- | --- | --- | --- | --- |
 | `niri` | `modules/desktop/niri.nix` | both | Niri: system enablement and portals; bindings, channels, idle and lock on the home side | fern, yarrow (both sides); work laptop (home side, through `niri-standalone`) |
-| `hyprland` | `modules/desktop/hyprland.nix` | home | Hyprland session, declared as `desktop.hyprland` options | fern (through `ada-hyprland`) |
 | `brightness-ddc` | `modules/desktop/brightness-ddc.nix` | both | Brightness keys over DDC/CI for external monitors | fern |
 | `brightness-backlight` | `modules/desktop/brightness-backlight.nix` | home | Brightness keys for a built-in panel | yarrow |
 | `idle-suspend` | `modules/desktop/idle-suspend.nix` | home | Suspend when idle on battery | yarrow |
@@ -188,7 +186,7 @@ All in the `git-suite` bundle.
 | `zen` | `modules/desktop/zen.nix` | home | Zen browser as the default browser | every machine |
 | `chromium` | `modules/desktop/chromium.nix` | home | ungoogled-chromium with Wayland flags | fern, yarrow |
 | `bitwarden` | `modules/desktop/bitwarden.nix` | both | Bitwarden desktop; permits its end-of-life electron | fern, yarrow |
-| `screenshot` | `modules/desktop/screenshot.nix` | home | Screenshot tools and capture scripts for the Hyprland session | included on every machine; has an effect only on fern, where the Hyprland layer is enabled |
+| `screenshot` | `modules/desktop/screenshot.nix` | home | Capture tools (`grim`, `slurp`, `satty`, `wl-clipboard`) and satty defaults for the garden shell's screenshot flow, on hosts without `garden.shell` | fern |
 | `imv` | `modules/desktop/imv.nix` | home | imv as the default image viewer | every machine |
 | `pdf` | `modules/desktop/pdf.nix` | home | PDF viewer, manipulation and signing tools | every machine |
 | `obsidian` | `modules/desktop/obsidian.nix` | home | Obsidian with the garden CSS snippet | work laptop |
@@ -198,8 +196,7 @@ All in the `git-suite` bundle.
 | `art` | `modules/desktop/art.nix` | home | Painting, pixel art, vector and photo tools | yarrow |
 | `gaming-hm` | `modules/desktop/gaming-hm.nix` | home | MangoHud, Lutris, Proton helpers | fern, yarrow |
 
-`desktop-apps` holds `zen`, `chromium`, `screenshot`, `imv`, `pdf` and
-`bitwarden`. The rest are forwarded per host or included by the work
+`desktop-apps` holds `zen`, `chromium`, `imv`, `pdf` and `bitwarden`. The rest are forwarded per host or included by the work
 layer.
 
 ## User aspects: development

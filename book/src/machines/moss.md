@@ -30,24 +30,25 @@ aspect list and does not use the `workstation` role.
 | Part | Contents |
 | --- | --- |
 | Host includes | `boot-asahi`, `core`, `docker`, `users`, `audio`, `graphics-asahi`, `greetd`, `secrets`, `secrets-guard` |
-| Forwarded user layers | `ada-desktop`, `ada-dev`, `ada-hyprland` |
+| Forwarded user layers | `ada-desktop`, `ada-dev` |
 | Imports | `hosts/moss/hardware.nix` and the `apple-silicon-support` module from the `nixos-apple-silicon` flake input |
 | `system.stateVersion` | `"25.11"` |
 
 Compared with the `workstation` role it lacks `nh`, `fonts` and
 `bluetooth`. It does not include `niri` or import the niri-flake
-module, so its only session would be Hyprland.
+module, so as written it has no graphical session: it used the
+Hyprland session, which has been removed from this flake.
 
 The two Asahi aspects are in `modules/asahi/`:
 
 | Aspect | File | What it sets |
 | --- | --- | --- |
 | `boot-asahi` | `boot.nix` | systemd-boot with `canTouchEfiVariables = false` |
-| `graphics-asahi` | `graphics.nix` | `programs.hyprland.enable`, plus `mesa-demos` and `vulkan-tools` |
+| `graphics-asahi` | `graphics.nix` | `mesa-demos` and `vulkan-tools` |
 
 `graphics-asahi` no longer sets any Asahi GPU driver options: the
-driver is in mainline Mesa, so only the Hyprland switch and the two
-diagnostic packages remain.
+driver is in mainline Mesa, so only the two diagnostic packages
+remain.
 
 ## What re-enabling it would take
 
@@ -60,9 +61,10 @@ diagnostic packages remain.
 4. Register the host key as a sops recipient before the first build
    (`.sops.yaml` has a commented `host_moss` line); see
    [sops-nix](../security/sops-nix.md).
-5. Decide whether it should move to the `workstation` role and Niri
-   like the other machines; see
-   [Adding a host](../operations/adding-a-host.md).
+5. Give it a session: import the niri-flake module and forward `niri`
+   (and `garden.shell` or `screenshot`), as `modules/host-yarrow.nix`
+   does. Moving it to the `workstation` role at the same time is the
+   simpler route; see [Adding a host](../operations/adding-a-host.md).
 
 ## Key files
 
