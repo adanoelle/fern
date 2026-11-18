@@ -100,7 +100,7 @@ compositor:
 | `btop` | `garden` colour theme, transparent background, vim keys, process tree sorted by CPU. |
 | `fzf` | Fish integration (key bindings). Colours come from the garden theme. |
 | `broot` | Non-modal, git status shown, an `edit` verb that opens `$EDITOR`; nushell integration (`br`). |
-| `eza` | Icons, git column, directories first; the `l`/`la`/`lt`/`ll` fish abbreviations ([Shells](shells.md)). |
+| `eza` | Icons, git column, directories first; the `l`/`la`/`lt`/`ll` listings in every shell ([Shells](shells.md)). |
 | `bat` | Package, plus `MANPAGER` so man pages are rendered through bat. |
 | `prettier` | Package and `~/.prettierrc` (80 columns, prose wrap always, no semicolons, single quotes); nushell alias `mdfmt`. |
 | `hyfetch` | fastfetch backend with a pride-flag preset. |

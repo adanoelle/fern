@@ -101,7 +101,7 @@ what lands in history.
 | Source | Abbreviations |
 |---|---|
 | `modules/shells/fish.nix` | git: `g ga gaa gc gcm gco gp gl gd gds gg gst gstp`, taken from the shared shell aliases |
-| `modules/cli/eza.nix` | `l` `la` `lt` `ll` (eza listings) |
+| `modules/cli/eza.nix` | `l` `la` `lt` `ll` (eza listings); the same four are aliases in bash and zsh |
 
 `eza.nix` also enables `programs.eza` with icons, git status and
 directories first, which aliases plain `eza` to carry those flags. `bat`
@@ -154,8 +154,9 @@ For that reason `dotDir` is pinned to the home directory, so the file
 stays at `~/.zshrc`. It sets vi mode (with backspace, `Ctrl-W`,
 `Ctrl-L`, `Ctrl-R` restored), menu completion, shared history of 50000
 entries, a two-line `✧` prompt built on `vcs_info`, the `y` yazi
-wrapper, and a block of integrations (eza aliases, bat man pager,
-zoxide, fzf, direnv) each guarded by `command -v`, so they are skipped
+wrapper, and a block of integrations (bat man pager, zoxide, fzf,
+direnv, and the eza aliases added by `modules/cli/eza.nix`) each
+guarded by `command -v`, so they are skipped
 where the tool is missing. Autosuggestions and syntax highlighting are
 off.
 
@@ -196,5 +197,5 @@ match; `zi` picks interactively. `cd` is not replaced.
 | `modules/shells/starship.nix` | starship settings |
 | `modules/shells/zoxide.nix` | zoxide integration |
 | `modules/shells/devenv.nix` | devenv package |
-| `modules/cli/eza.nix`, `modules/cli/bat.nix` | listing abbreviations, man pager |
+| `modules/cli/eza.nix`, `modules/cli/bat.nix` | listing aliases and abbreviations, man pager |
 | `modules/users.nix` | login shell on NixOS hosts |
