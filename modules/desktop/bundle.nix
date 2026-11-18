@@ -1,4 +1,8 @@
-# modules/desktop/bundle.nix — desktop applications bundle
+# modules/desktop/bundle.nix — core desktop applications bundle
+#
+# What every graphical machine wants. Compositor sessions, streaming,
+# gaming and music are separate opt-in layers that hosts forward to
+# their users (see host-fern.nix).
 #
 # NOTE: den.aspects.niri is deliberately NOT in this bundle. Its
 # homeManager side defines programs.niri.* options that only exist on
@@ -8,14 +12,11 @@
 {
   den.aspects.desktop-apps = {
     includes = [
-      den.aspects.hyprland
       den.aspects.zen
       den.aspects.chromium
-      den.aspects.obs
       den.aspects.screenshot
       den.aspects.imv
       den.aspects.pdf
-      den.aspects.gaming-hm
       den.aspects.bitwarden
     ];
   };

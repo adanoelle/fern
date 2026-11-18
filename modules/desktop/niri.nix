@@ -14,18 +14,14 @@ in
       {
         programs.niri.enable = true;
 
-        # DDC/CI monitor brightness control (requires i2c-dev + i2c group)
-        hardware.i2c.enable = true;
-
         # Battery/power state on D-Bus for the garden bar (Phase E)
         services.upower.enable = true;
 
-        # XWayland support via xwayland-satellite + DDC/CI tool.
+        # XWayland support via xwayland-satellite.
         # quickshell lives here (not in greetd): the garden shell and its
         # IPC binds below belong to the niri session.
         environment.systemPackages = with pkgs; [
           xwayland-satellite
-          ddcutil
           quickshell
         ];
 
@@ -262,19 +258,8 @@ in
                 "toggle"
               ];
 
-              # Brightness — DDC/CI via ddcutil (external monitor, no sysfs
-              # backlight). The IPC call first shows the garden OSD
-              # optimistically (ddcutil takes ~200ms and the poll is 3s).
-              "XF86MonBrightnessUp".action.spawn = [
-                "sh"
-                "-c"
-                "${qs} -c garden ipc call garden stepBrightnessOsd 5; exec ddcutil setvcp 10 + 5"
-              ];
-              "XF86MonBrightnessDown".action.spawn = [
-                "sh"
-                "-c"
-                "${qs} -c garden ipc call garden stepBrightnessOsd -5; exec ddcutil setvcp 10 - 5"
-              ];
+              # Brightness keys are bound per host: den.aspects.brightness-ddc
+              # for external monitors, a backlight aspect for laptop panels.
 
               # Garden shell overlays
               "${mod}+Slash".action.spawn = [

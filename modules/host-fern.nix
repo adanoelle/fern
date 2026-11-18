@@ -27,6 +27,15 @@
       den.aspects.ada-desktop
       den.aspects.ada-dev
       den.aspects.niri
+      # External monitors: brightness keys go through DDC/CI
+      den.aspects.brightness-ddc
+      # Fallback compositor session (programs.hyprland is enabled below)
+      den.aspects.ada-hyprland
+      # Workstation extras
+      den.aspects.obs
+      den.aspects.gaming-hm
+      den.aspects.music
+      den.aspects.gamedev
     ];
 
     nixos =

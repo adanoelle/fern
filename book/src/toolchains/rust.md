@@ -1,7 +1,6 @@
 # Rust
 
-> Stable Rust toolchain with rust-analyzer, cargo-audit, cargo-deny, and
-> hardening flags applied via RUSTFLAGS.
+> Stable Rust toolchain with rust-analyzer, cargo-audit and cargo-deny.
 
 ## Overview
 
@@ -16,9 +15,7 @@ The Rust aspect (`modules/devtools/rust.nix`) installs:
 
 | Package                          | Purpose                                 |
 | -------------------------------- | --------------------------------------- |
-| `rust-bin.stable.latest.default` | Stable Rust compiler + cargo            |
-| `rust-bin.stable.latest.clippy`  | Linter                                  |
-| `rust-bin.stable.latest.rustfmt` | Formatter                               |
+| `rust-bin.stable.latest.default` | Stable compiler, cargo, clippy, rustfmt; overridden to add `rust-src` |
 | `rust-analyzer`                  | Language server                         |
 | `cargo-audit`                    | Dependency vulnerability scanner        |
 | `cargo-deny`                     | Dependency license and advisory checker |
@@ -26,14 +23,18 @@ The Rust aspect (`modules/devtools/rust.nix`) installs:
 ### Environment variables
 
 ```bash
-RUSTFLAGS="-C link-args=-Wl,-z,relro,-z,now -C opt-level=z -C target-cpu=native"
-RUST_SRC_PATH="<nix-store>/lib/rustlib/src/rust/library"
+RUST_SRC_PATH="<toolchain>/lib/rustlib/src/rust/library"
 ```
 
-- **`-Wl,-z,relro,-z,now`** -- Full RELRO for hardened binaries
-- **`-C opt-level=z`** -- Optimize for binary size
-- **`-C target-cpu=native`** -- Use host CPU features
-- **`RUST_SRC_PATH`** -- Points rust-analyzer to standard library sources
+`RUST_SRC_PATH` points rust-analyzer at the standard library sources, which
+come from the `rust-src` component added to the toolchain.
+
+There is deliberately **no global `RUSTFLAGS`**. An environment `RUSTFLAGS`
+replaces every project's own `.cargo/config.toml` rustflags, and the flags
+that used to be set here caused real problems: `opt-level=z` overrode release
+profiles, `target-cpu=native` produced binaries tied to the build machine's
+CPU, and a GNU-ld link argument broke targets such as `wasm32`. Put hardening
+or tuning flags in the project's own cargo config.
 
 ## Helix integration
 
@@ -45,7 +46,7 @@ disabled in Helix for Rust files -- use `cargo fmt` manually.
 
 | File                        | Purpose                                      |
 | --------------------------- | -------------------------------------------- |
-| `modules/devtools/rust.nix` | Rust toolchain, env vars, hardening          |
+| `modules/devtools/rust.nix` | Rust toolchain and `RUST_SRC_PATH`           |
 | `modules/cli/helix.nix`    | Helix Rust language config (auto-format off) |
 | `flake.nix`                 | `rust-overlay` input                         |
 | `modules/core.nix`          | Rust overlay applied to pkgs                 |

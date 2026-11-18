@@ -10,7 +10,7 @@
 | -------------- | -------------------------------- | ---- | ------------------------------- |
 | `audio`        | `modules/audio/audio.nix`        | nixos | every graphical host (via the `workstation` role) |
 | `audio-studio` | `modules/audio/audio-studio.nix` | nixos | mains-powered recording machines (fern) |
-| `music`        | `modules/audio/music.nix`        | home  | hosts where music is made (via `ada-desktop`) |
+| `music`        | `modules/audio/music.nix`        | home  | hosts where music is made (fern forwards it to its users) |
 | device rules   | `modules/host-*.nix`             | nixos | the host that owns the hardware |
 
 A laptop takes `audio` only. Adding `audio-studio` or `music` later is a
@@ -79,7 +79,7 @@ devices session priority 2000 so they are chosen over built-in audio.
 
 A home-manager layer bundling the DAWs (`daw`: Ardour, REAPER) and the
 plugin and synth collection (`audio-tools`). It is included by the
-`ada-desktop` user layer.
+user-layer list in `host-fern.nix`; other hosts opt in the same way.
 
 ## Key files
 

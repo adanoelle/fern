@@ -9,7 +9,6 @@ Set by `modules/devtools/rust.nix`:
 
 | Variable        | Value                                                                  | Purpose                                   |
 | --------------- | ---------------------------------------------------------------------- | ----------------------------------------- |
-| `RUSTFLAGS`     | `-C link-args=-Wl,-z,relro,-z,now -C opt-level=z -C target-cpu=native` | Hardening and optimization flags          |
 | `RUST_SRC_PATH` | `<nix-store>/lib/rustlib/src/rust/library`                             | Standard library source for rust-analyzer |
 
 ## C / C++

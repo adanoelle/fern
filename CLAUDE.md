@@ -60,7 +60,8 @@ fern/
 │   ├── host-fern.nix    # Host aspect: roles + user layers + hardware quirks
 │   ├── host-moss.nix    # Host aspect for the Asahi laptop
 │   ├── user-ada.nix     # User BASE layer (safe on any host, even headless)
-│   ├── user-ada-desktop.nix  # User desktop layer (forwarded by GUI hosts)
+│   ├── user-ada-desktop.nix  # User desktop CORE layer (forwarded by GUI hosts)
+│   ├── user-ada-hyprland.nix # Hyprland fallback session layer (opt-in per host)
 │   ├── user-ada-dev.nix      # User dev-toolchain layer
 │   ├── roles/           # Host role bundles: workstation, server, dev-machine
 │   ├── boot.nix         # systemd-boot (UEFI x86 default); asahi/ has its own
@@ -105,6 +106,11 @@ explicitly by a parent module.
 - User aspects are layered: `ada` (base, machine-agnostic) ←
   `ada-desktop`, `ada-dev` (forwarded per-host). Keep it that way:
   never add GUI or toolchain config to the base layer.
+- `ada-desktop` is the desktop CORE only. Anything a laptop might not
+  want is its own layer that a host forwards explicitly: `ada-hyprland`,
+  `music`, `obs`, `gaming-hm`, `gamedev`, `brightness-ddc` (see
+  host-fern.nix). New optional desktop features follow that pattern
+  rather than joining `desktop-apps`.
 - Fleet-wide defaults live in `core.nix` with `lib.mkDefault` so hosts
   can override; per-machine facts (kernel, udev rules, sensors chip)
   live in the host aspect.

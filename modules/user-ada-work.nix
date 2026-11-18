@@ -30,6 +30,10 @@
       # kept so this host is unchanged by the audio split. Drop when the
       # work-machine setup is revisited.
       den.aspects.audio-tools
+      # Game-development libraries and tools used to arrive through the
+      # devtools bundle; kept so this host is unchanged now that gamedev
+      # is opt-in per host.
+      den.aspects.gamedev
       # Browsers: Zen is the daily driver; Chrome (system apt package,
       # isolated profile) is for the REPD enclave portal only.
       den.aspects.zen

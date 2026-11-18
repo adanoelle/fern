@@ -10,7 +10,6 @@
       den.aspects.python
       den.aspects.ada-lang
       den.aspects.zig
-      den.aspects.gamedev
       den.aspects.vm-host
     ];
   };

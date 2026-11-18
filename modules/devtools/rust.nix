@@ -1,22 +1,30 @@
+# modules/devtools/rust.nix — Rust toolchain (stable, via rust-overlay)
+#
+# No global RUSTFLAGS on purpose. An environment RUSTFLAGS replaces every
+# project's own `.cargo/config.toml` rustflags, and the flags that used
+# to live here did real damage: `opt-level=z` overrode release profiles,
+# `target-cpu=native` produced binaries that only run on the build
+# machine's CPU, and a GNU-ld link argument broke non-gcc targets such
+# as wasm32. Hardening or tuning flags belong in a project's own config.
 _:
 let
-  commonFlags = [
-    "-C"
-    "link-args=-Wl,-z,relro,-z,now"
-    "-C"
-    "opt-level=z"
-    "-C"
-    "target-cpu=native"
-  ];
+  # `default` already bundles clippy and rustfmt (as *-preview
+  # components); adding them separately collides in buildEnv. rust-src
+  # is not part of `default` and is what rust-analyzer needs to resolve
+  # the standard library (RUST_SRC_PATH below).
+  toolchainFor =
+    pkgs:
+    pkgs.rust-bin.stable.latest.default.override {
+      extensions = [ "rust-src" ];
+    };
+  srcPath = toolchain: "${toolchain}/lib/rustlib/src/rust/library";
 in
 {
   den.aspects.rust = {
     nixos =
-      { lib, pkgs, ... }:
+      { pkgs, ... }:
       let
-        # `default` already bundles clippy and rustfmt (as *-preview
-        # components); adding them separately collides in buildEnv.
-        stable = pkgs.rust-bin.stable.latest.default;
+        stable = toolchainFor pkgs;
       in
       {
         environment = {
@@ -27,17 +35,14 @@ in
             pkgs.cargo-deny
           ];
 
-          variables = {
-            RUSTFLAGS = lib.strings.concatStringsSep " " commonFlags;
-            RUST_SRC_PATH = "${stable}/lib/rustlib/src/rust/library";
-          };
+          variables.RUST_SRC_PATH = srcPath stable;
         };
       };
 
     homeManager =
-      { lib, pkgs, ... }:
+      { pkgs, ... }:
       let
-        stable = pkgs.rust-bin.stable.latest.default;
+        stable = toolchainFor pkgs;
       in
       {
         home.packages = [
@@ -47,10 +52,7 @@ in
           pkgs.cargo-deny
         ];
 
-        home.sessionVariables = {
-          RUSTFLAGS = lib.strings.concatStringsSep " " commonFlags;
-          RUST_SRC_PATH = "${stable}/lib/rustlib/src/rust/library";
-        };
+        home.sessionVariables.RUST_SRC_PATH = srcPath stable;
       };
   };
 }

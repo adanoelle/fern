@@ -29,11 +29,8 @@ The configuration is a den aspect (`den.aspects.niri`,
   [niri-flake](https://github.com/sodiboo/niri-flake); the package is pinned
   to nixpkgs' `niri` in `host-fern.nix` (avoids a niri-flake fetchGit
   evaluation issue).
-- `hardware.i2c.enable = true` — DDC/CI brightness control of external
-  monitors via `ddcutil`; the `users` aspect adds users to the `i2c` group
-  when this is on.
 - `services.upower.enable` — battery/power state on D-Bus for the garden bar.
-- System packages: `xwayland-satellite` (XWayland), `ddcutil`, and
+- System packages: `xwayland-satellite` (XWayland) and
   `quickshell` — quickshell lives here (not in greetd) because the garden
   shell and its IPC binds belong to the niri session.
 - XDG portals: `xdg-desktop-portal-gnome` + `xdg-desktop-portal-gtk`.
@@ -82,7 +79,7 @@ widths of 50/75/100%, spring animations for workspace and view movement.
 | `Super+BracketLeft/Right` | Consume/expel window (tabbed columns) |
 | `Super+S` / `+Shift` / `+Ctrl` | Garden screenshot: region / window / output |
 | `XF86Audio*` | Volume via `wpctl` |
-| `XF86MonBrightness*` | Garden OSD, then `ddcutil setvcp 10` (DDC/CI) |
+| `XF86MonBrightness*` | Bound per host, not by the niri aspect. fern: `den.aspects.brightness-ddc` (garden OSD, then `ddcutil setvcp 10`) |
 
 Screenshots land in `~/media/screenshots/` — `screenshot-path` is set
 explicitly because garden's window-mode screenshot
@@ -131,4 +128,5 @@ testing and as a safety net — see [Hyprland (Legacy Fallback)](hyprland.md).
 | `modules/desktop/niri.nix` | The niri aspect (nixos + homeManager sides) |
 | `modules/host-fern.nix` | niri-flake module import + aspect include + package pin |
 | `modules/desktop/greetd.nix` | Login sessions (Niri primary, Hyprland fallback) |
+| `modules/desktop/brightness-ddc.nix` | DDC/CI brightness keys, `hardware.i2c`, `ddcutil` (external monitors) |
 | `modules/users.nix` | `i2c` group membership when `hardware.i2c` is enabled |

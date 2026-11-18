@@ -1,44 +1,18 @@
 # modules/user-ada-desktop.nix — user ada, desktop layer
 #
-# Graphical environment preferences: compositor settings, wallpaper,
-# and the desktop application bundle. Only hosts with a graphical
-# session forward this layer (via provides.to-users); a headless host
-# simply never applies it.
+# The core of a graphical session: the everyday desktop applications and
+# the garden terminal stack. Only hosts with a graphical session forward
+# this layer (via provides.to-users); a headless host never applies it.
+#
+# Heavier or host-specific layers are forwarded separately so each
+# machine picks what fits: ada-hyprland (fallback compositor), music,
+# obs, gaming-hm, gamedev — see the host aspects.
 { den, garden, ... }:
 {
   den.aspects.ada-desktop = {
     includes = [
       den.aspects.desktop-apps
-      den.aspects.music
       garden.terminal
     ];
-
-    homeManager =
-      { config, ... }:
-      {
-        desktop.hyprland = {
-          enable = true;
-          idle.enable = true;
-          lock.enable = true;
-
-          wallpaper = {
-            enable = true;
-            path = "${config.home.homeDirectory}/media/wallpapers/shrine.png";
-
-            transition = {
-              type = "fade";
-              duration = 1.2;
-              fps = 60;
-            };
-          };
-
-          style = {
-            gapsIn = 6;
-            gapsOut = 12;
-            border = 2;
-            rounding = 5;
-          };
-        };
-      };
   };
 }
