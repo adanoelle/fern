@@ -11,7 +11,7 @@ on the work laptop only.
 
 | Aspect            | File                                  | Side  | Reached through                     |
 | ----------------- | ------------------------------------- | ----- | ----------------------------------- |
-| `docker`          | `modules/devtools/docker.nix`         | nixos | the `workstation` role, and the `devtools` bundle |
+| `docker`          | `modules/devtools/docker.nix`         | nixos | the `workstation` role |
 | `docker-rootless` | `modules/foreign/docker-rootless.nix` | home  | `ada-work` (`modules/user-ada-work.nix`) |
 | `aws-cli`         | `modules/cloud/aws-cli.nix`           | nixos | the `dev-machine` role              |
 
@@ -32,16 +32,11 @@ Installed alongside, system-wide: `docker-compose`, `docker-buildx`,
 
 ### Two include paths
 
-The aspect is included by the `workstation` role and again by the
-`devtools` bundle, which reaches the host through the `ada-dev` user
-layer. Its module has no dedup `key` (compare
-[the pattern on the homelab page](homelab.md#the-diamond-include-key-pattern)),
-so on fern and yarrow it is applied twice. As evaluated,
-`virtualisation.docker.extraOptions` is `--experimental --experimental`
-and each of the tool packages above appears twice in
-`environment.systemPackages`. The other Docker options are not lists
-and are unaffected. `modules/roles/dev-machine.nix` describes this
-hazard in its header comment.
+The aspect is included by the `workstation` role only. It is a host
+service, so it is deliberately not in the `devtools` bundle: that bundle
+reaches hosts through the `ada-dev` user layer, and an aspect on both
+paths has its `nixos` side applied twice (see
+[Aspects & Composition](../architecture/aspects.md#diamond-includes-den-does-not-dedupe)).
 
 ## Rootless Docker on the work laptop: `docker-rootless`
 
@@ -98,7 +93,6 @@ are managed by this repository.
 | `modules/devtools/docker.nix`         | Docker daemon, BuildKit, container tools |
 | `modules/users.nix`                   | `docker` group membership               |
 | `modules/roles/workstation.nix`       | First include path for `docker`         |
-| `modules/devtools/bundle.nix`         | Second include path for `docker`        |
 | `modules/foreign/docker-rootless.nix` | Rootless daemon as a user service       |
 | `modules/cloud/aws-cli.nix`           | AWS and infrastructure tools            |
 | `modules/roles/dev-machine.nix`       | Includes `aws-cli`                      |

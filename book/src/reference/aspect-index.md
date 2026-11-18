@@ -69,7 +69,7 @@ and is not counted; aspects that only it uses are marked.
 | `cli` | `modules/cli/bundle.nix` | includes-only | Terminal tools, editors, terminal emulators | every machine |
 | `shells` | `modules/shells/bundle.nix` | includes-only | Fish, Nushell, zsh, prompt, zoxide, devenv | every machine |
 | `git-suite` | `modules/git/bundle.nix` | home + includes | The `git-*` aspects, plus the `programs.gitSuite` options that switch them on | every machine |
-| `devtools` | `modules/devtools/bundle.nix` | includes-only | Language toolchains, Docker, VM tools | every machine |
+| `devtools` | `modules/devtools/bundle.nix` | includes-only | Language toolchains and VM tools | every machine |
 | `desktop-apps` | `modules/desktop/bundle.nix` | includes-only | Applications every graphical NixOS host gets | fern, yarrow |
 | `music` | `modules/audio/music.nix` | includes-only | Music production: `daw` and `audio-tools` | fern |
 
@@ -205,7 +205,7 @@ layer.
 ## User aspects: development
 
 All in the `devtools` bundle except `gamedev`, which hosts forward
-separately. The bundle also includes the system aspect `docker`.
+separately.
 
 | Aspect | File | Side(s) | Description | Goes on |
 | --- | --- | --- | --- | --- |
