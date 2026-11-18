@@ -431,6 +431,10 @@
         };
       in
       {
+        # Frozen at the release this home was first activated with. NEVER
+        # bump this: it gates stateful migrations, not features.
+        home.stateVersion = "25.11";
+
         # Laptop panel brightness. The shared niri aspect binds ddcutil
         # (DDC/CI, external monitors only); on a laptop the internal
         # panel needs sysfs backlight via brightnessctl instead.

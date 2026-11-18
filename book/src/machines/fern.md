@@ -12,6 +12,7 @@
 | Flake output | `nixosConfigurations.fern` |
 | Status | installed, in daily use |
 | `system.stateVersion` | `"25.11"`, the release it was installed with; never bumped |
+| `home.stateVersion` | `"25.11"`, pinned in the host aspect; never bumped |
 
 ## What the host includes
 

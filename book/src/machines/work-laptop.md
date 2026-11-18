@@ -15,6 +15,7 @@
 | Topology | a `den.homes.x86_64-linux."<user>@<hostname>"` entry in `modules/hosts.nix` |
 | Flake output | `homeConfigurations."<user>@<hostname>"`; there is no `nixosConfiguration` |
 | Status | active |
+| `home.stateVersion` | `"25.11"`, pinned in `modules/user-ada-work.nix`; never bumped |
 | Graphics | host drivers, reached through nixGL (Mesa wrapper) |
 
 ## How it fits together

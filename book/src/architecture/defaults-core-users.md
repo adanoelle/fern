@@ -131,10 +131,17 @@ with. It gates stateful data migrations, not features.
   that has not pinned yet, and is correct for a host only by
   coincidence.
 
-`home.stateVersion` is not pinned per host anywhere: every home,
-including the work laptop's, takes the `"25.11"` fallback from
-`den.default`. A few aspects pin individual Home Manager options whose
-default changes with the state version, each with a comment saying so.
+`home.stateVersion` works the same way for the user's Home Manager
+state, and is pinned beside the system one:
+
+- fern and yarrow set it in their host aspect through
+  `home-manager.sharedModules`, at the release each was installed with.
+- The work laptop's standalone home sets it in
+  `modules/user-ada-work.nix`.
+- The `mkDefault "25.11"` in `den.default` is again only a fallback.
+
+A few aspects also pin individual Home Manager options whose default
+changes with the state version, each with a comment saying so.
 
 ## Key files
 

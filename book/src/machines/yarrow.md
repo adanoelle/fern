@@ -13,6 +13,7 @@
 | Flake output | `nixosConfigurations.yarrow` (evaluates today) |
 | Status | **not installed yet** |
 | `system.stateVersion` | `"26.11"`; never bumped once installed |
+| `home.stateVersion` | `"26.11"`, pinned in the host aspect; never bumped once installed |
 
 ## Status
 

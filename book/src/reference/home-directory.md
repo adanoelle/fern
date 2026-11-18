@@ -32,12 +32,13 @@ whose source is `modules/_workspace/FILING.md`.
 │   └── notes/                           work notes vault
 │       ├── daily/  meetings/  projects/  areas/
 │       └── literature/  resources/  archive/  templates/  docs/
-├── src/                                 code, one subdir per repo
+├── src/              XDG_PROJECTS_DIR   code, one subdir per repo
 └── archive/                             cold storage: archive/<year>/…
 ```
 
-`~/src` is not created by the module; it appears here because other
-configuration is scoped to it (see below).
+`~/src` is the XDG projects directory, so it is created at activation
+with the others; other configuration is scoped to it as well (see
+below).
 
 `~/Desktop`, `~/Public` and `~/Templates` do not exist. Their XDG
 entries (`desktop`, `publicShare`, `templates`) point at the home
@@ -60,10 +61,10 @@ Details worth knowing:
 - XDG values are absolute paths built from `config.home.homeDirectory`.
   New values reach running programs after the next login.
 - No `.keep` files are written: `~/inbox` has to be able to look empty.
-- home-manager's `xdg.userDirs` also has a `projects` entry that the
-  module does not set. It keeps its default, so `XDG_PROJECTS_DIR` is
-  `~/Projects` and that directory is created at activation alongside
-  the others.
+- `projects` is set to `~/src`. Left unset, Home Manager uses the
+  xdg-user-dirs default and creates a capitalised `~/Projects`. A
+  machine that was activated before this was set may still have an
+  empty `~/Projects`; remove it by hand.
 
 ## Paths other modules depend on
 
