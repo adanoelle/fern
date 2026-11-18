@@ -23,6 +23,7 @@ these groups:
 | Hardware | `nixos-hardware`, `nixos-apple-silicon`, `musnix` | Per-model quirks, Asahi support, realtime audio |
 | Overlays and packages | `rust-overlay`, `claude-code`, `herdr`, `zen-browser`, `devenv` | Packages nixpkgs does not carry or carries too old |
 | Secrets | `sops-nix` | See [sops-nix](../security/sops-nix.md) |
+| Services | `tangled` | The knot module and package; keeps its own nixpkgs. See [Tangled Knot](../services/knot.md) |
 | Foreign distro | `nixgl` (and `flake-utils`, which it follows) | GL wrappers for the standalone home on the work laptop |
 | Single-package pins | `nixpkgs-thunderbird`, `nixpkgs-uv` | See below |
 

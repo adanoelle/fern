@@ -39,6 +39,7 @@
 - [Audio](services/audio.md)
 - [Gaming](services/gaming.md)
 - [Homelab (Tailscale & Radicale)](services/homelab.md)
+  - [Tangled Knot](services/knot.md)
 - [Containers & Cloud](services/containers-and-cloud.md)
 - [Secrets (sops-nix)](security/sops-nix.md)
 - [Secret Scanning](security/secret-guard.md)

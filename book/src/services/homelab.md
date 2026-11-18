@@ -102,6 +102,9 @@ toggle in the Tailscale admin console and not a rebuild.
 A new service is a new self-contained aspect plus one include in the
 role.
 
+One is drafted and not yet included: the [Tangled Knot](knot.md), the
+first service that also needs a public edge in front of the tailnet.
+
 ## Operations
 
 - **Secrets come first.** The host must be a sops recipient and the
