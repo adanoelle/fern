@@ -21,17 +21,10 @@ _: {
       {
         home.packages = with pkgs; [ alire ];
 
-        programs.helix.languages = {
-          language-server.ada_ls = {
-            command = "ada_language_server";
-          };
-          language = [
-            {
-              name = "ada";
-              language-servers = [ "ada_ls" ];
-            }
-          ];
-        };
+        # No Helix configuration: its built-in `ada` entry already looks
+        # for `ada_language_server` on PATH. nixpkgs has no package for
+        # that server, so there is none until one is installed by other
+        # means (AdaCore publishes prebuilt releases).
       };
   };
 }

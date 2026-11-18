@@ -46,15 +46,11 @@ _: {
         };
 
         languages = {
-          debugger = {
-            command = "lldb-vscode";
-            name = "lldb-vscode";
-            transport = "stdio";
-            templates = {
-              name = "binary";
-              request = "launch";
-            };
-          };
+          # No debugger entry here on purpose. Helix has no top-level
+          # `debugger` table (one was set here and silently ignored);
+          # debug adapters are per language, and the built-in entries for
+          # Rust, C, C++ and Zig already use lldb-dap, which the c-cpp
+          # aspect's lldb package provides. Check with `hx --health rust`.
           language = [
             {
               name = "rust";

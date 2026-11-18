@@ -211,7 +211,7 @@ separately.
 | `node-ts` | `modules/devtools/node-ts.nix` | both | Node.js, package managers, TypeScript tooling | fern, yarrow (both sides); work laptop (home side) |
 | `python` | `modules/devtools/python.nix` | both | Python, uv from a newer nixpkgs input, linters, Jupyter | fern, yarrow (both sides); work laptop (home side) |
 | `ada-lang` | `modules/devtools/ada.nix` | both | Ada toolchain: GNAT, gprbuild, Alire | fern, yarrow (both sides); work laptop (home side) |
-| `zig` | `modules/devtools/zig.nix` | home | Zig compiler | every machine |
+| `zig` | `modules/devtools/zig.nix` | home | Zig compiler and its language server (`zls`) | every machine |
 | `vm-host` | `modules/devtools/vm-host.nix` | home | quickemu for desktop test VMs | every machine |
 | `gamedev` | `modules/devtools/gamedev.nix` | home | Game libraries, level and sprite editors, profilers | every machine |
 
