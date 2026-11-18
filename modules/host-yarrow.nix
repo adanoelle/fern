@@ -3,7 +3,12 @@
 # The portable art, game-development and playtesting machine. Like
 # host-fern.nix this is composition only: roles, user layers and the
 # facts that are true of this hardware alone.
-{ den, inputs, ... }:
+{
+  den,
+  garden,
+  inputs,
+  ...
+}:
 {
   den.aspects.yarrow = {
     includes = [
@@ -20,7 +25,14 @@
     # No Hyprland fallback, OBS (its build here assumes CUDA) or full
     # music layer: add them when they are wanted.
     provides.to-users.includes = [
-      den.aspects.ada-desktop
+      # The desktop core, taken as its two halves instead of through
+      # ada-desktop: the applications, and the whole garden shell (QML,
+      # settings, screenshot tools) rather than only garden.terminal.
+      # garden.shell already includes garden.terminal, and including
+      # both doubles kitty's theme include. The niri aspect only
+      # launches the shell; nothing else on this host brings it in.
+      den.aspects.desktop-apps
+      garden.shell
       den.aspects.ada-dev
       den.aspects.niri
       # Built-in panel: backlight keys, and suspend when idle on battery
