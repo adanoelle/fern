@@ -64,18 +64,10 @@ user-level settings via Home Manager in the same file:
     in {
       environment.systemPackages = [
         stable
-        pkgs.rust-bin.stable.latest.clippy
-        pkgs.rust-bin.stable.latest.rustfmt
         pkgs.rust-analyzer
         pkgs.cargo-audit
         pkgs.cargo-deny
       ];
-      environment.variables.RUSTFLAGS =
-        lib.strings.concatStringsSep " " [
-          "-C" "link-args=-Wl,-z,relro,-z,now"
-          "-C" "opt-level=z"
-          "-C" "target-cpu=native"
-        ];
       environment.variables.RUST_SRC_PATH =
         "${stable}/lib/rustlib/src/rust/library";
     };

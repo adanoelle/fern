@@ -19,7 +19,8 @@ minimal).
 | Aspect | File | Type | Applied |
 |--------|------|------|---------|
 | `ada` | `modules/user-ada.nix` | homeManager | ada, every host (base: shells, cli, git, ssh, `garden.terminal`) |
-| `ada-desktop` | `modules/user-ada-desktop.nix` | homeManager | forwarded by fern, moss (parked) (desktop prefs + desktop-apps) |
+| `ada-desktop` | `modules/user-ada-desktop.nix` | homeManager | forwarded by fern, moss (parked) (core desktop-apps + garden terminal) |
+| `ada-hyprland` | `modules/user-ada-hyprland.nix` | homeManager | forwarded by fern, moss (parked) (Hyprland fallback session + its settings) |
 | `ada-dev` | `modules/user-ada-dev.nix` | homeManager | forwarded by fern, moss (parked) (devtools bundle) |
 
 ## Role aspects
@@ -39,8 +40,8 @@ Host role bundles — compose these instead of long per-host include lists.
 |--------|------|----------|
 | `cli` | `modules/cli/bundle.nix` | bat, broot, claude-code, crypt, delta, ghostty, glow, helix, hyfetch, nix-diff, nix-tree, prettier, tree, kitty, kakoune, yazi, lazygit, btop, fzf, fd, ripgrep, rbw, jq |
 | `git-suite` | `modules/git/bundle.nix` | git-core, git-aliases, git-identities, git-github, git-tools, git-safety, git-help |
-| `desktop-apps` | `modules/desktop/bundle.nix` | hyprland, zen, chromium, obs, screenshot, gaming-hm, bitwarden (niri is deliberately NOT here — hosts forward it via provides.to-users) |
-| `devtools` | `modules/devtools/bundle.nix` | docker, rust, node-ts, c-cpp, python, ada-lang, zig, gamedev |
+| `desktop-apps` | `modules/desktop/bundle.nix` | zen, chromium, screenshot, imv, pdf, bitwarden (core only — compositors, obs, gaming-hm, music are forwarded per host via provides.to-users) |
+| `devtools` | `modules/devtools/bundle.nix` | docker, rust, node-ts, c-cpp, python, ada-lang, zig, vm-host (gamedev is opt-in per host) |
 | `shells` | `modules/shells/bundle.nix` | nushell, starship, zoxide, devenv |
 
 ## System aspects (nixos)

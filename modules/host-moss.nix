@@ -23,6 +23,8 @@
     provides.to-users.includes = [
       den.aspects.ada-desktop
       den.aspects.ada-dev
+      # graphics-asahi enables programs.hyprland
+      den.aspects.ada-hyprland
     ];
 
     nixos = {

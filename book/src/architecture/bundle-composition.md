@@ -41,8 +41,8 @@ new CLI tool means creating the aspect file and adding one line to this bundle.
 |--------|------|----------|
 | `cli` | `modules/cli/bundle.nix` | bat, broot, claude-code, crypt, delta, ghostty, glow, helix, hyfetch, nix-tree, prettier, tree |
 | `shells` | `modules/shells/bundle.nix` | nushell, starship, zoxide, devenv |
-| `desktop-apps` | `modules/desktop/bundle.nix` | hyprland, chromium, obs, screenshot, gaming-hm |
-| `devtools` | `modules/devtools/bundle.nix` | docker, rust, node-ts, c-cpp, python, ada-lang, zig, gamedev |
+| `desktop-apps` | `modules/desktop/bundle.nix` | zen, chromium, screenshot, imv, pdf, bitwarden |
+| `devtools` | `modules/devtools/bundle.nix` | docker, rust, node-ts, c-cpp, python, ada-lang, zig, vm-host |
 
 ## Orchestrator bundles
 
@@ -155,11 +155,17 @@ den.aspects.ada (user base — applies on every host)
 └── garden.terminal (from the garden-shell namespace)
 
 den.aspects.ada-desktop (forwarded by graphical hosts)
-└── den.aspects.desktop-apps (bundle)
-    ├── den.aspects.niri
-    ├── den.aspects.hyprland
-    ├── den.aspects.chromium
-    └── ... (7 aspects)
+├── den.aspects.desktop-apps (bundle: zen, chromium, screenshot, imv, pdf, bitwarden)
+└── garden.terminal
+
+Forwarded separately, per host (fern takes all of these):
+├── den.aspects.niri            (hosts importing the niri-flake module)
+├── den.aspects.brightness-ddc  (external monitors)
+├── den.aspects.ada-hyprland    (fallback compositor session)
+├── den.aspects.obs
+├── den.aspects.gaming-hm
+├── den.aspects.music
+└── den.aspects.gamedev
 
 den.aspects.ada-dev (forwarded by dev hosts)
 └── den.aspects.devtools (bundle)

@@ -40,7 +40,7 @@ _: {
                   "networkmanager"
                 ]
                 # DDC/CI brightness control; hardware.i2c is enabled by
-                # the niri aspect (modules/desktop/niri.nix).
+                # den.aspects.brightness-ddc.
                 ++ lib.optionals config.hardware.i2c.enable [ "i2c" ]
                 ++ lib.optionals config.virtualisation.docker.enable [ "docker" ]
                 ++ lib.optionals config.services.pipewire.enable [ "audio" ]
