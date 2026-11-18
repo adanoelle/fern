@@ -63,12 +63,12 @@ they come from the garden theme files described in
 
 ### `GARDEN_CHANNEL`
 
-A function run before every prompt asks niri for the focused window
-(`niri msg -j focused-window`) and exports its `workspace_name` field as
-`GARDEN_CHANNEL`. niri's focused-window JSON carries `workspace_id` but
-no `workspace_name`, so this hook does not currently set the variable;
-the right prompt shows a channel only if something else exports
-`GARDEN_CHANNEL`. Nothing else in this repository reads or sets it.
+A function run before every prompt asks niri for its workspaces
+(`niri msg -j workspaces`) and exports the name of the focused one as
+`GARDEN_CHANNEL`, which the right prompt shows. The variable is cleared
+when the focused workspace has no name or there is no niri session
+(over SSH, on a TTY), so a stale name is never shown. Nothing else in
+this repository reads it.
 
 ### Vi mode
 
@@ -96,11 +96,11 @@ gets `y` from `zsh.nix`).
 ### Abbreviations
 
 Fish abbreviations expand in place when typed, so the full command is
-what lands in history. They come from two files:
+what lands in history.
 
 | Source | Abbreviations |
 |---|---|
-| `modules/shells/fish.nix` | git: `g ga gaa gc gcm gco gp gl gd gds gg gst gstp` |
+| `modules/shells/fish.nix` | git: `g ga gaa gc gcm gco gp gl gd gds gg gst gstp`, taken from the shared shell aliases |
 | `modules/cli/eza.nix` | `l` `la` `lt` `ll` (eza listings) |
 
 `eza.nix` also enables `programs.eza` with icons, git status and
@@ -110,25 +110,14 @@ replaces the man pager (`MANPAGER` in `modules/cli/bat.nix`). `ls` and
 
 The expansions are listed in [Aliases](../reference/aliases.md).
 
-### The same name can mean two things
+### One definition for the git shortcuts
 
-The git suite also sets `home.shellAliases`
-([Git](../git/git.md)), which Home Manager applies to fish, zsh and
-nushell. Several names are defined both as a fish abbreviation and as a
-shell alias, and nushell adds a third list. The ones that differ:
-
-| Name | Typed in fish (abbreviation) | zsh, nushell, and fish scripts (alias) |
-|---|---|---|
-| `g` | `git status -sb` | `git status` |
-| `gl` | `git pull` | `git log --oneline` |
-| `gst` | `git stash` | nushell: `git status -sb`; zsh: not defined |
-
-In interactive fish the abbreviation wins because it is expanded before
-the command is looked up; the alias of the same name is only reached
-from `fish -c` or a script. In nushell, `nushell.nix` defines
-`gl = git pull`, but the generated `config.nu` emits `home.shellAliases`
-after `extraConfig`, so the later `gl = git log --oneline` replaces it.
-`gpl` is `git pull` in every shell.
+The git shortcuts are defined once, as `home.shellAliases` in
+`modules/git/aliases.nix` ([Git](../git/git.md)), which Home Manager
+applies to fish, zsh and nushell. `fish.nix` does not define its own:
+it selects the common ones from that set and makes them abbreviations
+as well, so `g`, `gl`, `gst` and the rest mean the same thing in every
+shell.
 
 ## Nushell
 
@@ -137,20 +126,14 @@ after `extraConfig`, so the later `gl = git log --oneline` replaces it.
 
 | Item | Value |
 |---|---|
-| Prompt | sources `~/.cache/starship/init.nu` |
-| zoxide | sources `~/.cache/zoxide.nu` |
-| Aliases | `gst gaa gcm gco gp gl gg gds gdc` (git) |
 | Environment | `EDITOR` and `VISUAL` = `hx`; `PAGER` and `GIT_PAGER` = `delta`; `LESSHISTFILE` = `-` |
 | `$env.config` | banner shown; completions: prefix matching, case-insensitive, quick, external completers off |
 
-The two cache files are written by Home Manager activation scripts in
-the same module (`starship init nu`, `zoxide init nushell`), so they
-exist after the first switch.
-
-Home Manager's own integrations add more to the generated `config.nu`
-after this block: zoxide and starship (again, from the store, since both
-programs have nushell integration enabled), `yy` for yazi, `lg` for
-lazygit, fzf, direnv, broot's `br`, and finally every entry of
+The prompt, zoxide and the git shortcuts are not set here. Home
+Manager's own integrations add them to the generated `config.nu`:
+zoxide and starship (both have nushell integration enabled in their
+aspects), `yy` for yazi, `lg` for lazygit, fzf, direnv, broot's `br`,
+and every entry of
 `home.shellAliases`. `modules/cli/prettier.nix` adds one nushell-only
 alias, `mdfmt`.
 

@@ -130,16 +130,33 @@ _: {
         };
 
         home = {
-          # Create allowed_signers file for SSH signature verification
-          # Note: This would need the actual public key content, not the path
-          # For now, create an empty file - users can populate it manually
-          file.".config/git/allowed_signers" = {
-            text = ''
-              # Git allowed signers file
-              # Format: email ssh-rsa AAAAB3NzaC1yc2EA...
-              # Add your SSH public keys here for signature verification
-            '';
-          };
+          # allowed_signers for SSH signature verification (git log
+          # --show-signature, git verify-commit). Written at activation
+          # from the public half of each identity's signing key, because
+          # the key material is on the machine and not in this repository.
+          # An identity whose .pub file is absent here is skipped.
+          activation.gitAllowedSigners = hm.dag.entryAfter [ "linkGeneration" ] ''
+            signers="${config.xdg.configHome}/git/allowed_signers"
+            run mkdir -p "$(dirname "$signers")"
+            tmp="$(mktemp)"
+            : > "$tmp"
+            ${concatStringsSep "\n" (
+              mapAttrsToList (
+                _name: identity:
+                optionalString (identity.signingKey != null) ''
+                  if [ -r ${escapeShellArg "${identity.signingKey}.pub"} ]; then
+                    printf '%s namespaces="git" %s\n' ${escapeShellArg identity.email} \
+                      "$(cut -d' ' -f1,2 ${escapeShellArg "${identity.signingKey}.pub"})" >> "$tmp"
+                  fi
+                ''
+              ) cfg.identities
+            )}
+            sort -u -o "$tmp" "$tmp"
+            sed -i '1i # Generated at home-manager activation (modules/git/identities.nix).' "$tmp"
+            run rm -f "$signers"
+            run install -m 0644 "$tmp" "$signers"
+            rm -f "$tmp"
+          '';
 
           # Shell aliases for quick identity checking
           shellAliases = {

@@ -45,7 +45,6 @@ _: {
           # --- Committing
           c = "commit";
           cm = "commit -m";
-          amend = "commit --amend --no-edit";
           fixup = "commit --fixup";
 
           # ---Branches
@@ -66,7 +65,9 @@ _: {
           l = "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit";
           ll = "log --graph --oneline --decorate --all";
           last = "log -1 HEAD --stat";
-          today = "log --since=midnight --author='$(git config user.name)' --oneline";
+          # A shell alias (!): a plain alias does not expand $(...), so the
+          # author filter was the literal text and matched nothing.
+          today = "!git log --since=midnight --author=\"$(git config user.name)\" --oneline";
 
           # --- Push/Pull/Fetch
           p = "push";
@@ -83,10 +84,7 @@ _: {
           stl = "stash list";
           std = "stash drop";
 
-          # --- Reset/Undo
-          undo = "reset --soft HEAD~1";
-          uncommit = "reset HEAD~1";
-          unstage = "reset HEAD --";
+          # undo, uncommit, unstage and amend live in safety.nix.
 
           # --- Worktrees (no scripts!)
           wta = "worktree add";
@@ -113,20 +111,29 @@ _: {
         }
         // cfg.custom; # Merge in any custom aliases
 
-        # Shell aliases for convenience (if enabled)
+        # Shell aliases for convenience (if enabled).
+        #
+        # This is the one definition of the git shortcuts for every
+        # shell: home.shellAliases reaches fish, zsh, bash and Nushell.
+        # fish.nix turns the same entries into abbreviations; do not
+        # redefine them per shell.
         home.shellAliases = mkIf cfg.enableShellAliases {
           # Essential shortcuts
-          g = "git status";
+          g = "git status -sb";
           ga = "git add";
           gaa = "git add -A";
           gc = "git commit";
           gcm = "git commit -m";
           gp = "git push";
           gpu = "git push -u origin HEAD";
+          gl = "git pull";
           gpl = "git pull";
           gf = "git fetch";
-          gl = "git log --oneline";
           gd = "git diff";
+          gds = "git diff --staged";
+          gg = "git log --graph --decorate --oneline --all";
+          gst = "git stash";
+          gstp = "git stash pop";
           gco = "git checkout";
           gb = "git branch";
 

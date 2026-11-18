@@ -100,7 +100,7 @@ desktop, or from a different shell, does not see them.
 
 | Variable | Value | Note |
 | --- | --- | --- |
-| `GARDEN_CHANNEL` | Name of the focused Niri workspace | Exported on every prompt when `niri` is available; shown in the right prompt |
+| `GARDEN_CHANNEL` | Name of the focused Niri workspace | Set on every prompt inside a Niri session, and cleared when the workspace is unnamed or there is no session; shown in the right prompt |
 
 The right prompt also reads `GARDEN_PAGE`, `SSH_CONNECTION`,
 `IN_NIX_SHELL` and `VIRTUAL_ENV`, none of which this configuration

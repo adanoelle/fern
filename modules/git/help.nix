@@ -50,15 +50,16 @@ _: {
 
             COMMON COMMANDS
             ---------------
-            g       - git status
+            g       - git status -sb
             ga      - git add
             gaa     - git add -A
             gc      - git commit
             gcm     - git commit -m
             gp      - git push
             gpu     - git push -u origin HEAD
-            gpl     - git pull
-            gl      - git log --oneline
+            gl, gpl - git pull
+            gg      - git log --graph --oneline --all
+            gst     - git stash (gstp to pop)
             gd      - git diff
             gco     - git checkout
             gb      - git branch
@@ -112,7 +113,7 @@ _: {
               # Quick help
               "g-help" = "cat ~/.config/git/quick-ref.txt";
               "g-aliases" = "git list-aliases";
-              "g-ref" = "echo 'Common: g (status), ga (add), gc (commit), gp (push), gl (log)'";
+              "g-ref" = "echo 'Common: g (status), ga (add), gc (commit), gp (push), gl (pull), gg (log)'";
             }
 
             (mkIf cfg.enableTldr {

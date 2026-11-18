@@ -38,16 +38,11 @@ When a name is defined twice:
 
 ## Names that differ between shells
 
+The git shortcuts are not among them: they have one definition, in
+`modules/git/aliases.nix`, used by every shell.
+
 | Name | fish (interactive) | zsh | Nushell |
 | --- | --- | --- | --- |
-| `g` | `git status -sb` | `git status` | `git status` |
-| `gl` | `git pull` | `git log --oneline` | `git log --oneline` |
-| `gaa` | `git add --all` | `git add -A` | `git add -A` |
-| `gst` | `git stash` | not defined | `git status -sb` |
-| `gstp` | `git stash pop` | not defined | not defined |
-| `gds` | `git diff --staged` | not defined | `git diff --staged` |
-| `gdc` | not defined | not defined | `git diff --cached` |
-| `gg` | `git log --graph --decorate --oneline --all` | not defined | same as fish |
 | `l` | `eza -l` | `eza -l` | not defined |
 | `ll` | `eza -l --sort=modified --reverse` | `eza -l` | not defined |
 | `la` | `eza -la` | `eza -a` | not defined |
@@ -68,17 +63,20 @@ table above says a shell overrides the name.
 
 | Alias | Expands to |
 | --- | --- |
-| `g` | `git status` |
+| `g` | `git status -sb` |
 | `ga` | `git add` |
 | `gaa` | `git add -A` |
 | `gc` | `git commit` |
 | `gcm` | `git commit -m` |
 | `gp` | `git push` |
 | `gpu` | `git push -u origin HEAD` |
-| `gpl` | `git pull` |
+| `gl`, `gpl` | `git pull` |
 | `gf` | `git fetch` |
-| `gl` | `git log --oneline` |
 | `gd` | `git diff` |
+| `gds` | `git diff --staged` |
+| `gg` | `git log --graph --decorate --oneline --all` |
+| `gst` | `git stash` |
+| `gstp` | `git stash pop` |
 | `gco` | `git checkout` |
 | `gb` | `git branch` |
 | `gid` | `git whoami` |
@@ -131,21 +129,13 @@ table above says a shell overrides the name.
 
 ## Fish abbreviations
 
+`g`, `ga`, `gaa`, `gc`, `gcm`, `gco`, `gp`, `gl`, `gd`, `gds`, `gg`,
+`gst` and `gstp` are also abbreviations in fish, with the expansions
+listed under [Git shortcuts](#git-shortcuts-modulesgitaliasesnix).
+`modules/shells/fish.nix` takes them from the shared shell aliases.
+
 | Abbreviation | Expands to | Set in | Goes on |
 | --- | --- | --- | --- |
-| `g` | `git status -sb` | `modules/shells/fish.nix` | every machine |
-| `ga` | `git add` | `modules/shells/fish.nix` | every machine |
-| `gaa` | `git add --all` | `modules/shells/fish.nix` | every machine |
-| `gc` | `git commit` | `modules/shells/fish.nix` | every machine |
-| `gcm` | `git commit -m` | `modules/shells/fish.nix` | every machine |
-| `gco` | `git checkout` | `modules/shells/fish.nix` | every machine |
-| `gp` | `git push` | `modules/shells/fish.nix` | every machine |
-| `gl` | `git pull` | `modules/shells/fish.nix` | every machine |
-| `gd` | `git diff` | `modules/shells/fish.nix` | every machine |
-| `gds` | `git diff --staged` | `modules/shells/fish.nix` | every machine |
-| `gg` | `git log --graph --decorate --oneline --all` | `modules/shells/fish.nix` | every machine |
-| `gst` | `git stash` | `modules/shells/fish.nix` | every machine |
-| `gstp` | `git stash pop` | `modules/shells/fish.nix` | every machine |
 | `l` | `eza -l` | `modules/cli/eza.nix` | every machine |
 | `la` | `eza -la` | `modules/cli/eza.nix` | every machine |
 | `ll` | `eza -l --sort=modified --reverse` | `modules/cli/eza.nix` | every machine |
@@ -164,16 +154,10 @@ table above says a shell overrides the name.
 
 ## Nushell-only aliases
 
-Defined in `modules/shells/nushell.nix` and `modules/cli/prettier.nix`.
-The module also defines `gaa`, `gcm`, `gco`, `gp` and `gl`, which the
-shared shell aliases then replace.
+Defined in `modules/cli/prettier.nix`.
 
 | Alias | Expands to |
 | --- | --- |
-| `gst` | `git status -sb` |
-| `gds` | `git diff --staged` |
-| `gdc` | `git diff --cached` |
-| `gg` | `git log --graph --decorate --oneline --all` |
 | `mdfmt` | `prettier --write` |
 
 ## Git aliases
@@ -192,7 +176,6 @@ Used as `git <alias>`. Identical on every machine.
 | `au` | `add -u` |
 | `c` | `commit` |
 | `cm` | `commit -m` |
-| `amend` | `commit --amend --no-edit` |
 | `fixup` | `commit --fixup` |
 | `wip` | Stage everything and commit as `WIP` |
 | `b` | `branch -vv` |
@@ -207,7 +190,7 @@ Used as `git <alias>`. Identical on every machine.
 | `l` | `log --graph` with a coloured one-line format |
 | `ll` | `log --graph --oneline --decorate --all` |
 | `last` | `log -1 HEAD --stat` |
-| `today` | `log --since=midnight --author='$(git config user.name)' --oneline` |
+| `today` | Today's commits by the current `user.name`, one line each |
 | `p` | `push` |
 | `pf` | `push --force-with-lease` |
 | `pu` | `push -u origin HEAD` |
@@ -219,9 +202,6 @@ Used as `git <alias>`. Identical on every machine.
 | `stp` | `stash pop` |
 | `stl` | `stash list` |
 | `std` | `stash drop` |
-| `undo` | `reset --soft HEAD~1` |
-| `uncommit` | `reset HEAD~1` |
-| `unstage` | `reset HEAD --` |
 | `wta` | `worktree add` |
 | `wtl` | `worktree list` |
 | `wtr` | `worktree remove` |
@@ -236,18 +216,15 @@ Used as `git <alias>`. Identical on every machine.
 | `root` | `rev-parse --show-toplevel` |
 | `current` | `rev-parse --abbrev-ref HEAD` |
 
-`today` is not a shell alias (no leading `!`), so git passes
-`$(git config user.name)` to `--author` as literal text and the filter
-matches no commits.
-
 ### Safety (`modules/git/safety.nix`)
-
-`undo`, `uncommit`, `unstage` and `amend` are defined here as well,
-with the same values as above.
 
 | Alias | Expands to |
 | --- | --- |
 | `pushf`, `pushforce` | `push --force-with-lease` |
+| `undo` | `reset --soft HEAD~1` |
+| `uncommit` | `reset HEAD~1` |
+| `unstage` | `reset HEAD --` |
+| `amend` | `commit --amend --no-edit` |
 | `discard` | `checkout --` |
 | `save` | `stash push -m` |
 | `pop` | `stash pop` |
