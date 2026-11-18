@@ -95,8 +95,8 @@ all drive the garden shell over QuickShell IPC — the full table is in
 - **Scratchpads float**: `garden` app-id, `scratchpad-terminal` title,
   `lazygit` app-id.
 - **SSH host-tier borders**: terminal windows are color-coded by title so a
-  remote shell is identifiable at a glance — HPC hosts (*frontier*, *andes*,
-  *summit*) get the urgent red border, `dgx-*` GPU boxes get accent gold,
+  remote shell is identifiable at a glance — HPC login hosts get the urgent
+  red border, `dgx-*` GPU boxes get accent gold,
   *homelab* gets ok green. Colors come from the garden palette, so tiers
   stay consistent with the rest of the system.
 

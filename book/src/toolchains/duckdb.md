@@ -1,9 +1,9 @@
 # DuckDB (data inspection)
 
-> A global, project-independent DuckDB on the ORNL work laptop for getting
-> one's bearings in the research group's Parquet files and small datastores
-> before (or without) entering a project's Python environment. Included by
-> `ada-work` only; fern and moss don't carry it.
+> A global, project-independent DuckDB on the work laptop for getting
+> one's bearings in Parquet files and small datastores before (or
+> without) entering a project's Python environment. Included by
+> `ada-work` only; the NixOS hosts don't carry it.
 
 ## What you get (`den.aspects.duckdb`)
 

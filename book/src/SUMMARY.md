@@ -38,11 +38,7 @@
 - [DuckDB (data inspection)](toolchains/duckdb.md)
 - [Ada](toolchains/ada.md)
 - [Zig](toolchains/zig.md)
-- [Game Dev: Stack Overview](gamedev/stack-overview.md)
-  - [Debug Overlays](gamedev/debug-overlays.md)
-  - [Profiling Tools](gamedev/profiling.md)
-  - [GPU Debugging](gamedev/gpu-debugging.md)
-  - [Tool Decision Matrix](gamedev/tool-matrix.md)
+- [Game Dev Stack](gamedev/stack-overview.md)
 
 # Part IV: The Machine
 
@@ -74,8 +70,7 @@
 - [Adding an Aspect](operations/adding-an-aspect.md)
 - [Adding a Host](operations/adding-a-host.md)
 - [Installing yarrow (Framework 13 Pro)](operations/installing-yarrow.md)
-- [Work Laptop (Ubuntu + Standalone Home)](operations/work-laptop.md)
-  - [Pre-Flight Checklist](operations/work-laptop-preflight.md)
+- [Standalone Home on Ubuntu (Work Laptop)](operations/work-laptop.md)
 - [Agent Sessions (herdr + Claude Code hooks)](operations/agent-sessions.md)
 - [Troubleshooting](operations/troubleshooting.md)
 - [Aspect Index](reference/aspect-index.md)

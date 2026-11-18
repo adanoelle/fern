@@ -5,108 +5,54 @@
 </tr>
 </table>
 
-Modular NixOS system configuration built with Flakes, Home Manager, and
-flake-parts. Targets a Hyprland development workstation. You can find 
-detailed documentation in my [book](https://adanoelle.github.io/fern/).
+A multi-machine NixOS configuration built on the dendritic pattern:
+flake-parts, [import-tree](https://github.com/vic/import-tree) and
+[den](https://github.com/vic/den). Every file under `modules/` is
+imported automatically, and configuration is written as small **aspects**
+that hosts and users compose. Detailed documentation is in the
+[book](https://adanoelle.github.io/fern/).
 
-## Clone and Bootstrap
+## Machines
 
-On a fresh NixOS install, build the system before a devShell exists:
+| Machine | What it is |
+| --- | --- |
+| **fern** | x86_64 desktop workstation: Niri and the garden shell, pro audio, development |
+| **yarrow** | Framework Laptop 13 Pro: art, game development and playtesting |
+| work laptop | Ubuntu 24.04 with a standalone home-manager configuration |
+| moss | Apple Silicon laptop (Asahi), currently parked |
 
-```bash
-git clone git@github.com:adanoelle/fern.git ~/src/nix/fern
-cd ~/src/nix/fern
-sudo nixos-rebuild switch --flake .#fern
-```
-
-## Enter the Development Shell
-
-After the first build, enable the devShell (one-time):
-
-```bash
-direnv allow        # auto-activates via .envrc
-```
-
-This gives you `just`, `mdbook`, and `nixpkgs-fmt` on `PATH`.
-
-## Use the Justfile
-
-`just` is the primary command interface. Run `just` with no arguments to list
-all recipes:
-
-```bash
-just                # list recipes
-just switch         # rebuild and switch
-just test           # test without switching
-just update         # update flake inputs
-just fmt            # format Nix files
-just lint           # format then check
-just gc             # garbage-collect old generations
-just book-serve     # serve docs with live reload
-```
-
-## Documentation
-
-The `book/` directory contains an mdBook with detailed guides:
-
-```bash
-just book-serve     # live-reload at localhost:3000
-just book-build     # build to book/build/
-just book-nix       # pure Nix derivation
-```
-
-## Project Structure
+## Layout
 
 ```
 fern/
-├── flake.nix               # Flake definition
-├── flake.lock              # Pinned dependencies
-├── justfile                # Command recipes
-├── flake.parts/            # Modular flake organization
-│   ├── 00-overlay.nix      # Package overlays
-│   ├── 10-core.nix         # Shared flake outputs (systems)
-│   ├── 20-nixos-mods.nix   # NixOS module registry
-│   ├── 30-home-mods.nix    # Home Manager module registry
-│   ├── 40-hosts.nix        # Per-host NixOS configurations
-│   ├── 50-dev.nix          # Development shell
-│   └── 60-docs.nix         # Documentation outputs
-├── hosts/
-│   └── fern/               # Primary workstation
-│       ├── configuration.nix
-│       └── hardware.nix
-├── nix/
-│   ├── modules/            # NixOS system modules
-│   └── home/               # Home Manager user modules
-├── book/                   # mdBook documentation
-├── secrets/                # SOPS-encrypted secrets
-└── CLAUDE.md               # AI assistant context
+├── flake.nix      # inputs + mkFlake over (import-tree ./modules)
+├── justfile       # command recipes (the primary interface)
+├── hosts/         # only generated hardware-configuration files
+├── modules/       # everything else; every .nix here is auto-imported
+├── book/          # mdBook documentation
+├── secrets/       # sops-encrypted secrets
+└── CLAUDE.md      # conventions and safety rules for AI agents
 ```
 
-## Common Workflows
+## Using it
 
-### Edit, test, switch
+On an installed host, from the repository's devShell (`direnv allow`
+once):
 
 ```bash
-hx hosts/fern/configuration.nix
-just test
-just switch
+just              # list recipes
+just check        # nix flake check
+just test         # build and activate without making it the boot default
+just switch       # rebuild and switch
+just rollback     # return to the previous generation
+just book-serve   # documentation with live reload
 ```
 
-### Update dependencies
+Installing a new machine, and running the configuration on a non-NixOS
+distribution, are covered in the book's operations chapters.
 
-```bash
-just update
-just switch
-```
-
-### Recover from a bad build
-
-```bash
-just rollback
-```
-
-## See Also
+## See also
 
 - [NixOS Manual](https://nixos.org/manual/nixos/stable/)
 - [Home Manager Manual](https://nix-community.github.io/home-manager/)
-- [flake-parts](https://flake.parts/)
+- [den](https://github.com/vic/den) and [flake-parts](https://flake.parts/)

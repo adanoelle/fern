@@ -133,7 +133,7 @@ Aspects providing Home Manager user-level configuration.
 | `bitwarden` | `modules/desktop/bitwarden.nix` | Bitwarden desktop app |
 | `zen` | `modules/desktop/zen.nix` | Zen browser (daily driver; xdg default) |
 | `chromium` | `modules/desktop/chromium.nix` | Ungoogled Chromium |
-| `repd-chrome` | `modules/foreign/repd-chrome.nix` | `repd` launcher: system Google Chrome, isolated profile, REPD enclave only (work laptop) |
+| `repd-chrome` | `modules/foreign/repd-chrome.nix` | Isolated launcher for the system Google Chrome, one site only (work laptop) |
 | `thunderbird` | `modules/desktop/thunderbird.nix` | Thunderbird mail (Exchange Online via Microsoft Graph; work laptop only) |
 | `gaming-hm` | `modules/desktop/gaming-hm.nix` | MangoHud, Lutris, ProtonUp |
 | `obs` | `modules/desktop/obs.nix` | OBS Studio |

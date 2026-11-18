@@ -178,3 +178,10 @@ If a question is about the shell's internals, the answer lives there.
 | `modules/user-ada.nix` | `garden.terminal` in the base user layer |
 | `modules/desktop/niri.nix` | Shell startup + IPC keybinds + palette borders |
 | `modules/fonts.nix` | Garden typography (M PLUS 1p, IBM Plex Mono) |
+
+## Design documents
+
+The garden design references, mockups and build plans live in the
+[garden-shell](https://github.com/adanoelle/garden-shell) repository
+(`plan/`), not here. This page documents only how fern consumes the
+shell.

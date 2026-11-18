@@ -45,9 +45,6 @@ CMake and pkg-config find them automatically.
 | `linuxPackages.perf` | Kernel sampling profiler                                       |
 | `flamegraph`         | Flame graph visualization scripts                              |
 
-See the [Profiling Tools](profiling.md) and [GPU Debugging](gpu-debugging.md)
-chapters for usage details.
-
 ## Related: Gaming Module
 
 The system-level gaming module (`modules/gaming.nix`) provides:
@@ -55,9 +52,6 @@ The system-level gaming module (`modules/gaming.nix`) provides:
 - **MangoHud** — FPS/frametime overlay (bundled with Steam)
 - **GameScope** — Valve's micro-compositor for Wayland gaming
 - **GameMode** — Feral Interactive CPU/GPU optimizer
-
-MangoHud is particularly useful for gamedev — see
-[GPU Debugging](gpu-debugging.md).
 
 ## Environment Variables
 

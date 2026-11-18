@@ -1,20 +1,23 @@
-# Work Laptop (Ubuntu + Standalone Home)
+# Standalone Home on Ubuntu (Work Laptop)
 
-> How the ORNL work laptop runs the full niri + garden desktop from this
-> flake on Ubuntu 24.04 — no NixOS install, just a multi-user Nix daemon,
-> a standalone home-manager configuration, and a handful of one-time root
-> files. Ubuntu's GNOME session stays untouched as a fallback.
+> How a machine that must run Ubuntu still gets the niri + garden desktop
+> from this flake: no NixOS install, just a multi-user Nix daemon, a
+> standalone home-manager configuration and a few one-time root files.
+> Ubuntu's GNOME session stays untouched as a fallback.
+>
+> This page describes the pattern. Site-specific detail (network, VPN,
+> authentication, internal hosts) is deliberately kept out of this
+> repository's documentation.
 
 ## How it fits together
 
-ORNL IT requires Ubuntu (24.04 LTS, full-disk encryption with key
-escrow), but grants full sudo. Instead of a `nixosConfiguration`, the
-laptop gets a **standalone den home**:
+The laptop runs Ubuntu 24.04 with sudo available. Instead of a
+`nixosConfiguration` it gets a **standalone den home**, declared in
+`modules/hosts.nix`:
 
 ```nix
-# modules/hosts.nix
-den.homes.x86_64-linux."tyo@LAP155464" = {
-  aspect = "ada";   # ORNL login reuses the ada aspect
+den.homes.x86_64-linux."<user>@<hostname>" = {
+  aspect = "ada";   # the local login reuses the ada aspect
   pkgs = withSystem "x86_64-linux" ({ pkgs, ... }: pkgs);
   instantiate = { pkgs, modules }:
     inputs.home-manager.lib.homeManagerConfiguration {
@@ -25,300 +28,196 @@ den.homes.x86_64-linux."tyo@LAP155464" = {
 ```
 
 - The `"user@host"` key becomes `homeConfigurations."user@host"`, which
-  the `home-manager` CLI auto-selects when it matches `whoami@hostname`.
-- `aspect = "ada"` maps the ORNL user id onto the existing ada aspect;
-  only `homeManager` sides of aspects evaluate (nixos sides are ignored).
-- `pkgs`/`instantiate` are overridden because den's defaults use plain
-  nixpkgs (no claude-code overlay, no allowUnfree) and pass no
-  `extraSpecialArgs` (devtools/devenv.nix needs `inputs`).
-- den's `mutual-provider` (wired for homes via `ctx.home.includes` in
-  `modules/dendritic.nix`) routes `den.aspects.ada.provides."LAP155464"`
-  into the home — this is where the **ada-work** layer attaches
-  (`modules/user-ada-work.nix`): dev toolchain + niri + garden shell,
-  deliberately without ada-desktop (no hyprland/DAW/gaming).
+  the `home-manager` CLI selects automatically when it matches
+  `whoami@hostname`.
+- `aspect = "ada"` maps the local user onto the existing ada aspect.
+  Only the `homeManager` sides of aspects are evaluated; `nixos` sides
+  are ignored.
+- `pkgs` and `instantiate` are overridden because den's defaults use
+  plain nixpkgs (no overlays, no unfree) and pass no `extraSpecialArgs`,
+  and several home modules take `inputs`.
+- den's mutual provider (wired for homes through `ctx.home.includes` in
+  `modules/dendritic.nix`) routes
+  `den.aspects.ada.provides."<hostname>"` into the home. That is where
+  the **ada-work** layer attaches (`modules/user-ada-work.nix`): the dev
+  toolchain, niri, the garden shell and the work applications.
 
-Aspects specific to the foreign distro:
+Aspects specific to a foreign distribution:
 
 - **niri-standalone** (`modules/desktop/niri-standalone.nix`) imports
-  niri-flake's *home* module once at home level (there is no NixOS-side
-  bridge here) and reuses the shared `den.aspects.niri` settings —
-  keybinds, workspaces, swayidle, garden IPC — verbatim.
+  niri-flake's *home* module once at home level (there is no NixOS side
+  here) and reuses the shared `den.aspects.niri` settings unchanged.
 - **ubuntu-desktop** (`modules/foreign/ubuntu-desktop.nix`) does the
-  foreign-distro heavy lifting:
-  - `targets.genericLinux` + **nixGL**: `programs.niri.package` is
+  foreign-distro work:
+  - `targets.genericLinux` and **nixGL**: `programs.niri.package` is
     wrapped with the mesa wrapper. The compositor is the root of the
-    session tree, so quickshell, kitty, xwayland-satellite and firefox
-    all inherit the GL environment. `nixGLMesa` is installed for ad-hoc
-    wrapping. If niri-flake's sandboxed `niri validate` ever breaks on
-    the wrapped package, fall back to plain `pkgs.niri` and override
-    `niri.service`'s ExecStart with `nixGLMesa niri --session`.
-  - links the wrapped package's `niri.service` / `niri-shutdown.target`
-    into `~/.config/systemd/user` (Ubuntu's systemd doesn't search the
-    Nix profile for units),
-  - installs `~/.local/bin/niri-session-shim`, the stable Exec target
-    for the root-owned GDM session file (it bootstraps the Nix env
-    before `exec niri-session`),
-  - routes portals to Ubuntu's system `xdg-desktop-portal`
-    (`niri-portals.conf`: gtk first, gnome for screencast).
-- **ada-work** overrides the brightness keys to `brightnessctl` (the
-  shared niri aspect binds `ddcutil`, which is DDC/CI for external
-  monitors only — laptop panels need sysfs backlight).
+    session, so everything started from it inherits the GL environment.
+  - It links the wrapped package's `niri.service` and
+    `niri-shutdown.target` into `~/.config/systemd/user`, because
+    Ubuntu's systemd does not search the Nix profile for units.
+  - It installs `~/.local/bin/niri-session-shim`, the stable `Exec`
+    target for the root-owned display-manager session file. The shim
+    loads the Nix environment before `exec niri-session`.
+  - It routes portals to Ubuntu's system `xdg-desktop-portal`.
+- **docker-rootless** (`modules/foreign/docker-rootless.nix`) runs
+  `dockerd` as a systemd user service: no root daemon, no `docker`
+  group.
+- **ada-work** overrides a few shared niri binds for the laptop (panel
+  brightness through `brightnessctl`, its own channel layout) and
+  disables the idle lock; see "Known rough edges".
 
-The ORNL user id (`tyo`) and hostname (`LAP155464`) are baked into
-`modules/hosts.nix`, `modules/user-ada-work.nix`, and the work git
-identity in `modules/user-ada.nix`.
+## One-time root files
 
-## One-time root checklist (Ubuntu)
+Everything root-owned on the Ubuntu side. Steps 1 and 2 come before the
+first switch; step 4 after it, because it points at a file the switch
+creates.
 
-Everything root-owned on the Ubuntu side, in order. Steps 1–2 come
-before the first switch; steps 4–5 after it (they reference files the
-switch creates).
-
-1. **Multi-user Nix** — use the Determinate installer (flakes enabled by
-   default). If ORNL intercepts TLS, point `ssl-cert-file` in
-   `/etc/nix/nix.conf` at the corporate CA bundle.
-2. **`/etc/nix/nix.conf`** — add:
-
-   ```
-   trusted-users = root tyo
-   extra-substituters = https://niri.cachix.org https://nix-community.cachix.org
-   extra-trusted-public-keys = niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=
-   ```
-
-   then `sudo systemctl restart nix-daemon`.
-3. **First `home-manager switch`** — see the runbook below. Must happen
-   before step 4 so `~/.local/bin/niri-session-shim` exists.
+1. **Multi-user Nix**, with flakes enabled. If the network intercepts
+   TLS, point `ssl-cert-file` in `/etc/nix/nix.conf` at the site's CA
+   bundle.
+2. **`/etc/nix/nix.conf`**: add the user to `trusted-users` and the
+   niri and nix-community caches to `extra-substituters` (with their
+   public keys), then `sudo systemctl restart nix-daemon`.
+3. **First `home-manager switch`**; see the next section.
 4. **`/usr/share/wayland-sessions/niri.desktop`**:
 
    ```ini
    [Desktop Entry]
    Name=Niri (garden)
    Comment=Scrollable-tiling Wayland compositor (Nix-managed)
-   Exec=/home/tyo/.local/bin/niri-session-shim
+   Exec=/home/<user>/.local/bin/niri-session-shim
    Type=Application
    DesktopNames=niri
    ```
 
-   GDM picks this up next to Ubuntu's GNOME session; GNOME is untouched.
-5. **`/etc/pam.d/swaylock`** — the garden lock screen's PamContext uses
-   the `swaylock` service name (auth-only stack):
+   GDM offers this next to the GNOME session.
+5. *Optional, docked external monitors*: load `i2c-dev`, create an `i2c`
+   group with a udev rule for `/dev/i2c-*` and add the user, for
+   `ddcutil` brightness control.
+6. **apt-side dependencies**, all present on a default Ubuntu desktop:
+   `xdg-desktop-portal` with the gtk and gnome backends, PipeWire and
+   WirePlumber (`wpctl` drives the volume keys).
 
-   ```
-   auth include common-auth
-   ```
+### Rootless Docker
 
-6. *Optional (docked external monitors)*: load `i2c-dev`
-   (`/etc/modules-load.d/i2c.conf`), create an `i2c` group with a udev
-   rule for `/dev/i2c-*`, and add the user — enables `ddcutil`
-   brightness control.
-7. *Optional*: add the Nix-profile `fish` to `/etc/shells` and `chsh`.
-   Recommended: keep bash as the login shell initially — the GDM session
-   choice is shell-independent and kitty launches fish itself.
-8. **Verify apt-side deps** (all present on a default Ubuntu GNOME
-   install): `xdg-desktop-portal` + gtk/gnome backends, PipeWire +
-   WirePlumber (`wpctl` drives the volume binds).
-9. *Optional (containers — rootless Docker)*: the home config runs
-   `dockerd` rootless as a systemd user service
-   (`modules/foreign/docker-rootless.nix`, included by ada-work); no
-   root daemon, no `docker` group. First deployed 2026-08-10 for
-   theodolite's DeGAUSS comparative benchmark
-   ([adanoelle/theodolite#16](https://github.com/adanoelle/theodolite/pull/16)),
-   which runs the DeGAUSS geocoder container through this daemon.
-   Root-side prerequisites:
+Root-side prerequisites for the `docker-rootless` aspect:
 
-   ```bash
-   sudo apt install uidmap dbus-user-session
-   grep tyo /etc/subuid /etc/subgid   # verify subordinate id ranges exist
-   # if absent (ORNL-provisioned user):
-   sudo usermod --add-subuids 100000-165535 --add-subgids 100000-165535 tyo
-   ```
+```bash
+sudo apt install uidmap dbus-user-session
+grep "$USER" /etc/subuid /etc/subgid   # subordinate id ranges must exist
+# if absent:
+sudo usermod --add-subuids 100000-165535 --add-subgids 100000-165535 "$USER"
+```
 
-   **apt unreachable?** ORNL wires apt to an internal mirror that only
-   resolves on the lab network. `dbus-user-session` is preinstalled on
-   Ubuntu desktop; the only thing `uidmap` actually provides is setuid
-   `newuidmap`/`newgidmap`, and Nix can supply those. The Nix store
-   cannot hold setuid binaries (this is what NixOS's `/run/wrappers`
-   solves), so install setuid *copies* by hand — they only dlopen
-   world-readable store libs via rpath, so copies run fine:
+**If apt is unreachable**, Nix can supply what `uidmap` provides. The
+store cannot hold setuid binaries, so install setuid *copies* by hand;
+they only load world-readable store libraries, so copies work:
 
-   ```bash
-   nix build --inputs-from ~/src/fern 'nixpkgs#shadow' -o /tmp/nix-shadow
-   sudo install -m 4755 -o root -g root "$(readlink -f /tmp/nix-shadow)/bin/newuidmap" /usr/local/bin/newuidmap
-   sudo install -m 4755 -o root -g root "$(readlink -f /tmp/nix-shadow)/bin/newgidmap" /usr/local/bin/newgidmap
-   ```
+```bash
+nix build --inputs-from ~/src/fern 'nixpkgs#shadow' -o /tmp/nix-shadow
+sudo install -m 4755 -o root -g root "$(readlink -f /tmp/nix-shadow)/bin/newuidmap" /usr/local/bin/newuidmap
+sudo install -m 4755 -o root -g root "$(readlink -f /tmp/nix-shadow)/bin/newgidmap" /usr/local/bin/newgidmap
+```
 
-   The docker user unit's PATH includes `/usr/local/bin` for exactly
-   this. `usermod` itself is in Ubuntu's base `passwd` package (always
-   present), so the subuid/subgid step above works regardless.
+The docker user unit's `PATH` includes `/usr/local/bin` for this reason.
 
-   Ubuntu 24.04 restricts unprivileged user namespaces via AppArmor,
-   so the Nix-store `rootlesskit` needs a profile — the glob attachment
-   survives store-path changes across flake updates
-   (`/etc/apparmor.d/nix-rootlesskit`):
+Ubuntu 24.04 restricts unprivileged user namespaces through AppArmor, so
+the Nix-store `rootlesskit` needs a profile. The glob keeps working when
+the store path changes (`/etc/apparmor.d/nix-rootlesskit`):
 
-   ```
-   abi <abi/4.0>,
-   include <tunables/global>
+```
+abi <abi/4.0>,
+include <tunables/global>
 
-   profile nix-rootlesskit /nix/store/*/bin/rootlesskit flags=(unconfined) {
-     userns,
-     include if exists <local/nix-rootlesskit>
-   }
-   ```
+profile nix-rootlesskit /nix/store/*/bin/rootlesskit flags=(unconfined) {
+  userns,
+  include if exists <local/nix-rootlesskit>
+}
+```
 
-   then `sudo apparmor_parser -r /etc/apparmor.d/nix-rootlesskit`.
-   After the next `home-manager switch`, verify:
+Then `sudo apparmor_parser -r /etc/apparmor.d/nix-rootlesskit`, and
+after the next switch:
 
-   ```bash
-   systemctl --user status docker
-   docker info | grep -i rootless   # DOCKER_HOST is set by the home config
-   docker run --rm hello-world
-   ```
+```bash
+systemctl --user status docker
+docker info | grep -i rootless   # DOCKER_HOST is set by the home config
+docker run --rm hello-world
+```
 
-   (New login shells pick up `DOCKER_HOST`; existing ones need
-   `export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock`.)
-10. **Google Chrome for the REPD enclave** — the enclave admins want the
-    REPD portal opened in Chrome. Install it from Google's apt repo, not
-    from Nix: Ubuntu 24.04 sets
-    `kernel.apparmor_restrict_unprivileged_userns=1`, so a Chromium-family
-    browser only gets its sandbox with a root-owned SUID helper or an
-    AppArmor profile granting `userns`. Google's `.deb` ships the SUID
-    helper and Ubuntu ships `/etc/apparmor.d/chrome` for
-    `/opt/google/chrome/chrome`; a Nix-store Chrome would have neither
-    and would have to run `--no-sandbox` (acceptable for Teams/Obsidian,
-    not for an enclave browser).
+### Chromium-family browsers come from apt, not Nix
 
-    ```bash
-    wget -qO- https://dl.google.com/linux/linux_signing_key.pub \
-      | sudo gpg --dearmor -o /etc/apt/keyrings/google-chrome.gpg
-    echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/google-chrome.gpg] https://dl.google.com/linux/chrome/deb/ stable main" \
-      | sudo tee /etc/apt/sources.list.d/google-chrome.list
-    sudo apt update && sudo apt install google-chrome-stable
-    ```
+The same AppArmor restriction means a Chromium-family browser only gets
+its sandbox with a root-owned SUID helper or an AppArmor profile that
+grants `userns` to a fixed path. Vendor `.deb` packages ship both; a
+Nix-store binary can have neither and would have to run `--no-sandbox`.
+So the daily browser is Zen (Firefox-based, from Nix), and where a
+Chrome is required it is installed from the vendor's apt repository and
+only *launched* from Nix; see [Browsers](../desktop/browsers.md).
 
-    Everything around it is Nix-managed
-    (`modules/foreign/repd-chrome.nix`, included by ada-work): the `repd`
-    launcher runs `/opt/google/chrome/google-chrome` with its own
-    `--user-data-dir` (`~/.local/share/repd-chrome`) and app-id
-    `repd-chrome`, so the enclave profile shares nothing with the daily
-    browser and Chrome is used for nothing else. It checks the
-    GlobalProtect VPN first (`globalprotect show --status`; connects
-    interactively from a terminal, warns from the launcher), strips the
-    session's nixGL `LD_LIBRARY_PATH` so Chrome loads Ubuntu's mesa,
-    and is not registered as an http(s) handler. Login flow inside the
-    browser is unchanged: RSA SecurID PIN+token, then username/password.
+## First deploy
 
-    KDI's Horizon portal (`kdivdi.ornl.gov`) sends only its leaf
-    certificate, which Chrome rejects with `ERR_CERT_AUTHORITY_INVALID`
-    (curl and openssl are fine: they use Ubuntu's store, where ORNL IT
-    installs the intermediates). The aspect's activation step adds the
-    two missing intermediates to `~/.pki/nssdb`, Chrome's own
-    certificate db, as untrusted (`,,`) so Chrome can complete the
-    chain to a root it already trusts. Check with
-    `certutil -L -d sql:$HOME/.pki/nssdb` (certutil is in
-    `nixpkgs#nss.tools`).
-
-    Verify:
-
-    ```bash
-    repd                       # from a terminal: VPN check, then Chrome
-    ls ~/.local/share/repd-chrome/Default    # isolated profile exists
-    ```
-
-    Fallback if IT refuses the apt install: `pkgs.google-chrome` plus a
-    root-installed SUID helper via `CHROME_DEVEL_SANDBOX` (Chromium
-    documents it as a slightly weaker sandbox, and it needs root
-    attention when the helper's API version changes). Not implemented.
-
-## First-deploy runbook (on the laptop)
-
-1. Root steps 1–2, then log out/in so the nix profile scripts load.
-2. Clone:
-
-   ```bash
-   mkdir -p ~/src/work
-   git clone https://github.com/adanoelle/fern ~/src/fern
-   ```
-
-3. Keys (manual — sops provisioning is nixos-side only):
-
-   ```bash
-   ssh-keygen -t ed25519 -f ~/.ssh/ornl
-   # register with ORNL git hosting; optionally provision ~/.ssh/github
-   ```
-
-   Database connections are manual too, and stay out of this public repo
-   (`modules/cli/postgres.nix` installs only the client). Name each one in
-   `~/.pg_service.conf` (host, port, dbname, user) and give its password in
-   `~/.pgpass`, using the same host string in both:
-
-   ```bash
-   $EDITOR ~/.pg_service.conf ~/.pgpass
-   chmod 600 ~/.pgpass   # libpq ignores a .pgpass others can read
-   psql service=<name> -c 'select current_user'
-   ```
-
-   Object stores are the same (`modules/cli/rustfs.nix` installs only
-   `rc`). Give each one an alias, which may not start with a digit. The
-   first alias creates `~/.config/rc/config.toml`, readable by its owner
-   only. Start the line with a space so the keys stay out of fish's
-   history:
-
-   ```bash
-    rc alias set <alias> <endpoint-url> <access-key> <secret-key>
-   rc alias list
-   rc ls <alias>
-   ```
-
-4. Bootstrap the home (no `home-manager` on PATH yet):
+1. Root steps 1 and 2, then log out and in so the Nix profile scripts
+   load.
+2. Clone the flake to `~/src/fern`.
+3. Create SSH keys and service credentials by hand. sops provisioning
+   is NixOS-side only, and connection details (database services, object
+   store aliases) stay out of this repository: the modules install the
+   clients, and the configuration lives in the usual per-user files
+   (`~/.pg_service.conf`, `~/.pgpass`, `~/.config/rc/config.toml`).
+4. Bootstrap the home, since `home-manager` is not on `PATH` yet:
 
    ```bash
    cd ~/src/fern
-   nix build '.#homeConfigurations."tyo@LAP155464".activationPackage'
+   nix build ".#homeConfigurations.\"$USER@$(hostname)\".activationPackage"
    ./result/activate
    ```
 
-   On file collisions, move the offender aside (or re-run activation
-   with `HOME_MANAGER_BACKUP_EXT=backup`). From then on:
+   On file collisions, move the offender aside, or re-run with
+   `HOME_MANAGER_BACKUP_EXT=backup`. From then on:
 
    ```bash
-   home-manager switch --flake ~/src/fern   # auto-selects id@host
+   home-manager switch --flake ~/src/fern   # selects user@host itself
    ```
 
-5. Root steps 4–5, then `systemctl --user daemon-reload`.
-6. Log out → GDM → "Niri (garden)". Verify:
+5. Root step 4, then `systemctl --user daemon-reload`.
+6. Log out and choose "Niri (garden)" in GDM. Check:
    - `niri msg outputs` and `systemctl --user status niri.service`
-   - garden bar renders; `Mod+Slash` opens the launcher
+   - the garden bar renders; `Mod+Slash` opens the launcher
    - `nixGLMesa glxinfo | grep renderer` shows the real GPU
-   - `Mod+S` screenshot flow; lock (`Mod+Alt+L`) and PAM unlock
-   - brightness keys (panel via brightnessctl)
+   - the `Mod+S` screenshot flow and the brightness keys
    - `git -C ~/src/work/<repo> config user.email` shows the work identity
-   - Ubuntu's GNOME session still boots
+   - Ubuntu's GNOME session still starts
+
+## Day to day
+
+```bash
+home-manager switch --flake ~/src/fern
+home-manager expire-generations now && nix-collect-garbage -d
+```
+
+The `just` system recipes (`just switch`, `just test`) call `nh os …`
+and are for NixOS hosts; they do not apply here.
+
+Bumping the shared nixpkgs pin is expensive on this machine: packages
+built through the flake's overlays are not in the public cache, so a
+bump has meant several hundred local source builds. When one package
+needs to be newer, take it from a separate, non-following nixpkgs input
+instead (see the `nixpkgs-uv` and `nixpkgs-thunderbird` inputs in
+`flake.nix`).
 
 ## Known rough edges
 
-- **Lock screen is manual VT-switch only**: neither garden lock nor
-  swaylock can authenticate with the ORNL YubiKey/PKCS#11 PAM stack.
-  Garden's `PamContext` can't drive multi-step PAM conversations;
-  swaylock's Nix-packaged libpam can't talk to the host `pam_pkcs11`.
-  swayidle is disabled and `Mod+Alt+L` is a no-op. **Lock by pressing
-  `Ctrl+Alt+F1`** (VT-switch to GDM greeter, which handles YubiKey
-  auth natively, then returns to the Niri session on tty2). Automated
-  idle lock would require `sudo chvt 1`, but CFEngine manages sudoers
-  on this machine. See `work-laptop-preflight.md` for full history.
-- Panel brightness may need the user in the `video` group (or a udev
-  rule) for sysfs backlight writes; garden's BrightnessService is
-  DDC-only, so the panel OSD won't track brightnessctl yet.
-- Portal quirks: `xdg-desktop-portal-gnome` under
-  `XDG_CURRENT_DESKTOP=niri` is lightly tested; screencast is untested.
-  Watch for a gnome-keyring double-daemon (Ubuntu autostarts one; the
-  home config also enables the HM service).
-- `LD_LIBRARY_PATH` from the nixGL-wrapped compositor is inherited by
-  everything in the session, including Ubuntu-native apps launched from
-  it. If a native app misbehaves, launch it with a clean env (or wrap it
-  per-app instead).
-- ORNL network: TLS interception can break substituters for the daemon
-  (root checklist step 1); check whether IT policy prefers the snap
-  Firefox over the Nix one. The daily browser is now Zen (Nix, via
-  `den.aspects.zen`); the Nix Firefox stays installed as a fallback
-  until the migration settles.
+- **Lock screen**: the garden lock and swaylock both authenticate
+  through PAM from inside the Nix closure, which cannot drive a host PAM
+  stack that needs multi-step or hardware-token conversations. On such a
+  machine the idle lock is disabled and `Mod+Alt+L` is unbound; lock by
+  switching to the display manager's VT (`Ctrl+Alt+F1`), which uses the
+  host stack natively.
+- **Inherited `LD_LIBRARY_PATH`**: everything in the session inherits
+  the nixGL environment, including Ubuntu-native applications launched
+  from it. If one misbehaves, start it with a clean environment.
+- **Portals**: `xdg-desktop-portal-gnome` under
+  `XDG_CURRENT_DESKTOP=niri` is lightly tested; screencasting is
+  untested.
+- **Network**: TLS interception can break substituters for the daemon
+  (root step 1).

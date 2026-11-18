@@ -7,28 +7,28 @@
 
 The `git-identities` aspect (`modules/git/identities.nix`) defines
 `programs.gitIdentities` options that generate Git `includeIf` directives. When
-you `cd` into a project under `/home/ada/personal/`, Git automatically uses your
-personal identity. Under `/home/ada/work/`, it uses your work identity.
+you work in a repository under `~/src`, Git uses the personal identity; under
+`~/src/work` or `~/work`, it uses the work identity.
 
 ## Configuration
 
 Identities are set in the user aspect:
 
 ```nix
-# modules/user-ada.nix (excerpt)
+# modules/user-ada.nix (shape; see the file for the real values)
 programs.gitIdentities.identities = {
   personal = {
-    name = "adanoelle";
-    email = "adanoelleyoung@gmail.com";
-    directory = "/home/ada/personal/";
-    signingKey = "/home/ada/.ssh/github";
+    name = "<github-user>";
+    email = "<personal-address>";
+    directory = "~/src";
+    signingKey = "~/.ssh/<personal-key>";
   };
   work = {
-    name = "youngt0dd";
-    email = "todd.young@pinnaclereliability.com";
-    directory = "/home/ada/work/";
-    signingKey = "/home/ada/.ssh/github-work";
-    sshCommand = "ssh -i /home/ada/.ssh/github-work -o IdentitiesOnly=yes";
+    name = "<work-user>";
+    email = "<work-address>";
+    directory = "~/src/work";
+    signingKey = "~/.ssh/<work-key>";
+    sshCommand = "ssh -i ~/.ssh/<work-key> -o IdentitiesOnly=yes";
   };
 };
 ```

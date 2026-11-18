@@ -1,10 +1,10 @@
 # Mail
 
-> Thunderbird, on the ORNL work laptop only, talking to the Exchange
+> Thunderbird, on the work laptop only, talking to the Exchange
 > Online mailbox through the Microsoft Graph API. Chosen because it is the
 > one shipped, non-beta Graph client on Linux and the only route that
 > survives Microsoft's EWS shutdown without depending on IMAP staying
-> enabled in the tenant. Nothing is configured on fern or moss yet.
+> enabled in the tenant. Nothing is configured on the NixOS hosts yet.
 
 ## Why Graph, and why Thunderbird
 
@@ -19,7 +19,7 @@ A local client reaches Exchange Online through one of three doors:
 Thunderbird 154 (September 2026) added native Graph support for Microsoft
 365 mail. Calendar and address book over Graph are still in development,
 so meeting invites stay on the web or in Teams for now. Every client also
-needs the ORNL tenant to accept its OAuth2 app registration, which you
+needs the tenant to accept its OAuth2 app registration, which you
 only find out at first sign-in.
 
 ## Thunderbird (`den.aspects.thunderbird`)
@@ -27,20 +27,20 @@ only find out at first sign-in.
 `modules/desktop/thunderbird.nix`, included by `ada-work`. Declares a
 default `work` profile with update nags, telemetry, and the start page
 off, remote content left at Thunderbird's default (blocked), and
-`mailto:` links routed to Thunderbird. A niri rule puts it on the
-research workspace.
+`mailto:` links routed to Thunderbird. The work layer pins it to its
+comms channel.
 
 The account is **not** declared in Nix: Graph sign-in is interactive
 and the OAuth tokens belong in the profile. First run:
 
 1. Account Settings → Account Actions → Add Mail Account.
-2. Enter the ORNL address; Thunderbird detects Microsoft 365 and offers
+2. Enter the work address; Thunderbird detects Microsoft 365 and offers
    **Microsoft Graph**. Pick it, not Exchange/EWS and not IMAP.
 3. Sign in through the Microsoft page (same Entra ID + MFA as Outlook
    web).
 
 If the sign-in ends in "needs admin approval", the tenant blocks
-Thunderbird's default app registration. Options, in order: ask ORNL IT to
+Thunderbird's default app registration. Options, in order: ask IT to
 grant consent for Thunderbird's client id; or register your own app in
 Entra ID (if user app registration is allowed) and use the manual Graph
 setup with that client and tenant id, per the
@@ -70,5 +70,5 @@ the `package` line in the aspect.
 
 | File | Purpose |
 | ---- | ------- |
-| `modules/desktop/thunderbird.nix` | Thunderbird profile, prefs, mailto handler, niri rule |
+| `modules/desktop/thunderbird.nix` | Thunderbird profile, prefs, mailto handler |
 | `modules/user-ada-work.nix` | includes the aspect (laptop only) |
