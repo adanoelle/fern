@@ -101,25 +101,23 @@ include `garden.terminal` or `garden.shell`. What those contain is in
 [The Garden Shell](../desktop/garden.md). garden-shell's palette is also
 read directly as `inputs.garden-shell.lib.palette` by several aspects.
 
-## Overlays: declared in two places
+## Overlays: one list, two package sets
 
-There are two package sets, and each lists its own overlays.
+There are two package sets, and both take their overlays from one file,
+`modules/_lib/overlays.nix`.
 
 | | `modules/core.nix` | `modules/overlays.nix` |
 | - | ------------------ | ---------------------- |
 | Configures | `nixpkgs.overlays` and `allowUnfree` of each NixOS host | the flake-parts `perSystem` `pkgs` |
 | Used by | fern, yarrow (system, and Home Manager through `useGlobalPkgs`) | the dev shell, the book package, and the work laptop's standalone home, which reuses it via `withSystem` in `modules/hosts.nix` |
-| Overlays | rust-overlay, claude-code | rust-overlay, claude-code, and an inline overlay setting `pkgs.herdr` from the `herdr` input |
+
+The shared list holds rust-overlay, claude-code and an inline overlay
+that sets `pkgs.herdr` from the `herdr` input. Add a new overlay there,
+not in either consumer, so an aspect sees the same package on NixOS as
+on the standalone home.
 
 `modules/overlays.nix` also sets the flake's `systems` (x86_64-linux and
 aarch64-linux).
-
-The two lists are not kept in sync automatically. An overlay that
-aspects rely on must be added to both, or the aspect will see a
-different package on NixOS than on the standalone home. That is
-currently the case for herdr: the overlay exists only in
-`modules/overlays.nix`, so on the NixOS hosts `pkgs.herdr` resolves to
-the nixpkgs package rather than the flake input.
 
 ## perSystem outputs
 

@@ -20,10 +20,7 @@
       { lib, ... }:
       {
         nixpkgs.config.allowUnfree = true;
-        nixpkgs.overlays = [
-          inputs.rust-overlay.overlays.default
-          inputs.claude-code.overlays.default
-        ];
+        nixpkgs.overlays = import ./_lib/overlays.nix inputs;
         nix.settings.experimental-features = [
           "nix-command"
           "flakes"

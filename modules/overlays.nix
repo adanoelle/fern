@@ -13,13 +13,7 @@
       _module.args.pkgs = import inputs.nixpkgs {
         inherit system;
         config.allowUnfree = true;
-        overlays = [
-          inputs.rust-overlay.overlays.default
-          inputs.claude-code.overlays.default
-          (final: _prev: {
-            herdr = inputs.herdr.packages.${final.stdenv.hostPlatform.system}.default;
-          })
-        ];
+        overlays = import ./_lib/overlays.nix inputs;
       };
     };
 }
