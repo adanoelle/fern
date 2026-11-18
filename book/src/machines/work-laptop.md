@@ -85,7 +85,7 @@ not take the `desktop-apps` bundle as a whole.
 
 | Aspect | What it brings |
 | --- | --- |
-| `ada-dev` | the `devtools` bundle, as on [fern](fern.md#user-layers-it-forwards). Only home sides apply, so the system Docker daemon is replaced by `docker-rootless` |
+| `ada-dev` | the `devtools` bundle, as on [fern](fern.md#user-layers-it-forwards). Only home sides apply. Docker here is `docker-rootless`; the system daemon comes from the `workstation` role on NixOS hosts |
 | `niri-standalone`, `ubuntu-desktop`, `docker-rootless` | described above |
 | `garden.shell` | the garden shell bundle, which brings the garden terminal stack with it; see [Garden](../desktop/garden.md) |
 | `fonts` | the font set, installed into the home profile |

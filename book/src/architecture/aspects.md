@@ -162,13 +162,9 @@ The rule when adding an include:
   the `devtools` bundle, and the two should not overlap.
 - If a diamond is intended, add a `key`.
 
-One overlap exists without a key at the time of writing: `docker` is in
-both the `workstation` role and the `devtools` bundle, so on fern its
-module is applied twice (the daemon's `extraOptions` reads
-`--experimental --experimental` and its packages are listed twice).
-Likewise `niri`, listed in both `includes` and `provides.to-users`, has
-its `nixos` side applied twice; it sets no list option that is sensitive
-to that.
+One overlap exists without a key: `niri`, listed in both `includes` and
+`provides.to-users`, has its `nixos` side applied twice. It sets no
+list option that is sensitive to that.
 
 ## Upstream modules are imported once, at host level
 

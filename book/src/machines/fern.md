@@ -49,7 +49,7 @@ base `ada` aspect that every machine gets
 | Layer | What it brings | Why here |
 | --- | --- | --- |
 | `ada-desktop` | the `desktop-apps` bundle (Zen, Chromium, screenshot tools, imv, PDF tools, Bitwarden) and the garden terminal stack | every graphical machine; see [Browsers](../desktop/browsers.md), [Garden](../desktop/garden.md), [Terminals](../terminal/terminals.md), [Password manager](../security/password-manager.md) |
-| `ada-dev` | the `devtools` bundle: Docker, [Rust](../toolchains/rust.md), [Node/TypeScript](../toolchains/typescript-node.md), [C/C++](../toolchains/c-cpp.md), [Python](../toolchains/python.md), and [Ada, Zig and the VM host](../toolchains/other.md) | development machine |
+| `ada-dev` | the `devtools` bundle: [Rust](../toolchains/rust.md), [Node/TypeScript](../toolchains/typescript-node.md), [C/C++](../toolchains/c-cpp.md), [Python](../toolchains/python.md), and [Ada, Zig and the VM host](../toolchains/other.md) | development machine |
 | `niri` | the Niri settings, keybinds and idle lock | forwarded by the host, not by the desktop bundle, because its options exist only where the niri-flake module is imported |
 | `brightness-ddc` | brightness keys through `ddcutil` (DDC/CI); its system side enables `hardware.i2c` | external monitors have no sysfs backlight |
 | `ada-hyprland` | the Hyprland session and its settings | fallback session; see [Hyprland](../desktop/hyprland.md) |
