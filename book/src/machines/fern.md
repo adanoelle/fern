@@ -64,8 +64,9 @@ painted wallpaper ([Wallpaper](../desktop/wallpaper.md)) is included
 only by the work-laptop layer today, so fern's Niri session does not
 have it.
 
-`obs` builds OBS with `cudaSupport = true` (`modules/desktop/obs.nix`),
-although fern's GPU is AMD.
+`obs` is the stock nixpkgs OBS with capture plugins
+(`modules/desktop/obs.nix`). Hardware encoding on fern's AMD GPU goes
+through VA-API, which the `obs-vaapi` plugin provides.
 
 ## Hardware facts in the host aspect
 
