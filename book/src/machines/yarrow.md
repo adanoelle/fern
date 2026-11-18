@@ -95,7 +95,7 @@ of `audio-laptop`; see [Audio](../services/audio.md).
 
 | Left out | Why | To add it |
 | --- | --- | --- |
-| OBS | `modules/desktop/obs.nix` builds OBS with CUDA support, which this machine does not want | change that build first, then forward `obs` |
+| OBS | not wanted yet | one line in `provides.to-users.includes`: forward `obs` |
 | Full `music` layer | `game-audio` is the light set a laptop can take alone; the DAWs and plugin collection can follow later | one line in `provides.to-users.includes` |
 | `audio-studio` | it trades power for latency (performance governor, pinned quantum) | not for a machine on battery; use `studio-mode` |
 | Fingerprint reader | nixos-hardware turns `fprintd` on; it is forced off until it has been tried with tuigreet and the garden lock screen, where PAM would wait on the reader before accepting a password | remove the `services.fprintd.enable = false` line, then `fprintd-enroll` |

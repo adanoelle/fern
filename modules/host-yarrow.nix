@@ -22,8 +22,7 @@
       den.aspects.niri
     ];
 
-    # No OBS (its build here assumes CUDA) or full music layer: add them
-    # when they are wanted.
+    # No OBS or full music layer: add them when they are wanted.
     provides.to-users.includes = [
       # The desktop core, taken as its two halves instead of through
       # ada-desktop: the applications, and the whole garden shell (QML,
