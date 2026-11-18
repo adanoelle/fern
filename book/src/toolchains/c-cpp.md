@@ -61,8 +61,9 @@ Only `cpp` is overridden; C files use Helix's built-in language entry.
 `bear` is installed for generating `compile_commands.json` from build
 systems that cannot emit one.
 
-The debugger entry in `modules/cli/helix.nix` names `lldb-vscode`; the
-`lldb` package in the current pin ships that adapter as `lldb-dap`.
+Debugging in Helix needs no configuration here: its built-in entries
+for C, C++, Rust and Zig use the `lldb-dap` adapter, which the `lldb`
+package above provides. `hx --health cpp` shows whether it is found.
 
 ## direnv
 
@@ -76,4 +77,4 @@ printing the environment diff.
 | ---------------------------- | ------------------------------------------- |
 | `modules/devtools/c-cpp.nix` | Packages, flags, Helix C++ config, direnv   |
 | `modules/devtools/bundle.nix`| Includes the aspect in `devtools`           |
-| `modules/cli/helix.nix`      | Base Helix config and debugger entry        |
+| `modules/cli/helix.nix`      | Base Helix config                           |

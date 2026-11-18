@@ -17,23 +17,26 @@ noted below.
 | Side         | What it sets |
 | ------------ | ------------ |
 | NixOS        | `gnat13`, `gprbuild`, `alire`; `ADA_PROJECT_PATH="$HOME/.config/ada_project_path"` |
-| home-manager | `alire`; Helix language server `ada_ls` (command `ada_language_server`) for the `ada` language |
+| home-manager | `alire` |
 
 - The compiler and `gprbuild` are on the NixOS side only, so the work
   laptop gets Alire alone.
 - `ADA_PROJECT_PATH` is likewise NixOS-only. Nothing in the repository
   creates the directory it names.
-- No module installs `ada_language_server`, and the pinned nixpkgs has
-  no package for it, so the Helix entry has no effect until the binary
-  is put on `PATH` by other means.
+- There is no Ada language server. Helix's built-in `ada` entry looks
+  for `ada_language_server` on `PATH`, and the pinned nixpkgs has no
+  package for it, so editing Ada in Helix has highlighting only until
+  the binary is installed by other means.
 - `gnat13` is x86_64-only, one of the reasons [moss](../machines/moss.md)
   is parked.
 
 ## Zig
 
-`modules/devtools/zig.nix` is home-manager only and installs `pkgs.zig`
-from the shared pin. There is no language server and no Helix
-configuration in the aspect.
+`modules/devtools/zig.nix` is home-manager only and installs `zig` and
+its language server `zls` from the shared pin, which keeps the two at
+the same version (zls requires that). The aspect has no Helix
+configuration: the built-in `zig` entry finds `zls`, formats with
+`zig fmt` and debugs with `lldb-dap`.
 
 ## Virtual machines (`vm-host`)
 

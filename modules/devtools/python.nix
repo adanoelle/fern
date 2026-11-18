@@ -42,9 +42,14 @@ in
             {
               name = "python";
               language-servers = [ "pyright" ];
+              # black reading stdin, not blackd: that is black's HTTP
+              # daemon, and it needs aiohttp, which this build lacks.
               formatter = {
-                command = "blackd";
-                args = [ "-" ];
+                command = "black";
+                args = [
+                  "--quiet"
+                  "-"
+                ];
               };
             }
           ];

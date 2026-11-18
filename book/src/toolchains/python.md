@@ -43,12 +43,11 @@ project.
 | Setting          | Value |
 | ---------------- | ----- |
 | Server `pyright` | `pyright-langserver --stdio` (from the `pyright` package) |
-| `python`         | servers `[ "pyright" ]`; formatter `blackd -` |
+| `python`         | servers `[ "pyright" ]`; formatter `black --quiet -` |
 
-The configured formatter does not format: `blackd` is black's HTTP
-daemon, takes no file argument, and the `black` package here is built
-without the `aiohttp` dependency `blackd` needs, so the command exits
-with an import error. `black` and `ruff format` work from the shell.
+Helix pipes the buffer through `black` when formatting (`:format`, or
+on save where auto-format is on). `ruff format` is available from the
+shell.
 
 The aspect also sets `programs.zsh.enableCompletion = true`.
 
