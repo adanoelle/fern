@@ -38,7 +38,7 @@ optional system side and an optional user side, composed with
 | Roles | `workstation`, `laptop`, `dev-machine`, `homelab`, `server` | `modules/roles/` | The system aspects a *kind* of machine wants |
 | Host aspect | one per machine | `modules/host-<name>.nix` | Roles, forwarded user layers, and facts true of that hardware alone |
 | User base layer | `ada` | `modules/user-ada.nix` | Shells, CLI tools, git, SSH, home directory layout |
-| Forwarded user layers | `ada-desktop`, `ada-dev`, `ada-hyprland`, `ada-work`, plus single aspects | `modules/user-ada-*.nix` | Everything about the user that only some machines should carry |
+| Forwarded user layers | `ada-desktop`, `ada-dev`, `ada-work`, plus single aspects | `modules/user-ada-*.nix` | Everything about the user that only some machines should carry |
 
 Which machine takes which roles and layers is recorded per machine:
 [fern](../machines/fern.md), [yarrow](../machines/yarrow.md),
@@ -52,8 +52,8 @@ Which machine takes which roles and layers is recorded per machine:
    in it either: that arrives with the desktop layer.
 2. **Anything machine-dependent about the user is a forwarded layer.**
    A host opts in by listing the layer in `provides.to-users.includes`.
-   `ada-desktop` is the core of a graphical session, `ada-dev` the
-   language toolchains, `ada-hyprland` the fallback compositor session.
+   `ada-desktop` is the core of a graphical session and `ada-dev` the
+   language toolchains.
    `ada-work` is the work laptop's layer and is attached to its
    standalone home rather than forwarded by a host.
 3. **Heavier or hardware-bound pieces are opt-in per host, one aspect at

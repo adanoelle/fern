@@ -17,9 +17,8 @@ the repo.
 ├── notes/            Obsidian vaults — one subdir per vault, nothing loose
 ├── media/
 │   ├── pictures/       photos and images kept for their own sake
-│   ├── screenshots/    tool-written captures (niri, hyprshot, satty)
-│   ├── wallpapers/     wallpaper images — these paths are LOAD-BEARING
-│   │                   (awww/hyprland config points here by name)
+│   ├── screenshots/    tool-written captures (niri, garden shell, satty)
+│   ├── wallpapers/     wallpaper images you keep by hand
 │   ├── video/          recordings (OBS default output)
 │   └── music/          audio library
 ├── src/              code — one subdir per repo/project
@@ -80,10 +79,11 @@ filing date. Example: `2026-03-14-acme-offer-letter.pdf`.
 ## media/ — subdirectory contract
 
 - `pictures/` is the XDG pictures dir; generic images live here.
-- `screenshots/` is written by tooling (niri `Print`, hyprshot
-  scripts) with timestamped names; prune freely.
-- `wallpapers/` filenames are referenced from Nix config
-  (e.g. `shrine.png`) — renaming a wallpaper means a config change.
+- `screenshots/` is written by tooling (niri's screenshot actions and
+  the garden shell) with timestamped names; prune freely.
+- `wallpapers/` is yours to arrange: nothing in the Nix config refers
+  to a file in it. The niri session's wallpaper is generated (see the
+  `wallpaper` aspect).
 - `video/` is the XDG videos dir and OBS's output target.
 - `music/` is the XDG music dir.
 

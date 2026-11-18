@@ -5,8 +5,8 @@
 # this layer (via provides.to-users); a headless host never applies it.
 #
 # Heavier or host-specific layers are forwarded separately so each
-# machine picks what fits: ada-hyprland (fallback compositor), music,
-# obs, gaming-hm, gamedev — see the host aspects.
+# machine picks what fits: music, obs, gaming-hm, gamedev — see the
+# host aspects.
 { den, garden, ... }:
 {
   den.aspects.ada-desktop = {

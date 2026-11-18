@@ -2,8 +2,8 @@
 #
 # Standalone-home layer for the Ubuntu work laptop: the full niri +
 # garden desktop plus the dev toolchain, on top of the base ada aspect.
-# Deliberately NOT ada-desktop — hyprland, DAW, and gaming don't belong
-# on a work machine. garden.shell is included explicitly: on fern the
+# Deliberately NOT ada-desktop — DAW and gaming don't belong on a work
+# machine. garden.shell is included explicitly: on fern the
 # garden QML/tooling arrives by other means, but a standalone home has
 # to pull the whole bundle itself.
 #
@@ -24,7 +24,6 @@
       den.aspects.imv
       den.aspects.pdf
       den.aspects.obsidian
-      den.aspects.screenshot
       den.aspects.teams
       # Plugins and synths used to arrive here through the cli bundle;
       # kept so this host is unchanged by the audio split. Drop when the

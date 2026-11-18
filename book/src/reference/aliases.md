@@ -320,7 +320,6 @@ Scripts the configuration builds and puts on `PATH`.
 | --- | --- | --- | --- |
 | `present` | Opens a presenterm deck in a styled fullscreen terminal; see [presenterm](../terminal/presenterm.md) | `modules/cli/presenterm.nix` | every machine |
 | `claude-notify`, `claude-brief` | Hook scripts for Claude Code sessions; see [Agent Sessions](../terminal/agent-sessions.md) | `modules/cli/claude-code.nix` | every machine |
-| `hyprshot-region-annotate`, `hyprshot-full-annotate`, `hyprshot-region-clip`, `hyprshot-full-file` | Screenshot helpers for the Hyprland session; see [Hyprland](../desktop/hyprland.md) | `modules/desktop/screenshot.nix` | fern (installed only where the Hyprland layer is enabled) |
 | `studio-mode` | `on [frames]`, `off`, `status`: forces a small PipeWire buffer while recording; see [Audio](../services/audio.md) | `modules/audio/audio-laptop.nix` | yarrow |
 | `garden-study` | Lists or switches the wallpaper study and painting; see [Wallpaper](../desktop/wallpaper.md) | `modules/desktop/wallpaper.nix` | work laptop |
 | `dpeek` | Quick look at a data file through DuckDB; see [Data Tools](../toolchains/data-tools.md) | `modules/cli/duckdb.nix` | work laptop |

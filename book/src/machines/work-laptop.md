@@ -78,7 +78,7 @@ Three aspects do the foreign-distribution work:
 ## What the work layer adds
 
 `ada-work` is deliberately **not** `ada-desktop`: it picks its own
-aspects, so the laptop has no Hyprland, DAWs or gaming layer, and does
+aspects, so the laptop has no DAWs or gaming layer, and does
 not take the `desktop-apps` bundle as a whole.
 
 ### Shared aspects it includes
@@ -93,7 +93,7 @@ not take the `desktop-apps` bundle as a whole.
 | isolated Chrome launcher | a launcher around an apt-installed Chrome with its own profile, for one site that requires Chrome; see [Browsers](../desktop/browsers.md) |
 | `thunderbird` | mail; see [Mail](../desktop/mail.md) |
 | `teams` | `teams-for-linux`, wrapped with `--no-sandbox` on a non-NixOS system |
-| `imv`, `pdf`, `obsidian`, `screenshot` | image viewer, PDF tools, notes, the screenshot flow |
+| `imv`, `pdf`, `obsidian` | image viewer, PDF tools, notes |
 | `wallpaper` | painted wallpapers behind the Niri session; see [Wallpaper](../desktop/wallpaper.md). This is the only place the aspect is included |
 | `duckdb`, `postgres`, `rustfs` | data clients; see [Data tools](../toolchains/data-tools.md) |
 | `gamedev` | game libraries and tools; see [Gamedev and art](../gamedev/gamedev-and-art.md) |

@@ -1,74 +1,23 @@
+# modules/desktop/screenshot.nix — capture tools for the garden shell
+#
+# The niri Super+S binds hand off to the garden shell, which calls grim
+# and slurp to capture, satty to annotate and wl-copy to copy.
+# garden.shell installs those itself, so a host that forwards
+# garden.shell must NOT also forward this aspect. It is for hosts whose
+# shell QML is managed outside this flake (fern), which would otherwise
+# have the binds and none of the tools.
 _: {
   den.aspects.screenshot.homeManager =
+    { pkgs, ... }:
     {
-      lib,
-      pkgs,
-      config,
-      ...
-    }:
-    let
-      # Fallback keeps this aspect safe in homes that don't carry the
-      # hyprland aspect (which declares desktop.hyprland): everything
-      # below is hyprland-flow tooling, so it simply stays off there.
-      # The niri/garden screenshot flow is self-contained in
-      # garden.shell (see modules/desktop/niri.nix binds).
-      cfg = config.desktop.hyprland or { enable = false; };
-      shotsDir = "${config.home.homeDirectory}/media/screenshots";
-
-      hyprshot_region_annotate = pkgs.writeShellScriptBin "hyprshot-region-annotate" ''
-        #!/usr/bin/env bash
-        set -euo pipefail
-        mkdir -p "${shotsDir}"
-        file="${shotsDir}/screenshot-$(date +%F_%H-%M-%S).png"
-        "${pkgs.grim}/bin/grim" -g "$(${pkgs.slurp}/bin/slurp)" - \
-          | "${pkgs.satty}/bin/satty" -f - \
-              --output-filename "''${file}" \
-              --copy-command '${pkgs.wl-clipboard}/bin/wl-copy --type image/png' \
-              --early-exit
-      '';
-
-      hyprshot_full_annotate = pkgs.writeShellScriptBin "hyprshot-full-annotate" ''
-        #!/usr/bin/env bash
-        set -euo pipefail
-        mkdir -p "${shotsDir}"
-        file="${shotsDir}/screenshot-$(date +%F_%H-%M-%S).png"
-        "${pkgs.grim}/bin/grim" - \
-          | "${pkgs.satty}/bin/satty" -f - \
-              --output-filename "''${file}" \
-              --copy-command '${pkgs.wl-clipboard}/bin/wl-copy --type image/png' \
-              --early-exit
-      '';
-
-      hyprshot_region_clip = pkgs.writeShellScriptBin "hyprshot-region-clip" ''
-        #!/usr/bin/env bash
-        set -euo pipefail
-        "${pkgs.grim}/bin/grim" -g "$(${pkgs.slurp}/bin/slurp)" - \
-          | "${pkgs.wl-clipboard}/bin/wl-copy" --type image/png
-        ${pkgs.libnotify}/bin/notify-send "Screenshot" "Region copied to clipboard"
-      '';
-
-      hyprshot_full_file = pkgs.writeShellScriptBin "hyprshot-full-file" ''
-        #!/usr/bin/env bash
-        set -euo pipefail
-        mkdir -p "${shotsDir}"
-        file="${shotsDir}/screenshot-$(date +%F_%H-%M-%S).png"
-        "${pkgs.grim}/bin/grim" "''${file}"
-        ${pkgs.libnotify}/bin/notify-send "Screenshot" "Saved to ''${file}"
-      '';
-    in
-    lib.mkIf cfg.enable {
       home.packages = with pkgs; [
         grim
         slurp
         satty
         wl-clipboard
-        libnotify
-        hyprshot_region_annotate
-        hyprshot_full_annotate
-        hyprshot_region_clip
-        hyprshot_full_file
       ];
 
+      # Annotation defaults for satty, however it is started.
       xdg.configFile."satty/config.toml".text = ''
         [general]
         save-after-copy = true
@@ -76,7 +25,7 @@ _: {
         corner-roundness = 12
         initial-tool = "brush"
         primary-highlighter = "block"
-        copy-command = "/run/current-system/sw/bin/wl-copy --type image/png"
+        copy-command = "${pkgs.wl-clipboard}/bin/wl-copy --type image/png"
 
         [font]
         family = "Roboto"
@@ -91,12 +40,5 @@ _: {
             "#008000",
         ]
       '';
-
-      wayland.windowManager.hyprland.settings.bind = lib.mkAfter [
-        "${cfg.modKey}, S, exec, hyprshot-region-annotate"
-        "${cfg.modKey} SHIFT, S, exec, hyprshot-full-annotate"
-        "${cfg.modKey} ALT, S, exec, hyprshot-region-clip"
-        "${cfg.modKey} CTRL, S, exec, hyprshot-full-file"
-      ];
     };
 }

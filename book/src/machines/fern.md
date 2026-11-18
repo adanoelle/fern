@@ -1,8 +1,7 @@
 # fern
 
 > fern is the x86_64 desktop workstation: an AMD machine with studio
-> audio interfaces, the Niri + garden desktop with a Hyprland fallback
-> session, the full development toolchain, Steam, and the always-on
+> audio interfaces, the Niri + garden desktop, the full development toolchain, Steam, and the always-on
 > homelab services. Its host aspect is `den.aspects.fern` in
 > `modules/host-fern.nix`, which is composition only: roles, the user
 > layers it forwards, and the facts that are true of this hardware alone.
@@ -48,11 +47,11 @@ base `ada` aspect that every machine gets
 
 | Layer | What it brings | Why here |
 | --- | --- | --- |
-| `ada-desktop` | the `desktop-apps` bundle (Zen, Chromium, screenshot tools, imv, PDF tools, Bitwarden) and the garden terminal stack | every graphical machine; see [Browsers](../desktop/browsers.md), [Garden](../desktop/garden.md), [Terminals](../terminal/terminals.md), [Password manager](../security/password-manager.md) |
+| `ada-desktop` | the `desktop-apps` bundle (Zen, Chromium, imv, PDF tools, Bitwarden) and the garden terminal stack | every graphical machine; see [Browsers](../desktop/browsers.md), [Garden](../desktop/garden.md), [Terminals](../terminal/terminals.md), [Password manager](../security/password-manager.md) |
 | `ada-dev` | the `devtools` bundle: [Rust](../toolchains/rust.md), [Node/TypeScript](../toolchains/typescript-node.md), [C/C++](../toolchains/c-cpp.md), [Python](../toolchains/python.md), and [Ada, Zig and the VM host](../toolchains/other.md) | development machine |
 | `niri` | the Niri settings, keybinds and idle lock | forwarded by the host, not by the desktop bundle, because its options exist only where the niri-flake module is imported |
 | `brightness-ddc` | brightness keys through `ddcutil` (DDC/CI); its system side enables `hardware.i2c` | external monitors have no sysfs backlight |
-| `ada-hyprland` | the Hyprland session and its settings | fallback session; see [Hyprland](../desktop/hyprland.md) |
+| `screenshot` | `grim`, `slurp`, `satty`, `wl-clipboard` and satty's defaults | the garden shell's screenshot flow needs them, and fern does not take `garden.shell`; see [Niri](../desktop/niri.md#screenshots) |
 | `obs` | OBS Studio with capture plugins | streaming and recording |
 | `gaming-hm` | MangoHud, ProtonUp-Qt, Lutris, Protontricks | user side of gaming |
 | `music` | DAWs (`daw`) and the plugin and synth collection (`audio-tools`) | the studio machine; see [Audio](../services/audio.md) |
@@ -80,7 +79,6 @@ modules, `kvm-amd`, AMD microcode) and is never edited by hand.
 | `boot.kernelModules` | `nct6775` | the motherboard's Super-I/O sensor chip, read by `lm_sensors` |
 | `hardware.graphics.enable` | `true` | AMD GPU on Mesa; no proprietary driver |
 | `programs.niri.package` | `pkgs.niri` | nixpkgs build instead of the niri-flake one |
-| `programs.hyprland.enable` | `true` | makes the fallback session available |
 | System packages | `mesa-demos`, `vulkan-tools`, `firefox` | `glxinfo`, `vulkaninfo`, a second browser |
 
 The host also imports `inputs.niri.nixosModules.niri`. That module must
@@ -120,13 +118,6 @@ every 30 seconds that appends `sensors` output to
 module is a per-machine fact, which is why `nct6775` is loaded by the
 host aspect and not by `monitoring`.
 
-## The Hyprland fallback
-
-fern offers two sessions in the greeter, Niri first. Hyprland needs two
-things, both present here: `programs.hyprland.enable = true` on the
-host, and the `ada-hyprland` user layer. Its configuration is described
-in [Hyprland](../desktop/hyprland.md).
-
 ## Rebuilding
 
 `just test`, then `just switch`, from a checkout on fern. The recipes
@@ -141,5 +132,5 @@ and the rest of the routine are in
 | `modules/hosts.nix` | topology entry |
 | `hosts/fern/hardware.nix` | generated hardware configuration |
 | `modules/roles/workstation.nix`, `dev-machine.nix`, `homelab.nix` | the roles fern takes |
-| `modules/user-ada-desktop.nix`, `user-ada-dev.nix`, `user-ada-hyprland.nix` | forwarded user layers |
+| `modules/user-ada-desktop.nix`, `user-ada-dev.nix` | forwarded user layers |
 | `modules/monitoring.nix` | sensor tools and log timer |

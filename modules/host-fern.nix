@@ -29,8 +29,10 @@
       den.aspects.niri
       # External monitors: brightness keys go through DDC/CI
       den.aspects.brightness-ddc
-      # Fallback compositor session (programs.hyprland is enabled below)
-      den.aspects.ada-hyprland
+      # Capture tools for the garden shell's screenshot flow. Hosts that
+      # forward garden.shell get them from it; fern's shell QML is
+      # managed outside this flake, so it needs them here.
+      den.aspects.screenshot
       # Workstation extras
       den.aspects.obs
       den.aspects.gaming-hm
@@ -112,9 +114,6 @@
 
         # AMD GPU (uses Mesa/AMDGPU, no proprietary driver needed)
         hardware.graphics.enable = true;
-
-        # Hyprland (fallback session during Niri transition)
-        programs.hyprland.enable = true;
 
         environment.systemPackages = with pkgs; [
           mesa-demos

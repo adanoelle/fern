@@ -23,8 +23,9 @@
     provides.to-users.includes = [
       den.aspects.ada-desktop
       den.aspects.ada-dev
-      # graphics-asahi enables programs.hyprland
-      den.aspects.ada-hyprland
+      # No compositor yet: moss used the Hyprland session, which has been
+      # removed. Reviving it means importing the niri-flake module and
+      # forwarding den.aspects.niri, as host-yarrow.nix does.
     ];
 
     nixos = {

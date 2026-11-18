@@ -126,26 +126,22 @@ which calls the shell's `lock` IPC after 600 seconds idle and again on
 The `Mod+S` family hands off to the shell, which saves the image,
 copies it to the clipboard and shows a notification card. The shell
 calls `grim`, `slurp`, `satty` and `wl-clipboard`; `garden.shell`
-installs them, which covers yarrow and the work laptop. On fern they
-are installed by the `screenshot` aspect instead (see below).
+installs them, which covers yarrow and the work laptop. fern does not
+take `garden.shell`, so it forwards the `screenshot` aspect
+(`modules/desktop/screenshot.nix`), which installs the same four tools
+and writes satty's annotation defaults to `~/.config/satty/config.toml`.
+A host forwards one or the other, never both.
 
 `screenshot-path` is set to `~/media/screenshots/` for niri's built-in
 screenshot actions; the shell's window mode depends on it.
-
-`den.aspects.screenshot` (`modules/desktop/screenshot.nix`) is Hyprland
-tooling only. It is in the `desktop-apps` bundle and the work layer,
-but everything in it is conditional on `desktop.hyprland.enable`, so it
-is active on fern alone; its binds are listed under
-[Hyprland](hyprland.md).
 
 ## Greeter
 
 `den.aspects.greetd` (`modules/desktop/greetd.nix`, part of the
 `workstation` role) runs greetd with tuigreet, a text-mode greeter. It
-enables no compositor itself: the session list is built from whichever
-of `programs.niri.enable` and `programs.hyprland.enable` the host has
-set, Niri first. fern therefore offers Niri and Hyprland, yarrow only
-Niri. The work laptop does not use greetd.
+enables no compositor itself: it offers the Niri session when the host
+has set `programs.niri.enable`, as fern and yarrow do. The work laptop
+does not use greetd.
 
 ## Per machine
 
@@ -174,4 +170,4 @@ the distribution's display manager. Details are in
 | `modules/desktop/brightness-backlight.nix` | backlight brightness keys |
 | `modules/desktop/idle-suspend.nix` | suspend when idle on battery |
 | `modules/desktop/greetd.nix` | greeter and session list |
-| `modules/desktop/screenshot.nix` | Hyprland screenshot scripts |
+| `modules/desktop/screenshot.nix` | capture tools for hosts without `garden.shell` |

@@ -25,7 +25,7 @@ whose source is `modules/_workspace/FILING.md`.
 ├── media/
 │   ├── pictures/     XDG_PICTURES_DIR
 │   ├── screenshots/                     written by screenshot tooling
-│   ├── wallpapers/                      referenced by name from config
+│   ├── wallpapers/                      wallpaper images kept by hand
 │   ├── video/        XDG_VIDEOS_DIR
 │   └── music/        XDG_MUSIC_DIR
 ├── work/
@@ -73,9 +73,6 @@ Renaming a directory means changing these modules too.
 | --------------------- | -------------------------------- | --- |
 | `~/inbox`             | `modules/workspace.nix`          | XDG download directory |
 | `~/media/screenshots` | `modules/desktop/niri.nix`       | niri `screenshot-path` |
-| `~/media/screenshots` | `modules/desktop/screenshot.nix` | output directory of the screenshot scripts |
-| `~/media/wallpapers`  | `modules/desktop/hyprland.nix`   | defaults of the Hyprland wallpaper options |
-| `~/media/wallpapers/shrine.png` | `modules/user-ada-hyprland.nix` | the Hyprland session's wallpaper, drawn by `awww` |
 | `~/src`               | `modules/user-ada.nix`           | git identity scope (personal) |
 | `~/src/work`          | `modules/user-ada.nix`           | git identity scope (work) |
 | `~/work`              | `modules/user-ada.nix`           | git identity scope (work, for the notes vault and other non-code repositories) |
@@ -83,10 +80,8 @@ Renaming a directory means changing these modules too.
 
 Notes:
 
-- The wallpaper file is referenced by name, so renaming it is a Nix
-  change. This applies to the Hyprland fallback session only
-  ([Hyprland](../desktop/hyprland.md)). The niri session's wallpaper
-  does not read `~/media/wallpapers`; see
+- Nothing in the configuration reads `~/media/wallpapers`; it is yours
+  to arrange. The niri session's wallpaper is generated; see
   [Wallpaper](../desktop/wallpaper.md).
 - The git identities are selected by `includeIf gitdir:` conditions
   built from the three directories above; `~/src/work` is inside
@@ -101,4 +96,3 @@ Notes:
 | `modules/workspace.nix`           | XDG user dirs, extra directories, manual|
 | `modules/_workspace/FILING.md`    | Source of `~/docs/FILING.md`            |
 | `modules/user-ada.nix`            | Includes `workspace`; git identity scopes |
-| `modules/user-ada-hyprland.nix`   | Hyprland wallpaper path                 |

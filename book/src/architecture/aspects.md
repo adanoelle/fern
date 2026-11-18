@@ -187,14 +187,10 @@ that carries a `key` (sops-nix in `modules/secrets.nix`), are fine.
 
 ## Option-defining aspects
 
-A few aspects declare their own Home Manager options and leave the
+An aspect can declare its own Home Manager options and leave the
 values to a user layer, so the mechanism is shared and the preferences
 are not.
 
-- **Hyprland.** `modules/desktop/hyprland.nix` declares
-  `desktop.hyprland.*` and does nothing until enabled.
-  `modules/user-ada-hyprland.nix` includes it and sets the options. See
-  [Hyprland](../desktop/hyprland.md).
 - **Git suite.** `modules/git/bundle.nix` declares `programs.gitSuite.*`
   and fans it out to the `git-*` aspects; `modules/user-ada.nix` sets
   it. See [Git](../git/git.md).
@@ -206,8 +202,8 @@ different values. Otherwise write the configuration directly.
 
 import-tree skips any path with a component that starts with `_`. Such
 files are not flake-parts modules; a parent module imports or reads them
-explicitly. Examples: `modules/desktop/_hyprland/` (Home Manager
-sub-modules imported by `hyprland.nix`), `modules/cli/_presenterm/`
+explicitly. Examples: `modules/_lib/overlays.nix` (the overlay list
+imported by `core.nix` and `overlays.nix`), `modules/cli/_presenterm/`
 (theme assets), `modules/desktop/_studies/` (one file per wallpaper
 palette, read by `wallpaper.nix`).
 

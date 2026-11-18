@@ -38,7 +38,6 @@
 # swaybg draws with wl_shm (no GL), so no nixGL wrapping on Ubuntu. It
 # runs as a user service bound to graphical-session.target, which
 # niri.service activates on NixOS and on the standalone-home laptop.
-# Hyprland on fern keeps its own awww wallpaper (desktop/_hyprland).
 _: {
   den.aspects.wallpaper.homeManager =
     {

@@ -94,7 +94,6 @@ of `audio-laptop`; see [Audio](../services/audio.md).
 
 | Left out | Why | To add it |
 | --- | --- | --- |
-| Hyprland fallback | not wanted yet; `programs.hyprland.enable` is off, so the greeter offers Niri only | forward `ada-hyprland` **and** set `programs.hyprland.enable = true` on the host |
 | OBS | `modules/desktop/obs.nix` builds OBS with CUDA support, which this machine does not want | change that build first, then forward `obs` |
 | Full `music` layer | `game-audio` is the light set a laptop can take alone; the DAWs and plugin collection can follow later | one line in `provides.to-users.includes` |
 | `audio-studio` | it trades power for latency (performance governor, pinned quantum) | not for a machine on battery; use `studio-mode` |
