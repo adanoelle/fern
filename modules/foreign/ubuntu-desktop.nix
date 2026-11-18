@@ -16,7 +16,7 @@
 # /usr/share/wayland-sessions/niri.desktop, whose Exec points at the
 # stable ~/.local/bin/niri-session-shim below — GDM runs it without any
 # Nix env, so the shim bootstraps PATH/XDG_DATA_DIRS itself. See
-# book/src/operations/work-laptop.md for the full root checklist.
+# book/src/machines/work-laptop.md for the full root checklist.
 { inputs, ... }:
 {
   den.aspects.ubuntu-desktop.homeManager =

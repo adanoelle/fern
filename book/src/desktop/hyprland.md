@@ -1,98 +1,75 @@
-# Hyprland (Legacy Fallback)
+# Hyprland (fallback session)
 
-> **Legacy.** Hyprland was the original desktop; it is retained only as a
-> fallback greetd session for regression testing and as a safety net while
-> [Niri](niri.md) + the [garden shell](garden.md) are the daily driver.
-> This chapter and its sub-chapters (Fern Shell, Wallpaper, Idle & Lock)
-> document the retained Hyprland-era stack as-is.
+> Hyprland is kept on fern as a second session to log into if niri or
+> the garden shell is broken. It is not themed by garden and shares
+> nothing with the niri session beyond the applications.
 
-Why keep it at all? A second, independent compositor session is cheap
-insurance: if a Niri or garden-shell regression breaks the desktop, Hyprland
-still boots from greetd and the machine stays usable.
+**Goes on:** fern only. `modules/host-fern.nix` sets
+`programs.hyprland.enable` and forwards `ada-hyprland` to its users.
 
-The Hyprland configuration is a den aspect (`den.aspects.hyprland`) defined in
-`modules/desktop/hyprland.nix`, with sub-modules split into
-`modules/desktop/_hyprland/`. The underscore prefix convention (`_hyprland/`)
-indicates a private sub-module directory belonging to the `hyprland.nix`
-aspect — import-tree skips `_`-prefixed paths, so these files are imported
-explicitly by the parent aspect. The main aspect file defines the window
-manager behavior, keybindings, animations, and style. Sub-modules handle the
-bar, wallpaper, idle/lock, and the Fern shell — each documented in the
-sub-chapters that follow.
+To use it, choose "Hyprland" from the session list in the
+[greeter](niri.md#greeter); it is listed after Niri.
 
-## Core settings
+## What is configured
 
-The compositor uses the dwindle tiling layout with these defaults:
+`den.aspects.hyprland` (`modules/desktop/hyprland.nix`) declares a
+`desktop.hyprland` option tree and the Home Manager configuration
+behind it. `modules/user-ada-hyprland.nix` enables it, with idle, lock
+and wallpaper on. Dwindle layout, gaps 6 / 12, a 2 px border, rounding
+5, blur on; the colours are a fixed set in the module, not the garden
+palette. It installs `wofi`, `ghostty`, `firefox` and `wl-clipboard`.
 
-| Setting         | Value                       |
-| --------------- | --------------------------- |
-| Mod key         | `SUPER`                     |
-| Terminal        | Ghostty                     |
-| App runner      | Wofi                        |
-| Layout          | Dwindle                     |
-| Gaps (inner)    | 6px                         |
-| Gaps (outer)    | 12px                        |
-| Border width    | 2px                         |
-| Corner rounding | 5px                         |
-| Active border   | `cba6f7` (Catppuccin mauve) |
-| Inactive border | `303446` (Catppuccin base)  |
+## Binds
 
-All style values are configurable through the `desktop.hyprland.style` option
-set in the host configuration.
+`SUPER` is the modifier.
 
-## Keybindings
+| Bind | Action | Defined in |
+| ---- | ------ | ---------- |
+| `SUPER+Return` | `ghostty` | `hyprland.nix` |
+| `SUPER+Q` | close window | `hyprland.nix` |
+| `SUPER+R` | `wofi --show drun` | `hyprland.nix` |
+| `SUPER+SHIFT+R` | `hyprctl reload` | `hyprland.nix` |
+| `SUPER+H/J/K/L` | move focus | `hyprland.nix` |
+| `SUPER+1…9`, `SUPER+SHIFT+1…9` | go to / move window to workspace | `hyprland.nix` |
+| `SUPER`+right mouse drag | resize window | `hyprland.nix` |
+| `SUPER+W` | re-apply the configured wallpaper | `_hyprland/wallpaper.nix` |
+| `SUPER+SHIFT+W` | random image from `~/media/wallpapers` | `_hyprland/wallpaper.nix` |
+| `SUPER+S` | region screenshot, annotate in satty | `screenshot.nix` |
+| `SUPER+SHIFT+S` | full screenshot, annotate in satty | `screenshot.nix` |
+| `SUPER+ALT+S` | region to clipboard | `screenshot.nix` |
+| `SUPER+CTRL+S` | full screenshot to `~/media/screenshots` | `screenshot.nix` |
 
-**Window management:**
+The keyboard binds defined in `hyprland.nix` are written to the
+generated `hyprland.conf` with the keyword twice (`bind=bind = SUPER,
+…`). The wallpaper, screenshot and mouse binds are written correctly.
 
-| Binding                   | Action                         |
-| ------------------------- | ------------------------------ |
-| `Super + Return`          | Open terminal (Ghostty)        |
-| `Super + Q`               | Close active window            |
-| `Super + R`               | Launch app runner (Wofi)       |
-| `Super + H/J/K/L`         | Focus left/down/up/right       |
-| `Super + Shift + H/J/K/L` | Move window left/down/up/right |
-| `Super + 1-9`             | Switch to workspace            |
-| `Super + Shift + 1-9`     | Move window to workspace       |
-| `Super + F`               | Toggle fullscreen              |
-| `Super + V`               | Toggle floating                |
-| `Super + P`               | Toggle pseudo-tiling           |
+## Wallpaper
 
-**Screenshots** (provided by the screenshot module):
+`_hyprland/wallpaper.nix` starts the `awww` daemon and a one-shot user
+service that sets `~/media/wallpapers/shrine.png` with a 1.2 second
+fade. The service targets the output named by
+`desktop.hyprland.wallpaper.monitor`, which is left at its default,
+`eDP-1`. Per-monitor and per-workspace wallpapers are supported by the
+module but not configured.
 
-| Binding             | Action                    |
-| ------------------- | ------------------------- |
-| `Super + S`         | Region select → annotate  |
-| `Super + Shift + S` | Full screen → annotate    |
-| `Super + Alt + S`   | Region select → clipboard |
-| `Super + Ctrl + S`  | Full screen → file        |
+## Idle and lock
 
-**Wallpaper:**
+`_hyprland/idlelock.nix` runs `hypridle` with three steps: dim with
+`brightnessctl` at 300 seconds, `hyprlock` at 600, `systemctl suspend`
+at 1200. `brightnessctl` and `hyprlock` are called by name and neither
+is installed on fern, so only the suspend step takes effect. A
+`hyprlock.conf` is written all the same.
 
-| Binding             | Action                          |
-| ------------------- | ------------------------------- |
-| `Super + W`         | Cycle workspace wallpaper       |
-| `Super + Shift + W` | Random wallpaper from directory |
-
-## Animations
-
-Window animations use the `easeOutQuint` bezier curve:
-
-- **Window open/close** -- slide in over 300ms
-- **Border color** -- transition over 200ms
-- **Fade** -- 150ms opacity transition
-- **Workspace switch** -- slide over 400ms
-
-## Monitor configuration
-
-Fern uses `HDMI-A-1` as the primary monitor. Moss uses auto-detection (empty
-monitor string). Per-host monitor setup is configured in the user aspect
-(`modules/user-ada.nix`) through the wallpaper module's `monitor` option.
+The niri aspect's swayidle service is tied to the graphical session,
+not to niri, so it runs here too; its lock call goes to the garden
+shell, which this session does not start.
 
 ## Key files
 
-| File                                       | Purpose                                         |
-| ------------------------------------------ | ----------------------------------------------- |
-| `modules/desktop/hyprland.nix`             | Main den aspect: compositor config, keybindings, animations |
-| `modules/desktop/_hyprland/wallpaper.nix`  | awww wallpaper management                       |
-| `modules/desktop/_hyprland/idlelock.nix`   | hypridle + hyprlock                             |
-| `modules/desktop/screenshot.nix`           | Screenshot scripts and bindings                 |
+| File | Purpose |
+| ---- | ------- |
+| `modules/desktop/hyprland.nix` | options, look, core binds |
+| `modules/desktop/_hyprland/wallpaper.nix` | awww daemon, wallpaper service and binds |
+| `modules/desktop/_hyprland/idlelock.nix` | hypridle service, hyprlock config |
+| `modules/user-ada-hyprland.nix` | the settings fern uses |
+| `modules/desktop/screenshot.nix` | screenshot scripts and binds |

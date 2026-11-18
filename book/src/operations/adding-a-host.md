@@ -1,164 +1,226 @@
 # Adding a Host
 
-> How to add a new machine to the configuration: generate hardware config,
-> create a host aspect, and add a topology line.
+> A checklist for bringing a new NixOS machine into the flake as a
+> working graphical host, and a short section on adding a standalone
+> Home Manager home. [Installing yarrow](../machines/installing-yarrow.md)
+> is the worked example of the same steps on real hardware.
 
-## Prerequisites
+What each existing machine composes is on its own page under
+[Machines](../machines/fern.md) ([fern](../machines/fern.md),
+[yarrow](../machines/yarrow.md),
+[work laptop](../machines/work-laptop.md),
+[moss](../machines/moss.md)). Read one host aspect
+(`modules/host-yarrow.nix` is the smallest complete one) next to this
+page.
 
-- The new machine must be running NixOS (or you need its hardware configuration
-  from a NixOS installer)
-- You know the machine's architecture (`x86_64-linux` or `aarch64-linux`)
+## Checklist
 
-## Step 1: Generate hardware configuration
+1. [Declare the host in the topology](#1-topology)
+2. [Write the host aspect](#2-host-aspect)
+3. [Provide `hosts/<name>/hardware.nix`](#3-hardware-file)
+4. [Exclude the hardware file from deadnix](#4-deadnix-exclusion)
+5. [Register the host for secrets](#5-secrets-registration)
+6. [Stage, check, install](#6-stage-check-install)
 
-On the target machine, run:
+Do the repository work in a git worktree on a branch, as for any
+change ([Day to Day](day-to-day.md#the-working-loop)).
 
-```bash
-nixos-generate-config --show-hardware-config > hardware.nix
-```
+## 1. Topology
 
-Place this file at `hosts/<hostname>/hardware.nix`. This file describes the
-machine's disk layout, kernel modules, and firmware. It is auto-generated and
-should not be edited by hand.
-
-## Step 2: Add a topology line
-
-Add the new host to `modules/hosts.nix`:
-
-```nix
-# modules/hosts.nix
-{ ... }:
-{
-  den.hosts.x86_64-linux.fern.users.ada = {};
-  den.hosts.aarch64-linux.moss.users.ada = {};
-  den.hosts.x86_64-linux.newhost.users.ada = {};   # Add this
-}
-```
-
-This tells den that `newhost` exists, runs on x86_64, and has a user `ada`.
-Den will generate `nixosConfigurations.newhost` as a flake output.
-
-## Step 3: Create the host aspect
-
-Create `modules/host-newhost.nix`:
+Add one line to `modules/hosts.nix`:
 
 ```nix
-# modules/host-newhost.nix
-{ den, ... }:
+den.hosts.x86_64-linux.<name>.users.ada = { };
+```
+
+This creates `nixosConfigurations.<name>`, applies `den.aspects.<name>`
+to it, and gives the user the base `ada` layer.
+
+## 2. Host aspect
+
+Create `modules/host-<name>.nix`. A graphical host needs every part
+below; the comments say what breaks without each.
+
+```nix
+# modules/host-<name>.nix — <name> host aspect
+{ den, inputs, ... }:
 {
-  den.aspects.newhost = {
+  den.aspects.<name> = {
     includes = [
-      den.aspects.boot          # systemd-boot (UEFI x86)
-      den.aspects.workstation   # role: graphical machine base
-      # or den.aspects.server for a headless box
-      # Add host-specific aspects as needed
+      den.aspects.boot          # systemd-boot; nothing else sets a bootloader
+      den.aspects.workstation   # role: core, users, greeter, audio, secrets, ...
+      den.aspects.niri          # system side: enables the compositor
     ];
 
-    # Graphical/dev hosts forward user layers; a server forwards none
-    # and its users get only the base ada aspect.
+    # User layers. Without these the user has only the base layer
+    # (shells, CLI tools, git).
     provides.to-users.includes = [
       den.aspects.ada-desktop
       den.aspects.ada-dev
+      den.aspects.niri          # home side: binds, workspaces, idle
     ];
 
-    nixos = { pkgs, ... }: {
-      imports = [ ../hosts/newhost/hardware.nix ];
+    nixos =
+      { pkgs, ... }:
+      {
+        imports = [
+          ../hosts/<name>/hardware.nix
+          inputs.niri.nixosModules.niri
+        ];
 
-      # GPU (choose one or configure inline)
-      hardware.graphics.enable = true;
+        system.stateVersion = "<release>";
 
-      # Pin at the NixOS release current when this machine is installed
-      system.stateVersion = "25.11";
-    };
+        # nixpkgs niri rather than the niri-flake build
+        programs.niri.package = pkgs.niri;
+
+        hardware.graphics.enable = true;
+      };
   };
 }
 ```
 
-Pick a **role** from `modules/roles/` (workstation, server, dev-machine) as the
-base, then add host-specific aspects. Fleet defaults — timezone, trusted-users,
-nix-ld — come from `core` via `mkDefault`; override them in the `nixos` block
-only if this machine differs.
+**Niri needs three lines, not one.** The `workstation` role
+deliberately leaves the compositor out. A host must (a) import
+`inputs.niri.nixosModules.niri`, (b) include `den.aspects.niri`, and
+(c) forward `den.aspects.niri` to its users. The greeter
+(`modules/desktop/greetd.nix`) offers a session only for a compositor
+the host has enabled, so a host without (a) and (b) boots to a greeter
+with no session to start. Without (c) the session starts with none of
+this configuration's bindings, workspaces or idle handling. Both
+existing hosts also set `programs.niri.package = pkgs.niri;`; the
+reason is in the comment beside it in `modules/host-yarrow.nix`.
 
-## Step 4: Register the host as a sops recipient
-
-**Do this before the first build.** Any role that includes the `secrets`
-aspect (workstation does) needs the host registered in `.sops.yaml`, or the
-first activation will fail loudly — by design.
-
-The host's decryption identity is derived from its SSH host key, so it exists
-as soon as the machine has booted NixOS once:
-
-```bash
-ssh-keyscan -t ed25519 <host> | ssh-to-age
-```
-
-Add the resulting `age1...` recipient to `.sops.yaml` as `&host_<name>`,
-extend the `creation_rules` to include it, then re-key and commit:
+**`system.stateVersion` is per host.** Set it to the NixOS release the
+machine is installed with, and never change it afterwards. Do not copy
+the value from another host. To find the current release of the
+flake's nixpkgs pin:
 
 ```bash
-sops updatekeys secrets/*.yaml
-git commit -am "chore(secrets): register <host> as sops recipient"
+nix eval --raw .#nixosConfigurations.fern.config.system.nixos.release
 ```
 
-See [SOPS-nix](../security/sops-nix.md) for details and recovery procedures.
+The `configuration.nix` that `nixos-generate-config` writes on the new
+machine carries the same value. `modules/defaults.nix` holds only a
+fallback.
 
-## Step 5: Test the build
+**Roles and extras.** Add what the machine is for:
+
+| Add | For |
+| --- | --- |
+| `den.aspects.laptop` | Battery-powered machines; also forward `brightness-backlight` and `idle-suspend` to users |
+| `den.aspects.dev-machine` | Development machines |
+| `den.aspects.tailscale` | Tailnet membership (one-time `sudo tailscale up` after install) |
+| `den.aspects.audio-studio` or `den.aspects.audio-laptop` | Audio beyond the base stack |
+| `den.aspects.gaming` and forwarded `gaming-hm` | Steam and game tooling |
+| A `nixos-hardware` module in `imports` | Model-specific quirks |
+
+Kernel choice, `hardware.graphics.enable`, udev rules and other facts
+true of this hardware alone go in the host aspect's `nixos` block.
+Anything a second machine could want belongs in a role or a shared
+aspect instead. The [Aspect Index](../reference/aspect-index.md) lists
+everything available.
+
+A headless host would take `den.aspects.server` instead of
+`workstation`, and no `provides.to-users`. That role is not used by any
+host yet; its file lists what it still lacks.
+
+## 3. Hardware file
+
+`hosts/<name>/hardware.nix` is generated on the machine and never
+edited by hand:
 
 ```bash
-# Dry build (does not require the target machine)
-nix build .#nixosConfigurations.newhost.config.system.build.toplevel --dry-run
-
-# Full test build
-sudo nixos-rebuild test --flake .#newhost
-
-# If building remotely:
-nixos-rebuild test --flake .#newhost --target-host newhost --build-host localhost
+sudo nixos-generate-config --root /mnt
+cp /mnt/etc/nixos/hardware-configuration.nix hosts/<name>/hardware.nix
 ```
 
-## Step 6: Deploy
+To let the flake evaluate before the machine exists, commit a
+placeholder that declares the root and boot filesystems and
+`nixpkgs.hostPlatform`, and replace the whole file with the generated
+one during installation. `hosts/yarrow/hardware.nix` is such a
+placeholder until yarrow is installed.
 
-On the target machine (or via remote deploy):
+## 4. deadnix exclusion
+
+Generated hardware files contain unused bindings that must not be
+"fixed". Add the new path to the `--exclude` list of the `deadnix`
+recipe in the `justfile`, or `just lint` fails.
+
+## 5. Secrets registration
+
+The `workstation` role includes the `secrets` aspect, which decrypts
+with the machine's SSH host key. A host that is not a registered
+recipient fails at activation, on purpose.
+
+On a fresh install this has an ordering consequence: the host key must
+exist and be registered **before** the first `nixos-install`, which is
+before the machine has ever booted. Generate it by hand into the target
+filesystem from the installer, convert it to an age recipient, add it
+to `.sops.yaml`, re-key, and commit. Only then install from that
+commit.
+
+The commands are in
+[SOPS-nix: Registering a new machine](../security/sops-nix.md#registering-a-new-machine),
+and [Installing yarrow](../machines/installing-yarrow.md#2-create-the-host-key-and-register-it-for-secrets)
+shows them in sequence with the rest of an install.
+
+## 6. Stage, check, install
 
 ```bash
-sudo nixos-rebuild switch --flake .#newhost
+git add modules/host-<name>.nix hosts/<name>/hardware.nix
+just fmt
+just check
+nix eval .#nixosConfigurations.<name>.config.system.build.toplevel.drvPath
 ```
 
-## Example: fern and moss
+`git add` matters: an unstaged host aspect or hardware file is
+invisible to the flake. The `nix eval` line confirms the new host
+evaluates to a system without building it.
 
-The two existing hosts show the pattern:
+Install from the installer with `nixos-install --flake .#<name>`.
+After the first boot `nh` is present, the hostname matches, and the
+`just` recipes work as on any other host.
 
-**Fern** (roles + fern-specific aspects):
-```nix
-den.aspects.fern.includes = [
-  den.aspects.boot  den.aspects.workstation  den.aspects.dev-machine
-  den.aspects.monitoring  den.aspects.niri
-  den.aspects.teams
-];
-```
+After install:
 
-**Moss** (explicit list -- Asahi hardware makes it quirky enough to compose by
-hand):
-```nix
-den.aspects.moss.includes = [
-  den.aspects.boot-asahi  den.aspects.core  den.aspects.docker
-  den.aspects.users  den.aspects.audio  den.aspects.graphics-asahi
-  den.aspects.greetd  den.aspects.secrets  den.aspects.secrets-guard
-];
-```
+- Add the machine's page under `book/src/machines/` and its rows to
+  the [Aspect Index](../reference/aspect-index.md).
+- Update the machine list in `CLAUDE.md`.
 
-User-level configuration is layered: every host's `ada` gets the base aspect
-(CLI tools, git suite, shells) automatically, and each host decides which extra
-layers to forward via `provides.to-users` -- both current machines forward
-`ada-desktop` and `ada-dev`.
+## Adding a standalone home
+
+A machine that runs another distribution gets a Home Manager
+configuration only. The [work laptop](../machines/work-laptop.md) is
+the one instance and its page is the reference; the shape is:
+
+1. **Topology.** A `den.homes.<system>."<user>@<hostname>"` entry in
+   `modules/hosts.nix` with `aspect = "ada"`, so a different login name
+   still maps onto the `ada` aspect. The key matches
+   `whoami@hostname`, which lets `home-manager switch --flake` select
+   it without an argument. The existing entry also overrides `pkgs`
+   (to get the flake's overlays and unfree packages) and `instantiate`
+   (to pass `inputs` to Home Manager modules); a new home needs both.
+2. **A layer.** There is no host aspect to forward layers, so the user
+   aspect provides one keyed by hostname:
+   `den.aspects.ada.provides."<hostname>".includes = [ ... ];`. See
+   [Aspects & Composition](../architecture/aspects.md#provideshostname-for-standalone-homes).
+3. **Only `homeManager` sides apply.** Every `nixos` side in the
+   included aspects is ignored, so anything a NixOS host gets from the
+   system (compositor module, fonts, Docker daemon, GL drivers) needs a
+   home-level substitute. Those live in `modules/foreign/` and
+   `modules/desktop/niri-standalone.nix`.
+4. **Apply** with `home-manager switch --flake ~/src/fern` on that
+   machine. No sops registration is involved: the `secrets` aspect is
+   system-side.
 
 ## Key files
 
 | File | Purpose |
-|------|---------|
-| `modules/hosts.nix` | Topology (add your host here) |
-| `modules/roles/` | Role bundles: workstation, server, dev-machine |
-| `modules/host-fern.nix` | Example: role-composed workstation host |
-| `modules/host-moss.nix` | Example: explicitly-composed host |
-| `modules/defaults.nix` | Defaults applied to all hosts |
-| `.sops.yaml` | Sops recipient registry (register new hosts here) |
-| `hosts/<name>/hardware.nix` | Auto-generated hardware config |
+| --- | --- |
+| `modules/hosts.nix` | Topology: `den.hosts` and `den.homes` |
+| `modules/host-*.nix` | Host aspects |
+| `modules/roles/*.nix` | Roles a host composes |
+| `modules/defaults.nix` | Fallback `stateVersion`, hostname and user batteries |
+| `hosts/*/hardware.nix` | Generated hardware configuration |
+| `justfile` | `deadnix` exclusion list |
+| `.sops.yaml` | Secret recipients |

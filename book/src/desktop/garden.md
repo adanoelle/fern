@@ -1,187 +1,122 @@
-# The Garden Design System
+# Garden
 
-> Garden is the design system and desktop shell that fern *consumes*: one
-> palette, one typography set, and one QuickShell-based shell (bar, launcher,
-> notifications, power menu, lock screen) shared by every themed surface.
-> It lives in its own repository —
-> [adanoelle/garden-shell](https://github.com/adanoelle/garden-shell) — and
-> this chapter documents the **integration**, not the internals.
+> Garden is the palette and desktop shell this configuration consumes:
+> one set of colours shared by the terminal stack, the editor, git
+> tooling and the compositor, plus a QuickShell-based shell (bar,
+> launcher, notifications, power menu, lock screen). It lives in its own
+> repository, [adanoelle/garden-shell](https://github.com/adanoelle/garden-shell),
+> and arrives as the `garden-shell` flake input. This page covers only
+> how fern uses it.
 
-## Why one design system
+**Goes on:** `garden.terminal` on fern, yarrow and the work laptop;
+`garden.shell` (the QML shell and its helpers) on the work laptop only.
 
-Before garden, theming was a patchwork: Catppuccin here, a hand-picked hex
-there, each tool themed independently and drifting independently. Changing the
-look meant hunting through a dozen modules. Garden centralizes this: the
-palette is defined **once** in garden-shell and every consumer — terminal,
-editor, git tooling, compositor borders, the shell itself — derives from it.
-A palette change is one decision, applied everywhere.
+## The namespace
 
-## The den namespace
+garden-shell exposes den aspects. `modules/garden.nix` mounts them as
+the `garden` namespace, so any module can take `garden` as an argument
+and include `garden.terminal` or `garden.shell` like a local aspect
+(see [Aspects](../architecture/aspects.md) for the vocabulary).
 
-Garden-shell is itself a dendritic flake exposing den aspects under a
-`garden.*` namespace. Fern mounts it in `modules/garden.nix`:
+| Aspect | Included from | Brings |
+| ------ | ------------- | ------ |
+| `garden.terminal` | `modules/user-ada-desktop.nix` | the themed terminal stack; pulls in `garden.palette` and `garden.toolkit` (the `garden-themes` binary) |
+| `garden.shell` | `modules/host-yarrow.nix`, `modules/user-ada-work.nix` | everything above, plus the QML shell deployed to `~/.config/quickshell/garden`, its settings file and the screenshot tools it calls |
 
-```nix
-{ inputs, ... }:
-{
-  imports = [
-    (inputs.den.namespace "garden" [ inputs.garden-shell ])
-  ];
-}
-```
+`garden.terminal` is deliberately not in the base user layer
+(`modules/user-ada.nix`): yarrow and the work laptop already receive it
+through `garden.shell`, and including it twice duplicates the kitty
+include. For the same reason yarrow forwards `desktop-apps` and
+`garden.shell` rather than `ada-desktop`. A
+headless host that wants the themed terminal has to include it
+explicitly.
 
-After this, fern modules take `garden` as an argument and include garden
-aspects like any local aspect. The base user layer (`modules/user-ada.nix`)
-includes `garden.terminal`, which pulls in `garden.palette` and
-`garden.toolkit` (the `garden-themes` binary). Because it is in the **base**
-layer, every host — even a future headless server — gets a garden-themed
-terminal.
+On fern nothing in this flake includes `garden.shell`. The niri aspect
+still installs `quickshell` and starts `qs -c garden`, so on fern the
+shell's QML has to be present in
+`~/.config/quickshell/garden` by some other means; without it the bar
+and overlays do not appear.
 
 ## Build-time palette
 
-Garden-shell exports the palette as a Nix attribute set:
+garden-shell exports the colours of the palette marked active in its
+`palettes.toml`, at the revision pinned in `flake.lock`:
 
 ```nix
 palette = inputs.garden-shell.lib.palette.colors;
 ```
 
-Fern modules use it wherever colors are baked into generated config:
+These consumers bake those colours into generated configuration, by
+semantic name (`accent`, `urgent`, `ok`, `border`, `text-1` …) rather
+than hex:
 
-| Consumer | File | What it themes |
-|----------|------|----------------|
-| Fish prompt | `modules/shells/fish.nix` | Two-line ✧ prompt colors |
-| Delta | `modules/cli/delta.nix` | Diff colors + garden tmTheme syntax |
-| LazyGit | `modules/cli/lazygit.nix` | Border/selection theme overlay |
-| Niri | `modules/desktop/niri.nix` | Window borders, SSH host-tier border colors |
+| Consumer | File |
+| -------- | ---- |
+| niri window borders, including the host-tier rules | `modules/desktop/niri.nix` |
+| fish prompt | `modules/shells/fish.nix` |
+| delta | `modules/cli/delta.nix` |
+| lazygit base theme | `modules/cli/lazygit.nix` |
 
-These are **build-time**: changing them requires a rebuild. They use the
-palette's semantic names (`accent`, `urgent`, `ok`, `border`, `text-1..4`,
-`base-hl`), not raw hex.
+They change only on a rebuild, and only when the locked garden-shell
+revision changes its active palette. Switching palette at run time does
+not touch them.
 
 ## Run-time theming
 
-The rest of the terminal stack is themed at **run time** so the palette can be
-switched live, without a rebuild. `garden.terminal` seeds
-`~/.config/garden/themes/` on first Home Manager activation (guarded on a
-manifest file so a later rebuild never clobbers your palette choice), and
-tools read from that mutable directory:
+Everything else follows the palette chosen at run time. `garden-themes`
+generates one theme file per tool under `~/.config/garden/themes/`, and
+each tool reads its file from that mutable directory:
 
-- **kitty** — `include ../garden/themes/kitty/garden-theme.conf`; reloads on
-  SIGUSR1, so all instances re-color instantly
-- **fish** syntax colors, **fzf** colors — sourced in `interactiveShellInit`
-- **bat** — symlinked tmTheme + cache rebuild when the theme changes
-- **btop**, **yazi**, **kakoune**, **zathura** — symlinked/sourced theme files
-- **lazygit** — garden overlay merged via `LG_CONFIG_FILE`
-- **helix** — `theme = "garden"`, a link from `~/.config/helix/themes/` to the
-  generated theme (`modules/cli/helix.nix`); reloaded on SIGUSR1
-- **ghostty** — optional `config-file` include of the generated colours
-  (`modules/cli/ghostty.nix`); reloaded on SIGUSR2
+| Tool | How it picks the theme up | Wired in |
+| ---- | ------------------------- | -------- |
+| kitty | `include` of the generated colours, plus a `globinclude` of the font chosen in the shell's settings | garden-shell |
+| fish, fzf | sourced at interactive shell start | garden-shell |
+| bat, btop, yazi | symlinked into each tool's theme directory at shell start | garden-shell |
+| kakoune, zathura | sourced / included from the tool's config | garden-shell |
+| lazygit | overlay file appended through `LG_CONFIG_FILE` | garden-shell |
+| helix | `theme = "garden"`, an out-of-store link to the generated file | `modules/cli/helix.nix` |
+| ghostty | optional `config-file` includes for colours and font | `modules/cli/ghostty.nix` |
+| Obsidian (work laptop) | CSS snippet linked into the notes vault | `modules/desktop/obsidian.nix` |
 
-Switching palettes is `garden-themes apply --name <palette>` (or the shell's
-settings overlay). Eleven palettes ship in `palettes.toml`:
+Two behaviours are worth knowing:
 
-`sumi` · `mokume` · `fuji` · `sugi` · `yoru` · `tsuchi` · `kinu` · `ishi` ·
-`shitanuri` · `nocturne` · `tenebroso`
+- **First activation seeds the files.** `garden.palette` copies
+  `palettes.toml` to `~/.config/garden/` once, as a plain file, and on
+  later activations only adds built-in palettes that are new.
+  `garden.terminal` then runs `garden-themes apply` if no theme files
+  exist yet. Neither step overwrites a palette choice made at run time,
+  which is why `palettes.toml` must never become a Home Manager symlink.
+- **Switching** is `garden-themes apply --name <palette>`, or the
+  shell's settings overlay (`Mod+Comma`). The available palettes are
+  those in the locked revision's `_config/palettes.toml`; they are
+  described in garden-shell's own
+  [book](https://github.com/adanoelle/garden-shell/tree/main/book/src/palette).
 
-The active choice is written back into the mutable
-`~/.config/garden/palettes.toml` — deliberately **not** a Home
-Manager-managed symlink, so runtime selection survives `just switch`.
+On machines that carry the [wallpaper](wallpaper.md) aspect, the
+painting on the wall follows the palette as well.
 
-### Studies: a palette and its paintings
+## The shell
 
-Six palettes are built from a painter's working colours, and each is
-paired with that painter's paintings as the niri wallpaper. The pair is
-a *study*. A painting whose colour departs from its painter's has a
-palette of its own, shown in brackets:
+`modules/desktop/niri.nix` starts the shell with the session
+(`qs -c garden`) and binds keys to its IPC calls: launcher, switcher,
+settings, notifications, power menu, lock and screenshots. The one bind
+table is in [Niri](niri.md#keybinds). Idle and before-sleep locking go
+through the same `lock` call.
 
-| Palette | Painter | Paintings |
-|---------|---------|-----------|
-| `shitanuri` | Sargent | *Nonchaloir (Repose)*, *El Jaleo*, *A Dinner Table at Night* [`lampshade`], *Carnation, Lily, Lily, Rose* [`lantern`] |
-| `nocturne` | Whistler | *Nocturne: Blue and Gold — Southampton Water* |
-| `tenebroso` | Caravaggio | *The Denial of Saint Peter*, *The Musicians* and *Bacchus* (two crops) [`chiaro`], *Judith* (detail) |
-| `poesia` | Titian | *Bacchus and Ariadne*, *The Rape of Europa*, *The Death of Actaeon* |
-| `impasto` | Rembrandt | *Philemon and Baucis*, *The Abduction of Europa* |
-| `brabant` | Bruegel | *Landscape with the Fall of Icarus* |
-
-The wallpaper service follows the active palette, so switching palette
-switches the study; any other palette shows the default study (Sargent).
-
-```bash
-garden-study                    # list studies and paintings, with attributions
-garden-study next               # the next study
-garden-study painting           # the next painting in this study
-garden-study tenebroso judith   # a study, and optionally a painting
-garden-study placard            # the label of what is on the wall
-```
-
-In niri, `Mod+G` is `garden-study next`, `Mod+Shift+G` is
-`garden-study painting` and `Mod+Ctrl+G` is `garden-study placard`.
-
-Painting and palette move together: choosing a painting applies its
-palette, and choosing a palette (in garden Settings, say) puts its
-painting on the wall. Each new painting is announced by its placard, a
-notification with the title, painter, year and collection.
-
-The painting chosen for each study is remembered in
-`~/.local/state/garden-study/`. niri's window borders take the palette
-at build time, so they keep their colour until the next switch of the
-system or home configuration.
-
-**Where things live.** `modules/desktop/wallpaper.nix` is only the
-mechanism. Each study is one data file,
-`modules/desktop/_studies/<palette>.nix`, found automatically: the
-painter, and a list of paintings with attribution, a pinned open-access
-source image, crops (in thousandths of the source: `top`, and
-optionally `left`/`right`) for the ultrawide band and the laptop panel,
-and optionally a `palette` of its own.
-The palette's colours live in garden-shell's `palettes.toml`.
-
-- **Another painting for a painter:** add an entry to that study's list.
-- **A new painter:** add the palette to garden-shell, then a new file in
-  `_studies/` named after it.
-
-## The shell (QuickShell)
-
-The garden shell runs as `qs -c garden` inside the Niri session (spawned at
-startup by `modules/desktop/niri.nix`). Niri keybinds drive it over
-QuickShell IPC — without the shell running, these binds silently do nothing:
-
-| Binding | IPC call | Surface |
-|---------|----------|---------|
-| `Super+Slash` | `toggleLauncher` | App launcher |
-| `Super+Tab` | `toggleSwitcher` | Window switcher |
-| `Super+Comma` | `toggleSettings` | Settings (incl. palette picker) |
-| `Super+Shift+N` | `toggleNotifications` | Notification popups |
-| `Super+Shift+M` | `toggleNotificationCenter` | Notification center |
-| `Super+Escape` | `togglePowerMenu` | Power menu |
-| `Super+Alt+L` | `lock` | Session lock (WlSessionLock + PAM) |
-| `Super+S` / `+Shift` / `+Ctrl` | `screenshot region/window/output` | Screenshot flow (save + copy + card) |
-| `XF86MonBrightness*` | `stepBrightnessOsd` | Brightness OSD (then `ddcutil`) |
-
-Idle and suspend locking also route through the shell's `lock` IPC — see
-[Niri § Idle & Lock](niri.md#idle--lock).
-
-## Boundary
-
-Fern documents **what it consumes**: the namespace mount, the palette
-contract, the themes directory, and the IPC surface. How the shell is built —
-QML components, the Rust `garden-core`/`garden-themes` crates, palette
-design — is documented in the
-[garden-shell repository](https://github.com/adanoelle/garden-shell) itself.
-If a question is about the shell's internals, the answer lives there.
+Fonts are installed by `den.aspects.fonts` (`modules/fonts.nix`): M PLUS
+1 as the default sans-serif and serif, IBM Plex Mono as the default
+monospace.
 
 ## Key files
 
 | File | Purpose |
-|------|---------|
-| `modules/garden.nix` | Mounts the `garden.*` den namespace |
-| `modules/user-ada.nix` | `garden.terminal` in the base user layer |
-| `modules/desktop/niri.nix` | Shell startup + IPC keybinds + palette borders |
-| `modules/fonts.nix` | Garden typography (M PLUS 1p, IBM Plex Mono) |
+| ---- | ------- |
+| `modules/garden.nix` | mounts the `garden` namespace |
+| `modules/user-ada-desktop.nix` | includes `garden.terminal` (fern, yarrow) |
+| `modules/host-yarrow.nix`, `modules/user-ada-work.nix` | include `garden.shell` (yarrow, work laptop) |
+| `modules/desktop/niri.nix` | shell startup, IPC binds, palette borders |
+| `modules/fonts.nix` | font packages and fontconfig defaults |
 
-## Design documents
-
-The garden design references, mockups and build plans live in the
-[garden-shell](https://github.com/adanoelle/garden-shell) repository
-(`plan/`), not here. This page documents only how fern consumes the
-shell.
+How the shell is built, the palette design and the design documents
+live in the [garden-shell](https://github.com/adanoelle/garden-shell)
+repository, not here.

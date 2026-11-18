@@ -7,7 +7,7 @@
 #
 # Which stores to reach, and their keys, are NOT here: this repository
 # is public, so each store is set up by hand on the machine that needs
-# it (see book/src/operations/work-laptop.md), and rc keeps it in
+# it (see book/src/machines/work-laptop.md), and rc keeps it in
 # ~/.config/rc/config.toml:
 #
 #   rc alias set NAME URL ACCESS_KEY SECRET_KEY   once per store

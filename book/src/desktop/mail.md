@@ -1,74 +1,60 @@
 # Mail
 
-> Thunderbird, on the work laptop only, talking to the Exchange
-> Online mailbox through the Microsoft Graph API. Chosen because it is the
-> one shipped, non-beta Graph client on Linux and the only route that
-> survives Microsoft's EWS shutdown without depending on IMAP staying
-> enabled in the tenant. Nothing is configured on the NixOS hosts yet.
+> Thunderbird, configured for the work mailbox: a Microsoft 365
+> (Exchange Online) account reached through the Microsoft Graph API,
+> which Thunderbird supports natively from version 154. The profile and
+> preferences are declared; the account is added by hand.
 
-## Why Graph, and why Thunderbird
+**Goes on:** work laptop only (`den.aspects.thunderbird`, included from
+`modules/user-ada-work.nix`). No mail client is configured on fern or
+yarrow.
 
-A local client reaches Exchange Online through one of three doors:
+## What is declared
 
-| Door | Status | Clients |
-| ---- | ------ | ------- |
-| Exchange Web Services (EWS) | phased shutdown from 2026-10-01, retired 2027-04-01 | Evolution (classic), DavMail (default), Thunderbird ≤ 153 Exchange |
-| IMAP + OAuth2 | survives, but tenants can disable it per mailbox | aerc + oama, neomutt, mbsync |
-| Microsoft Graph API | the replacement | Thunderbird 154+ (mail only), DavMail 6.8 (beta), Evolution 3.60 (incomplete) |
+`modules/desktop/thunderbird.nix` enables `programs.thunderbird` with
+one default profile, `work`:
 
-Thunderbird 154 (September 2026) added native Graph support for Microsoft
-365 mail. Calendar and address book over Graph are still in development,
-so meeting invites stay on the web or in Teams for now. Every client also
-needs the tenant to accept its OAuth2 app registration, which you
-only find out at first sign-in.
+- update prompts, the default-client check, telemetry and the start
+  page are off;
+- addresses are not collected from outgoing mail;
+- `mailto:` links open in Thunderbird.
 
-## Thunderbird (`den.aspects.thunderbird`)
+The work layer's channel table decides which niri channel it opens on.
 
-`modules/desktop/thunderbird.nix`, included by `ada-work`. Declares a
-default `work` profile with update nags, telemetry, and the start page
-off, remote content left at Thunderbird's default (blocked), and
-`mailto:` links routed to Thunderbird. The work layer pins it to its
-comms channel.
+Graph support covers mail only; calendar and address book are not
+available through it yet.
 
-The account is **not** declared in Nix: Graph sign-in is interactive
-and the OAuth tokens belong in the profile. First run:
+## What is not declared
 
-1. Account Settings → Account Actions → Add Mail Account.
-2. Enter the work address; Thunderbird detects Microsoft 365 and offers
-   **Microsoft Graph**. Pick it, not Exchange/EWS and not IMAP.
-3. Sign in through the Microsoft page (same Entra ID + MFA as Outlook
-   web).
+The account. Signing in is interactive and the OAuth tokens belong in
+the profile, not in the repository. On first run:
 
-If the sign-in ends in "needs admin approval", the tenant blocks
-Thunderbird's default app registration. Options, in order: ask IT to
-grant consent for Thunderbird's client id; or register your own app in
-Entra ID (if user app registration is allowed) and use the manual Graph
-setup with that client and tenant id, per the
-[Thunderbird wiki](https://blog.thunderbird.net/2026/09/thunderbird-desktop-new-protocol-support-microsoft-graph-api/).
+1. Account Settings → Add Mail Account.
+2. Enter the work address and choose **Microsoft Graph** as the
+   protocol.
+3. Complete the sign-in in the browser window Thunderbird opens.
 
-Graph needs Thunderbird ≥ 154 and the shared nixpkgs pin carried 152, so
-the package temporarily comes from a separate `nixpkgs-thunderbird`
-input (a fresh nixos-unstable pin that does *not* follow `nixpkgs`).
-Bumping the shared pin instead would have rebuilt every overlay package
-that follows it (ghostty, nixd's Nix libraries, herdr's crates) from
-source on the laptop. After the next `just update`, drop the input and
-the `package` line in the aspect.
+If the sign-in ends with a request for administrator approval, the
+tenant does not accept Thunderbird's default application registration.
+Thunderbird's manual setup accepts a custom client id and tenant id for
+that case.
 
-## Not chosen
+## The package pin
 
-- **aerc + oama** (terminal, XOAUTH2 over IMAP) — the best fit for the
-  keyboard-driven desktop, but only if IMAP is enabled for the mailbox
-  (Outlook web → Settings → Mail → Sync email) and the tenant accepts
-  the client id. Candidate for a second phase once Thunderbird proves
-  third-party clients are allowed at all.
-- **DavMail** — Graph mode is beta; useful later as a CalDAV bridge if
-  calendar matters before Thunderbird ships it.
-- **Evolution** — Graph backend incomplete, and the GNOME data-server
-  stack from Nix on Ubuntu is fragile.
+Graph needs Thunderbird 154 or newer, and the shared `nixpkgs` pin
+carries an older release. The package therefore comes from a separate
+flake input, `nixpkgs-thunderbird`, which tracks `nixos-unstable` and
+deliberately does not follow `nixpkgs`: Thunderbird is then substituted
+from the binary cache, and the shared pin (and every overlay package
+built against it) is left alone.
+
+This is temporary. Once an update of the shared pin moves it past 154,
+remove the `package` line in the aspect and the input in `flake.nix`.
 
 ## Key files
 
 | File | Purpose |
 | ---- | ------- |
-| `modules/desktop/thunderbird.nix` | Thunderbird profile, prefs, mailto handler |
-| `modules/user-ada-work.nix` | includes the aspect (laptop only) |
+| `modules/desktop/thunderbird.nix` | profile, preferences, `mailto:` handler, package override |
+| `flake.nix` | the `nixpkgs-thunderbird` input |
+| `modules/user-ada-work.nix` | the only includer |

@@ -553,7 +553,7 @@
           # working lock on the ORNL laptop — garden lock and swaylock
           # both fail with the YubiKey/PKCS#11 PAM stack. Unbind
           # Mod+Alt+L so it can't accidentally fire a broken locker.
-          # See "Known rough edges" in book/src/operations/work-laptop.md.
+          # See "Known rough edges" in book/src/machines/work-laptop.md.
           "Mod+Alt+L".action = lib.mkForce { spawn = [ "true" ]; };
           # B for browser: go to the browser channel (starting Zen if it
           # isn't running) instead of opening a new Zen window each time.

@@ -1,76 +1,59 @@
 # Introduction
 
-Fern is a **multi-machine NixOS configuration**. It exists so that several
-very different computers — a pro-audio dev workstation, a parked Apple
-Silicon laptop, a future homelab server — can share one identity, one set of
-conventions, and one review surface, while each machine only carries what it
-actually needs.
+Fern is a **multi-machine NixOS configuration**. It exists so that
+several very different computers can share one identity, one set of
+conventions and one review surface, while each machine carries only what
+it needs.
 
-The trick is **layering**: every fact lives in the most-shared place it is
-correct for. A machine is "hardware file + role + quirks"; a user is a
-machine-agnostic base layer plus feature layers (desktop, dev toolchain) that
-hosts forward when appropriate. The mechanics come from the **dendritic
-pattern** — flake-parts + [import-tree](https://github.com/vic/import-tree) +
-[den](https://github.com/vic/den) — where every file under `modules/` is
-auto-imported and file existence is registration. The reasoning behind all of
-this is in [Design Philosophy](concepts/design-philosophy.md).
+The trick is **layering**: every fact lives in the most-shared place it
+is correct for. A machine is "hardware file + roles + quirks"; a user is
+a machine-agnostic base layer plus feature layers that hosts forward
+when they fit. The mechanics come from the **dendritic pattern**
+(flake-parts, [import-tree](https://github.com/vic/import-tree) and
+[den](https://github.com/vic/den)), where every file under `modules/` is
+imported automatically. The reasoning is in
+[Design & Layering](start/design-and-layering.md).
 
-## What runs where
+## The machines
 
-| Machine | Hardware | Status | Carries |
-|---------|----------|--------|---------|
-| **fern** | x86_64 desktop (AMD) | Active | workstation + dev-machine + homelab roles, Niri/garden desktop, pro audio, gaming |
-| **moss** | Apple Silicon laptop (Asahi) | Parked | placeholder hardware config; waiting on aarch64 fixes |
-| *(planned)* | homelab server | — | server + homelab roles (fern drops homelab) |
-| *(planned)* | gaming machine | — | hardware + gaming role + quirks |
+| Machine | What it is | Status |
+| --- | --- | --- |
+| [fern](machines/fern.md) | x86_64 desktop workstation: Niri and the garden shell, studio audio, development, homelab services | active |
+| [yarrow](machines/yarrow.md) | Framework Laptop 13 Pro: art, game development and playtesting | configured, [not yet installed](machines/installing-yarrow.md) |
+| [work laptop](machines/work-laptop.md) | Ubuntu 24.04 with a standalone home-manager configuration | active |
+| [moss](machines/moss.md) | Apple Silicon laptop (Asahi) | parked |
 
-## Choose your path
+Each machine's page is the one place that says what that machine
+carries. Topic pages say which machines a thing goes on and link back.
 
-| You are… | Start here |
-|----------|-----------|
-| New to NixOS entirely | [Part I: Understanding Fern](concepts/design-philosophy.md), in order — philosophy, then [NixOS & Flakes](concepts/nixos-and-flakes.md) |
-| Comfortable with NixOS, new to den/dendritic | [Aspects, Bundles & Topology](concepts/aspects-bundles-topology.md), then [Part V: Architecture Internals](architecture/repository-layout.md) |
-| Curious about the desktop | [Part II: The Desktop](desktop/garden.md) — the garden design system, then [Niri](desktop/niri.md) |
-| Setting up or debugging homelab services | [Homelab (Tailscale & Radicale)](services/homelab.md) |
-| About to hack on this repo | [Part VI: Operations](operations/rebuilding.md) — rebuilding, [adding an aspect](operations/adding-an-aspect.md), [adding a host](operations/adding-a-host.md) |
-| Looking something up | [Reference](reference/aspect-index.md) — aspect index, aliases, environment variables |
-| Interested in how it got this way | [Appendix: Migration](migration/why-den.md) |
+## Where to start
 
-## Quick start
+| You want to… | Go to |
+| --- | --- |
+| Understand why it is built this way | [Design & Layering](start/design-and-layering.md) |
+| Learn the den vocabulary and patterns | [Aspects & Composition](architecture/aspects.md) |
+| See what a machine has | [Machines](machines/fern.md) |
+| Change something | [Day to Day](operations/day-to-day.md), then [Adding an Aspect](operations/adding-an-aspect.md) |
+| Fix something | [Troubleshooting](operations/troubleshooting.md) |
+| Look something up | [Aspect Index](reference/aspect-index.md), [Aliases](reference/aliases.md) |
 
-```bash
-# Enter the dev shell (provides just, mdbook, nixfmt)
-nix develop            # or: direnv allow
+## How this book is organised
 
-# Test a rebuild without switching
-just test
+- **Machines**: one page per machine.
+- **How it's built**: the den vocabulary, the flake and its bootstrap,
+  and the fleet defaults.
+- **What's configured**: the desktop, terminal and shells, git,
+  toolchains, creative tools, services and secrets. Each page states
+  which machines carry it.
+- **Operating**: the working loop, adding things, and what goes wrong.
+- **Reference**: lookup tables.
+- **History**: how it got this way.
 
-# Rebuild and switch
-just switch
+Two rules keep the book honest. Every fact has one home, and other pages
+link to it. And pages point at the code rather than copying it, so the
+file named on a page is always the authority.
 
-# Serve this documentation with live reload
-just book-serve
-
-# Format Nix files
-just fmt
-```
-
-## How this book is organized
-
-Every chapter leads with **why** — the reasoning and constraints — before
-**how** — the mechanics. If you only remember the why, you can rediscover the
-how; the reverse is not true.
-
-- **Part I: Understanding Fern** — the concepts: philosophy, flakes, the
-  module system, Home Manager, and the den vocabulary.
-- **Part II: The Desktop (Garden)** — the garden design system, Niri, and
-  browsers; the retired Hyprland stack is kept as a documented fallback.
-- **Part III: Daily Life** — shells, the git suite, language toolchains, and
-  game development tooling.
-- **Part IV: The Machine** — system services (homelab, audio, graphics,
-  gaming, containers) and security/secrets.
-- **Part V: Architecture Internals** — how the flake, dendritic bootstrap,
-  topology, and aspect patterns actually work.
-- **Part VI: Operations & Reference** — day-to-day procedures and lookup
-  tables.
-- **Appendix: Migration** — the historical record of the move to den.
+This book assumes working knowledge of Nix. For that, see
+[nix.dev](https://nix.dev), the
+[NixOS manual](https://nixos.org/manual/nixos/stable/) and the
+[Home Manager manual](https://nix-community.github.io/home-manager/).

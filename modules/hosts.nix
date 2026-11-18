@@ -5,7 +5,7 @@
 
   # yarrow — Framework Laptop 13 Pro. hosts/yarrow/hardware.nix is a
   # placeholder until the machine is installed (see
-  # book/src/operations/installing-yarrow.md).
+  # book/src/machines/installing-yarrow.md).
   den.hosts.x86_64-linux.yarrow.users.ada = { };
 
   # ORNL work laptop — Ubuntu 24.04, standalone home-manager only (no

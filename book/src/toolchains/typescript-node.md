@@ -1,69 +1,58 @@
-# TypeScript & Node
+# TypeScript / Node
 
-> Node.js 24, pnpm, Deno, typescript-language-server for Helix, and nix-ld for
-> running native ELF binaries.
+> Node.js 24 with pnpm, yarn and Deno on the NixOS hosts; TypeScript,
+> its language server, prettier and eslint_d for the user; Helix wired
+> to `typescript-language-server` and prettier.
 
-## Overview
+**Goes on:** fern, yarrow, work laptop (through the `devtools` bundle in
+the `ada-dev` user layer). The work laptop gets the home-manager side
+only.
 
-The TypeScript/Node setup covers both server-side Node.js development and
-front-end tooling. It is provided as a single unified aspect
-(`modules/devtools/node-ts.nix`) covering runtimes, linting, formatting, and
-editor integration.
+## What the aspect installs
 
-## Runtimes and package managers
+`den.aspects.node-ts` (`modules/devtools/node-ts.nix`):
 
-The aspect (`modules/devtools/node-ts.nix`) installs:
+| Side         | Packages |
+| ------------ | -------- |
+| NixOS        | `nodejs_24`, `pnpm`, `yarn`, `deno`, `jq`, `parallel` |
+| home-manager | `eslint_d`, `prettier`, `typescript`, `typescript-language-server`, `tailwindcss`, `deno`, `coc-jest`, `playwright-test` |
 
-| Package     | Purpose                                  |
-| ----------- | ---------------------------------------- |
-| `nodejs_24` | Node.js 24 LTS runtime                   |
-| `pnpm`      | Fast, disk-efficient package manager     |
-| `yarn`      | Alternative package manager              |
-| `deno`      | TypeScript runtime with built-in tooling |
-| `aws-cdk`   | AWS Cloud Development Kit CLI            |
-| `jq`        | JSON processor                           |
-| `parallel`  | GNU parallel for batch operations        |
+On the work laptop there is no NixOS side, so Node itself, pnpm and yarn
+do not come from this aspect; Deno, `tsc`, the language server and the
+formatters do.
 
-### nix-ld
+`aws-cdk` is not installed: it left nixpkgs together with the
+`nodePackages` set. Where it is needed, `npm install -g aws-cdk`.
 
-The module enables `programs.nix-ld`, which provides a compatibility layer for
-running dynamically-linked ELF binaries on NixOS. This is needed because Node.js
-native modules (built by npm/pnpm) expect a standard FHS layout that NixOS does
-not provide.
+## nix-ld
 
-## Development tooling
+The NixOS side sets `programs.nix-ld.enable = true`, so prebuilt
+binaries downloaded by npm packages can find a dynamic loader. The same
+option is already a fleet default (`lib.mkDefault true` in
+`modules/core.nix`); see
+[Defaults, core and users](../architecture/defaults-core-users.md).
 
-The aspect also includes:
+## Helix
 
-| Package                      | Purpose                      |
-| ---------------------------- | ---------------------------- |
-| `eslint_d`                   | ESLint daemon (fast linting) |
-| `prettier`                   | Code formatter               |
-| `typescript`                 | TypeScript compiler          |
-| `typescript-language-server` | LSP for Helix                |
-| `tailwindcss`                | Utility-first CSS framework  |
-| `deno`                       | Also available in home scope |
-| `playwright-test`            | E2E testing framework        |
+The home-manager side defines a language server named `tsls` and uses it
+for both languages:
 
-### Helix LSP
+| Setting         | Value |
+| --------------- | ----- |
+| Server `tsls`   | `typescript-language-server --stdio` |
+| `typescript`    | servers `[ "tsls" ]`; formatter `prettier --stdin-filepath file.ts` |
+| `javascript`    | servers `[ "tsls" ]`; formatter `prettier --stdin-filepath file.js` |
 
-```nix
-programs.helix.languages.language-server.typescript-language-server = {
-  command = "${pkgs.typescript-language-server}/bin/typescript-language-server";
-  args = [ "--stdio" ];
-};
-```
+The `--stdin-filepath` value is a fixed placeholder that tells prettier
+which parser to use. Prettier's own options come from `~/.prettierrc`,
+written by `modules/cli/prettier.nix`.
 
-This provides completions, diagnostics, go-to-definition, and refactoring for
-both TypeScript and JavaScript files.
-
-### direnv
-
-direnv with nix-direnv is enabled for per-project Node.js environment
-management.
+The aspect also enables `programs.direnv` with `nix-direnv`.
 
 ## Key files
 
-| File                           | Purpose                                          |
-| ------------------------------ | ------------------------------------------------ |
-| `modules/devtools/node-ts.nix` | Node.js, pnpm, Deno, nix-ld, LSP, linting, testing |
+| File                           | Purpose                                  |
+| ------------------------------ | ---------------------------------------- |
+| `modules/devtools/node-ts.nix` | Packages, nix-ld, Helix TS/JS config     |
+| `modules/cli/prettier.nix`     | `~/.prettierrc`                          |
+| `modules/core.nix`             | Fleet default for `programs.nix-ld`      |
