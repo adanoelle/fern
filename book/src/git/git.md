@@ -171,25 +171,34 @@ To check which identity is active in a repository: `git whoami` or
   refused." and exits non-zero.
 
 For non-interactive work the intended route is to push a feature branch
-and merge a pull request. `git push --no-verify` skips the hook.
+and merge a pull request. `git push --no-verify` skips the hook. When
+the push is allowed, the repository's own `pre-push` hook runs next.
 
-### `core.hooksPath`
+### Secret scan before each commit
+
+A `pre-commit` hook scans the staged changes with gitleaks and refuses
+the commit if they contain a credential. See
+[Secret guard](../security/secret-guard.md).
+
+### Repository hooks still run
 
 The module sets `core.hooksPath = ~/.config/git/hooks` globally. Git
 then looks for hooks only in that directory and ignores each
-repository's `.git/hooks`. Consequences:
+repository's `.git/hooks`. To keep project hooks working, every hook in
+the global directory ends by running the repository's hook of the same
+name, when one exists and is executable:
 
-- Hooks that a project installs into `.git/hooks` do not run. A project
-  that sets its own `core.hooksPath` in the repository's local config
-  is unaffected, because local config overrides global.
-- The `secrets-guard` aspect sets the system-wide `init.templateDir` to
-  `<git-secrets>/share/git-secrets`. The nixpkgs `git-secrets` package
-  installs only the program and its man page, so that directory does
-  not exist: `git init` prints `warning: templates not found` and no
-  hooks are copied. Even with a populated template, hooks copied into
-  `.git/hooks` would be bypassed by the global `core.hooksPath`. In
-  practice no git-secrets hook runs on commit for this user; scanning
-  is run by hand. See [Secret guard](../security/secret-guard.md).
+- `pre-commit`, `pre-push` and (when enabled) `commit-msg` run their own
+  check first. The repository's hook runs only if that check passes,
+  and its exit status decides the outcome.
+- For the other client-side hooks (`post-checkout`, `post-merge`,
+  `prepare-commit-msg` and so on) a shim does nothing but hand over.
+  `reference-transaction` and the fsmonitor and p4 hooks have no shim.
+- The repository's hooks are looked up in the common Git directory, so
+  linked worktrees use the main checkout's hooks, as Git does itself.
+
+A repository that sets its own `core.hooksPath` in local configuration
+overrides the global one, and none of the hooks above run there.
 
 ### Other safety settings
 
@@ -267,7 +276,7 @@ those names are abbreviations with different expansions; see
 | `modules/git/core.nix` | signing, delta, URL rewrites, push/pull/merge defaults, ignores |
 | `modules/git/aliases.nix` | git aliases and shell aliases |
 | `modules/git/identities.nix` | `includeIf` identities, `allowed_signers` |
-| `modules/git/safety.nix` | pre-push hook, `core.hooksPath`, `merge.ff`, safety aliases |
+| `modules/git/safety.nix` | `pre-commit` secret scan, `pre-push` hook, hook chaining, `merge.ff`, safety aliases |
 | `modules/git/github.nix` | `gh` settings, writable config, GitHub aliases |
 | `modules/git/tools.nix` | lazygit, tig, git-absorb, optional lfs and filter-repo |
 | `modules/git/help.nix` | help aliases, quick reference, tldr |
