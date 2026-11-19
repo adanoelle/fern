@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 96 96" width="96" height="96">
+  <!-- One frame of the busy pointer. The build fills in the tokens:
+       @turn@ is the star's angle, @a@ and @b@ the size of the two small
+       sparkles. The chrome is painted through a clip so the light stays
+       still while the star turns. -->
+  <defs>
+    <linearGradient id="chrome" gradientUnits="userSpaceOnUse" x1="0" y1="12" x2="0" y2="84">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="0.18" stop-color="#eef4ff"/><stop offset="0.36" stop-color="#7f8fb8"/>
+      <stop offset="0.46" stop-color="#1b2140"/><stop offset="0.50" stop-color="#2a3360"/><stop offset="0.54" stop-color="#ffffff"/>
+      <stop offset="0.70" stop-color="#c9d6ff"/><stop offset="0.86" stop-color="#f6e9ff"/><stop offset="1" stop-color="#8a7fd0"/>
+    </linearGradient>
+    <radialGradient id="red" cx="0.35" cy="0.3" r="0.8">
+      <stop offset="0" stop-color="#fff0ee"/><stop offset="0.3" stop-color="#ff5a52"/><stop offset="0.7" stop-color="#c20d1c"/><stop offset="1" stop-color="#6a0012"/></radialGradient>
+    <path id="star" transform="translate(48 48) rotate(@turn@)" stroke-linejoin="round"
+      d="M0 -36 C3 -12 12 -3 36 0 C12 3 3 12 0 36 C-3 12 -12 3 -36 0 C-12 -3 -3 -12 0 -36 Z"/>
+    <clipPath id="clip"><use xlink:href="#star"/></clipPath>
+    <path id="spark" d="M0 -8 l2.2 5.8 5.8 2.2 -5.8 2.2 -2.2 5.8 -2.2 -5.8 -5.8 -2.2 5.8 -2.2 z"/>
+  </defs>
+  <use xlink:href="#star" stroke="#ffffff" stroke-width="6" fill="#ffffff"/>
+  <rect width="96" height="96" fill="url(#chrome)" clip-path="url(#clip)"/>
+  <use xlink:href="#star" stroke="#14162a" stroke-width="2.2" fill="none"/>
+  <path transform="translate(48,48.6) scale(0.95)" d="M0 6 C-10 -1 -8 -8.5 -4 -8.5 C-1.7 -8.5 0 -7 0 -5 C0 -7 1.7 -8.5 4 -8.5 C8 -8.5 10 -1 0 6 Z" fill="url(#red)" stroke="#14162a" stroke-width="2" stroke-linejoin="round"/>
+  <g fill="#ffffff" stroke="#14162a" stroke-width="1.1" stroke-linejoin="round">
+    <use xlink:href="#spark" transform="translate(84 13) scale(@a@)"/>
+    <use xlink:href="#spark" transform="translate(12 83) scale(@b@)"/>
+  </g>
+</svg>

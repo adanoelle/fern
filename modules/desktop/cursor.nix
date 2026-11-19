@@ -7,9 +7,10 @@
 # rendered to PNG at each size and packed with xcursorgen.
 #
 # The arrow, the text beam (`text.svg`), the pointing hand (`hand.svg`),
-# the open hand (`open.svg`) and the closed fist for dragging
-# (`fist.svg`) are drawn so far. Every other shape (resize, busy, ...)
-# comes from Adwaita through the theme's `Inherits`.
+# the open hand (`open.svg`), the closed fist for dragging (`fist.svg`)
+# and the two busy pointers (`wait.svg`, and the key with
+# `spin.svgfrag` over it) are drawn so far. Every other shape (resize,
+# not-allowed, ...) comes from Adwaita through the theme's `Inherits`.
 _: {
   den.aspects.cursor = {
     homeManager =
@@ -25,7 +26,56 @@ _: {
         # The shapes drawn so far. Each lists its sizes with the drawing
         # used and the click point, given in the drawing's own 96-unit
         # square; `names` are the other names clients ask for it by.
-        shapes = {
+        # A moving shape also gives `frames`, each a set of values for
+        # the `@token@`s in its drawing, and the `delay` between them in
+        # milliseconds; `overlay` is a fragment laid over the drawing.
+        # The frames of the turning star. It has four points, so a
+        # quarter turn brings it back to the start; the two small
+        # sparkles swell and shrink in turn.
+        spin = [
+          {
+            turn = "0";
+            a = "1.0";
+            b = "0.2";
+          }
+          {
+            turn = "11.25";
+            a = "0.85";
+            b = "0.35";
+          }
+          {
+            turn = "22.5";
+            a = "0.6";
+            b = "0.6";
+          }
+          {
+            turn = "33.75";
+            a = "0.35";
+            b = "0.85";
+          }
+          {
+            turn = "45";
+            a = "0.2";
+            b = "1.0";
+          }
+          {
+            turn = "56.25";
+            a = "0.35";
+            b = "0.85";
+          }
+          {
+            turn = "67.5";
+            a = "0.6";
+            b = "0.6";
+          }
+          {
+            turn = "78.75";
+            a = "0.85";
+            b = "0.35";
+          }
+        ];
+
+        shapes = rec {
           # The key: the click point is its tip. The two smallest
           # sizes use the plainer drawing.
           default = {
@@ -118,6 +168,39 @@ _: {
                   96
                 ];
           };
+          # Busy: a chrome star turning around a red heart.
+          wait = {
+            names = [ "watch" ];
+            frames = spin;
+            delay = 80;
+            sizes =
+              map
+                (size: {
+                  inherit size;
+                  art = "wait";
+                  x = 48;
+                  y = 48;
+                })
+                [
+                  24
+                  32
+                  48
+                  64
+                  96
+                ];
+          };
+          # Working, but still clickable: the key with a sparkle turning
+          # beside it.
+          progress = {
+            names = [
+              "left_ptr_watch"
+              "half-busy"
+            ];
+            overlay = "spin.svgfrag";
+            frames = spin;
+            delay = 80;
+            inherit (default) sizes;
+          };
           # A slim beam with a red bead: the click point is its centre.
           text = {
             names = [
@@ -159,11 +242,28 @@ _: {
                     s:
                     let
                       n = toString s.size;
+                      art = "${./_cursor}/${s.art}.svg";
+                      frames = def.frames or [ { } ];
                     in
-                    ''
-                      resvg -w ${n} -h ${n} ${./_cursor}/${s.art}.svg ${shape}-${n}.png
-                      echo "${n} ${toString (s.x * s.size / 96)} ${toString (s.y * s.size / 96)} ${shape}-${n}.png" >> ${shape}.cfg
-                    ''
+                    lib.concatImapStrings (
+                      i: frame:
+                      let
+                        png = "${shape}-${n}-${toString i}.png";
+                        fill = lib.concatStrings (lib.mapAttrsToList (token: value: " -e 's/@${token}@/${value}/g'") frame);
+                      in
+                      ''
+                        ${
+                          if def ? overlay then
+                            "{ head -n -1 ${art}; cat ${./_cursor}/${def.overlay}; echo '</svg>'; }"
+                          else
+                            "cat ${art}"
+                        } | sed -e 's/@@/@@/'${fill} > frame.svg
+                        resvg -w ${n} -h ${n} frame.svg ${png}
+                        echo "${n} ${toString (s.x * s.size / 96)} ${toString (s.y * s.size / 96)} ${png}${
+                          lib.optionalString (def ? delay) " ${toString def.delay}"
+                        }" >> ${shape}.cfg
+                      ''
+                    ) frames
                   ) def.sizes}
                   xcursorgen ${shape}.cfg $theme/cursors/${shape}
                   ${lib.concatMapStrings (name: ''

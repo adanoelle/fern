@@ -155,9 +155,12 @@ heart charm, and a ringed hand over links and buttons.
 - The art is vector drawings in `modules/desktop/_cursor/`. The
   build renders them at 24, 32, 48, 64 and 96 px; the two smallest
   sizes use a plainer key without the charm.
-- The arrow, the text beam, the pointing hand, the open hand and the
-  closed fist for dragging are drawn. Every other shape comes from
-  Adwaita.
+- The arrow, the text beam, the pointing hand, the open hand, the
+  closed fist for dragging and the two busy pointers are drawn. Every
+  other shape comes from Adwaita.
+- The busy pointers move: a chrome star turns around a red heart, and
+  the key gets a sparkle turning beside it while something loads in
+  the background.
 - The size defaults to 48 and can be set per machine with
   `home.pointerCursor.size`.
 - niri re-reads the pointer theme only when its cursor settings
