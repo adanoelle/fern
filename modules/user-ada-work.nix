@@ -448,6 +448,8 @@
           pkgs.pandoc
           pkgs.glow
           pkgs.zotero
+          # Painting; its windows follow the palette through gtk-theme.
+          pkgs.krita
         ];
 
         # Desk layout: the LG ultrawide on the dock sits behind and above
