@@ -6,9 +6,9 @@
 > the wall, so palette and painting change together. The images are
 > fetched from pinned open-access sources and cropped at build time.
 
-**Goes on:** work laptop only. `den.aspects.wallpaper` is included from
-`modules/user-ada-work.nix` and nowhere else. Adding it to another niri
-host is one line: put `den.aspects.wallpaper` in that host's
+**Goes on:** the [work laptop](../machines/work-laptop.md) and
+[yarrow](../machines/yarrow.md). Adding it to another niri host is one
+line: put `den.aspects.wallpaper` in that host's
 `provides.to-users.includes` (it sets `programs.niri.settings`, so it
 needs a host that carries the niri module, like the other
 [niri add-ons](niri.md#per-machine)).

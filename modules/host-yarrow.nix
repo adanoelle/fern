@@ -36,6 +36,8 @@
       den.aspects.niri
       # The chrome key pointer
       den.aspects.cursor
+      # Painted wallpapers: the active palette picks the painter
+      den.aspects.wallpaper
       # Built-in panel: backlight keys, and suspend when idle on battery
       den.aspects.brightness-backlight
       den.aspects.idle-suspend
