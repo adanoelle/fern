@@ -6,9 +6,9 @@
 # charm for the sizes where the charm would be a smudge. They are
 # rendered to PNG at each size and packed with xcursorgen.
 #
-# The arrow and the text beam (`text.svg`) are drawn so far. Every
-# other shape (resize, busy, ...) comes from Adwaita through the
-# theme's `Inherits`.
+# The arrow, the text beam (`text.svg`) and the pointing hand
+# (`hand.svg`) are drawn so far. Every other shape (resize, busy, ...)
+# comes from Adwaita through the theme's `Inherits`.
 _: {
   den.aspects.cursor = {
     homeManager =
@@ -40,6 +40,31 @@ _: {
                   art = if size < 48 then "key-small" else "key";
                   x = if size < 48 then 6 else 5;
                   y = if size < 48 then 6 else 5;
+                })
+                [
+                  24
+                  32
+                  48
+                  64
+                  96
+                ];
+          };
+          # A ringed hand for links and buttons: the click point is the
+          # fingertip.
+          pointer = {
+            names = [
+              "hand"
+              "hand1"
+              "hand2"
+              "pointing_hand"
+            ];
+            sizes =
+              map
+                (size: {
+                  inherit size;
+                  art = "hand";
+                  x = 34;
+                  y = 6;
                 })
                 [
                   24
