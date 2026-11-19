@@ -1,13 +1,14 @@
 # modules/desktop/cursor.nix — the chrome key pointer
 #
 # A cursor theme drawn for this configuration: a chrome skeleton key
-# with a red bow and a heart charm. The art is two vector drawings in
+# with a red bow and a heart charm. The art is vector drawings in
 # ./_cursor: `key.svg`, and `key-small.svg`, a plainer key without the
 # charm for the sizes where the charm would be a smudge. They are
 # rendered to PNG at each size and packed with xcursorgen.
 #
-# Only the arrow is drawn so far. Every other shape (text, resize,
-# busy, ...) comes from Adwaita through the theme's `Inherits`.
+# The arrow and the text beam (`text.svg`) are drawn so far. Every
+# other shape (resize, busy, ...) comes from Adwaita through the
+# theme's `Inherits`.
 _: {
   den.aspects.cursor = {
     homeManager =
@@ -20,35 +21,57 @@ _: {
       let
         themeName = "chrome-key";
 
-        # size, drawing, and the click point: the tip of the key, in
-        # the drawing's own 96-unit square.
-        sizes = [
-          {
-            size = 24;
-            art = "key-small";
-            tip = 6;
-          }
-          {
-            size = 32;
-            art = "key-small";
-            tip = 6;
-          }
-          {
-            size = 48;
-            art = "key";
-            tip = 5;
-          }
-          {
-            size = 64;
-            art = "key";
-            tip = 5;
-          }
-          {
-            size = 96;
-            art = "key";
-            tip = 5;
-          }
-        ];
+        # The shapes drawn so far. Each lists its sizes with the drawing
+        # used and the click point, given in the drawing's own 96-unit
+        # square; `names` are the other names clients ask for it by.
+        shapes = {
+          # The key: the click point is its tip. The two smallest
+          # sizes use the plainer drawing.
+          default = {
+            names = [
+              "left_ptr"
+              "arrow"
+              "top_left_arrow"
+            ];
+            sizes =
+              map
+                (size: {
+                  inherit size;
+                  art = if size < 48 then "key-small" else "key";
+                  x = if size < 48 then 6 else 5;
+                  y = if size < 48 then 6 else 5;
+                })
+                [
+                  24
+                  32
+                  48
+                  64
+                  96
+                ];
+          };
+          # A slim beam with a red bead: the click point is its centre.
+          text = {
+            names = [
+              "xterm"
+              "ibeam"
+            ];
+            sizes =
+              map
+                (size: {
+                  inherit size;
+                  art = "text";
+                  x = 48;
+                  y = 48;
+                })
+                [
+                  24
+                  32
+                  48
+                  64
+                  96
+                ];
+          };
+        };
 
         theme =
           pkgs.runCommand "chrome-key-cursor"
@@ -61,15 +84,24 @@ _: {
             ''
               theme=$out/share/icons/${themeName}
               mkdir -p $theme/cursors
-              ${lib.concatMapStrings (s: ''
-                resvg -w ${toString s.size} -h ${toString s.size} \
-                  ${./_cursor}/${s.art}.svg arrow-${toString s.size}.png
-                echo "${toString s.size} ${toString (s.tip * s.size / 96)} ${toString (s.tip * s.size / 96)} arrow-${toString s.size}.png" >> arrow.cfg
-              '') sizes}
-              xcursorgen arrow.cfg $theme/cursors/default
-              for name in left_ptr arrow top_left_arrow; do
-                ln -s default $theme/cursors/$name
-              done
+              ${lib.concatStrings (
+                lib.mapAttrsToList (shape: def: ''
+                  ${lib.concatMapStrings (
+                    s:
+                    let
+                      n = toString s.size;
+                    in
+                    ''
+                      resvg -w ${n} -h ${n} ${./_cursor}/${s.art}.svg ${shape}-${n}.png
+                      echo "${n} ${toString (s.x * s.size / 96)} ${toString (s.y * s.size / 96)} ${shape}-${n}.png" >> ${shape}.cfg
+                    ''
+                  ) def.sizes}
+                  xcursorgen ${shape}.cfg $theme/cursors/${shape}
+                  ${lib.concatMapStrings (name: ''
+                    ln -s ${shape} $theme/cursors/${name}
+                  '') def.names}
+                '') shapes
+              )}
               cat > $theme/index.theme <<THEME
               [Icon Theme]
               Name=Chrome Key
