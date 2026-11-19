@@ -9,9 +9,10 @@
 # The arrow, the text beam (`text.svg`), the pointing hand (`hand.svg`),
 # the open hand (`open.svg`), the closed fist for dragging (`fist.svg`),
 # the two busy pointers (`wait.svg`, and the key with `spin.svgfrag`
-# over it) and the padlock for "not allowed" (`lock.svg`) are drawn so
-# far. Every other shape (resize, crosshair, ...) comes from Adwaita
-# through the theme's `Inherits`.
+# over it), the padlock for "not allowed" (`lock.svg`) and the resize
+# arrows (`resize.svg`, turned four ways) are drawn so far. Every other
+# shape (crosshair, move, ...) comes from Adwaita through the theme's
+# `Inherits`.
 _: {
   den.aspects.cursor = {
     homeManager =
@@ -75,6 +76,28 @@ _: {
             b = "0.35";
           }
         ];
+
+        # A resize arrow: the one drawing turned to `turn` degrees. The
+        # click point is its middle.
+        resize = turn: names: {
+          inherit names;
+          frames = [ { inherit turn; } ];
+          sizes =
+            map
+              (size: {
+                inherit size;
+                art = "resize";
+                x = 48;
+                y = 48;
+              })
+              [
+                24
+                32
+                48
+                64
+                96
+              ];
+        };
 
         shapes = rec {
           # The key: the click point is its tip. The two smallest
@@ -228,6 +251,45 @@ _: {
                   96
                 ];
           };
+          # The four resize arrows, for window edges and corners.
+          ew-resize = resize "0" [
+            "e-resize"
+            "w-resize"
+            "col-resize"
+            "left_side"
+            "right_side"
+            "sb_h_double_arrow"
+            "h_double_arrow"
+            "size_hor"
+            "split_h"
+          ];
+          ns-resize = resize "90" [
+            "n-resize"
+            "s-resize"
+            "row-resize"
+            "top_side"
+            "bottom_side"
+            "sb_v_double_arrow"
+            "v_double_arrow"
+            "size_ver"
+            "split_v"
+          ];
+          nwse-resize = resize "45" [
+            "nw-resize"
+            "se-resize"
+            "top_left_corner"
+            "bottom_right_corner"
+            "size_fdiag"
+            "bd_double_arrow"
+          ];
+          nesw-resize = resize "-45" [
+            "ne-resize"
+            "sw-resize"
+            "top_right_corner"
+            "bottom_left_corner"
+            "size_bdiag"
+            "fd_double_arrow"
+          ];
           # A slim beam with a red bead: the click point is its centre.
           text = {
             names = [
