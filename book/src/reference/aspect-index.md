@@ -190,7 +190,7 @@ All in the `git-suite` bundle.
 | `imv` | `modules/desktop/imv.nix` | home | imv as the default image viewer | every machine |
 | `pdf` | `modules/desktop/pdf.nix` | home | PDF viewer, manipulation and signing tools | every machine |
 | `obsidian` | `modules/desktop/obsidian.nix` | home | Obsidian with the garden CSS snippet | work laptop |
-| `obs` | `modules/desktop/obs.nix` | home | OBS Studio with capture plugins | fern |
+| `obs` | `modules/desktop/obs.nix` | home | OBS Studio with capture plugins | fern, yarrow |
 | `teams` | `modules/desktop/teams.nix` | both | teams-for-linux | fern (nixos side); work laptop (home side) |
 | `thunderbird` | `modules/desktop/thunderbird.nix` | home | Thunderbird from a newer nixpkgs input | work laptop |
 | `art` | `modules/desktop/art.nix` | home | Painting, pixel art, vector and photo tools | yarrow |
