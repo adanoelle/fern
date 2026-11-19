@@ -143,6 +143,22 @@ enables no compositor itself: it offers the Niri session when the host
 has set `programs.niri.enable`, as fern and yarrow do. The work laptop
 does not use greetd.
 
+## Pointer
+
+The `cursor` aspect (`modules/desktop/cursor.nix`) installs a pointer
+theme drawn for this configuration: a chrome key with a red bow and a
+heart charm.
+
+**Goes on:** the [work laptop](../machines/work-laptop.md) and
+[yarrow](../machines/yarrow.md).
+
+- The art is two vector drawings in `modules/desktop/_cursor/`. The
+  build renders them at 24, 32, 48, 64 and 96 px; the two smallest
+  sizes use a plainer key without the charm.
+- Only the arrow is drawn. Every other shape comes from Adwaita.
+- The size defaults to 48 and can be set per machine with
+  `home.pointerCursor.size`.
+
 ## Per machine
 
 | Machine | Additions |

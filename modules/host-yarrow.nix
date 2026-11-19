@@ -34,6 +34,8 @@
       garden.shell
       den.aspects.ada-dev
       den.aspects.niri
+      # The chrome key pointer
+      den.aspects.cursor
       # Built-in panel: backlight keys, and suspend when idle on battery
       den.aspects.brightness-backlight
       den.aspects.idle-suspend
