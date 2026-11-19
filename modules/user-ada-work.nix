@@ -55,6 +55,8 @@
       den.aspects.cursor
       # File dialogs and other GTK applications follow the palette.
       den.aspects.gtk-theme
+      # A board of reference images on Mod+I.
+      den.aspects.reference-board
     ];
 
     homeManager =

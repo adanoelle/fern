@@ -13,8 +13,9 @@
 | `gamedev`    | yes  | yes    | yes         | `host-fern.nix`, `host-yarrow.nix`, `user-ada-work.nix` |
 | `art`        | no   | yes    | no          | `host-yarrow.nix` |
 | `game-audio` | no   | yes    | no          | `host-yarrow.nix` |
+| `reference-board` | no | yes | yes | `host-yarrow.nix`, `user-ada-work.nix` |
 
-All three are home-manager only. `gamedev` is not part of the `devtools`
+All four are home-manager only. `gamedev` is not part of the `devtools`
 bundle: each machine opts in, the NixOS hosts by forwarding it to the
 user (`provides.to-users`), the work laptop by including it in the work
 layer. fern takes the full `music` layer instead of `game-audio`; see
@@ -92,6 +93,21 @@ The aspect sets no file associations. All four programs register
 `image/*` handlers, and the defaults stay pinned to the viewer by
 `modules/desktop/imv.nix`, so `xdg-open` on an image opens imv rather
 than an editor. Application settings are left unmanaged.
+
+## Reference board
+
+`modules/desktop/reference-board.nix` installs
+[BeeRef](https://beeref.org), a canvas for reference images: drop
+images on it, arrange and scale them, and save the board as one `.bee`
+file.
+
+- `Mod+I` brings the board up. It focuses the open board, or starts
+  BeeRef if none is open (the `reference-board` command does the same).
+- The window opens floating, so it stays above the tiled painting
+  application and can be dragged beside the canvas.
+- BeeRef is built against Python 3.13, because one of its dependencies
+  fails its tests on the default Python in the pinned nixpkgs. The
+  module's comment says when the override can go.
 
 ## `game-audio`
 
