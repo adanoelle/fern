@@ -10,9 +10,9 @@
 # the open hand (`open.svg`), the closed fist for dragging (`fist.svg`),
 # the two busy pointers (`wait.svg`, and the key with `spin.svgfrag`
 # over it), the padlock for "not allowed" (`lock.svg`) and the resize
-# arrows (`resize.svg`, turned four ways) are drawn so far. Every other
-# shape (crosshair, move, ...) comes from Adwaita through the theme's
-# `Inherits`.
+# arrows (`resize.svg`, turned four ways), the crosshair (`cross.svg`)
+# and the move arrows (`move.svg`) are drawn so far. Every other shape
+# (help, zoom, ...) comes from Adwaita through the theme's `Inherits`.
 _: {
   den.aspects.cursor = {
     homeManager =
@@ -290,6 +290,53 @@ _: {
             "size_bdiag"
             "fd_double_arrow"
           ];
+          # A long thin sparkle with an open middle, for picking an exact
+          # spot.
+          crosshair = {
+            names = [
+              "cross"
+              "tcross"
+            ];
+            sizes =
+              map
+                (size: {
+                  inherit size;
+                  art = "cross";
+                  x = 48;
+                  y = 48;
+                })
+                [
+                  24
+                  32
+                  48
+                  64
+                  96
+                ];
+          };
+          # Arrows four ways from a heart, for moving and for scrolling
+          # in every direction.
+          move = {
+            names = [
+              "fleur"
+              "size_all"
+              "all-scroll"
+            ];
+            sizes =
+              map
+                (size: {
+                  inherit size;
+                  art = "move";
+                  x = 48;
+                  y = 48;
+                })
+                [
+                  24
+                  32
+                  48
+                  64
+                  96
+                ];
+          };
           # A slim beam with a red bead: the click point is its centre.
           text = {
             names = [

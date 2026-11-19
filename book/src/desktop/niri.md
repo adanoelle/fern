@@ -157,8 +157,9 @@ heart charm, and a ringed hand over links and buttons.
   sizes use a plainer key without the charm.
 - The arrow, the text beam, the pointing hand, the open hand, the
   closed fist for dragging, the two busy pointers, a heart-shaped
-  padlock for "not allowed" and the resize arrows are drawn. Every
-  other shape comes from Adwaita.
+  padlock for "not allowed", the resize arrows, the crosshair and the
+  move arrows are drawn. The rarer shapes (help, zoom and the like)
+  come from Adwaita.
 - The busy pointers move: a chrome star turns around a red heart, and
   the key gets a sparkle turning beside it while something loads in
   the background.
