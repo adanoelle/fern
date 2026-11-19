@@ -7,10 +7,11 @@
 # rendered to PNG at each size and packed with xcursorgen.
 #
 # The arrow, the text beam (`text.svg`), the pointing hand (`hand.svg`),
-# the open hand (`open.svg`), the closed fist for dragging (`fist.svg`)
-# and the two busy pointers (`wait.svg`, and the key with
-# `spin.svgfrag` over it) are drawn so far. Every other shape (resize,
-# not-allowed, ...) comes from Adwaita through the theme's `Inherits`.
+# the open hand (`open.svg`), the closed fist for dragging (`fist.svg`),
+# the two busy pointers (`wait.svg`, and the key with `spin.svgfrag`
+# over it) and the padlock for "not allowed" (`lock.svg`) are drawn so
+# far. Every other shape (resize, crosshair, ...) comes from Adwaita
+# through the theme's `Inherits`.
 _: {
   den.aspects.cursor = {
     homeManager =
@@ -200,6 +201,32 @@ _: {
             frames = spin;
             delay = 80;
             inherit (default) sizes;
+          };
+          # Not allowed: a heart-shaped padlock. The click point is the
+          # keyhole.
+          not-allowed = {
+            names = [
+              "forbidden"
+              "crossed_circle"
+              "circle"
+              "no-drop"
+              "dnd-no-drop"
+            ];
+            sizes =
+              map
+                (size: {
+                  inherit size;
+                  art = "lock";
+                  x = 48;
+                  y = 62;
+                })
+                [
+                  24
+                  32
+                  48
+                  64
+                  96
+                ];
           };
           # A slim beam with a red bead: the click point is its centre.
           text = {
