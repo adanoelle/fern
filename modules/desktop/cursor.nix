@@ -6,9 +6,10 @@
 # charm for the sizes where the charm would be a smudge. They are
 # rendered to PNG at each size and packed with xcursorgen.
 #
-# The arrow, the text beam (`text.svg`) and the pointing hand
-# (`hand.svg`) are drawn so far. Every other shape (resize, busy, ...)
-# comes from Adwaita through the theme's `Inherits`.
+# The arrow, the text beam (`text.svg`), the pointing hand (`hand.svg`)
+# and the closed fist for dragging (`fist.svg`) are drawn so far. Every
+# other shape (resize, busy, ...) comes from Adwaita through the
+# theme's `Inherits`.
 _: {
   den.aspects.cursor = {
     homeManager =
@@ -65,6 +66,29 @@ _: {
                   art = "hand";
                   x = 34;
                   y = 6;
+                })
+                [
+                  24
+                  32
+                  48
+                  64
+                  96
+                ];
+          };
+          # The same hand closed, for dragging: four rings across the
+          # knuckles. The click point is the middle of the fist.
+          grabbing = {
+            names = [
+              "closedhand"
+              "dnd-move"
+            ];
+            sizes =
+              map
+                (size: {
+                  inherit size;
+                  art = "fist";
+                  x = 48;
+                  y = 46;
                 })
                 [
                   24
