@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 96 96" width="96" height="96">
+  <defs><linearGradient id="chrome" gradientUnits="userSpaceOnUse" x1="0" y1="-17" x2="0" y2="19">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="0.18" stop-color="#eef4ff"/><stop offset="0.36" stop-color="#7f8fb8"/>
+      <stop offset="0.46" stop-color="#1b2140"/><stop offset="0.50" stop-color="#2a3360"/><stop offset="0.54" stop-color="#ffffff"/>
+      <stop offset="0.70" stop-color="#c9d6ff"/><stop offset="0.86" stop-color="#f6e9ff"/><stop offset="1" stop-color="#8a7fd0"/>
+    </linearGradient>
+    <linearGradient id="shaft" gradientUnits="userSpaceOnUse" x1="0" y1="-5" x2="0" y2="5">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="0.30" stop-color="#dfe8ff"/><stop offset="0.48" stop-color="#1f2748"/>
+      <stop offset="0.58" stop-color="#ffffff"/><stop offset="1" stop-color="#b9b4f0"/>
+    </linearGradient>
+    <linearGradient id="silver" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="0.40" stop-color="#9aa6c8"/><stop offset="0.52" stop-color="#232a4a"/>
+      <stop offset="0.60" stop-color="#ffffff"/><stop offset="1" stop-color="#b9b4f0"/>
+    </linearGradient>
+    <linearGradient id="red" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe3e0"/><stop offset="0.16" stop-color="#ff5a52"/><stop offset="0.42" stop-color="#d40f1f"/>
+      <stop offset="0.54" stop-color="#4a0010"/><stop offset="0.60" stop-color="#ff9a8f"/><stop offset="0.78" stop-color="#e3172a"/>
+      <stop offset="1" stop-color="#8f0018"/>
+    </linearGradient>
+    <g id="art" stroke-linejoin="round" stroke-linecap="round">
+      <g transform="translate(5,5) rotate(45) scale(0.8)">
+        <path d="M13 3 h18 v9 h-5 v-4 h-3 v10 h-6 v-6 h-4 z" fill="url(#chrome)"/>
+        <path d="M0 0 L9 -4.5 H62 V4.5 H9 Z" fill="url(#shaft)"/>
+        <rect x="38" y="-6.5" width="4.5" height="13" rx="1.5" fill="url(#chrome)"/>
+        <path fill-rule="evenodd" fill="url(#chrome)"
+          d="M60 0 a17.5 17.5 0 1 0 35 0 a17.5 17.5 0 1 0 -35 0 z M70.5 0 a7 7 0 1 1 14 0 a7 7 0 1 1 -14 0 z"/>
+        <path d="M53 0 l9 -11 l3.5 5.5 z M53 0 l9 11 l3.5 -5.5 z" fill="url(#red)"/>
+        <path d="M53 0 C41 -6 43 -18.5 52 -16 C61 -18.5 63.5 -6 53 0 Z" fill="url(#red)"/>
+        <path d="M53 0 C41 6 43 18.5 52 16 C61 18.5 63.5 6 53 0 Z" fill="url(#red)"/>
+        <circle cx="53" cy="0" r="3.8" fill="url(#silver)"/>
+      </g>
+      <circle cx="54" cy="69.4" r="2.3" fill="#ffffff"/>
+      <path transform="translate(54,83.4) scale(1.45)" d="M0 6 C-10 -1 -8 -8.5 -4 -8.5 C-1.7 -8.5 0 -7 0 -5 C0 -7 1.7 -8.5 4 -8.5 C8 -8.5 10 -1 0 6 Z" fill="url(#red)"/>
+    </g>
+  </defs>
+  <use xlink:href="#art" stroke="#ffffff" stroke-width="5.4" fill="#ffffff"/>
+  <use xlink:href="#art" stroke="#14162a" stroke-width="2.2"/>
+  <circle cx="54" cy="69.4" r="2.2" fill="url(#silver)" stroke="#14162a" stroke-width="0.9"/>
+  <path d="M48.2 77.6 q2 -2.6 4.4 -0.8" stroke="#ffffff" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <g fill="#ffffff" stroke="#14162a" stroke-width="1.1" stroke-linejoin="round">
+    <path d="M81 29 l2.2 6.3 6.3 2.2 -6.3 2.2 -2.2 6.3 -2.2 -6.3 -6.3 -2.2 6.3 -2.2 z"/>
+    <path d="M75 70 l1.1 3.1 3.1 1.1 -3.1 1.1 -1.1 3.1 -1.1 -3.1 -3.1 -1.1 3.1 -1.1 z"/>
+  </g>
+</svg>

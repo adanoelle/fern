@@ -63,6 +63,7 @@ quirks come from the nixos-hardware import, not from the role.
 | `garden.shell` | the whole garden shell: QML, settings, screenshot tools, and the terminal theming it includes | the niri aspect only launches the shell. yarrow takes these two instead of `ada-desktop`, which carries `garden.terminal` alone; including both doubles kitty's theme include |
 | `ada-dev` | the `devtools` bundle (Rust, Node/TypeScript, C/C++, Python, Ada, Zig, VM host) | development machine |
 | `niri` | Niri settings, keybinds, and the lock after 10 idle minutes | the host imports the niri-flake module |
+| `cursor` | the chrome key pointer | see [Niri](../desktop/niri.md#pointer) |
 | `brightness-backlight` | brightness keys through `brightnessctl` on the panel's sysfs backlight, never below 1% | built-in panel |
 | `idle-suspend` | a second idle timeout: suspend after 20 minutes, only when no mains supply is online | battery; a long build on the charger is not interrupted |
 | `art` | Krita, Aseprite, Inkscape, GIMP | what the machine is for; see [Gamedev and art](../gamedev/gamedev-and-art.md) |

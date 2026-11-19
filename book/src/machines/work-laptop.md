@@ -96,6 +96,7 @@ not take the `desktop-apps` bundle as a whole.
 | `teams` | `teams-for-linux`, wrapped with `--no-sandbox` on a non-NixOS system |
 | `imv`, `pdf`, `obsidian` | image viewer, PDF tools, notes |
 | `wallpaper` | painted wallpapers behind the Niri session; see [Wallpaper](../desktop/wallpaper.md). This is the only place the aspect is included |
+| `cursor` | the chrome key pointer; see [Niri](../desktop/niri.md#pointer) |
 | `duckdb`, `postgres`, `rustfs` | data clients; see [Data tools](../toolchains/data-tools.md) |
 | `gamedev` | game libraries and tools; see [Gamedev and art](../gamedev/gamedev-and-art.md) |
 | `audio-tools` | the plugin and synth collection, without the DAWs; see [Audio](../services/audio.md) |

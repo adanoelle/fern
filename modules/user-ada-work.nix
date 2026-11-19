@@ -51,6 +51,8 @@
       den.aspects.theodolite
       # Sargent's "Nonchaloir (Repose)" behind the niri session.
       den.aspects.wallpaper
+      # The chrome key pointer.
+      den.aspects.cursor
     ];
 
     homeManager =

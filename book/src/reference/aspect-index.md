@@ -183,6 +183,7 @@ All in the `git-suite` bundle.
 | `brightness-backlight` | `modules/desktop/brightness-backlight.nix` | home | Brightness keys for a built-in panel | yarrow |
 | `idle-suspend` | `modules/desktop/idle-suspend.nix` | home | Suspend when idle on battery | yarrow |
 | `wallpaper` | `modules/desktop/wallpaper.nix` | home | Painted wallpapers tied to the active palette; `garden-study` | work laptop |
+| `cursor` | `modules/desktop/cursor.nix` | home | The chrome key pointer theme | work laptop, yarrow |
 | `zen` | `modules/desktop/zen.nix` | home | Zen browser as the default browser | every machine |
 | `chromium` | `modules/desktop/chromium.nix` | home | ungoogled-chromium with Wayland flags | fern, yarrow |
 | `bitwarden` | `modules/desktop/bitwarden.nix` | both | Bitwarden desktop; permits its end-of-life electron | fern, yarrow |
