@@ -1,0 +1,9 @@
+  <!-- Laid over the key for the "working, but you can still click"
+       pointer: a sparkle turning in the free corner. @turn@ is filled
+       in by the build. -->
+  <defs>
+    <path id="spin" transform="translate(17 77) rotate(@turn@)" stroke-linejoin="round"
+      d="M0 -15 C1.4 -5 5 -1.4 15 0 C5 1.4 1.4 5 0 15 C-1.4 5 -5 1.4 -15 0 C-5 -1.4 -1.4 -5 0 -15 Z"/>
+  </defs>
+  <use xlink:href="#spin" fill="#ffffff" stroke="#ffffff" stroke-width="5.4"/>
+  <use xlink:href="#spin" fill="#ffffff" stroke="#14162a" stroke-width="2"/>
