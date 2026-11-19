@@ -53,6 +53,8 @@
       den.aspects.wallpaper
       # The chrome key pointer.
       den.aspects.cursor
+      # File dialogs and other GTK applications follow the palette.
+      den.aspects.gtk-theme
     ];
 
     homeManager =

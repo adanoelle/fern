@@ -38,6 +38,8 @@
       den.aspects.cursor
       # Painted wallpapers: the active palette picks the painter
       den.aspects.wallpaper
+      # GTK applications and Krita follow the palette too
+      den.aspects.gtk-theme
       # Built-in panel: backlight keys, and suspend when idle on battery
       den.aspects.brightness-backlight
       den.aspects.idle-suspend

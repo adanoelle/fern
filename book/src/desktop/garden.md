@@ -95,6 +95,32 @@ Two behaviours are worth knowing:
 On machines that carry the [wallpaper](wallpaper.md) aspect, the
 painting on the wall follows the palette as well.
 
+### Graphical applications
+
+**Goes on:** the `gtk-theme` aspect; see the
+[aspect index](../reference/aspect-index.md) for the machines.
+
+`modules/desktop/gtk-theme.nix` points applications outside the
+terminal at two more generated files:
+
+| Application | How it picks the theme up |
+| ----------- | ------------------------- |
+| GTK 3 and GTK 4 applications, file dialogs, Inkscape | `gtk.css` imports the generated named colours; GTK 3 uses the `adw-gtk3` theme, which is written against those names |
+| Krita | a colour scheme linked into Krita's `color-schemes` directory |
+
+Three things to know:
+
+- **They change on the next start.** An open application keeps its
+  colours until it is closed and opened again.
+- **Dark and light follow the palette.** `garden-themes apply` sets the
+  desktop's `color-scheme` preference to match, so a light palette
+  gives light dialogs.
+- **Krita needs choosing once.** Pick **Garden** under Settings →
+  Themes. The scheme keeps that name for every palette.
+
+GIMP, OBS, Aseprite and Qt applications other than Krita are not
+themed yet.
+
 ## The shell
 
 `modules/desktop/niri.nix` starts the shell with the session
