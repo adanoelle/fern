@@ -104,7 +104,7 @@ not take the `desktop-apps` bundle as a whole.
 
 It also includes one small site-specific aspect that only sets an
 environment variable for a data directory, and it installs
-`brightnessctl`, `pandoc`, `glow` and `zotero` directly.
+`brightnessctl`, `pandoc`, `glow`, `zotero` and `krita` directly.
 
 ### Channels and app pinning
 
