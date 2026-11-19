@@ -158,6 +158,9 @@ heart charm.
 - Only the arrow is drawn. Every other shape comes from Adwaita.
 - The size defaults to 48 and can be set per machine with
   `home.pointerCursor.size`.
+- niri re-reads the pointer theme only when its cursor settings
+  change. `cursor-reload` makes a running session pick the theme up
+  again; a switch runs it whenever the theme has changed.
 
 ## Per machine
 
