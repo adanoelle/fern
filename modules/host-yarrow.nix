@@ -22,7 +22,7 @@
       den.aspects.niri
     ];
 
-    # No OBS or full music layer: add them when they are wanted.
+    # No full music layer: add it when it is wanted.
     provides.to-users.includes = [
       # The desktop core, taken as its two halves instead of through
       # ada-desktop: the applications, and the whole garden shell (QML,
@@ -42,6 +42,8 @@
       den.aspects.gamedev
       den.aspects.game-audio
       den.aspects.gaming-hm
+      # Recording playtests and process videos
+      den.aspects.obs
     ];
 
     nixos =
