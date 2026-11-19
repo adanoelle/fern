@@ -156,8 +156,9 @@ heart charm, and a ringed hand over links and buttons.
   build renders them at 24, 32, 48, 64 and 96 px; the two smallest
   sizes use a plainer key without the charm.
 - The arrow, the text beam, the pointing hand, the open hand, the
-  closed fist for dragging and the two busy pointers are drawn. Every
-  other shape comes from Adwaita.
+  closed fist for dragging, the two busy pointers and a heart-shaped
+  padlock for "not allowed" are drawn. Every other shape comes from
+  Adwaita.
 - The busy pointers move: a chrome star turns around a red heart, and
   the key gets a sparkle turning beside it while something loads in
   the background.

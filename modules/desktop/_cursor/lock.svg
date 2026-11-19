@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 96 96" width="96" height="96">
+  <defs>
+    <linearGradient id="chrome" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="0.18" stop-color="#eef4ff"/><stop offset="0.36" stop-color="#7f8fb8"/>
+      <stop offset="0.46" stop-color="#1b2140"/><stop offset="0.50" stop-color="#2a3360"/><stop offset="0.54" stop-color="#ffffff"/>
+      <stop offset="0.70" stop-color="#c9d6ff"/><stop offset="0.86" stop-color="#f6e9ff"/><stop offset="1" stop-color="#8a7fd0"/>
+    </linearGradient>
+    <linearGradient id="silver" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="0.40" stop-color="#9aa6c8"/><stop offset="0.52" stop-color="#232a4a"/>
+      <stop offset="0.60" stop-color="#ffffff"/><stop offset="1" stop-color="#b9b4f0"/>
+    </linearGradient>
+    <linearGradient id="red" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe3e0"/><stop offset="0.16" stop-color="#ff5a52"/><stop offset="0.42" stop-color="#d40f1f"/>
+      <stop offset="0.54" stop-color="#4a0010"/><stop offset="0.60" stop-color="#ff9a8f"/><stop offset="0.78" stop-color="#e3172a"/>
+      <stop offset="1" stop-color="#8f0018"/>
+    </linearGradient>
+    <!-- a heart-shaped padlock: chrome shackle, red body -->
+    <g id="art" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M29 50 V29 a19 19 0 0 1 38 0 V50 h-9 V29 a10 10 0 0 0 -20 0 V50 Z" fill="url(#chrome)"/>
+      <path d="M48 86.8 C15 63.7 21.6 39 34.8 39 C42.4 39 48 43.9 48 50.5 C48 43.9 53.6 39 61.2 39 C74.4 39 81 63.7 48 86.8 Z" fill="url(#red)"/>
+    </g>
+  </defs>
+  <use xlink:href="#art" stroke="#ffffff" stroke-width="6" fill="#ffffff"/>
+  <use xlink:href="#art" stroke="#14162a" stroke-width="2.4"/>
+  <!-- the keyhole on its plate -->
+  <circle cx="48" cy="62" r="9.4" fill="url(#silver)" stroke="#14162a" stroke-width="1.8"/>
+  <path d="M48 56.4 a3.4 3.4 0 0 1 2 6.2 l1.4 5.6 h-6.8 l1.4 -5.6 a3.4 3.4 0 0 1 2 -6.2 z" fill="#14162a"/>
+  <path d="M27.6 53 q2.4 -8 9.4 -8.6" stroke="#ffffff" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M84 8 l2.2 6.3 6.3 2.2 -6.3 2.2 -2.2 6.3 -2.2 -6.3 -6.3 -2.2 6.3 -2.2 z" fill="#ffffff" stroke="#14162a" stroke-width="1.1" stroke-linejoin="round"/>
+</svg>
