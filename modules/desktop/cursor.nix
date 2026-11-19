@@ -80,6 +80,7 @@ _: {
       in
       {
         home.pointerCursor = {
+          enable = true;
           name = themeName;
           package = theme;
           # Large enough for the drawing with the charm.
