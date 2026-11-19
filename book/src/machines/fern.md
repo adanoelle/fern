@@ -60,8 +60,8 @@ base `ada` aspect that every machine gets
 
 fern does not forward the `art`, `game-audio`, `wallpaper`,
 `brightness-backlight` or `idle-suspend` aspects. In particular the
-painted wallpaper ([Wallpaper](../desktop/wallpaper.md)) is included
-only by the work-laptop layer today, so fern's Niri session does not
+painted wallpaper ([Wallpaper](../desktop/wallpaper.md)) is not
+forwarded here, so fern's Niri session does not
 have it.
 
 `obs` is the stock nixpkgs OBS with capture plugins

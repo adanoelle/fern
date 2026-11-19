@@ -64,6 +64,7 @@ quirks come from the nixos-hardware import, not from the role.
 | `ada-dev` | the `devtools` bundle (Rust, Node/TypeScript, C/C++, Python, Ada, Zig, VM host) | development machine |
 | `niri` | Niri settings, keybinds, and the lock after 10 idle minutes | the host imports the niri-flake module |
 | `cursor` | the chrome key pointer | see [Niri](../desktop/niri.md#pointer) |
+| `wallpaper` | painted wallpapers that follow the active palette | see [Wallpaper](../desktop/wallpaper.md) |
 | `brightness-backlight` | brightness keys through `brightnessctl` on the panel's sysfs backlight, never below 1% | built-in panel |
 | `idle-suspend` | a second idle timeout: suspend after 20 minutes, only when no mains supply is online | battery; a long build on the charger is not interrupted |
 | `art` | Krita, Aseprite, Inkscape, GIMP | what the machine is for; see [Gamedev and art](../gamedev/gamedev-and-art.md) |
@@ -101,7 +102,6 @@ of `audio-laptop`; see [Audio](../services/audio.md).
 | `audio-studio` | it trades power for latency (performance governor, pinned quantum) | not for a machine on battery; use `studio-mode` |
 | Fingerprint reader | nixos-hardware turns `fprintd` on; it is forced off until it has been tried with tuigreet and the garden lock screen, where PAM would wait on the reader before accepting a password | remove the `services.fprintd.enable = false` line, then `fprintd-enroll` |
 | `homelab`, `monitoring`, `teams` | fern's roles and extras | — |
-| Painted wallpaper | the `wallpaper` aspect is included only by the work-laptop layer today | forward `wallpaper`; see [Wallpaper](../desktop/wallpaper.md) |
 
 ## Rebuilding
 
