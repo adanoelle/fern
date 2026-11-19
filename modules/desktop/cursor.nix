@@ -77,6 +77,35 @@ _: {
               Inherits=Adwaita
               THEME
             '';
+
+        niri = lib.getExe config.programs.niri.package;
+        niriConfig = "${config.xdg.configHome}/niri/config.kdl";
+        inherit (config.home.pointerCursor) size;
+
+        # niri re-reads the cursor theme only when its cursor settings
+        # change. When the theme's files change under the same name it
+        # keeps the old pointer, so this loads a copy of the config
+        # with another size and then the real one again.
+        cursorReload = pkgs.writeShellApplication {
+          name = "cursor-reload";
+          runtimeInputs = [
+            pkgs.coreutils
+            pkgs.gnused
+          ];
+          text = ''
+            if [ -z "''${NIRI_SOCKET:-}" ] || ! ${niri} msg version >/dev/null 2>&1; then
+              echo "cursor-reload: no running niri session" >&2
+              exit 0
+            fi
+            nudge=$(mktemp --suffix=.kdl)
+            trap 'rm -f "$nudge"' EXIT
+            sed 's/xcursor-size ${toString size}$/xcursor-size ${toString (size - 1)}/' \
+              ${niriConfig} > "$nudge"
+            ${niri} msg action load-config-file --path "$nudge"
+            sleep 0.5
+            ${niri} msg action load-config-file --path ${niriConfig}
+          '';
+        };
       in
       {
         home.pointerCursor = {
@@ -89,11 +118,27 @@ _: {
         };
 
         # The shapes the theme does not draw yet.
-        home.packages = [ pkgs.adwaita-icon-theme ];
+        home.packages = [
+          pkgs.adwaita-icon-theme
+          cursorReload
+        ];
+
+        # A switch links niri's config before the theme, and does not
+        # touch the config at all when only the drawing changed. Either
+        # way a running niri is left with a stale pointer, so reload it
+        # whenever the theme is not the one last activated.
+        home.activation.cursorReload = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+          seen="${config.xdg.stateHome}/cursor-theme"
+          if [ "$(cat "$seen" 2>/dev/null)" != "${theme}" ]; then
+            run ${lib.getExe cursorReload} || true
+            run mkdir -p "$(dirname "$seen")"
+            run sh -c 'echo "${theme}" > "$0"' "$seen"
+          fi
+        '';
 
         programs.niri.settings.cursor = {
           theme = themeName;
-          inherit (config.home.pointerCursor) size;
+          inherit size;
         };
       };
   };
