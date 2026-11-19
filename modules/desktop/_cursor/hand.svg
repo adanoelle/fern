@@ -9,7 +9,7 @@
     <radialGradient id="red" cx="0.35" cy="0.3" r="0.8">
       <stop offset="0" stop-color="#fff0ee"/><stop offset="0.3" stop-color="#ff5a52"/><stop offset="0.7" stop-color="#c20d1c"/><stop offset="1" stop-color="#6a0012"/></radialGradient>
     <linearGradient id="skin" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#fffaf5"/><stop offset="0.7" stop-color="#fbeee6"/><stop offset="1" stop-color="#f1d9d2"/></linearGradient>
+      <stop offset="0" stop-color="#fbe6d8"/><stop offset="0.6" stop-color="#f3cfbe"/><stop offset="1" stop-color="#e2ab98"/></linearGradient>
     <path id="hand" stroke-linejoin="round" stroke-linecap="round"
       d="M37 57 C36.6 44 37.4 28 38.2 15 C38.7 7.5 40.6 4.5 43.3 4.5 C46.1 4.5 48 7.6 48.4 15 C48.8 24 49.2 32 49.6 40
          C50 36 51.6 34.6 54 34.6 C56.8 34.6 58.6 36.8 58.8 41 C59.4 38.8 61 37.8 63.2 37.8 C65.9 37.8 67.6 40 67.8 44
