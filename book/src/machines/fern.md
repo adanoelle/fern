@@ -58,8 +58,9 @@ base `ada` aspect that every machine gets
 | `music` | DAWs (`daw`) and the plugin and synth collection (`audio-tools`) | the studio machine; see [Audio](../services/audio.md) |
 | `gamedev` | game libraries and tools | see [Gamedev and art](../gamedev/gamedev-and-art.md) |
 
-fern does not forward the `art`, `game-audio`, `wallpaper`, `gtk-theme`,
-`brightness-backlight` or `idle-suspend` aspects. In particular the
+fern does not forward the `art`, `game-audio`, `wallpaper`,
+`gtk-theme`, `reference-board`, `brightness-backlight` or
+`idle-suspend` aspects. In particular the
 painted wallpaper ([Wallpaper](../desktop/wallpaper.md)) is not
 forwarded here, so fern's Niri session does not
 have it.

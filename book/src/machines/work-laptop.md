@@ -97,6 +97,7 @@ not take the `desktop-apps` bundle as a whole.
 | `imv`, `pdf`, `obsidian` | image viewer, PDF tools, notes |
 | `cursor` | the chrome key pointer; see [Niri](../desktop/niri.md#pointer) |
 | `wallpaper` | painted wallpapers behind the Niri session; see [Wallpaper](../desktop/wallpaper.md) |
+| `reference-board` | BeeRef, a board of reference images, on `Mod+I`; see [Gamedev and art](../gamedev/gamedev-and-art.md#reference-board) |
 | `gtk-theme` | file dialogs and other GTK applications follow the palette; see [Garden](../desktop/garden.md#graphical-applications) |
 | `duckdb`, `postgres`, `rustfs` | data clients; see [Data tools](../toolchains/data-tools.md) |
 | `gamedev` | game libraries and tools; see [Gamedev and art](../gamedev/gamedev-and-art.md) |
