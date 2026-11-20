@@ -47,6 +47,7 @@
       den.aspects.art
       den.aspects.reference-board
       den.aspects.color-picker
+      den.aspects.garden-app
       den.aspects.gamedev
       den.aspects.game-audio
       den.aspects.gaming-hm

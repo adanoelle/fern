@@ -223,6 +223,32 @@
         "type": "github"
       }
     },
+    "garden": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "rust-overlay": [
+          "rust-overlay"
+        ]
+      },
+      "locked": {
+        "lastModified": 1795201072,
+        "narHash": "sha256-p82PsK2tEY6XguUgn7A4UlFQsvNJPJUQ+LL5i7+Z3P0=",
+        "owner": "adanoelle",
+        "repo": "garden",
+        "rev": "8c6598c8be486fff98820ccfcd3d64cb996e45aa",
+        "type": "github"
+      },
+      "original": {
+        "owner": "adanoelle",
+        "repo": "garden",
+        "type": "github"
+      }
+    },
     "garden-shell": {
       "inputs": {
         "den": [
@@ -655,6 +681,7 @@
         "devenv": "devenv",
         "flake-parts": "flake-parts_2",
         "flake-utils": "flake-utils",
+        "garden": "garden",
         "garden-shell": "garden-shell",
         "herdr": "herdr",
         "home-manager": "home-manager",

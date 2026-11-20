@@ -59,6 +59,8 @@
       den.aspects.reference-board
       # Pick a colour from the screen on Mod+P.
       den.aspects.color-picker
+      # The Garden collection app on Mod+C.
+      den.aspects.garden-app
     ];
 
     homeManager =

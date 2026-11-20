@@ -99,6 +99,7 @@ not take the `desktop-apps` bundle as a whole.
 | `wallpaper` | painted wallpapers behind the Niri session; see [Wallpaper](../desktop/wallpaper.md) |
 | `reference-board` | BeeRef, a board of reference images, on `Mod+I`; see [Gamedev and art](../gamedev/gamedev-and-art.md#reference-board) |
 | `color-picker` | pick a colour from the screen on `Mod+P`; see [Gamedev and art](../gamedev/gamedev-and-art.md#colour-picker) |
+| `garden-app` | the Garden collection app on `Mod+C`; see [Gamedev and art](../gamedev/gamedev-and-art.md#garden-collection) |
 | `gtk-theme` | file dialogs and other GTK applications follow the palette; see [Garden](../desktop/garden.md#graphical-applications) |
 | `duckdb`, `postgres`, `rustfs` | data clients; see [Data tools](../toolchains/data-tools.md) |
 | `gamedev` | game libraries and tools; see [Gamedev and art](../gamedev/gamedev-and-art.md) |

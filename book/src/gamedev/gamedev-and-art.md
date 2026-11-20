@@ -15,6 +15,7 @@
 | `game-audio` | no   | yes    | no          | `host-yarrow.nix` |
 | `reference-board` | no | yes | yes | `host-yarrow.nix`, `user-ada-work.nix` |
 | `color-picker` | no | yes | yes | `host-yarrow.nix`, `user-ada-work.nix` |
+| `garden-app` | no | yes | yes | `host-yarrow.nix`, `user-ada-work.nix` |
 
 All five are home-manager only. `gamedev` is not part of the `devtools`
 bundle: each machine opts in, the NixOS hosts by forwarding it to the
@@ -121,6 +122,23 @@ swatch with the code. `Escape` cancels.
   any window, including the reference board and the wallpaper.
 - Every pick is appended to `~/.local/state/picked-colors` with the
   time, newest last.
+
+## Garden collection
+
+`modules/desktop/garden-app.nix` installs
+[Garden](https://github.com/adanoelle/garden), a collection app: finds
+go into channels as images, links, notes, video or audio, and a block
+can sit in several channels at once. Everything is stored on the
+machine, under `~/.local/share/com.garden.app`.
+
+- `Mod+C` brings the collection up. It focuses the open window, or
+  starts Garden if it is not running (the `garden-collection` command
+  does the same).
+- The package comes from Garden's own flake (the `garden` input) and is
+  built locally against this configuration's nixpkgs. `nix flake update
+  garden` moves to a newer commit.
+- This is not [garden-shell](../desktop/garden.md), which provides the
+  palette and the bar. The two share a name and nothing else.
 
 ## `game-audio`
 
