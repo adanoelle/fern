@@ -20,6 +20,8 @@
       den.aspects.audio-laptop
       den.aspects.gaming
       den.aspects.niri
+      # A serif and a handwriting face for the art machine
+      den.aspects.studio-fonts
     ];
 
     # No full music layer: add it when it is wanted.

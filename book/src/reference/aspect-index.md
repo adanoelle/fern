@@ -84,6 +84,7 @@ and is not counted; aspects that only it uses are marked.
 | `secrets-guard` | `modules/secrets-guard.nix` | nixos | trufflehog and system-wide Git | fern, yarrow |
 | `greetd` | `modules/desktop/greetd.nix` | nixos | greetd with tuigreet, session list from enabled compositors, portals, polkit | fern, yarrow |
 | `fonts` | `modules/fonts.nix` | both | Garden typography and fontconfig defaults | fern, yarrow (nixos side); work laptop (home side) |
+| `studio-fonts` | `modules/desktop/studio-fonts.nix` | nixos | Cormorant as the default serif, and the Reenie Beanie handwriting face | yarrow |
 | `audio` | `modules/audio/audio.nix` | nixos | PipeWire base stack, rtkit, mixer and patchbay tools | fern, yarrow |
 | `audio-studio` | `modules/audio/audio-studio.nix` | nixos + includes | Low-latency tuning with musnix for a recording machine | fern |
 | `audio-laptop` | `modules/audio/audio-laptop.nix` | nixos | Noise-suppressed virtual microphone and the `studio-mode` command | yarrow |
