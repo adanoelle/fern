@@ -46,6 +46,7 @@
       # What the machine is for
       den.aspects.art
       den.aspects.reference-board
+      den.aspects.color-picker
       den.aspects.gamedev
       den.aspects.game-audio
       den.aspects.gaming-hm

@@ -57,6 +57,8 @@
       den.aspects.gtk-theme
       # A board of reference images on Mod+I.
       den.aspects.reference-board
+      # Pick a colour from the screen on Mod+P.
+      den.aspects.color-picker
     ];
 
     homeManager =

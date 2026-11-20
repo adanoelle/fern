@@ -70,6 +70,7 @@ quirks come from the nixos-hardware import, not from the role.
 | `idle-suspend` | a second idle timeout: suspend after 20 minutes, only when no mains supply is online | battery; a long build on the charger is not interrupted |
 | `art` | Krita, Aseprite, Inkscape, GIMP | what the machine is for; see [Gamedev and art](../gamedev/gamedev-and-art.md) |
 | `reference-board` | BeeRef, a board of reference images, on `Mod+I` | same page |
+| `color-picker` | pick a colour from the screen on `Mod+P` | same page |
 | `gamedev` | game libraries and tools | same page |
 | `game-audio` | trackers, a sound-effect tool, REAPER, `ffmpeg`, `sox` | the light audio set; same page |
 | `gaming-hm` | MangoHud, ProtonUp-Qt, Lutris, Protontricks | user side of gaming |
