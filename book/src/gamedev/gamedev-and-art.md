@@ -122,6 +122,22 @@ swatch with the code. `Escape` cancels.
 - Every pick is appended to `~/.local/state/picked-colors` with the
   time, newest last.
 
+## Studio fonts
+
+`modules/desktop/studio-fonts.nix` adds two faces to the shared set,
+on the system side:
+
+- **Cormorant**, a light, high-contrast serif. It becomes the default
+  serif, ahead of the shared list, so anything that asks for "serif"
+  gets it.
+- **Reenie Beanie**, a thin pen hand for lettering. nixpkgs carries it
+  only inside the whole Google Fonts collection, so the module fetches
+  the one file from a pinned commit.
+
+Both are under the SIL Open Font License. The aspect is included by
+the host, not forwarded to the user; see the
+[aspect index](../reference/aspect-index.md) for where it goes.
+
 ## `game-audio`
 
 `modules/audio/game-audio.nix` is the light set for writing game music

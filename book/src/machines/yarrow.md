@@ -41,6 +41,7 @@ Both are steps in [Installing yarrow](installing-yarrow.md).
 | `audio-laptop` | a noise-suppressed virtual microphone and `studio-mode` | see [Audio](../services/audio.md) |
 | `gaming` | Steam, Gamescope, GameMode | playtesting; see [Gaming](../services/gaming.md) |
 | `niri` | the Niri session | see [Niri](../desktop/niri.md) |
+| `studio-fonts` | Cormorant as the default serif, and the Reenie Beanie handwriting face | see [Gamedev and art](../gamedev/gamedev-and-art.md#studio-fonts) |
 
 ### The laptop role
 
