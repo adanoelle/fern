@@ -186,6 +186,7 @@ All in the `git-suite` bundle.
 | `wallpaper` | `modules/desktop/wallpaper.nix` | home | Painted wallpapers tied to the active palette; `garden-study` | work laptop, yarrow |
 | `gtk-theme` | `modules/desktop/gtk-theme.nix` | home | GTK applications and Krita follow the active palette | work laptop, yarrow |
 | `reference-board` | `modules/desktop/reference-board.nix` | home | BeeRef reference board, floating, on `Mod+I` | work laptop, yarrow |
+| `color-picker` | `modules/desktop/color-picker.nix` | home | Pick a colour from the screen on `Mod+P`; hex code to the clipboard | work laptop, yarrow |
 | `zen` | `modules/desktop/zen.nix` | home | Zen browser as the default browser | every machine |
 | `chromium` | `modules/desktop/chromium.nix` | home | ungoogled-chromium with Wayland flags | fern, yarrow |
 | `bitwarden` | `modules/desktop/bitwarden.nix` | both | Bitwarden desktop; permits its end-of-life electron | fern, yarrow |

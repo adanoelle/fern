@@ -14,8 +14,9 @@
 | `art`        | no   | yes    | no          | `host-yarrow.nix` |
 | `game-audio` | no   | yes    | no          | `host-yarrow.nix` |
 | `reference-board` | no | yes | yes | `host-yarrow.nix`, `user-ada-work.nix` |
+| `color-picker` | no | yes | yes | `host-yarrow.nix`, `user-ada-work.nix` |
 
-All four are home-manager only. `gamedev` is not part of the `devtools`
+All five are home-manager only. `gamedev` is not part of the `devtools`
 bundle: each machine opts in, the NixOS hosts by forwarding it to the
 user (`provides.to-users`), the work laptop by including it in the work
 layer. fern takes the full `music` layer instead of `game-audio`; see
@@ -108,6 +109,18 @@ file.
 - BeeRef is built against Python 3.13, because one of its dependencies
   fails its tests on the default Python in the pinned nixpkgs. The
   module's comment says when the override can go.
+
+## Colour picker
+
+`modules/desktop/color-picker.nix` binds `Mod+P` to `pick-color`. The
+pointer becomes a picker; a click anywhere on screen puts that colour's
+hex code (`#rrggbb`) on the clipboard, and a notification shows a
+swatch with the code. `Escape` cancels.
+
+- The picking is niri's own (`niri msg pick-color`), so it works over
+  any window, including the reference board and the wallpaper.
+- Every pick is appended to `~/.local/state/picked-colors` with the
+  time, newest last.
 
 ## `game-audio`
 
