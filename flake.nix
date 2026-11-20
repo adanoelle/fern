@@ -19,6 +19,15 @@
       inputs.den.follows = "den";
     };
 
+    # The collection app (channels of images, links and notes). Not to
+    # be confused with garden-shell above, which is the palette.
+    garden = {
+      url = "github:adanoelle/garden";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+      inputs.rust-overlay.follows = "rust-overlay";
+    };
+
     devenv = {
       url = "github:cachix/devenv";
       inputs.nixpkgs.follows = "nixpkgs";
