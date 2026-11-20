@@ -134,6 +134,11 @@ machine, under `~/.local/share/com.garden.app`.
 - `Mod+C` brings the collection up. It focuses the open window, or
   starts Garden if it is not running (the `garden-collection` command
   does the same).
+- While Garden runs it watches `~/garden`. A file saved there (a scan,
+  an image, a PDF from a library scanner) is imported into the "Inbox"
+  channel a few seconds later; a PDF becomes one image per page. The
+  original then moves to `~/garden/imported`, which can be emptied at
+  any time.
 - The package comes from Garden's own flake (the `garden` input) and is
   built locally against this configuration's nixpkgs. `nix flake update
   garden` moves to a newer commit.

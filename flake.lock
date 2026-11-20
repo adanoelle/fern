@@ -236,11 +236,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1795201072,
-        "narHash": "sha256-p82PsK2tEY6XguUgn7A4UlFQsvNJPJUQ+LL5i7+Z3P0=",
+        "lastModified": 1795204277,
+        "narHash": "sha256-uv9/e3zYAjYaNiI7PxK6Xyy7R2CRYrRbIDbi5vGO4bY=",
         "owner": "adanoelle",
         "repo": "garden",
-        "rev": "8c6598c8be486fff98820ccfcd3d64cb996e45aa",
+        "rev": "9cd04c62d018fb0d590e597a482748ba32d9e4c8",
         "type": "github"
       },
       "original": {
