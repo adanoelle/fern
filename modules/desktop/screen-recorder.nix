@@ -59,8 +59,12 @@ _: {
 
           mkdir -p "${recordings}"
           clip="${recordings}/clip-$(date +%Y-%m-%d_%H-%M-%S).mp4"
-          # yuv420p: the pixel format every player and chat accepts
+          # yuv420p: the pixel format every player and chat accepts.
+          # 30 frames a second at crf 27 keeps a clip of 20 seconds or so
+          # under the 10 MB a chat upload allows; the defaults (the
+          # screen's own rate, crf 23) passed that in 7 seconds.
           wf-recorder -g "$position ''${width}x''${height}" -c libx264 -x yuv420p \
+            -r 30 -p crf=27 -p preset=medium \
             -f "$clip" >/dev/null 2>&1 &
           echo $! > "$pidfile"
           echo "$clip" > "$namefile"
