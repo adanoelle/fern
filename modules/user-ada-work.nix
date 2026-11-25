@@ -61,6 +61,8 @@
       den.aspects.color-picker
       # The Garden collection app on Mod+C.
       den.aspects.garden-app
+      # Short screen clips to share (Kooha).
+      den.aspects.screen-recorder
     ];
 
     homeManager =
