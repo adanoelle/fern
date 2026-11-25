@@ -16,8 +16,9 @@
 | `reference-board` | no | yes | yes | `host-yarrow.nix`, `user-ada-work.nix` |
 | `color-picker` | no | yes | yes | `host-yarrow.nix`, `user-ada-work.nix` |
 | `garden-app` | no | yes | yes | `host-yarrow.nix`, `user-ada-work.nix` |
+| `screen-recorder` | no | no | yes | `user-ada-work.nix` |
 
-All five are home-manager only. `gamedev` is not part of the `devtools`
+All of these are home-manager only. `gamedev` is not part of the `devtools`
 bundle: each machine opts in, the NixOS hosts by forwarding it to the
 user (`provides.to-users`), the work laptop by including it in the work
 layer. fern takes the full `music` layer instead of `game-audio`; see
@@ -122,6 +123,22 @@ swatch with the code. `Escape` cancels.
   any window, including the reference board and the wallpaper.
 - Every pick is appended to `~/.local/state/picked-colors` with the
   time, newest last.
+
+## Screen recorder
+
+`modules/desktop/screen-recorder.nix` binds `Mod+Shift+R` to
+`record-clip`. Drag a box around what to record (`Escape` cancels);
+the same key again stops, and a notification gives the clip's path and
+size. Clips are MP4 files in `~/recordings`, named by date and time.
+
+- For short clips to share, such as a playtest for the artists. There
+  is no sound.
+- 30 frames a second at a quality that keeps about 20 seconds under
+  the 10 MB a chat upload allows.
+- The recorder is wf-recorder, which copies the screen through niri's
+  screen-copy protocol. Kooha, which goes through the screen-cast
+  portal and PipeWire, could not agree on a video format with niri on
+  the work laptop.
 
 ## Garden collection
 
